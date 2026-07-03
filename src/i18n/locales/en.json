@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "home": "Home",
+    "network": "Network",
+    "jobs": "Jobs",
+    "alerts": "Alerts"
+  },
+  "header": {
+    "search": "Search for jobs, skills, or people",
+    "me": "Me",
+    "forBusiness": "For Business"
+  },
+  "menu": {
+    "viewProfile": "View Profile",
+    "accountSettings": "Account Settings",
+    "signOut": "Sign Out",
+    "profileDesc": "Open your public and personal profile data",
+    "settingsDesc": "Settings screen will be added next",
+    "signOutDesc": "Remove session from this device"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password"
+  },
+  "jobs": {
+    "title": "Jobs",
+    "companies": "Companies",
+    "salaries": "Salaries"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "notFound": "Page not found",
+    "backHome": "Back to Home"
+  }
+}
