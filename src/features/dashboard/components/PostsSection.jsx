@@ -22,8 +22,11 @@ import {
   AccessTimeOutlined,
 } from '@mui/icons-material'
 import { getPosts } from '@/services/postService'
+import { translateText } from '@/services/translateService'
+import { useTranslation } from 'react-i18next'
+import CreatePost from './CreatePost'
 
-function formatTime(dateStr) {
+function formatTime(dateStr, t) {
   const date = new Date(dateStr)
   const now = new Date()
   const diffMs = now - date
@@ -31,21 +34,43 @@ function formatTime(dateStr) {
   const diffHours = Math.floor(diffMins / 60)
   const diffDays = Math.floor(diffHours / 24)
 
-  if (diffMins < 1) return 'Just now'
-  if (diffMins < 60) return `${diffMins}m ago`
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays < 7) return `${diffDays}d ago`
+  if (diffMins < 1) return t('time.justNow', { defaultValue: 'Just now' })
+  if (diffMins < 60) return t('time.minutesAgo', { defaultValue: '{{count}}m ago', count: diffMins })
+  if (diffHours < 24) return t('time.hoursAgo', { defaultValue: '{{count}}h ago', count: diffHours })
+  if (diffDays < 7) return t('time.daysAgo', { defaultValue: '{{count}}d ago', count: diffDays })
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
 function PostCard({ post }) {
+  const { t, i18n } = useTranslation()
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(post?.likes?.length || 0)
   const [showComments, setShowComments] = useState(false)
   const [commentText, setCommentText] = useState('')
+  const [translatedContent, setTranslatedContent] = useState('')
+  const [showTranslated, setShowTranslated] = useState(false)
+  const [translating, setTranslating] = useState(false)
+
+  const handleTranslate = async () => {
+    if (showTranslated) {
+      setShowTranslated(false)
+      return
+    }
+    if (translatedContent) {
+      setShowTranslated(true)
+      return
+    }
+    setTranslating(true)
+    const result = await translateText(post.content, i18n.language === 'ar' ? 'ar' : 'en')
+    setTranslating(false)
+    if (result && result !== post.content) {
+      setTranslatedContent(result)
+      setShowTranslated(true)
+    }
+  }
 
   const profile = post?.user?.profile || {}
-  const fullName = `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || 'Unknown'
+  const fullName = `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || t('common.unknown')
   const avatarSrc = profile?.avatar
   const headline = profile?.headline
   const comments = post?.comments || []
@@ -83,7 +108,7 @@ function PostCard({ post }) {
                 <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 0.25 }}>
                   <AccessTimeOutlined sx={{ fontSize: 12, color: 'text.disabled' }} />
                   <Typography variant="caption" color="text.disabled">
-                    {formatTime(post?.createdAt)}
+                    {formatTime(post?.createdAt, t)}
                   </Typography>
                 </Stack>
               </Box>
@@ -95,19 +120,41 @@ function PostCard({ post }) {
         </Stack>
 
         {post?.content && (
-          <Typography
-            variant="body1"
-            sx={{ mt: 2, whiteSpace: 'pre-line', lineHeight: 1.7, color: 'text.primary' }}
-          >
-            {post.content}
-          </Typography>
+          <>
+            <Typography
+              variant="body1"
+              sx={{ mt: 2, whiteSpace: 'pre-line', lineHeight: 1.7, color: 'text.primary' }}
+            >
+              {showTranslated && translatedContent ? translatedContent : post.content}
+            </Typography>
+            <Box
+              onClick={handleTranslate}
+              sx={{
+                mt: 1,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.5,
+                color: 'primary.main',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                '&:hover': { textDecoration: 'underline', color: 'primary.dark' },
+              }}
+            >
+              {translating
+                ? t('dashboard.translating', 'Translating...')
+                : showTranslated
+                  ? t('dashboard.showOriginal', 'Show original')
+                  : t('dashboard.translate', 'Translate')}
+            </Box>
+          </>
         )}
 
         {post?.image && (
           <Box
             component="img"
             src={post.image}
-            alt="Post image"
+            alt={t('dashboard.post.image')}
             sx={{
               mt: 2,
               width: '100%',
@@ -145,7 +192,7 @@ function PostCard({ post }) {
                 sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main', textDecoration: 'underline' } }}
                 onClick={() => setShowComments(!showComments)}
               >
-                {commentsCount} {commentsCount === 1 ? 'comment' : 'comments'}
+                {t('dashboard.comments', { count: commentsCount })}
               </Typography>
             )}
           </Stack>
@@ -167,7 +214,7 @@ function PostCard({ post }) {
             '&:hover': { bgcolor: 'error.light', color: 'error.main' },
           }}
         >
-          Like
+          {t('dashboard.action.like')}
         </Button>
         <Button
           fullWidth
@@ -175,21 +222,21 @@ function PostCard({ post }) {
           onClick={() => setShowComments(!showComments)}
           sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}
         >
-          Comment
+          {t('dashboard.action.comment')}
         </Button>
         <Button
           fullWidth
           startIcon={<RepeatOutlined />}
           sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}
         >
-          Share
+          {t('dashboard.action.share')}
         </Button>
         <Button
           fullWidth
           startIcon={<SendOutlined />}
           sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}
         >
-          Send
+          {t('dashboard.action.send')}
         </Button>
       </Stack>
 
@@ -200,7 +247,7 @@ function PostCard({ post }) {
             <Stack spacing={2}>
               {comments.map((comment) => {
                 const cProfile = comment?.user?.profile || {}
-                const cName = `${cProfile?.firstName || ''} ${cProfile?.lastName || ''}`.trim() || 'Unknown'
+                const cName = `${cProfile?.firstName || ''} ${cProfile?.lastName || ''}`.trim() || t('common.unknown')
                 const cAvatar = cProfile?.avatar
                 return (
                   <Stack key={comment._id} direction="row" spacing={1.5}>
@@ -220,7 +267,7 @@ function PostCard({ post }) {
                       </Typography>
                       <Typography variant="body2">{comment.content}</Typography>
                       <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
-                        {formatTime(comment.createdAt)}
+                        {formatTime(comment.createdAt, t)}
                       </Typography>
                     </Box>
                   </Stack>
@@ -241,7 +288,7 @@ function PostCard({ post }) {
             <TextField
               fullWidth
               size="small"
-              placeholder="Write a comment..."
+              placeholder={t('dashboard.action.writeComment')}
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: 999, bgcolor: 'grey.100' } }}
@@ -275,6 +322,7 @@ function PostSkeleton() {
 }
 
 export default function PostsSection() {
+  const { t } = useTranslation()
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -307,44 +355,57 @@ export default function PostsSection() {
 
   const hasMore = pagination ? page < pagination.pages : false
 
+  const handlePostCreated = (newPost) => {
+    setPosts((prev) => [newPost, ...prev])
+  }
+
   return (
-    <Box sx={{height: '80vh', overflow: 'auto'}}>
+    <Box
+      sx={{
+        height: '100%',
+        overflow: 'auto',
+        '&::-webkit-scrollbar': { width: 6 },
+        '&::-webkit-scrollbar-track': { background: 'transparent' },
+        '&::-webkit-scrollbar-thumb': { background: '#d4cfe0', borderRadius: 3 },
+      }}
+    >
+      <Stack spacing={2} sx={{ pb: 2 }}>
+        <CreatePost onPostCreated={handlePostCreated} />
+        
+        {loading && posts.length === 0 ? (
           <Stack spacing={2}>
-      {loading && posts.length === 0 ? (
-        <Stack spacing={2}>
-          {[1, 2, 3].map((i) => (
-            <PostSkeleton key={i} />
-          ))}
-        </Stack>
-      ) : posts.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant="h6" color="text.secondary">
-            No posts yet
-          </Typography>
-        </Paper>
-      ) : (
-        <>
-          <Stack spacing={2}>
-            {posts.map((post) => (
-              <PostCard key={post._id} post={post} />
+            {[1, 2, 3].map((i) => (
+              <PostSkeleton key={i} />
             ))}
           </Stack>
-          {hasMore && (
-            <Box sx={{ textAlign: 'center', mt: 1 }}>
-              <Button
-                variant="outlined"
-                onClick={handleLoadMore}
-                disabled={loading}
-                sx={{ borderRadius: 999, px: 4 }}
-              >
-                {loading ? <CircularProgress size={20} /> : 'Load More'}
-              </Button>
-            </Box>
-          )}
-        </>
-      )}
-    </Stack>
-
+        ) : posts.length === 0 ? (
+          <Paper sx={{ p: 4, textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              {t('dashboard.noPosts')}
+            </Typography>
+          </Paper>
+        ) : (
+          <>
+            <Stack spacing={2}>
+              {posts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </Stack>
+            {hasMore && (
+              <Box sx={{ textAlign: 'center', mt: 1 }}>
+                <Button
+                  variant="outlined"
+                  onClick={handleLoadMore}
+                  disabled={loading}
+                  sx={{ borderRadius: 999, px: 4 }}
+                >
+                  {loading ? <CircularProgress size={20} /> : t('dashboard.loadMore')}
+                </Button>
+              </Box>
+            )}
+          </>
+        )}
+      </Stack>
     </Box>
   )
 }

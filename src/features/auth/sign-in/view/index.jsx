@@ -65,7 +65,7 @@ export default function LoginPage() {
                     width: '100%',
                     maxWidth: '1320px',
                     boxShadow: { xs: 'none', sm: '0 32px 80px rgba(12,8,24,0.18)' },
-                    borderRadius: { xs: 0, sm: 8 },
+                    borderRadius: { xs: 0, sm: 2 },
                     overflow: 'hidden',
                     backgroundColor: 'rgba(255,255,255,0.82)',
                     border: '1px solid rgba(31, 13, 66, 0.12)',

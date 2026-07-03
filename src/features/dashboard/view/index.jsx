@@ -5,30 +5,40 @@ import PostsSection from '../components/PostsSection'
 
 function DashboardView() {
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 3 }} sx={{ py: 10 }}>
-          <InfoSide />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <PostsSection />
-        </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
-          <Paper
-            sx={{
-              p: 4,
-              textAlign: 'center',
-              position: 'sticky',
-              top: 100,
-            }}
+    <Box
+      sx={{
+        height: 'calc(100vh - 88px)',
+        overflow: 'hidden',
+      }}
+    >
+      <Container
+        maxWidth="xl"
+        sx={{ height: '100%', py: 2 }}
+      >
+        <Grid container spacing={3} sx={{ height: '100%' }}>
+          <Grid size={{ xs: 12, md: 3 }} sx={{ height: '100%', overflow: 'hidden', py: 'auto' }}>
+            <Box sx={{ height: '100%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <InfoSide />
+            </Box>
+          </Grid>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            sx={{ height: '100%', overflow: 'hidden' }}
           >
-            <Typography variant="h6" color="text.secondary">
-              Section 3
-            </Typography>
-          </Paper>
+            <Box sx={{ height: '100%', overflow: 'hidden' }}>
+              <PostsSection />
+            </Box>
+          </Grid>
+          <Grid size={{ xs: 12, md: 3 }} sx={{ height: '100%', overflow: 'hidden' }}>
+            <Paper sx={{ p: 4, textAlign: 'center', height: '100%' }}>
+              <Typography variant="h6" color="text.secondary">
+                Section 3
+              </Typography>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </Box>
   )
 }
 

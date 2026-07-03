@@ -29,10 +29,53 @@
     "companies": "الشركات",
     "salaries": "الرواتب"
   },
+  "profile": {
+    "followers": "المتابعون",
+    "following": "يتابع",
+    "posts": "المنشورات",
+    "rScore": "نقاط السمعة",
+    "yearsExp": "سنوات الخبرة"
+  },
+  "dashboard": {
+    "section3": "القسم الثالث",
+    "feed": "المنشورات",
+    "posts_one": "{{count}} منشور",
+    "posts_other": "{{count}} منشورات",
+    "noPosts": "لا توجد منشورات بعد",
+    "loadMore": "تحميل المزيد",
+    "post": {
+      "startAPost": "انشر منشوراً",
+      "whatToTalk": "عن ماذا تريد أن تتحدث؟",
+      "cancel": "إلغاء",
+      "post": "نشر",
+      "posting": "جاري النشر...",
+      "image": "صورة المنشور"
+    },
+    "action": {
+      "like": "إعجاب",
+      "comment": "تعليق",
+      "share": "مشاركة",
+      "send": "إرسال",
+      "writeComment": "اكتب تعليقاً..."
+    },
+    "comments_one": "{{count}} تعليق",
+    "comments_other": "{{count}} تعليقات",
+    "comments_zero": "{{count}} تعليقات",
+    "translate": "ترجمة",
+    "showOriginal": "عرض النص الأصلي",
+    "translating": "جارٍ الترجمة..."
+  },
+  "time": {
+    "justNow": "الآن",
+    "minutesAgo": "منذ {{count}} دقيقة",
+    "hoursAgo": "منذ {{count}} ساعة",
+    "daysAgo": "منذ {{count}} يوم"
+  },
   "common": {
     "loading": "جارٍ التحميل...",
     "error": "حدث خطأ ما",
     "notFound": "الصفحة غير موجودة",
-    "backHome": "العودة إلى الرئيسية"
+    "backHome": "العودة إلى الرئيسية",
+    "unknown": "غير معروف"
   }
 }

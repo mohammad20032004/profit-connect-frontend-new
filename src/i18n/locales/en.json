@@ -29,10 +29,52 @@
     "companies": "Companies",
     "salaries": "Salaries"
   },
+  "profile": {
+    "followers": "Followers",
+    "following": "Following",
+    "posts": "Posts",
+    "rScore": "R-Score",
+    "yearsExp": "years experience"
+  },
+  "dashboard": {
+    "section3": "Section 3",
+    "feed": "Feed",
+    "posts_one": "{{count}} post",
+    "posts_other": "{{count}} posts",
+    "noPosts": "No posts yet",
+    "loadMore": "Load More",
+    "post": {
+      "startAPost": "Start a post",
+      "whatToTalk": "What do you want to talk about?",
+      "cancel": "Cancel",
+      "post": "Post",
+      "posting": "Posting...",
+      "image": "Post image"
+    },
+    "action": {
+      "like": "Like",
+      "comment": "Comment",
+      "share": "Share",
+      "send": "Send",
+      "writeComment": "Write a comment..."
+    },
+    "comments_one": "{{count}} comment",
+    "comments_other": "{{count}} comments",
+    "translate": "Translate",
+    "showOriginal": "Show original",
+    "translating": "Translating..."
+  },
+  "time": {
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
     "notFound": "Page not found",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "unknown": "Unknown"
   }
 }

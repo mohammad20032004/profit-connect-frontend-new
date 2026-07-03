@@ -24,8 +24,8 @@ export default function InfoSide() {
     const Rscore = profile?.rScore || 0;
 
     return (
-        <Box sx={{ height: 'auto', width: 300, bgcolor: '#e1ccff73', borderRadius: 2, py: 2 }}>
-            <Box sx={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column',gap: 2, textAlign: 'center', position: 'relative', top: -100 }}>
+        <Box sx={{  width: 300, bgcolor: '#e1ccff73', borderRadius: 2, py: 2 }}>
+            <Box sx={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column',gap: 2, textAlign: 'center', position: 'relative', top: -40 }}>
                 <Box sx={{ mx: 'auto', width: '100%', height: '100%' }}>
                     <Avatar src={avatarSrc} sx={{ width: 150, height: 150, border: `4px solid #2D1055`, mb: 3.5, mx: 'auto' }} />
                     <Typography variant='h4' sx={{ fontWeight: 'bolder', mb: 1.5 }}>{fullName}</Typography>
@@ -37,7 +37,7 @@ export default function InfoSide() {
                    
                     <Chip
                         icon={Rscore >= 4000 ? <img src="/Images/High-Score.gif" width={18} height={18} alt="Score" /> : <WorkspacePremiumRounded sx={{ color: 'primary.light' }} />}
-                        label={`R-Score: ${Rscore}`}
+                        label={`${t('profile.rScore')}: ${Rscore}`}
                         sx={{
                             bgcolor: 'background.paper',
                             color: 'primary.dark',
@@ -77,9 +77,9 @@ export default function InfoSide() {
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', top: 20 }}>
-                    {user.professional.skills?.length > 0 && (
+                    {user?.professional?.skills?.length > 0 && (
                         <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                            {user.professional.skills.map((skill) => (
+                            {user?.professional?.skills?.map((skill) => (
                                 <Chip key={skill} label={skill} size="small" />
                             ))}
                         </Stack>
