@@ -296,7 +296,7 @@ const Header = () => {
           />
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ py: 1.4, px: 2 }}>
+        <MenuItem component={Link} to="/settings" onClick={handleCloseMenu} sx={{ py: 1.4, px: 2 }}>
           <ListItemIcon>
             <SettingsOutlinedIcon fontSize="small" />
           </ListItemIcon>

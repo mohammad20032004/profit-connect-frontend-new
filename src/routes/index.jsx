@@ -11,6 +11,7 @@ import ProfileUserIdView from "../features/profile/[userId]/view"
 import UserProfileUserIdView from "../features/user-profile/[userId]/view"
 import AboutView from "../features/about/view"
 import AlertsView from "../features/alerts/view"
+import SettingsView from "../features/settings/view"
 import JobsView from "../features/jobs/view"
 import JobsCompaniesView from "../features/jobs/companies/view"
 import JobsSalariesView from "../features/jobs/salaries/view"
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: "/user-profile/:userId", element: <UserProfileUserIdView /> },
       { path: "/about", element: <AboutView /> },
       { path: "/alerts", element: <AlertsView /> },
+      { path: "/settings", element: <SettingsView /> },
       { path: "/jobs", element: <JobsView /> },
       { path: "/jobs/companies", element: <JobsCompaniesView /> },
       { path: "/jobs/salaries", element: <JobsSalariesView /> },

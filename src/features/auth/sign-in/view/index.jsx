@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Chip,
@@ -20,6 +21,7 @@ import { setAuthData } from '@/redux/slices/userSlice';
 import Logo from '@/components/common/Logo';
 
 export default function LoginPage() {
+    const { i18n } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -35,6 +37,10 @@ export default function LoginPage() {
             const data = await login(formData);
             dispatch(setAuthData({ token: data?.token, user: data?.user }));
             localStorage.setItem('profit_connect_token', data?.token);
+            const lang = data?.user?.settings?.language;
+            if (lang && ['en', 'ar'].includes(lang)) {
+                i18n.changeLanguage(lang);
+            }
             alert('تم تسجيل الدخول بنجاح!');
             navigate('/');
         } catch (error) {

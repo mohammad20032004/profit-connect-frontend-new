@@ -17,6 +17,11 @@ const userSlice = createSlice({
       state.token = action.payload.token
       state.isAuthenticated = true
     },
+    updateSettings(state, action) {
+      if (state.user) {
+        state.user.settings = { ...state.user.settings, ...action.payload }
+      }
+    },
     clearUserProfile(state) {
       state.user = null
       state.profile = null
@@ -26,5 +31,5 @@ const userSlice = createSlice({
   },
 })
 
-export const { setAuthData, clearUserProfile } = userSlice.actions
+export const { setAuthData, updateSettings, clearUserProfile } = userSlice.actions
 export default userSlice.reducer
