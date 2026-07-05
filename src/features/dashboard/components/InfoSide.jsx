@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip, Typography, Stack } from '@mui/material'
+import { Avatar, Box, Chip, Typography, Stack, alpha } from '@mui/material'
 import WorkspacePremiumRounded from '@mui/icons-material/WorkspacePremiumRounded'
 import {
     LocationOnOutlined,
@@ -24,10 +24,10 @@ export default function InfoSide() {
     const Rscore = profile?.rScore || 0;
 
     return (
-        <Box sx={{  width: 300, bgcolor: '#e1ccff73', borderRadius: 2, py: 2 }}>
+        <Box sx={(theme) => ({ width: 300, bgcolor: alpha(theme.palette.primary.main, 0.06), borderRadius: 2, py: 2 })}>
             <Box sx={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column',gap: 2, textAlign: 'center', position: 'relative', top: -40 }}>
                 <Box sx={{ mx: 'auto', width: '100%', height: '100%' }}>
-                    <Avatar src={avatarSrc} sx={{ width: 150, height: 150, border: `4px solid #2D1055`, mb: 3.5, mx: 'auto' }} />
+                    <Avatar src={avatarSrc} sx={{ width: 150, height: 150, border: '4px solid', borderColor: 'primary.dark', mb: 3.5, mx: 'auto' }} />
                     <Typography variant='h4' sx={{ fontWeight: 'bolder', mb: 1.5 }}>{fullName}</Typography>
                     {profile?.headline && (
                         <Typography variant="subtitle2" noWrap>
@@ -56,7 +56,7 @@ export default function InfoSide() {
                     </Box>
                 </Box>
                 <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-evenly' }}>
-                    <Box sx={{ width: '35%', bgcolor: '#fff', p: 2, borderRadius: 2 }}>
+                    <Box sx={{ width: '35%', bgcolor: 'background.paper', p: 2, borderRadius: 2 }}>
                         <PeopleAltOutlined sx={{ color: 'primary.main' }} />
                         <Typography variant="h6" fontWeight="bold">
                             {profile?.followersCount ?? 0}
@@ -66,7 +66,7 @@ export default function InfoSide() {
                         </Typography>
                     </Box>
 
-                    <Box sx={{ width: '35%', bgcolor: '#fff', p: 2, borderRadius: 2 }}>
+                    <Box sx={{ width: '35%', bgcolor: 'background.paper', p: 2, borderRadius: 2 }}>
                         <PeopleAltOutlined sx={{ color: 'primary.main' }} />
                         <Typography variant="h6" fontWeight="bold">
                             {profile?.followingCount ?? 0}

@@ -14,6 +14,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  alpha,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import HomeIcon from '@mui/icons-material/Home'
@@ -97,38 +98,34 @@ const Header = () => {
     <AppBar
       position="sticky"
       elevation={0}
-      sx={{
-        backgroundColor: 'rgba(255, 255, 255, 0.78)',
-        borderBottom: '1px solid rgba(31, 13, 66, 0.12)',
-        color: 'text.primary',
-        boxShadow: '0 12px 28px rgba(12, 8, 24, 0.04)',
-        pt: 2
-      }}
+      sx={{ color: 'text.primary' }}
     >
       <Container maxWidth="xl">
         <Toolbar
           disableGutters
           sx={{ minHeight: '72px !important', justifyContent: 'space-between', gap: 2 }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1 }}>
-            <Logo />
+          <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1, height: '100%' }}>
+            <Logo size={32} />
             <Box
-              sx={{
-                display: { xs: 'none', sm: 'block' },
+              sx={(theme) => ({
+                display: { xs: 'none', sm: 'flex' },
+                alignItems: 'center',
                 position: 'relative',
                 borderRadius: 999,
-                backgroundColor: 'rgba(255,255,255,0.82)',
-                border: '1px solid rgba(31, 13, 66, 0.12)',
-                boxShadow: '0 14px 34px rgba(31, 13, 66, 0.05)',
+                backgroundColor: alpha(theme.palette.background.paper, 0.82),
+                border: '1px solid',
+                borderColor: 'divider',
+                boxShadow: `0 14px 34px ${alpha(theme.palette.common.black, 0.05)}`,
                 backdropFilter: 'blur(14px)',
                 '&:hover': {
-                  backgroundColor: '#ffffff',
+                  backgroundColor: theme.palette.background.paper,
                 },
                 mr: 2,
                 ml: { xs: 0, sm: 3 },
                 width: { sm: 250, md: 330, lg: 380 },
                 transition: 'all 0.3s',
-              }}
+              })}
             >
               <Box
                 sx={{
@@ -166,7 +163,7 @@ const Header = () => {
             {navItems.map((item) => {
               const isActive = pathname === item.link
               return (
-                <Link to={item.link} key={item.link} style={{ textDecoration: 'none' }}>
+                <Link to={item.link} key={item.link} style={{ textDecoration: 'none', height: '100%' }}>
                   <Box
                     sx={{
                       display: 'flex',
@@ -174,29 +171,26 @@ const Header = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      height: { xs: 42, md: 54 },
+                      height: '100%',
                       position: 'relative',
                       color: isActive ? 'text.primary' : 'text.secondary',
                       '&:hover': { color: 'text.primary' },
                       width: { md: '72px', xs: '42px' },
                       textDecoration: 'none',
-                      borderRadius: 999,
-                      backgroundColor: isActive ? 'rgba(61, 28, 110, 0.08)' : 'transparent',
                       transition: 'all 0.2s ease',
+                      gap: 0.3,
                     }}
                   >
                     <Badge color="error" variant="dot" invisible={!item.hasBadge}>
                       {React.cloneElement(item.icon, { sx: { fontSize: 26 } })}
                     </Badge>
-                    <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px' }}>
+                    <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px', fontWeight: isActive ? 700 : 500, lineHeight: 1.2 }}>
                       {item.label}
                     </Typography>
                   </Box>
                 </Link>
               )
             })}
-
-            <LanguageSwitcher />
 
             <Box
               onClick={handleOpenMenu}
@@ -206,19 +200,20 @@ const Header = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
                 borderLeft: '1px solid',
                 borderColor: 'divider',
                 pl: { xs: 1.5, md: 2.5 },
-                height: '72px',
-                justifyContent: 'center',
+                height: '100%',
                 cursor: 'pointer',
+                gap: 0.3,
               }}
             >
-              <Avatar alt={fullName} src={avatarSrc} sx={{ width: 32, height: 32, boxShadow: '0 10px 24px rgba(12,8,24,0.12)' }}>
+              <Avatar alt={fullName} src={avatarSrc} sx={(theme) => ({ width: 32, height: 32, boxShadow: `0 10px 24px ${alpha(theme.palette.common.black, 0.12)}` })}>
                 {fullName?.charAt(0)?.toUpperCase()}
               </Avatar>
               <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '12px' }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '12px', lineHeight: 1.2 }}>
                   {t('header.me')}
                 </Typography>
                 <ArrowDropDownIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
@@ -230,13 +225,16 @@ const Header = () => {
                 display: { xs: 'none', md: 'flex' },
                 flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
                 cursor: 'pointer',
                 color: 'text.secondary',
                 '&:hover': { color: 'text.primary' },
+                height: '100%',
+                gap: 0.3,
               }}
             >
               <AppsIcon sx={{ fontSize: 24 }} />
-              <Typography variant="caption" sx={{ fontSize: '12px' }}>
+              <Typography variant="caption" sx={{ fontSize: '12px', lineHeight: 1.2 }}>
                 {t('header.forBusiness')}
               </Typography>
             </Box>
@@ -258,7 +256,6 @@ const Header = () => {
             borderRadius: 3,
             border: '1px solid',
             borderColor: 'divider',
-            boxShadow: '0 18px 40px rgba(15, 23, 42, 0.12)',
             overflow: 'visible',
           },
         }}

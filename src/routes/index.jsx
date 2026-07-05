@@ -16,6 +16,7 @@ import JobsView from "../features/jobs/view"
 import JobsCompaniesView from "../features/jobs/companies/view"
 import JobsSalariesView from "../features/jobs/salaries/view"
 import NotFoundView from "../features/not-found/view"
+import PostPage from "../features/post/view"
 
 function Layout() {
   return (
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
       { path: "/jobs", element: <JobsView /> },
       { path: "/jobs/companies", element: <JobsCompaniesView /> },
       { path: "/jobs/salaries", element: <JobsSalariesView /> },
+      { path: "/posts/:postId", element: <PostPage /> },
       { path: "/network", element: <div>Network</div> },
       { path: "*", element: <NotFoundView /> },
     ],

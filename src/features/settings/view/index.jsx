@@ -18,10 +18,16 @@ import {
   FormControl,
   InputLabel,
   CircularProgress,
+  Tabs,
+  Tab,
 } from '@mui/material'
-import { SaveOutlined } from '@mui/icons-material'
+import { SaveOutlined, LanguageOutlined, PaletteOutlined, NotificationsOutlined, LockOutlined } from '@mui/icons-material'
 import { updateSettings } from '@/redux/slices/userSlice'
 import { updateSettings as updateSettingsApi } from '@/services/settingsService'
+
+function TabPanel({ children, value, index }) {
+  return value === index ? <Box>{children}</Box> : null
+}
 
 export default function SettingsView() {
   const { t, i18n } = useTranslation()
@@ -34,6 +40,7 @@ export default function SettingsView() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [tab, setTab] = useState(0)
 
   const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
   const avatarSrc = profile?.avatar
@@ -63,7 +70,7 @@ export default function SettingsView() {
   const isDirty = JSON.stringify(form) !== JSON.stringify(userSettings)
 
   const SelectField = ({ label, value, onChange, options }) => (
-    <FormControl size="small" sx={{ minWidth: 160 }}>
+    <FormControl size="small" sx={{ minWidth: 200 }}>
       <InputLabel>{label}</InputLabel>
       <Select value={value} label={label} onChange={onChange}>
         {options.map((opt) => (
@@ -73,8 +80,15 @@ export default function SettingsView() {
     </FormControl>
   )
 
+  const tabs = [
+    { label: t('settings.language', 'Language'), icon: <LanguageOutlined /> },
+    { label: t('settings.appearance', 'Appearance'), icon: <PaletteOutlined /> },
+    { label: t('settings.notifications', 'Notifications'), icon: <NotificationsOutlined /> },
+    { label: t('settings.privacy', 'Privacy'), icon: <LockOutlined /> },
+  ]
+
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper sx={{ p: { xs: 2.5, sm: 4 } }}>
         <Stack direction="row" spacing={2.5} alignItems="center" sx={{ mb: 3 }}>
           <Avatar src={avatarSrc} sx={{ width: 56, height: 56 }}>
@@ -91,96 +105,115 @@ export default function SettingsView() {
         {success && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(false)}>{t('settings.saved', 'Settings saved successfully')}</Alert>}
         {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
 
-        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1.5 }}>
-          {t('settings.language', 'Language')}
-        </Typography>
-        <SelectField
-          label={t('settings.displayLang', 'Display Language')}
-          value={form.language || 'en'}
-          onChange={set('language')}
-          options={[
-            { value: 'en', label: 'English' },
-            { value: 'ar', label: 'العربية' },
-          ]}
-        />
-
-        <Divider sx={{ my: 3 }} />
-
-        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1.5 }}>
-          {t('settings.appearance', 'Appearance')}
-        </Typography>
-        <SelectField
-          label={t('settings.theme', 'Theme')}
-          value={form.theme || 'system'}
-          onChange={set('theme')}
-          options={[
-            { value: 'system', label: 'System' },
-            { value: 'light', label: 'Light' },
-            { value: 'dark', label: 'Dark' },
-          ]}
-        />
-
-        <Divider sx={{ my: 3 }} />
-
-        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1.5 }}>
-          {t('settings.notifications', 'Notifications')}
-        </Typography>
-        <FormControlLabel
-          control={<Switch checked={!!form.emailNotifications} onChange={toggle('emailNotifications')} />}
-          label={t('settings.emailNotif', 'Email Notifications')}
-          sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
-          labelPlacement="start"
-        />
-        <FormControlLabel
-          control={<Switch checked={!!form.pushNotifications} onChange={toggle('pushNotifications')} />}
-          label={t('settings.pushNotif', 'Push Notifications')}
-          sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
-          labelPlacement="start"
-        />
-
-        <Divider sx={{ my: 3 }} />
-
-        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1.5 }}>
-          {t('settings.privacy', 'Privacy')}
-        </Typography>
-        <Stack spacing={2}>
-          <SelectField
-            label={t('settings.profileVis', 'Profile Visibility')}
-            value={form.profileVisibility || 'public'}
-            onChange={set('profileVisibility')}
-            options={[
-              { value: 'public', label: 'Public' },
-              { value: 'connections', label: 'Connections' },
-              { value: 'private', label: 'Private' },
-            ]}
-          />
-          <FormControlLabel
-            control={<Switch checked={!!form.showEmail} onChange={toggle('showEmail')} />}
-            label={t('settings.showEmail', 'Show Email')}
-            sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
-            labelPlacement="start"
-          />
-          <FormControlLabel
-            control={<Switch checked={!!form.showPhone} onChange={toggle('showPhone')} />}
-            label={t('settings.showPhone', 'Show Phone')}
-            sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
-            labelPlacement="start"
-          />
-        </Stack>
-
-        <Divider sx={{ my: 3 }} />
-
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveOutlined />}
-            onClick={handleSave}
-            disabled={!isDirty || loading}
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
+          <Tabs
+            orientation="vertical"
+            value={tab}
+            onChange={(_, v) => setTab(v)}
+            sx={{ borderRight: '1px solid', borderColor: 'divider', minWidth: 180, '& .MuiTab-root': { alignItems: 'flex-start', textTransform: 'none', fontSize: '0.9rem', py: 1.5 } }}
           >
-            {t('settings.save', 'Save Settings')}
-          </Button>
-        </Box>
+            {tabs.map((t) => (
+              <Tab key={t.label} icon={t.icon} iconPosition="start" label={t.label} />
+            ))}
+          </Tabs>
+
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <TabPanel value={tab} index={0}>
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+                {t('settings.language', 'Language')}
+              </Typography>
+              <SelectField
+                label={t('settings.displayLang', 'Display Language')}
+                value={form.language || 'en'}
+                onChange={set('language')}
+                options={[
+                  { value: 'en', label: 'English' },
+                  { value: 'ar', label: 'العربية' },
+                ]}
+              />
+            </TabPanel>
+
+            <TabPanel value={tab} index={1}>
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+                {t('settings.appearance', 'Appearance')}
+              </Typography>
+              <SelectField
+                label={t('settings.theme', 'Theme')}
+                value={form.theme || 'system'}
+                onChange={set('theme')}
+                options={[
+                  { value: 'system', label: 'System' },
+                  { value: 'light', label: 'Light' },
+                  { value: 'dark', label: 'Dark' },
+                ]}
+              />
+            </TabPanel>
+
+            <TabPanel value={tab} index={2}>
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+                {t('settings.notifications', 'Notifications')}
+              </Typography>
+              <Stack spacing={1}>
+                <FormControlLabel
+                  control={<Switch checked={!!form.emailNotifications} onChange={toggle('emailNotifications')} />}
+                  label={t('settings.emailNotif', 'Email Notifications')}
+                  sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  control={<Switch checked={!!form.pushNotifications} onChange={toggle('pushNotifications')} />}
+                  label={t('settings.pushNotif', 'Push Notifications')}
+                  sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
+                  labelPlacement="start"
+                />
+              </Stack>
+            </TabPanel>
+
+            <TabPanel value={tab} index={3}>
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+                {t('settings.privacy', 'Privacy')}
+              </Typography>
+              <Stack spacing={2}>
+                <SelectField
+                  label={t('settings.profileVis', 'Profile Visibility')}
+                  value={form.profileVisibility || 'public'}
+                  onChange={set('profileVisibility')}
+                  options={[
+                    { value: 'public', label: 'Public' },
+                    { value: 'connections', label: 'Connections' },
+                    { value: 'private', label: 'Private' },
+                  ]}
+                />
+                <FormControlLabel
+                  control={<Switch checked={!!form.showEmail} onChange={toggle('showEmail')} />}
+                  label={t('settings.showEmail', 'Show Email')}
+                  sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  control={<Switch checked={!!form.showPhone} onChange={toggle('showPhone')} />}
+                  label={t('settings.showPhone', 'Show Phone')}
+                  sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
+                  labelPlacement="start"
+                />
+              </Stack>
+            </TabPanel>
+
+            <Divider sx={{ my: 3 }} />
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveOutlined />}
+                onClick={handleSave}
+                disabled={!isDirty || loading}
+              >
+                {t('settings.save', 'Save Settings')}
+              </Button>
+            </Box>
+          </Box>
+        </Stack>
       </Paper>
     </Container>
   )

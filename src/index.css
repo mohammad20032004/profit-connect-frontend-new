@@ -1,3 +1,31 @@
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/fonts/Almarai/Almarai-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Almarai/Almarai-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/Almarai/Almarai-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 800;
+  src: url('/fonts/Almarai/Almarai-ExtraBold.ttf') format('truetype');
+}
+
 :root {
   --purple-50: #F3EFF9;
   --purple-100: #D9CFED;

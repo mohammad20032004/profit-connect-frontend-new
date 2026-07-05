@@ -1,23 +1,17 @@
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { Link } from 'react-router-dom'
 
-function Logo() {
+function Logo({ white = false, size = 36 }) {
+  const src = white ? '/logo/white-logo.svg' : '/logo/logo.svg'
+
   return (
-    <Link to="/" style={{ textDecoration: 'none' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 900, color: 'secondary.main', letterSpacing: '-0.5px' }}
-        >
-          Profit
-        </Typography>
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 400, color: 'text.primary', letterSpacing: '-0.5px' }}
-        >
-          Connect
-        </Typography>
-      </Box>
+    <Link to="/" style={{ textDecoration: 'none', lineHeight: 0 }}>
+      <Box
+        component="img"
+        src={src}
+        alt="ProfitConnect"
+        sx={{ height: size, width: 'auto' }}
+      />
     </Link>
   )
 }

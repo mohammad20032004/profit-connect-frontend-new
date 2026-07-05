@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -35,8 +36,10 @@ export default function LoginPage() {
         setLoading(true);
         try {
             const data = await login(formData);
-            dispatch(setAuthData({ token: data?.token, user: data?.user }));
-            localStorage.setItem('profit_connect_token', data?.token);
+            const token = data?.token;
+            dispatch(setAuthData({ token, user: data?.user }));
+            localStorage.setItem('profit_connect_token', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const lang = data?.user?.settings?.language;
             if (lang && ['en', 'ar'].includes(lang)) {
                 i18n.changeLanguage(lang);

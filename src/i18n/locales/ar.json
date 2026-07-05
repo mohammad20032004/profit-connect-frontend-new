@@ -105,6 +105,14 @@
     "posts_one": "{{count}} منشور",
     "posts_other": "{{count}} منشورات",
     "noPosts": "لا توجد منشورات بعد",
+    "editPost": "تعديل المنشور",
+    "deletePost": "حذف المنشور",
+    "deleteConfirmTitle": "حذف المنشور؟",
+    "deleteConfirmBody": "لا يمكن التراجع عن هذا الإجراء.",
+    "visibility": "الرؤية",
+    "public": "عام",
+    "connections": "جهات الاتصال",
+    "private": "خاص",
     "loadMore": "تحميل المزيد",
     "post": {
       "startAPost": "انشر منشوراً",
@@ -112,14 +120,21 @@
       "cancel": "إلغاء",
       "post": "نشر",
       "posting": "جاري النشر...",
-      "image": "صورة المنشور"
+      "image": "صورة المنشور",
+      "createPost": "إنشاء منشور",
+      "addToPost": "أضف إلى منشورك",
+      "addImage": "إضافة صورة",
+      "invalidImage": "نوع الصورة غير صالح. استخدم JPG, PNG, WebP أو GIF.",
+      "imageTooLarge": "الصورة كبيرة جداً. الحد الأقصى 20 ميجابايت."
     },
     "action": {
       "like": "إعجاب",
       "comment": "تعليق",
       "share": "مشاركة",
       "send": "إرسال",
-      "writeComment": "اكتب تعليقاً..."
+      "writeComment": "اكتب تعليقاً...",
+      "copyLink": "نسخ الرابط",
+      "linkCopied": "تم نسخ الرابط"
     },
     "comments_one": "{{count}} تعليق",
     "comments_other": "{{count}} تعليقات",
@@ -134,11 +149,19 @@
     "hoursAgo": "منذ {{count}} ساعة",
     "daysAgo": "منذ {{count}} يوم"
   },
+  "post": {
+    "notFound": "المنشور غير موجود",
+    "goHome": "العودة إلى الرئيسية",
+    "post": "منشور",
+    "report": "إبلاغ",
+    "reported": "تم الإبلاغ"
+  },
   "common": {
     "loading": "جارٍ التحميل...",
     "error": "حدث خطأ ما",
     "notFound": "الصفحة غير موجودة",
     "backHome": "العودة إلى الرئيسية",
-    "unknown": "غير معروف"
+    "unknown": "غير معروف",
+    "save": "حفظ"
   }
 }

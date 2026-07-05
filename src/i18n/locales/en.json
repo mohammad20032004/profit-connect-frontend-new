@@ -105,6 +105,14 @@
     "posts_one": "{{count}} post",
     "posts_other": "{{count}} posts",
     "noPosts": "No posts yet",
+    "editPost": "Edit post",
+    "deletePost": "Delete post",
+    "deleteConfirmTitle": "Delete post?",
+    "deleteConfirmBody": "This action cannot be undone.",
+    "visibility": "Visibility",
+    "public": "Public",
+    "connections": "Connections",
+    "private": "Private",
     "loadMore": "Load More",
     "post": {
       "startAPost": "Start a post",
@@ -112,14 +120,21 @@
       "cancel": "Cancel",
       "post": "Post",
       "posting": "Posting...",
-      "image": "Post image"
+      "image": "Post image",
+      "createPost": "Create Post",
+      "addToPost": "Add to your post",
+      "addImage": "Add image",
+      "invalidImage": "Invalid image type. Use JPG, PNG, WebP or GIF.",
+      "imageTooLarge": "Image too large. Maximum 20MB."
     },
     "action": {
       "like": "Like",
       "comment": "Comment",
       "share": "Share",
       "send": "Send",
-      "writeComment": "Write a comment..."
+      "writeComment": "Write a comment...",
+      "copyLink": "Copy link",
+      "linkCopied": "Link copied to clipboard"
     },
     "comments_one": "{{count}} comment",
     "comments_other": "{{count}} comments",
@@ -133,11 +148,19 @@
     "hoursAgo": "{{count}}h ago",
     "daysAgo": "{{count}}d ago"
   },
+  "post": {
+    "notFound": "Post not found",
+    "goHome": "Go to Home",
+    "post": "Post",
+    "report": "Report",
+    "reported": "Reported"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
     "notFound": "Page not found",
     "backHome": "Back to Home",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "save": "Save"
   }
 }
