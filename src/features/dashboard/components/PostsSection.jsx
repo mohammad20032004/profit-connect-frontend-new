@@ -203,12 +203,12 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
   return (
     <Paper sx={{ p: 0, overflow: 'hidden' }}>
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        <Stack direction="row" spacing={1.5} alignItems="flex-start">
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
           <Avatar src={avatarSrc} sx={{ width: 48, height: 48 }}>
             {fullName?.charAt(0)?.toUpperCase()}
           </Avatar>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ minWidth: 0 }}>
                 <Typography variant="subtitle1" fontWeight="bold" noWrap>
                   {fullName}
@@ -218,7 +218,7 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
                     {headline}
                   </Typography>
                 )}
-                <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 0.25 }}>
+                <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', mt: 0.25 }}>
                   <AccessTimeOutlined sx={{ fontSize: 12, color: 'text.disabled' }} />
                   <Typography variant="caption" color="text.disabled">
                     {formatTime(post?.createdAt, t)}
@@ -283,9 +283,9 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
       {(likesCount > 0 || commentsCount > 0) && (
         <>
           <Divider sx={{ mx: 3 }} />
-          <Stack direction="row" spacing={2} sx={{ px: { xs: 2, sm: 3 }, py: 1 }} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{ px: { xs: 2, sm: 3 }, py: 1, alignItems: 'center' }}>
             {likesCount > 0 && (
-              <Stack direction="row" spacing={0.5} alignItems="center">
+              <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                 <FavoriteOutlined sx={{ fontSize: 16, color: 'error.main' }} />
                 <Typography variant="caption" color="text.secondary">{likesCount}</Typography>
               </Stack>
@@ -342,7 +342,7 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
                     <Box sx={{ bgcolor: 'action.hover', borderRadius: 2, p: 1.5, flex: 1, position: 'relative' }}>
                       <Typography variant="subtitle2" fontWeight="bold">{cName}</Typography>
                       <Typography variant="body2">{comment.content}</Typography>
-                      <Stack direction="row" alignItems="center" justifyContent="space-between">
+                      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                         <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
                           {formatTime(comment.createdAt, t)}
                         </Typography>
@@ -363,7 +363,7 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
 
       {showComments && (
         <Box component="form" onSubmit={handleCommentSubmit} sx={{ px: { xs: 2, sm: 3 }, pb: 2 }}>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <TextField fullWidth size="small" placeholder={t('dashboard.action.writeComment')} value={commentText} onChange={(e) => setCommentText(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 999, bgcolor: 'action.hover' } }} />
             <IconButton type="submit" disabled={!commentText.trim() || commentLoading} sx={{ color: 'primary.main' }}>
               <SendOutlined />
@@ -412,7 +412,7 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
 function PostSkeleton() {
   return (
     <Paper sx={{ p: 3 }}>
-      <Stack direction="row" spacing={1.5} alignItems="center">
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
         <CircularProgress size={48} />
         <Box sx={{ flex: 1 }}>
           <CircularProgress size={16} sx={{ display: 'block', mb: 1 }} />

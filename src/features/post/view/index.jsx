@@ -137,7 +137,7 @@ export default function PostPage() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 2, mb: 4 }}>
-      <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
         <IconButton onClick={() => navigate(-1)}>
           <ArrowBackOutlined />
         </IconButton>

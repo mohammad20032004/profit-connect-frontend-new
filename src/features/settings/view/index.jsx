@@ -90,7 +90,7 @@ export default function SettingsView() {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper sx={{ p: { xs: 2.5, sm: 4 } }}>
-        <Stack direction="row" spacing={2.5} alignItems="center" sx={{ mb: 3 }}>
+        <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center', mb: 3 }}>
           <Avatar src={avatarSrc} sx={{ width: 56, height: 56 }}>
             {fullName?.charAt(0)?.toUpperCase()}
           </Avatar>

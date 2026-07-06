@@ -19,7 +19,6 @@ import {
 import SearchIcon from '@mui/icons-material/Search'
 import HomeIcon from '@mui/icons-material/Home'
 import PeopleIcon from '@mui/icons-material/People'
-import WorkIcon from '@mui/icons-material/Work'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import AppsIcon from '@mui/icons-material/Apps'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
@@ -29,7 +28,6 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import JobHeader from '../features/jobs/JobHeader'
 import Logo from './common/Logo'
 import LanguageSwitcher from './LanguageSwitcher'
 import { clearUserProfile } from '../redux/slices/userSlice'
@@ -48,12 +46,10 @@ const Header = () => {
   const navItems = [
     { label: t('nav.home'), icon: <HomeIcon />, hasBadge: false, link: '/' },
     { label: t('nav.network'), icon: <PeopleIcon />, hasBadge: false, link: '/network' },
-    { label: t('nav.jobs'), icon: <WorkIcon />, hasBadge: false, link: '/jobs' },
     { label: t('nav.alerts'), icon: <NotificationsIcon />, hasBadge: true, link: '/alerts' },
   ]
 
   const hiddenRoutes = ['/sign-in', '/sign-up', '/landing']
-  const jobRoutes = ['/jobs', '/jobs/search', '/jobs/post']
   const menuOpen = Boolean(anchorEl)
 
   const fullName = useMemo(
@@ -68,7 +64,6 @@ const Header = () => {
   const subLabel = user?.email || user?.role || 'View profile'
   const avatarSrc = profile?.avatar || undefined
 
-  const isJobRoute = jobRoutes.some((route) => pathname.startsWith(route))
   const shouldHideHeader = hiddenRoutes.some((route) => pathname.startsWith(route))
 
   const handleOpenMenu = (event) => {
@@ -92,7 +87,6 @@ const Header = () => {
   }
 
   if (shouldHideHeader) return null
-  if (isJobRoute) return <JobHeader />
 
   return (
     <AppBar
@@ -159,9 +153,9 @@ const Header = () => {
             </Box>
           </Box>
 
-          <Stack direction="row" spacing={{ xs: 1.25, md: 2.5 }} alignItems="center" sx={{ height: '72px' }}>
+          <Stack direction="row" spacing={{ xs: 1.25, md: 2.5 }} sx={{ alignItems: 'center', height: '72px' }}>
             {navItems.map((item) => {
-              const isActive = pathname === item.link
+              const isActive = pathname === item.link || (item.link !== '/' && pathname.startsWith(item.link + '/'))
               return (
                 <Link to={item.link} key={item.link} style={{ textDecoration: 'none', height: '100%' }}>
                   <Box
@@ -261,7 +255,7 @@ const Header = () => {
         }}
       >
         <Box sx={{ px: 2, py: 1.8 }}>
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <Avatar src={avatarSrc} sx={{ width: 44, height: 44 }}>
               {fullName?.charAt(0)?.toUpperCase()}
             </Avatar>

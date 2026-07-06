@@ -78,7 +78,7 @@ export default function InfoSide() {
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', top: 20 }}>
                     {user?.professional?.skills?.length > 0 && (
-                        <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                        <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
                             {user?.professional?.skills?.map((skill) => (
                                 <Chip key={skill} label={skill} size="small" />
                             ))}

@@ -164,7 +164,7 @@ function DatePicker({
         }}
       >
         <Box sx={{ p: 2, width: 280 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
+          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
             <IconButton size="small" onClick={handlePrev}>
               <ChevronLeftIcon fontSize="small" />
             </IconButton>

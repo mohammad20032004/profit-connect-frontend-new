@@ -1,5 +1,5 @@
-import React from 'react'
-import { Box, Button, Chip, Container, Stack, Typography, Card } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import { Box, Button, Chip, Container, Stack, Typography, Card, Avatar, CircularProgress, Rating } from '@mui/material'
 import { keyframes } from '@mui/system'
 import HubIcon from '@mui/icons-material/Hub'
 import InsightsIcon from '@mui/icons-material/Insights'
@@ -9,8 +9,12 @@ import SouthRoundedIcon from '@mui/icons-material/SouthRounded'
 import AutoGraphRoundedIcon from '@mui/icons-material/AutoGraphRounded'
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded'
 import BoltRoundedIcon from '@mui/icons-material/BoltRounded'
+import BusinessOutlined from '@mui/icons-material/BusinessOutlined'
+import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined'
+import PeopleOutlined from '@mui/icons-material/PeopleOutlined'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import axios from 'axios'
 
 const palette = {
   ink: '#0a0715',
@@ -68,7 +72,7 @@ function HeroSection() {
             alignItems: 'center',
           }}
         >
-          <Stack spacing={3.2} alignItems={{ xs: 'center', lg: 'flex-start' }} textAlign={{ xs: 'center', lg: 'left' }}>
+          <Stack spacing={3.2} sx={{ alignItems: { xs: 'center', lg: 'flex-start' }, textAlign: { xs: 'center', lg: 'left' } }}>
             <Chip
               icon={<VerifiedRoundedIcon sx={{ color: `${palette.berry} !important` }} />}
               label={t('landing.chip', 'Professional networking, redesigned for clarity and momentum')}
@@ -198,7 +202,7 @@ function HeroSection() {
                   p: 2.4,
                 }}
               >
-                <Stack direction="row" spacing={1.2} flexWrap="wrap" sx={{ mb: 2 }}>
+                <Stack direction="row" spacing={1.2} sx={{ flexWrap: 'wrap', mb: 2 }}>
                   {['Profile Strength', 'Role Match', 'Network Growth'].map((tag) => (
                     <Chip
                       key={tag}
@@ -224,7 +228,7 @@ function HeroSection() {
                   }}
                 >
                   <Card elevation={0} sx={{ gridColumn: { xs: 'span 12', sm: 'span 7' }, p: 2.2, borderRadius: 5, bgcolor: '#ffffff' }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
                         <Typography sx={{ color: '#6d6882', fontSize: '0.85rem' }}>{t('landing.visibilityLabel', 'Profile visibility')}</Typography>
                         <Typography sx={{ color: palette.deep, fontSize: '1.8rem', fontWeight: 900 }}>87%</Typography>
@@ -243,7 +247,7 @@ function HeroSection() {
                   </Card>
 
                   <Card elevation={0} sx={{ gridColumn: 'span 12', p: 2.2, borderRadius: 5, bgcolor: '#ffffff' }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.4 }}>
+                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1.4 }}>
                       <Typography sx={{ color: palette.deep, fontWeight: 800 }}>{t('landing.momentumTitle', 'Momentum highlights')}</Typography>
                       <Chip label="Live" size="small" sx={{ bgcolor: 'rgba(61, 28, 110, 0.12)', color: palette.berry }} />
                     </Stack>
@@ -253,7 +257,7 @@ function HeroSection() {
                         t('landing.momentum2', '2 recruiters viewed your profile this week'),
                         t('landing.momentum3', 'Your network reach increased by 18%'),
                       ].map((item) => (
-                        <Stack key={item} direction="row" spacing={1.2} alignItems="center">
+                        <Stack key={item} direction="row" spacing={1.2} sx={{ alignItems: 'center' }}>
                           <Box sx={{ width: 9, height: 9, borderRadius: '50%', bgcolor: palette.berry }} />
                           <Typography sx={{ color: '#615b76', fontSize: '0.93rem' }}>{item}</Typography>
                         </Stack>
@@ -520,26 +524,26 @@ function FeaturesSection() {
   )
 }
 
-function HowItWorksSection() {
+function TopCompaniesSection() {
   const { t } = useTranslation()
+  const [companies, setCompanies] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const steps = [
-    {
-      number: '01',
-      title: t('landing.step1Title', 'Build Your Identity'),
-      description: t('landing.step1Desc', 'Shape a profile around expertise, proof, and positioning so the right people understand your value in seconds.'),
-    },
-    {
-      number: '02',
-      title: t('landing.step2Title', 'Curate Your Feed'),
-      description: t('landing.step2Desc', 'Follow the industries, operators, and conversations that matter instead of scrolling through generic noise.'),
-    },
-    {
-      number: '03',
-      title: t('landing.step3Title', 'Move with Confidence'),
-      description: t('landing.step3Desc', 'Apply, connect, and negotiate using stronger visibility and clearer market signals.'),
-    },
-  ]
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const token = localStorage.getItem('profit_connect_token')
+        const { data } = await axios.get('http://localhost:5000/api/companies', {
+          params: { sort: 'top', limit: 6, status: 'Approved' },
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        })
+        if (data?.success) setCompanies(data.data)
+      } catch { /* ignore */ } finally {
+        setLoading(false)
+      }
+    }
+    fetch()
+  }, [])
 
   return (
     <Box
@@ -560,7 +564,7 @@ function HowItWorksSection() {
               mb: 2,
             }}
           >
-            {t('landing.howItWorks', 'How It Works')}
+            {t('landing.topCompaniesLabel', 'Top Companies')}
           </Typography>
           <Typography
             variant="h2"
@@ -572,126 +576,115 @@ function HowItWorksSection() {
               mb: 2,
             }}
           >
-            {t('landing.stepsHeading', 'A simple path from profile clarity to real opportunity')}
+            {t('landing.topCompaniesHeading', 'Discover the highest-rated companies on our platform')}
           </Typography>
           <Typography sx={{ color: '#5b556f', fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.8 }}>
-            {t('landing.stepsSub', 'Every step is designed to reduce noise, sharpen your signal, and move you faster toward the right connections and roles.')}
+            {t('landing.topCompaniesSub', 'Join thousands of professionals who trust the companies listed here. These top-rated organizations are vetted, reviewed, and recommended by your peers.')}
           </Typography>
         </Box>
 
-        <Box
-          sx={{
-            position: 'relative',
-            display: 'flex',
-            flexDirection: { xs: 'column', lg: 'row' },
-            alignItems: 'stretch',
-            justifyContent: 'center',
-            gap: { xs: 2.5, lg: 0 },
-          }}
-        >
-          {steps.map((step, index) => (
-            <React.Fragment key={step.number}>
+        {loading ? (
+          <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
+        ) : companies.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 8 }}>
+            <Typography sx={{ color: '#5b556f', fontSize: '1.1rem' }}>
+              {t('landing.noTopCompanies', 'No companies yet')}
+            </Typography>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(3, 1fr)' },
+              gap: 3,
+            }}
+          >
+            {companies.map((c) => (
               <Card
+                key={c._id}
                 elevation={0}
+                component={Link}
+                to={`/companies/${c._id}`}
                 sx={{
-                  position: 'relative',
-                  flex: 1,
-                  minHeight: 320,
-                  p: { xs: 3, md: 4.5 },
-                  borderRadius: 7,
+                  textDecoration: 'none',
+                  p: 3,
+                  borderRadius: 5,
                   border: '1px solid rgba(36, 0, 70, 0.08)',
-                  bgcolor: 'rgba(255,255,255,0.82)',
+                  bgcolor: 'rgba(255,255,255,0.88)',
                   backdropFilter: 'blur(14px)',
-                  boxShadow: '0 24px 50px rgba(36, 0, 70, 0.08)',
-                  overflow: 'hidden',
+                  boxShadow: '0 24px 50px rgba(36, 0, 70, 0.06)',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    transform: 'translateY(-6px)',
+                    boxShadow: '0 28px 56px rgba(36, 0, 70, 0.12)',
+                    borderColor: 'rgba(61, 28, 110, 0.25)',
+                  },
                 }}
               >
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: -18,
-                    right: -12,
-                    fontSize: { xs: '5rem', md: '7rem' },
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    color: 'rgba(61, 28, 110, 0.08)',
-                    userSelect: 'none',
-                  }}
-                >
-                  {step.number}
-                </Box>
-                <Stack spacing={2.5} sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box
-                    sx={{
-                      width: 72,
-                      height: 72,
-                      borderRadius: '24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: index === 1 ? 'rgba(31,13,66,0.08)' : 'rgba(61, 28, 110, 0.1)',
-                      color: index === 1 ? '#1f0d42' : palette.berry,
-                      border: '1px solid rgba(36, 0, 70, 0.08)',
-                      fontSize: '1.5rem',
-                      fontWeight: 900,
-                    }}
-                  >
-                    {step.number}
-                  </Box>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 900,
-                      color: palette.deep,
-                      fontSize: { xs: '1.45rem', md: '1.9rem' },
-                      lineHeight: 1.15,
-                      maxWidth: 260,
-                    }}
-                  >
-                    {step.title}
-                  </Typography>
-                  <Typography sx={{ color: '#4b4561', fontSize: '1.02rem', lineHeight: 1.85, maxWidth: 360 }}>
-                    {step.description}
-                  </Typography>
+                <Stack spacing={2}>
+                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                    <Avatar src={c.logo} sx={{ width: 56, height: 56, bgcolor: palette.berry, fontSize: 22 }}>
+                      {c.name?.charAt(0)}
+                    </Avatar>
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Typography sx={{ fontWeight: 800, color: palette.deep, fontSize: '1.05rem' }} noWrap>
+                        {c.name}
+                      </Typography>
+                      {c.industry && (
+                        <Typography sx={{ color: '#6d6882', fontSize: '0.85rem' }}>
+                          <BusinessOutlined sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'text-top' }} />
+                          {c.industry}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Stack>
+
+                  {c.description && (
+                    <Typography sx={{ color: '#4b4561', fontSize: '0.9rem', lineHeight: 1.7 }}>
+                      {c.description.length > 120 ? `${c.description.slice(0, 120)}...` : c.description}
+                    </Typography>
+                  )}
+
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap', '& > *': { minWidth: 0 } }}>
+                    {c.location && (
+                      <Chip icon={<LocationOnOutlined sx={{ fontSize: 16 }} />} label={c.location} size="small" sx={{ color: '#5b556f', borderColor: 'rgba(36,0,70,0.12)', fontSize: '0.78rem' }} variant="outlined" />
+                    )}
+                    <Chip icon={<PeopleOutlined sx={{ fontSize: 16 }} />} label={`${c.followersCount ?? 0}`} size="small" sx={{ color: '#5b556f', borderColor: 'rgba(36,0,70,0.12)', fontSize: '0.78rem' }} variant="outlined" />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 'auto' }}>
+                      <Rating value={c.averageRating} readOnly precision={0.1} size="small" />
+                      <Typography sx={{ color: '#6d6882', fontSize: '0.78rem', fontWeight: 600 }}>
+                        {c.averageRating?.toFixed(1)}
+                      </Typography>
+                    </Box>
+                  </Stack>
                 </Stack>
               </Card>
+            ))}
+          </Box>
+        )}
 
-              {index < steps.length - 1 && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    px: { lg: 2 },
-                    py: { xs: 0.5, lg: 0 },
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: { xs: 56, lg: 72 },
-                      height: { xs: 56, lg: 72 },
-                      borderRadius: '50%',
-                      bgcolor: '#ffffff',
-                      border: '1px solid rgba(61, 28, 110, 0.18)',
-                      boxShadow: '0 12px 24px rgba(61, 28, 110, 0.12)',
-                      color: palette.berry,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
-                      <SouthRoundedIcon sx={{ fontSize: 28 }} />
-                    </Box>
-                    <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
-                      <EastRoundedIcon sx={{ fontSize: 30 }} />
-                    </Box>
-                  </Box>
-                </Box>
-              )}
-            </React.Fragment>
-          ))}
+        <Box sx={{ textAlign: 'center', mt: 5 }}>
+          <Button
+            component={Link}
+            to="/companies"
+            variant="outlined"
+            size="large"
+            sx={{
+              fontWeight: 700,
+              px: 4,
+              py: 1.4,
+              borderRadius: 9999,
+              textTransform: 'none',
+              borderColor: 'rgba(36,0,70,0.2)',
+              color: palette.plum,
+              '&:hover': {
+                borderColor: palette.berry,
+                bgcolor: 'rgba(61, 28, 110, 0.06)',
+              },
+            }}
+          >
+            {t('landing.viewAllCompanies', 'View All Companies')}
+          </Button>
         </Box>
       </Container>
     </Box>
@@ -788,7 +781,7 @@ export default function LandingView() {
       <Box sx={{ width: '100%', position: 'relative', pb: { xs: 12, md: 10 } }}>
         <HeroSection />
         <FeaturesSection />
-        <HowItWorksSection />
+        <TopCompaniesSection />
         <TrustSection />
       </Box>
       <FloatButtons />

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
+import GlobalStyles from '@mui/material/GlobalStyles'
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import stylisRTLPlugin from 'stylis-plugin-rtl'
@@ -50,6 +51,7 @@ function ThemeProvider({ children }) {
       <div dir={direction}>
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
+          <GlobalStyles styles={{ '::-webkit-scrollbar': { display: 'none' }, '*': { scrollbarWidth: 'none', msOverflowStyle: 'none' } }} />
           {children}
         </MuiThemeProvider>
       </div>

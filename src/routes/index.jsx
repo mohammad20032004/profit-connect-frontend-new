@@ -12,11 +12,12 @@ import UserProfileUserIdView from "../features/user-profile/[userId]/view"
 import AboutView from "../features/about/view"
 import AlertsView from "../features/alerts/view"
 import SettingsView from "../features/settings/view"
-import JobsView from "../features/jobs/view"
-import JobsCompaniesView from "../features/jobs/companies/view"
-import JobsSalariesView from "../features/jobs/salaries/view"
+
 import NotFoundView from "../features/not-found/view"
 import PostPage from "../features/post/view"
+import CompaniesList from "../features/companies/view"
+import CompanyDetail from "../features/companies/[id]/view"
+import CreateCompany from "../features/companies/create/view"
 
 function Layout() {
   return (
@@ -41,10 +42,11 @@ const router = createBrowserRouter([
       { path: "/about", element: <AboutView /> },
       { path: "/alerts", element: <AlertsView /> },
       { path: "/settings", element: <SettingsView /> },
-      { path: "/jobs", element: <JobsView /> },
-      { path: "/jobs/companies", element: <JobsCompaniesView /> },
-      { path: "/jobs/salaries", element: <JobsSalariesView /> },
+
       { path: "/posts/:postId", element: <PostPage /> },
+      { path: "/companies", element: <CompaniesList /> },
+      { path: "/companies/create", element: <CreateCompany /> },
+      { path: "/companies/:id", element: <CompanyDetail /> },
       { path: "/network", element: <div>Network</div> },
       { path: "*", element: <NotFoundView /> },
     ],

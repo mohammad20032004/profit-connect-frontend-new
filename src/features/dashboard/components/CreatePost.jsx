@@ -118,7 +118,7 @@ export default function CreatePost({ onPostCreated }) {
   return (
     <>
       <Paper sx={{ p: { xs: 1.5, sm: 2 } }}>
-        <Stack direction="row" spacing={1.5} alignItems="center">
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
           <Avatar src={avatarSrc} sx={{ width: 40, height: 40 }}>
             {initials}
           </Avatar>
@@ -182,7 +182,7 @@ export default function CreatePost({ onPostCreated }) {
         </DialogTitle>
 
         <DialogContent sx={{ pt: 2.5 }}>
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2 }}>
             <Avatar src={avatarSrc} sx={{ width: 40, height: 40 }}>
               {initials}
             </Avatar>
@@ -204,13 +204,13 @@ export default function CreatePost({ onPostCreated }) {
                   }}
                 >
                   <MenuItem value="public" dense>
-                    <Stack direction="row" spacing={0.5} alignItems="center"><PublicOutlined sx={{ fontSize: 16 }} /><span>{t('dashboard.public', 'Public')}</span></Stack>
+                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}><PublicOutlined sx={{ fontSize: 16 }} /><span>{t('dashboard.public', 'Public')}</span></Stack>
                   </MenuItem>
                   <MenuItem value="connections" dense>
-                    <Stack direction="row" spacing={0.5} alignItems="center"><PeopleOutlined sx={{ fontSize: 16 }} /><span>{t('dashboard.connections', 'Connections')}</span></Stack>
+                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}><PeopleOutlined sx={{ fontSize: 16 }} /><span>{t('dashboard.connections', 'Connections')}</span></Stack>
                   </MenuItem>
                   <MenuItem value="private" dense>
-                    <Stack direction="row" spacing={0.5} alignItems="center"><LockOutlined sx={{ fontSize: 16 }} /><span>{t('dashboard.private', 'Private')}</span></Stack>
+                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}><LockOutlined sx={{ fontSize: 16 }} /><span>{t('dashboard.private', 'Private')}</span></Stack>
                   </MenuItem>
                 </Select>
               </FormControl>
