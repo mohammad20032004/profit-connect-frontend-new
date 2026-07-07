@@ -2,7 +2,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom"
 import Header from "../components/Header"
 import ThemeProvider from "../theme/ThemeProvider"
 
-import DashboardView from "../features/dashboard/view"
+import DashboardView from "../features/MainFeedLayout/view"
 import LandingView from "../features/landing/view"
 import SignInView from "../features/auth/sign-in/view"
 import SignUpView from "../features/auth/sign-up/view"
@@ -18,6 +18,9 @@ import PostPage from "../features/post/view"
 import CompaniesList from "../features/companies/view"
 import CompanyDetail from "../features/companies/[id]/view"
 import CreateCompany from "../features/companies/create/view"
+import ProjectsList from "../features/projects/view"
+import ProjectDetail from "../features/projects/[id]/view"
+import CreateProject from "../features/projects/create/view"
 
 function Layout() {
   return (
@@ -48,6 +51,9 @@ const router = createBrowserRouter([
       { path: "/companies/create", element: <CreateCompany /> },
       { path: "/companies/:id", element: <CompanyDetail /> },
       { path: "/network", element: <div>Network</div> },
+      { path: "/projects", element: <ProjectsList /> },
+      { path: "/projects/create", element: <CreateProject /> },
+      { path: "/projects/:id", element: <ProjectDetail /> },
       { path: "*", element: <NotFoundView /> },
     ],
   },

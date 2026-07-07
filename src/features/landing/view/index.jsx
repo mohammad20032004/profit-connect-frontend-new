@@ -12,6 +12,7 @@ import BoltRoundedIcon from '@mui/icons-material/BoltRounded'
 import BusinessOutlined from '@mui/icons-material/BusinessOutlined'
 import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined'
 import PeopleOutlined from '@mui/icons-material/PeopleOutlined'
+import FeaturedCompanies from './FeaturedCompanies'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
@@ -524,173 +525,6 @@ function FeaturesSection() {
   )
 }
 
-function TopCompaniesSection() {
-  const { t } = useTranslation()
-  const [companies, setCompanies] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const token = localStorage.getItem('profit_connect_token')
-        const { data } = await axios.get('http://localhost:5000/api/companies', {
-          params: { sort: 'top', limit: 6, status: 'Approved' },
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        })
-        if (data?.success) setCompanies(data.data)
-      } catch { /* ignore */ } finally {
-        setLoading(false)
-      }
-    }
-    fetch()
-  }, [])
-
-  return (
-    <Box
-      sx={{
-        py: { xs: 10, md: 16 },
-        background: 'linear-gradient(180deg, #f5f3fa 0%, #eae6f4 100%)',
-        overflow: 'hidden',
-      }}
-    >
-      <Container maxWidth="xl">
-        <Box sx={{ textAlign: 'center', mb: { xs: 7, md: 10 }, maxWidth: 760, mx: 'auto' }}>
-          <Typography
-            sx={{
-              color: palette.berry,
-              fontWeight: 800,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              mb: 2,
-            }}
-          >
-            {t('landing.topCompaniesLabel', 'Top Companies')}
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 900,
-              color: palette.deep,
-              fontSize: { xs: '2rem', md: '3.25rem' },
-              lineHeight: 1.08,
-              mb: 2,
-            }}
-          >
-            {t('landing.topCompaniesHeading', 'Discover the highest-rated companies on our platform')}
-          </Typography>
-          <Typography sx={{ color: '#5b556f', fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.8 }}>
-            {t('landing.topCompaniesSub', 'Join thousands of professionals who trust the companies listed here. These top-rated organizations are vetted, reviewed, and recommended by your peers.')}
-          </Typography>
-        </Box>
-
-        {loading ? (
-          <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
-        ) : companies.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 8 }}>
-            <Typography sx={{ color: '#5b556f', fontSize: '1.1rem' }}>
-              {t('landing.noTopCompanies', 'No companies yet')}
-            </Typography>
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(3, 1fr)' },
-              gap: 3,
-            }}
-          >
-            {companies.map((c) => (
-              <Card
-                key={c._id}
-                elevation={0}
-                component={Link}
-                to={`/companies/${c._id}`}
-                sx={{
-                  textDecoration: 'none',
-                  p: 3,
-                  borderRadius: 5,
-                  border: '1px solid rgba(36, 0, 70, 0.08)',
-                  bgcolor: 'rgba(255,255,255,0.88)',
-                  backdropFilter: 'blur(14px)',
-                  boxShadow: '0 24px 50px rgba(36, 0, 70, 0.06)',
-                  transition: 'all 0.3s ease-in-out',
-                  '&:hover': {
-                    transform: 'translateY(-6px)',
-                    boxShadow: '0 28px 56px rgba(36, 0, 70, 0.12)',
-                    borderColor: 'rgba(61, 28, 110, 0.25)',
-                  },
-                }}
-              >
-                <Stack spacing={2}>
-                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                    <Avatar src={c.logo} sx={{ width: 56, height: 56, bgcolor: palette.berry, fontSize: 22 }}>
-                      {c.name?.charAt(0)}
-                    </Avatar>
-                    <Box sx={{ minWidth: 0, flex: 1 }}>
-                      <Typography sx={{ fontWeight: 800, color: palette.deep, fontSize: '1.05rem' }} noWrap>
-                        {c.name}
-                      </Typography>
-                      {c.industry && (
-                        <Typography sx={{ color: '#6d6882', fontSize: '0.85rem' }}>
-                          <BusinessOutlined sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'text-top' }} />
-                          {c.industry}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Stack>
-
-                  {c.description && (
-                    <Typography sx={{ color: '#4b4561', fontSize: '0.9rem', lineHeight: 1.7 }}>
-                      {c.description.length > 120 ? `${c.description.slice(0, 120)}...` : c.description}
-                    </Typography>
-                  )}
-
-                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap', '& > *': { minWidth: 0 } }}>
-                    {c.location && (
-                      <Chip icon={<LocationOnOutlined sx={{ fontSize: 16 }} />} label={c.location} size="small" sx={{ color: '#5b556f', borderColor: 'rgba(36,0,70,0.12)', fontSize: '0.78rem' }} variant="outlined" />
-                    )}
-                    <Chip icon={<PeopleOutlined sx={{ fontSize: 16 }} />} label={`${c.followersCount ?? 0}`} size="small" sx={{ color: '#5b556f', borderColor: 'rgba(36,0,70,0.12)', fontSize: '0.78rem' }} variant="outlined" />
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 'auto' }}>
-                      <Rating value={c.averageRating} readOnly precision={0.1} size="small" />
-                      <Typography sx={{ color: '#6d6882', fontSize: '0.78rem', fontWeight: 600 }}>
-                        {c.averageRating?.toFixed(1)}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </Stack>
-              </Card>
-            ))}
-          </Box>
-        )}
-
-        <Box sx={{ textAlign: 'center', mt: 5 }}>
-          <Button
-            component={Link}
-            to="/companies"
-            variant="outlined"
-            size="large"
-            sx={{
-              fontWeight: 700,
-              px: 4,
-              py: 1.4,
-              borderRadius: 9999,
-              textTransform: 'none',
-              borderColor: 'rgba(36,0,70,0.2)',
-              color: palette.plum,
-              '&:hover': {
-                borderColor: palette.berry,
-                bgcolor: 'rgba(61, 28, 110, 0.06)',
-              },
-            }}
-          >
-            {t('landing.viewAllCompanies', 'View All Companies')}
-          </Button>
-        </Box>
-      </Container>
-    </Box>
-  )
-}
-
 function TrustSection() {
   const { t } = useTranslation()
 
@@ -781,7 +615,7 @@ export default function LandingView() {
       <Box sx={{ width: '100%', position: 'relative', pb: { xs: 12, md: 10 } }}>
         <HeroSection />
         <FeaturesSection />
-        <TopCompaniesSection />
+        <FeaturedCompanies />
         <TrustSection />
       </Box>
       <FloatButtons />

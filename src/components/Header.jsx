@@ -19,6 +19,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search'
 import HomeIcon from '@mui/icons-material/Home'
 import PeopleIcon from '@mui/icons-material/People'
+import WorkIcon from '@mui/icons-material/WorkOutlineOutlined'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import AppsIcon from '@mui/icons-material/Apps'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
@@ -46,6 +47,7 @@ const Header = () => {
   const navItems = [
     { label: t('nav.home'), icon: <HomeIcon />, hasBadge: false, link: '/' },
     { label: t('nav.network'), icon: <PeopleIcon />, hasBadge: false, link: '/network' },
+    { label: t('nav.projects'), icon: <WorkIcon />, hasBadge: false, link: '/projects' },
     { label: t('nav.alerts'), icon: <NotificationsIcon />, hasBadge: true, link: '/alerts' },
   ]
 
