@@ -7,6 +7,13 @@ export async function login({ email, password }) {
   return data
 }
 
+export async function signup(formData) {
+  const { data } = await axios.post(`${API_BASE}/auth/signup`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return data
+}
+
 export async function getMe() {
   const token = localStorage.getItem('profit_connect_token')
   if (!token) return null
