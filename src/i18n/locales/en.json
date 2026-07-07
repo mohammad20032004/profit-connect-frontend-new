@@ -173,7 +173,9 @@
     "comments_other": "{{count}} comments",
     "translate": "Translate",
     "showOriginal": "Show original",
-    "translating": "Translating..."
+    "translating": "Translating...",
+    "noNotifications": "No notifications yet",
+    "markAllRead": "Mark all read"
   },
   "time": {
     "justNow": "Just now",
@@ -192,7 +194,7 @@
     "title": "Projects",
     "browse": "Browse Projects",
     "create": "Post a Project",
-    "edit": "Edit Project",
+    "edit": "Edit",
     "delete": "Delete Project",
     "deleteConfirmTitle": "Delete this project?",
     "deleteConfirmBody": "All associated proposals will also be deleted.",
@@ -242,6 +244,12 @@
     "post": "Post Project",
     "posting": "Posting...",
     "save": "Save Changes",
+    "editProject": "Edit Project",
+    "fillRequired": "Please fill in all required fields",
+    "lowestBid": "Lowest bid",
+    "anonymous": "Anonymous",
+    "myProjects": "My Projects",
+    "userProposals": "User Proposals",
     "categoryOptions": {
       "Web Development": "Web Development",
       "Mobile Development": "Mobile Development",

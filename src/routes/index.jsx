@@ -21,6 +21,7 @@ import CreateCompany from "../features/companies/create/view"
 import ProjectsList from "../features/projects/view"
 import ProjectDetail from "../features/projects/[id]/view"
 import CreateProject from "../features/projects/create/view"
+import MyProjectDetail from "../features/myProject/[id]/view"
 
 function Layout() {
   return (
@@ -54,6 +55,7 @@ const router = createBrowserRouter([
       { path: "/projects", element: <ProjectsList /> },
       { path: "/projects/create", element: <CreateProject /> },
       { path: "/projects/:id", element: <ProjectDetail /> },
+      { path: "/myProject/:id", element: <MyProjectDetail /> },
       { path: "*", element: <NotFoundView /> },
     ],
   },

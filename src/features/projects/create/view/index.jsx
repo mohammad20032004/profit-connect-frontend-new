@@ -44,7 +44,10 @@ export default function CreateProject() {
   }
 
   const handleSubmit = async () => {
-    if (!form.title.trim() || !form.category) return
+    if (!form.title.trim() || !form.category) {
+      setError(t('projects.fillRequired', 'Please fill in all required fields'))
+      return
+    }
     setLoading(true)
     setError('')
     try {
@@ -90,7 +93,6 @@ export default function CreateProject() {
 
         <ProjectFormActions
           loading={loading}
-          valid={form.title.trim() && form.category}
           onSubmit={handleSubmit}
           onCancel={() => navigate('/projects')}
           t={t}

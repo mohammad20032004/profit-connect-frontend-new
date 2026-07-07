@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Button, Avatar, Chip, Divider, TextField, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Grid,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Button, Avatar, Chip, Divider, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Tooltip, TextField,
 } from '@mui/material'
 import {
   ArrowBackOutlined, AttachMoneyOutlined, AccessTimeOutlined, PersonOutlined,
-  CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, SendOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined,
+  CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
-import { getProjectById, submitProposal, getProposals, acceptProposal, completeProject, deleteProject } from '@/services/projectService'
+import { getProjectById, getProposals, acceptProposal, rejectProposal, completeProject, deleteProject, submitProposal } from '@/services/projectService'
 
 const categoryIcons = {
   'تطوير ويب': <CodeOutlined />, 'تطوير تطبيقات': <CodeOutlined />,
@@ -33,16 +33,13 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [proposals, setProposals] = useState([])
-  const [showProposals, setShowProposals] = useState(false)
   const [proposalsLoading, setProposalsLoading] = useState(false)
-  const [bidAmount, setBidAmount] = useState('')
-  const [deliveryTime, setDeliveryTime] = useState('')
-  const [coverLetter, setCoverLetter] = useState('')
-  const [submitLoading, setSubmitLoading] = useState(false)
-  const [submitError, setSubmitError] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [proposalsOpen, setProposalsOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [proposalForm, setProposalForm] = useState({ bidAmount: '', deliveryTime: '', coverLetter: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [proposalSent, setProposalSent] = useState(false)
 
   const fetchProject = async (showLoader = true) => {
     if (showLoader) setLoading(true)
@@ -59,48 +56,44 @@ export default function ProjectDetail() {
 
   useEffect(() => { fetchProject() }, [id])
 
+  const handleOpenProposals = async () => {
+    setProposalsOpen(true)
+    setProposalsLoading(true)
+    try {
+      const r = await getProposals(id)
+      if (r?.success) {
+        console.log('Proposals:', JSON.stringify(r.data, null, 2))
+        setProposals(r.data)
+      }
+    } catch (err) { console.error('Failed to fetch proposals:', err) } finally { setProposalsLoading(false) }
+  }
+
   const isClient = currentUserId === project?.client?._id
   const isOpen = project?.status === 'Open'
   const isInProgress = project?.status === 'InProgress'
 
-  const handleLoadProposals = async () => {
-    setShowProposals(true)
-    setProposalsLoading(true)
-    try {
-      const res = await getProposals(id)
-      if (res?.success) setProposals(res.data)
-    } catch { /* ignore */ } finally {
-      setProposalsLoading(false)
-    }
-  }
-
-  const handleSubmitProposal = async () => {
-    if (!bidAmount || !deliveryTime.trim() || !coverLetter.trim()) return
-    setSubmitLoading(true)
-    setSubmitError('')
-    try {
-      const res = await submitProposal(id, {
-        bidAmount: Number(bidAmount),
-        deliveryTime: deliveryTime.trim(),
-        coverLetter: coverLetter.trim(),
-      })
-      if (res?.success) {
-        setSubmitted(true)
-        setBidAmount(''); setDeliveryTime(''); setCoverLetter('')
-      } else {
-        setSubmitError(res?.message || t('common.error'))
-      }
-    } catch (err) {
-      setSubmitError(err?.response?.data?.message || err.message || t('common.error'))
-    } finally {
-      setSubmitLoading(false)
-    }
-  }
-
   const handleAcceptProposal = async (proposalId) => {
     try {
       const res = await acceptProposal(id, proposalId)
-      if (res?.success) { fetchProject(false); handleLoadProposals() }
+      if (res?.success) {
+        fetchProject(false)
+        setProposalsLoading(true)
+        try {
+          const r = await getProposals(id)
+          if (r?.success) setProposals(r.data)
+        } catch { /* ignore */ } finally { setProposalsLoading(false) }
+      }
+    } catch (err) {
+      alert(err?.response?.data?.message || t('common.error'))
+    }
+  }
+
+  const handleRejectProposal = async (proposalId) => {
+    try {
+      const res = await rejectProposal(id, proposalId)
+      if (res?.success) {
+        setProposals(prev => prev.map(p => p._id === proposalId ? { ...p, status: 'Rejected' } : p))
+      }
     } catch (err) {
       alert(err?.response?.data?.message || t('common.error'))
     }
@@ -125,6 +118,26 @@ export default function ProjectDetail() {
     } finally {
       setDeleteLoading(false)
       setDeleteOpen(false)
+    }
+  }
+
+  const handleSubmitProposal = async () => {
+    if (!proposalForm.bidAmount || !proposalForm.deliveryTime || !proposalForm.coverLetter) return
+    setSubmitting(true)
+    try {
+      const res = await submitProposal(id, {
+        bidAmount: Number(proposalForm.bidAmount),
+        deliveryTime: proposalForm.deliveryTime,
+        coverLetter: proposalForm.coverLetter,
+      })
+      if (res?.success) {
+        setProposalSent(true)
+        setProposalForm({ bidAmount: '', deliveryTime: '', coverLetter: '' })
+      }
+    } catch (err) {
+      alert(err?.response?.data?.message || err.message || t('common.error'))
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -190,43 +203,66 @@ export default function ProjectDetail() {
               </Paper>
             )}
 
-            {isClient && showProposals && (
-              <Paper sx={{ p: 3, borderRadius: 3 }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 2 }}>{t('projects.proposals', 'Proposals')}</Typography>
-                {proposalsLoading ? <CircularProgress size={24} /> : proposals.length === 0 ? (
-                  <Typography variant="body2" color="text.secondary">{t('projects.noProposals', 'No proposals yet')}</Typography>
-                ) : (
-                  <Stack spacing={1.5}>
-                    {proposals.map((p) => (
-                      <Paper key={p._id} variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-                        <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-                          <Avatar src={p.freelancer?.profile?.avatar} sx={{ width: 36, height: 36 }}>{p.freelancer?.profile?.firstName?.charAt(0)}</Avatar>
-                          <Box sx={{ flex: 1 }}>
-                            <Typography variant="body2" fontWeight="bold">{p.freelancer?.profile?.firstName} {p.freelancer?.profile?.lastName}</Typography>
-                            <Stack direction="row" spacing={1.5} sx={{ mt: 0.3 }}>
-                              <Typography variant="caption" fontWeight="bold" color="primary.main">{p.bidAmount} {project.budget?.currency || 'SAR'}</Typography>
-                              <Typography variant="caption" color="text.secondary">{p.deliveryTime}</Typography>
-                              <Chip label={p.status} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.68rem' }} />
-                            </Stack>
-                            <Typography variant="body2" sx={{ mt: 0.5, lineHeight: 1.6 }}>{p.coverLetter}</Typography>
-                            {p.status === 'Pending' && (
-                              <Button size="small" variant="contained" color="success" onClick={() => handleAcceptProposal(p._id)} sx={{ mt: 1, borderRadius: 999, fontSize: '0.78rem' }}>
-                                {t('projects.accept', 'Accept')}
-                              </Button>
-                            )}
-                          </Box>
-                        </Stack>
-                      </Paper>
-                    ))}
-                  </Stack>
-                )}
-              </Paper>
-            )}
+
           </Stack>
         </Grid>
 
         <Grid size={{ xs: 12, md: 4 }}>
           <Stack spacing={2.5}>
+            {isClient && project?.status !== 'Completed' && project?.status !== 'Cancelled' && (
+              <Button variant="contained" onClick={handleOpenProposals} startIcon={<PersonOutlined />} fullWidth
+                sx={{ borderRadius: 999, textTransform: 'none', fontWeight: 600 }}
+              >
+                {t('projects.viewProposals', 'View Proposals')} {proposals.length > 0 && `(${proposals.length})`}
+              </Button>
+            )}
+
+            {!isClient && isOpen && !proposalSent && (
+              <Paper sx={{ p: 2.5, borderRadius: 3 }}>
+                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 2 }}>{t('projects.submitProposal', 'Submit Proposal')}</Typography>
+                <Stack spacing={2}>
+                  <TextField
+                    label={t('projects.bidAmount', 'Bid Amount')}
+                    type="number"
+                    size="small"
+                    fullWidth
+                    value={proposalForm.bidAmount}
+                    onChange={(e) => setProposalForm(p => ({ ...p, bidAmount: e.target.value }))}
+                  />
+                  <TextField
+                    label={t('projects.deliveryTime', 'Delivery Time')}
+                    placeholder={t('projects.deliveryTimePlaceholder', 'e.g. 2 weeks')}
+                    size="small"
+                    fullWidth
+                    value={proposalForm.deliveryTime}
+                    onChange={(e) => setProposalForm(p => ({ ...p, deliveryTime: e.target.value }))}
+                  />
+                  <TextField
+                    label={t('projects.coverLetter', 'Cover Letter')}
+                    placeholder={t('projects.coverLetterPlaceholder', 'Describe your experience and approach...')}
+                    multiline
+                    rows={4}
+                    size="small"
+                    fullWidth
+                    value={proposalForm.coverLetter}
+                    onChange={(e) => setProposalForm(p => ({ ...p, coverLetter: e.target.value }))}
+                  />
+                  <Button variant="contained" onClick={handleSubmitProposal} disabled={submitting} fullWidth
+                    sx={{ borderRadius: 999, textTransform: 'none', fontWeight: 600 }}
+                  >
+                    {submitting ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.submitProposal', 'Submit Proposal')}
+                  </Button>
+                </Stack>
+              </Paper>
+            )}
+
+            {!isClient && proposalSent && (
+              <Paper sx={{ p: 3, borderRadius: 3, textAlign: 'center', border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
+                <CheckCircleOutlined sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
+                <Typography variant="body2" fontWeight="bold" color="success.main">{t('projects.proposalSent', 'Your proposal has been submitted!')}</Typography>
+              </Paper>
+            )}
+
             {project.client && (
               <Paper sx={{ p: 2.5, borderRadius: 3 }}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5 }}>{t('projects.client', 'Client')}</Typography>
@@ -252,12 +288,6 @@ export default function ProjectDetail() {
               </Paper>
             )}
 
-            {isClient && isOpen && (
-              <Button variant="contained" onClick={handleLoadProposals} startIcon={<PersonOutlined />} fullWidth>
-                {t('projects.viewProposals', 'View Proposals')}
-              </Button>
-            )}
-
             {isClient && isInProgress && (
               <Button variant="contained" color="success" onClick={handleComplete} startIcon={<CheckCircleOutlined />} fullWidth>
                 {t('projects.markComplete', 'Mark as Completed')}
@@ -270,29 +300,88 @@ export default function ProjectDetail() {
               </Button>
             )}
 
-            {!isClient && isOpen && !submitted && (
-              <Paper sx={{ p: 3, borderRadius: 3 }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 2 }}>{t('projects.submitProposal', 'Submit Proposal')}</Typography>
-                <Stack spacing={2}>
-                  <TextField label={t('projects.bidAmount', 'Bid Amount')} type="number" value={bidAmount} onChange={(e) => setBidAmount(e.target.value)} fullWidth required size="small" />
-                  <TextField label={t('projects.deliveryTime', 'Delivery Time')} placeholder={t('projects.deliveryTimePlaceholder', 'e.g. 2 weeks')} value={deliveryTime} onChange={(e) => setDeliveryTime(e.target.value)} fullWidth required size="small" />
-                  <TextField label={t('projects.coverLetter', 'Cover Letter')} placeholder={t('projects.coverLetterPlaceholder', 'Describe your experience and approach...')} multiline rows={4} value={coverLetter} onChange={(e) => setCoverLetter(e.target.value)} fullWidth required size="small" />
-                  {submitError && <Typography color="error" variant="caption">{submitError}</Typography>}
-                  <Button variant="contained" endIcon={<SendOutlined />} onClick={handleSubmitProposal} disabled={submitLoading || !bidAmount || !deliveryTime.trim() || !coverLetter.trim()} fullWidth>
-                    {submitLoading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.submitProposal', 'Submit Proposal')}
-                  </Button>
-                </Stack>
-              </Paper>
-            )}
 
-            {!isClient && submitted && (
-              <Paper sx={{ p: 3, borderRadius: 3, bgcolor: alpha(theme.palette.success.main, 0.04) }}>
-                <Typography color="success.main" fontWeight="bold">{t('projects.proposalSent', 'Your proposal has been submitted!')}</Typography>
-              </Paper>
-            )}
           </Stack>
         </Grid>
       </Grid>
+
+      <Dialog open={proposalsOpen} onClose={() => setProposalsOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {t('projects.userProposals', 'User Proposals')}
+          {proposals.length > 0 && <Typography component="span" variant="caption" sx={{ ml: 1, color: 'text.secondary' }}>({proposals.length})</Typography>}
+        </DialogTitle>
+        <DialogContent dividers>
+          {proposalsLoading ? (
+            <Box sx={{ textAlign: 'center', py: 4 }}><CircularProgress /></Box>
+          ) : proposals.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>{t('projects.noProposals', 'No proposals yet')}</Typography>
+          ) : (
+            <Stack spacing={2}>
+              {proposals.map((p, idx) => {
+                const user = p.freelancer || p.userId || {}
+                const prof = user.profile || {}
+                const name = prof.firstName && prof.lastName ? `${prof.firstName} ${prof.lastName}` : user.email || user.name || t('projects.anonymous', 'Anonymous')
+                return (
+                  <Paper key={p._id} variant="outlined" sx={{
+                    p: 2, borderRadius: 2,
+                    borderColor: idx === 0 ? alpha('#16A34A', 0.3) : undefined,
+                    bgcolor: idx === 0 ? alpha('#16A34A', 0.03) : undefined,
+                  }}>
+                    <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
+                      <Avatar src={prof.avatar} sx={{ width: 42, height: 42 }}>{name.charAt(0)}</Avatar>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Stack direction="row" sx={{ alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                          <Typography variant="body2" fontWeight="bold">{name}</Typography>
+                          {idx === 0 && (
+                            <Tooltip title={t('projects.lowestBid', 'Lowest bid')}>
+                              <StarBorderOutlined sx={{ fontSize: 16, color: '#16A34A' }} />
+                            </Tooltip>
+                          )}
+                        </Stack>
+                        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 0.5, mb: 0.5 }}>
+                          <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+                            <AttachMoneyOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
+                            <Typography variant="body2" fontWeight="bold" color="primary.main">{p.bidAmount?.toLocaleString()} {project.budget?.currency || 'SAR'}</Typography>
+                          </Stack>
+                          <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+                            <AccessTimeOutlined sx={{ fontSize: 14, color: '#5C5580' }} />
+                            <Typography variant="caption" color="text.secondary">{p.deliveryTime}</Typography>
+                          </Stack>
+                          <Chip label={p.status} size="small"
+                            color={p.status === 'Pending' ? 'warning' : p.status === 'Accepted' ? 'success' : 'default'}
+                            sx={{ height: 20, fontSize: '0.68rem', fontWeight: 600, ml: 'auto' }}
+                          />
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.82rem' }}>{p.coverLetter}</Typography>
+                        {p.status === 'Pending' && (
+                          <Stack direction="row" spacing={1} sx={{ mt: 1.5 }}>
+                            <Button size="small" variant="contained" color="success"
+                              onClick={() => handleAcceptProposal(p._id)}
+                              startIcon={<VerifiedOutlined />}
+                              sx={{ borderRadius: 999, fontSize: '0.78rem', textTransform: 'none', fontWeight: 600 }}
+                            >
+                              {t('projects.accept', 'Accept')}
+                            </Button>
+                            <Button size="small" variant="outlined" color="error"
+                              onClick={() => handleRejectProposal(p._id)}
+                              sx={{ borderRadius: 999, fontSize: '0.78rem', textTransform: 'none', fontWeight: 600 }}
+                            >
+                              {t('projects.reject', 'Reject')}
+                            </Button>
+                          </Stack>
+                        )}
+                      </Box>
+                    </Stack>
+                  </Paper>
+                )
+              })}
+            </Stack>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setProposalsOpen(false)}>{t('common.close', 'Close')}</Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
         <DialogTitle>{t('projects.deleteConfirmTitle', 'Delete this project?')}</DialogTitle>
@@ -300,7 +389,7 @@ export default function ProjectDetail() {
         <DialogActions>
           <Button onClick={() => setDeleteOpen(false)}>{t('projects.cancel', 'Cancel')}</Button>
           <Button color="error" variant="contained" onClick={handleDelete} disabled={deleteLoading}>
-            {deleteLoading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.delete', 'Delete')}
+            {deleteLoading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.delete', 'Delete Project')}
           </Button>
         </DialogActions>
       </Dialog>

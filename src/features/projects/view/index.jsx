@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import {
   Box, Container, Typography, Stack, CircularProgress, Button, Card, CardContent, Avatar, Chip, Paper, TextField, MenuItem, alpha,
 } from '@mui/material'
 import {
   WorkOutlineOutlined, CodeOutlined, DesignServicesOutlined, AttachMoneyOutlined,
-  AccessTimeOutlined, PersonOutlined, AddOutlined, SearchOutlined,
+  AccessTimeOutlined, PersonOutlined, AddOutlined, SearchOutlined, PostAddOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
-import { getProjects } from '@/services/projectService'
+import { getProjects, getMyProjectsWithProposals } from '@/services/projectService'
 
 const categoryIcons = {
   'تطوير ويب': <CodeOutlined sx={{ fontSize: 20 }} />,
@@ -43,28 +44,35 @@ export default function ProjectsList() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const theme = useTheme()
+  const currentUser = useSelector((state) => state.user.user)
   const [searchParams, setSearchParams] = useSearchParams()
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [category, setCategory] = useState(searchParams.get('category') || '')
   const [search, setSearch] = useState(searchParams.get('search') || '')
+  const [mine, setMine] = useState(false)
 
   const fetch = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const params = {}
-      if (category) params.category = category
-      if (search) params.search = search
-      const res = await getProjects(params)
+      let res
+      if (mine) {
+        res = await getMyProjectsWithProposals()
+      } else {
+        const params = {}
+        if (category) params.category = category
+        if (search) params.search = search
+        res = await getProjects(params)
+      }
       if (res?.success) setProjects(res.data)
     } catch (err) {
       setError(err?.response?.data?.message || err.message || t('common.error'))
     } finally {
       setLoading(false)
     }
-  }, [category, search, t])
+  }, [category, search, mine, t])
 
   useEffect(() => { fetch() }, [fetch])
 
@@ -110,6 +118,18 @@ export default function ProjectsList() {
             slotProps={{ input: { startAdornment: <SearchOutlined sx={{ fontSize: 20, mr: 0.5, color: 'text.disabled' }} /> } }}
             sx={{ flex: 1 }}
           />
+          <Button variant={mine ? 'contained' : 'outlined'} color={mine ? 'secondary' : 'primary'}
+            startIcon={<WorkOutlineOutlined />}
+            onClick={() => setMine(v => !v)}
+            sx={{ flexShrink: 0, borderRadius: 999, px: 2.5, fontWeight: 600, textTransform: 'none', whiteSpace: 'nowrap', minWidth: 140 }}
+          >
+            {mine ? t('projects.myProjects', 'My Projects') : t('projects.myProjects', 'My Projects')}
+          </Button>
+          <Button variant="contained" startIcon={<PostAddOutlined />} component={Link} to="/projects/create"
+            sx={{ flexShrink: 0, borderRadius: 999, px: 3, fontWeight: 600, textTransform: 'none', whiteSpace: 'nowrap' }}
+          >
+            {t('projects.postProject', 'Post a New Project')}
+          </Button>
         </Stack>
       </Paper>
 
@@ -134,7 +154,7 @@ export default function ProjectsList() {
             <Card
               key={p._id}
               sx={{ cursor: 'pointer', transition: 'all 0.2s', '&:hover': { boxShadow: theme.shadows[4], transform: 'translateY(-2px)' } }}
-              onClick={() => navigate(`/projects/${p._id}`)}
+              onClick={() => navigate(mine ? `/myProject/${p._id}` : `/projects/${p._id}`)}
             >
               <CardContent sx={{ display: 'flex', gap: 2.5 }}>
                 <Avatar

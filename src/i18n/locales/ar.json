@@ -175,7 +175,9 @@
     "comments_zero": "{{count}} تعليقات",
     "translate": "ترجمة",
     "showOriginal": "عرض النص الأصلي",
-    "translating": "جارٍ الترجمة..."
+    "translating": "جارٍ الترجمة...",
+    "noNotifications": "لا توجد إشعارات بعد",
+    "markAllRead": "تحديد الكل كمقروء"
   },
   "time": {
     "justNow": "الآن",
@@ -194,7 +196,7 @@
     "title": "المشاريع",
     "browse": "تصفح المشاريع",
     "create": "نشر مشروع",
-    "edit": "تعديل المشروع",
+    "edit": "تعديل",
     "delete": "حذف المشروع",
     "deleteConfirmTitle": "حذف هذا المشروع؟",
     "deleteConfirmBody": "سيتم حذف جميع العروض المرتبطة به.",
@@ -219,7 +221,7 @@
     "coverLetter": "رسالة التوضيح",
     "coverLetterPlaceholder": "صِف خبرتك ومنهجك في العمل...",
     "proposalSent": "تم تقديم عرضك بنجاح!",
-    "accept": "قبول العرض",
+    "accept": "قبول",
     "markComplete": "تأكيد اكتمال المشروع",
     "clientLabel": "عميل",
     "client": "العميل",
@@ -244,6 +246,12 @@
     "post": "نشر المشروع",
     "posting": "جاري النشر...",
     "save": "حفظ التغييرات",
+    "editProject": "تعديل المشروع",
+    "fillRequired": "يرجى ملء جميع الحقول المطلوبة",
+    "lowestBid": "أقل عرض",
+    "anonymous": "مجهول",
+    "myProjects": "مشاريعي",
+    "userProposals": "عروض المستخدم",
     "categoryOptions": {
       "Web Development": "تطوير ويب",
       "Mobile Development": "تطوير تطبيقات",

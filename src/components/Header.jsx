@@ -42,13 +42,14 @@ const Header = () => {
   const user = useSelector((state) => state.user.user)
   const profile = useSelector((state) => state.user.profile)
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+  const unreadCount = useSelector((state) => state.notifications?.unreadCount || 0)
   const [anchorEl, setAnchorEl] = useState(null)
 
   const navItems = [
     { label: t('nav.home'), icon: <HomeIcon />, hasBadge: false, link: '/' },
     { label: t('nav.network'), icon: <PeopleIcon />, hasBadge: false, link: '/network' },
     { label: t('nav.projects'), icon: <WorkIcon />, hasBadge: false, link: '/projects' },
-    { label: t('nav.alerts'), icon: <NotificationsIcon />, hasBadge: true, link: '/alerts' },
+    { label: t('nav.alerts'), icon: <NotificationsIcon />, hasBadge: unreadCount > 0, badgeCount: unreadCount, link: '/alerts' },
   ]
 
   const hiddenRoutes = ['/sign-in', '/sign-up', '/landing']
@@ -177,7 +178,7 @@ const Header = () => {
                       gap: 0.3,
                     }}
                   >
-                    <Badge color="error" variant="dot" invisible={!item.hasBadge}>
+                    <Badge color="error" variant={item.badgeCount > 9 ? 'standard' : 'dot'} badgeContent={item.badgeCount} invisible={!item.hasBadge} max={99}>
                       {React.cloneElement(item.icon, { sx: { fontSize: 26 } })}
                     </Badge>
                     <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px', fontWeight: isActive ? 700 : 500, lineHeight: 1.2 }}>

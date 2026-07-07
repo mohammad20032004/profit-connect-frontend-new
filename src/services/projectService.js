@@ -47,8 +47,18 @@ export async function acceptProposal(projectId, proposalId) {
   return data
 }
 
+export async function rejectProposal(projectId, proposalId) {
+  const { data } = await axios.post(`${API_BASE}/projects/${projectId}/proposals/${proposalId}/reject`)
+  return data
+}
+
 export async function getMyProposals() {
   const { data } = await axios.get(`${API_BASE}/projects/my-proposals`)
+  return data
+}
+
+export async function getMyProjectsWithProposals() {
+  const { data } = await axios.get(`${API_BASE}/projects/my-projects-with-proposals`)
   return data
 }
 

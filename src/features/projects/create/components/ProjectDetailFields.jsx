@@ -25,7 +25,7 @@ function getSkillsArray(skillsStr) {
   return skillsStr.split(',').map((s) => s.trim()).filter(Boolean)
 }
 
-export default function ProjectDetailFields({ form, onChange, t, onImprove, improving }) {
+export default function ProjectDetailFields({ form, onChange, t, onImprove, improving, rows = 10 }) {
   const currentSkills = getSkillsArray(form.skills)
 
   const toggleSkill = (skill) => {
@@ -48,7 +48,7 @@ export default function ProjectDetailFields({ form, onChange, t, onImprove, impr
             </IconButton>
           </Tooltip>
         </Stack>
-        <TextField placeholder={t('projects.descriptionPlaceholder', 'Describe the project in detail...')} value={form.description} onChange={onChange('description')} fullWidth size="small" multiline rows={10} sx={{ '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0 } }} />
+        <TextField placeholder={t('projects.descriptionPlaceholder', 'Describe the project in detail...')} value={form.description} onChange={onChange('description')} fullWidth size="small" multiline rows={rows} sx={{ '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0 } }} />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField label={t('projects.skillsLabel', 'Required Skills')} placeholder={t('projects.skillsPlaceholder', 'e.g. React, Node.js, MongoDB')} value={form.skills} onChange={onChange('skills')} fullWidth size="small" helperText="Separate skills with commas" />
