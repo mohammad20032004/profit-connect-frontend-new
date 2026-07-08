@@ -24,6 +24,7 @@ import {
 import { SaveOutlined, LanguageOutlined, PaletteOutlined, NotificationsOutlined, LockOutlined } from '@mui/icons-material'
 import { updateSettings } from '@/redux/slices/userSlice'
 import { updateSettings as updateSettingsApi } from '@/services/settingsService'
+import { refreshReputation } from '@/services/reputation'
 
 function TabPanel({ children, value, index }) {
   return value === index ? <Box>{children}</Box> : null
@@ -60,6 +61,7 @@ export default function SettingsView() {
         i18n.changeLanguage(payload.language)
       }
       setSuccess(true)
+      refreshReputation(dispatch)
     } catch (err) {
       setError(err?.response?.data?.message || err.message || t('settings.saveError', 'Failed to save settings'))
     } finally {
@@ -137,16 +139,24 @@ export default function SettingsView() {
               <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
                 {t('settings.appearance', 'Appearance')}
               </Typography>
-              <SelectField
-                label={t('settings.theme', 'Theme')}
-                value={form.theme || 'system'}
-                onChange={set('theme')}
-                options={[
-                  { value: 'system', label: 'System' },
-                  { value: 'light', label: 'Light' },
-                  { value: 'dark', label: 'Dark' },
-                ]}
-              />
+              <Stack spacing={2}>
+                <SelectField
+                  label={t('settings.theme', 'Theme')}
+                  value={form.theme || 'system'}
+                  onChange={set('theme')}
+                  options={[
+                    { value: 'system', label: 'System' },
+                    { value: 'light', label: 'Light' },
+                    { value: 'dark', label: 'Dark' },
+                  ]}
+                />
+                <FormControlLabel
+                  control={<Switch checked={form.animationEnabled !== false} onChange={toggle('animationEnabled')} />}
+                  label={t('settings.animationEnabled', 'Enable animations')}
+                  sx={{ display: 'flex', justifyContent: 'space-between', mx: 0, width: '100%' }}
+                  labelPlacement="start"
+                />
+              </Stack>
             </TabPanel>
 
             <TabPanel value={tab} index={2}>

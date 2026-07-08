@@ -43,9 +43,14 @@ import {
   deleteComment,
 } from '@/services/postService'
 import { translateText } from '@/services/translateService'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import CreatePost from './CreatePost'
+import AnimatedBox from '@/components/AnimatedBox'
+import { refreshReputation } from '@/services/reputation'
+
+const btnAnim = { whileTap: { scale: 0.9 }, whileHover: { scale: 1.03 }, transition: { duration: 0.15 } }
 
 function formatTime(dateStr, t) {
   const date = new Date(dateStr)
@@ -64,6 +69,7 @@ function formatTime(dateStr, t) {
 
 function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
   const currentUserId = useSelector((state) => state.user.user?._id)
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(0)
@@ -165,13 +171,12 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
       const res = await addComment(post._id, text)
       const tempComment = {
         _id: `temp-${Date.now()}`,
-        user: { _id: currentUserId, profile: {} },
+        user: { _id: currentUserId, profile: { firstName: res.fullname, avatar: res.avatar } },
         content: text,
         createdAt: new Date().toISOString(),
       }
       setComments((prev) => [...prev, tempComment])
-      if (res.commentsCount != null) {
-      }
+      refreshReputation(dispatch)
     } catch {
       setCommentText(text)
     } finally {
@@ -302,74 +307,86 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
       <Divider />
 
       <Stack direction="row" sx={{ px: 1, py: 0.5 }}>
-        <Button fullWidth startIcon={liked ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleLike} sx={{ color: liked ? 'error.main' : 'text.secondary', fontWeight: liked ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'error.light', color: 'error.main' } }}>
-          {t('dashboard.action.like')}
-        </Button>
-        <Button fullWidth startIcon={<ChatBubbleOutlineOutlined />} onClick={() => setShowComments(!showComments)} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
-          {t('dashboard.action.comment')}
-        </Button>
-        <Button
-          fullWidth
-          startIcon={<RepeatOutlined />}
-          onClick={() => {
-            navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`)
-            alert(t('dashboard.action.linkCopied', 'Link copied to clipboard'))
-          }}
-          sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}
-        >
-          {t('dashboard.action.share')}
-        </Button>
-        <Button fullWidth startIcon={<SendOutlined />} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
-          {t('dashboard.action.send')}
-        </Button>
+        <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
+          <Button fullWidth startIcon={liked ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleLike} sx={{ color: liked ? 'error.main' : 'text.secondary', fontWeight: liked ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'error.light', color: 'error.main' } }}>
+            {t('dashboard.action.like')}
+          </Button>
+        </Box>
+        <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
+          <Button fullWidth startIcon={<ChatBubbleOutlineOutlined />} onClick={() => setShowComments(!showComments)} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+            {t('dashboard.action.comment')}
+          </Button>
+        </Box>
+        <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
+          <Button fullWidth startIcon={<RepeatOutlined />} onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`); alert(t('dashboard.action.linkCopied', 'Link copied to clipboard')) }} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+            {t('dashboard.action.share')}
+          </Button>
+        </Box>
+        <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
+          <Button fullWidth startIcon={<SendOutlined />} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+            {t('dashboard.action.send')}
+          </Button>
+        </Box>
       </Stack>
 
       {showComments && comments.length > 0 && (
         <>
           <Divider />
-          <Box sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
-            <Stack spacing={2}>
-              {comments.map((comment) => {
-                const cProfile = comment?.user?.profile || {}
-                const cName = `${cProfile?.firstName || ''} ${cProfile?.lastName || ''}`.trim() || t('common.unknown')
-                const cAvatar = cProfile?.avatar
-                const showDelete = canDeleteComment(comment)
-                return (
-                  <Stack key={comment._id} direction="row" spacing={1.5}>
-                    <Avatar src={cAvatar} sx={{ width: 32, height: 32 }}>
-                      {cName?.charAt(0)?.toUpperCase()}
-                    </Avatar>
-                    <Box sx={{ bgcolor: 'action.hover', borderRadius: 2, p: 1.5, flex: 1, position: 'relative' }}>
-                      <Typography variant="subtitle2" fontWeight="bold">{cName}</Typography>
-                      <Typography variant="body2">{comment.content}</Typography>
-                      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
-                          {formatTime(comment.createdAt, t)}
-                        </Typography>
-                        {showDelete && (
-                          <IconButton size="small" onClick={() => handleDeleteComment(comment._id)} sx={{ color: 'error.light', '&:hover': { color: 'error.main' } }}>
-                            <DeleteOutlined sx={{ fontSize: 16 }} />
-                          </IconButton>
-                        )}
-                      </Stack>
-                    </Box>
-                  </Stack>
-                )
-              })}
-            </Stack>
-          </Box>
+          <AnimatedBox delay={0.05}>
+            <Box sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
+              <Stack spacing={2}>
+                {comments.map((comment, idx) => {
+                  const cProfile = comment?.user?.profile || {}
+                  const cName = `${cProfile?.firstName || ''} ${cProfile?.lastName || ''}`.trim() || t('common.unknown')
+                  const cAvatar = cProfile?.avatar
+                  const showDelete = canDeleteComment(comment)
+                  return (
+                    <Stack key={comment._id} direction="row" spacing={1.5} component={motion.div}
+                      initial={{ opacity: 0, x: -15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: idx * 0.04, ease: 'easeOut' }}
+                    >
+                      <Avatar src={cAvatar} sx={{ width: 32, height: 32 }}>
+                        {cName?.charAt(0)?.toUpperCase()}
+                      </Avatar>
+                      <Box sx={{ bgcolor: 'action.hover', borderRadius: 2, p: 1.5, flex: 1, position: 'relative' }}>
+                        <Typography variant="subtitle2" fontWeight="bold">{cName}</Typography>
+                        <Typography variant="body2">{comment.content}</Typography>
+                        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                          <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
+                            {formatTime(comment.createdAt, t)}
+                          </Typography>
+                          {showDelete && (
+                            <Box component={motion.div} whileTap={{ scale: 0.85 }} transition={{ duration: 0.12 }}>
+                              <IconButton size="small" onClick={() => handleDeleteComment(comment._id)} sx={{ color: 'error.light', '&:hover': { color: 'error.main' } }}>
+                                <DeleteOutlined sx={{ fontSize: 16 }} />
+                              </IconButton>
+                            </Box>
+                          )}
+                        </Stack>
+                      </Box>
+                    </Stack>
+                  )
+                })}
+              </Stack>
+            </Box>
+          </AnimatedBox>
         </>
       )}
 
       {showComments && (
-        <Box component="form" onSubmit={handleCommentSubmit} sx={{ px: { xs: 2, sm: 3 }, pb: 2 }}>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <TextField fullWidth size="small" placeholder={t('dashboard.action.writeComment')} value={commentText} onChange={(e) => setCommentText(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 999, bgcolor: 'action.hover' } }} />
-            <IconButton type="submit" disabled={!commentText.trim() || commentLoading} sx={{ color: 'primary.main' }}>
-              <SendOutlined />
-            </IconButton>
-          </Stack>
-        </Box>
+        <AnimatedBox delay={0.1}>
+          <Box component="form" onSubmit={handleCommentSubmit} sx={{ px: { xs: 2, sm: 3 }, pb: 2 }}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <TextField fullWidth size="small" placeholder={t('dashboard.action.writeComment')} value={commentText} onChange={(e) => setCommentText(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 999, bgcolor: 'action.hover' } }} />
+              <Box component={motion.div} whileTap={{ scale: 0.85 }} transition={{ duration: 0.12 }}>
+                <IconButton type="submit" disabled={!commentText.trim() || commentLoading} sx={{ color: 'primary.main' }}>
+                  <SendOutlined />
+                </IconButton>
+              </Box>
+            </Stack>
+          </Box>
+        </AnimatedBox>
       )}
 
       <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="sm" fullWidth>
@@ -455,7 +472,25 @@ export default function PostsSection() {
 
   const hasMore = pagination ? page < pagination.pages : false
 
-  const handlePostCreated = (newPost) => setPosts((prev) => [newPost, ...prev])
+  const dispatch = useDispatch()
+  const currentUser = useSelector((state) => state.user.user)
+  const currentProfile = useSelector((state) => state.user.profile)
+
+  const handlePostCreated = (newPost) => {
+    if (newPost && (!newPost.user || !newPost.user.profile)) {
+      newPost.user = {
+        _id: currentUser?._id,
+        profile: {
+          firstName: currentProfile?.firstName,
+          lastName: currentProfile?.lastName,
+          avatar: currentProfile?.avatar,
+          headline: currentProfile?.headline,
+        },
+      }
+    }
+    setPosts((prev) => [newPost, ...prev])
+    refreshReputation(dispatch)
+  }
 
   const handlePostUpdated = (updatedPost) => setPosts((prev) => prev.map((p) => (p._id === updatedPost._id ? updatedPost : p)))
 
@@ -476,8 +511,10 @@ export default function PostsSection() {
         ) : (
           <>
             <Stack spacing={2}>
-              {posts.map((post) => (
-                <PostCard key={post._id} post={post} onPostUpdated={handlePostUpdated} onPostDeleted={handlePostDeleted} />
+              {posts.map((post, idx) => (
+                <AnimatedBox key={post._id} delay={Math.min(idx * 0.05, 0.3)}>
+                  <PostCard post={post} onPostUpdated={handlePostUpdated} onPostDeleted={handlePostDeleted} />
+                </AnimatedBox>
               ))}
             </Stack>
             {hasMore && (

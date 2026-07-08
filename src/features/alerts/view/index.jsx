@@ -7,21 +7,52 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
 import {
   NotificationsOutlined, CheckCircleOutlineOutlined, WorkOutlineOutlined,
-  StarBorderOutlined, InfoOutlined, DoneAllOutlined,
+  StarBorderOutlined, InfoOutlined, DoneAllOutlined, CancelOutlined,
 } from '@mui/icons-material'
 import { getNotifications, markNotificationRead } from '@/services/notificationService'
 import { setNotifications, markRead } from '@/redux/slices/notificationSlice'
 
-const typeIcons = {
-  proposal: <WorkOutlineOutlined />,
-  project: <InfoOutlined />,
-  rating: <StarBorderOutlined />,
-}
-
-const typeColors = {
-  proposal: 'primary',
-  project: 'info',
-  rating: 'warning',
+function getNotificationDisplay(n, t) {
+  const map = {
+    proposal_accepted: {
+      icon: <CheckCircleOutlineOutlined />,
+      color: 'success',
+      title: t('notif.accepted', 'تم قبول عرضك'),
+      msg: t('notif.acceptedMsg', 'في مشروع {name}', { name: n.projectName }),
+    },
+    proposal_rejected: {
+      icon: <CancelOutlined />,
+      color: 'error',
+      title: t('notif.rejected', 'تم رفض عرضك'),
+      msg: t('notif.rejectedMsg', 'لمشروع {name}', { name: n.projectName }),
+    },
+    proposal_new: {
+      icon: <WorkOutlineOutlined />,
+      color: 'primary',
+      title: t('notif.newProposal', 'عرض جديد'),
+      msg: t('notif.newProposalMsg', 'في مشروع {name}', { name: n.projectName }),
+    },
+    project_completed: {
+      icon: <CheckCircleOutlineOutlined />,
+      color: 'success',
+      title: t('notif.completed', 'اكتمال المشروع'),
+      msg: t('notif.completedMsg', 'تم اكتمال مشروع {name}', { name: n.projectName }),
+    },
+    rating_received: {
+      icon: <StarBorderOutlined />,
+      color: 'warning',
+      title: t('notif.rating', 'تقييم جديد'),
+      msg: n.clientName
+        ? t('notif.ratingMsgWith', 'قام {client} بتقييمك في مشروع {name}', { client: n.clientName, name: n.projectName })
+        : t('notif.ratingMsg', 'قام عميل بتقييمك في مشروع {name}', { name: n.projectName }),
+    },
+  }
+  return map[n.type] || {
+    icon: <InfoOutlined />,
+    color: 'info',
+    title: t('notif.general', 'إشعار'),
+    msg: '',
+  }
 }
 
 function formatTime(dateStr, t) {
@@ -88,45 +119,48 @@ export default function AlertsView() {
           </Paper>
         ) : (
           <Stack spacing={1}>
-            {items.map((n) => (
-              <Paper key={n._id} variant="outlined" sx={{
-                p: 2, borderRadius: 2,
-                borderColor: n.read ? 'divider' : alpha(theme.palette.primary.main, 0.25),
-                bgcolor: n.read ? 'transparent' : alpha(theme.palette.primary.main, 0.03),
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.4) },
-              }}
-                onClick={() => { if (!n.read) handleMarkRead(n._id) }}
-              >
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-                  <Box sx={{
-                    width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    bgcolor: n.read ? alpha(theme.palette.action.disabled, 0.08) : alpha(theme.palette[typeColors[n.type] || 'primary'].main, 0.1),
-                    color: n.read ? 'text.disabled' : (theme.palette[typeColors[n.type] || 'primary'].main),
-                    flexShrink: 0,
-                  }}>
-                    {typeIcons[n.type] || <InfoOutlined />}
-                  </Box>
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="body2" fontWeight={n.read ? 400 : 700} sx={{ mb: 0.3 }}>
-                      {n.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5, fontSize: '0.82rem' }}>
-                      {n.message}
-                    </Typography>
-                    <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
-                      {formatTime(n.createdAt, t)}
-                    </Typography>
-                  </Box>
-                  {!n.read && (
-                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleMarkRead(n._id) }} sx={{ mt: -0.5, mr: -0.5 }}>
-                      <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
-                    </IconButton>
-                  )}
-                </Stack>
-              </Paper>
-            ))}
+            {items.map((n) => {
+              const display = getNotificationDisplay(n, t)
+              return (
+                <Paper key={n._id} variant="outlined" sx={{
+                  p: 2, borderRadius: 2,
+                  borderColor: n.read ? 'divider' : alpha(theme.palette[display.color].main, 0.25),
+                  bgcolor: n.read ? 'transparent' : alpha(theme.palette[display.color].main, 0.04),
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.4) },
+                }}
+                  onClick={() => { if (!n.read) handleMarkRead(n._id) }}
+                >
+                  <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
+                    <Box sx={{
+                      width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      bgcolor: n.read ? alpha(theme.palette.action.disabled, 0.08) : alpha(theme.palette[display.color].main, 0.12),
+                      color: n.read ? 'text.disabled' : theme.palette[display.color].main,
+                      flexShrink: 0,
+                    }}>
+                      {display.icon}
+                    </Box>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="body2" fontWeight={n.read ? 400 : 700} sx={{ mb: 0.3 }}>
+                        {display.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5, fontSize: '0.82rem' }}>
+                        {display.msg}
+                      </Typography>
+                      <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
+                        {formatTime(n.createdAt, t)}
+                      </Typography>
+                    </Box>
+                    {!n.read && (
+                      <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleMarkRead(n._id) }} sx={{ mt: -0.5, mr: -0.5 }}>
+                        <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
+                      </IconButton>
+                    )}
+                  </Stack>
+                </Paper>
+              )
+            })}
           </Stack>
         )}
       </Box>

@@ -67,7 +67,25 @@
     "following": "Following",
     "posts": "Posts",
     "rScore": "R-Score",
-    "yearsExp": "years experience"
+    "yearsExp": "years experience",
+    "title": "My Profile",
+    "about": "About",
+    "bio": "Bio",
+    "location": "Location",
+    "contactInfo": "Contact Info",
+    "professionalInfo": "Professional Info",
+    "industry": "Industry",
+    "skills": "Skills",
+    "socialLinks": "Social Links",
+    "editProfile": "Edit Profile",
+    "reputation": "Reputation",
+    "connections": "Connections",
+    "phone": "Phone",
+    "email": "Email",
+    "noBio": "No bio added yet",
+    "noSkills": "No skills listed",
+    "reputationScore": "Reputation Score",
+    "memberSince": "Member since"
   },
   "landing": {
     "chip": "Professional networking, redesigned for clarity and momentum",
@@ -128,6 +146,7 @@
     "profileVis": "Profile Visibility",
     "showEmail": "Show Email",
     "showPhone": "Show Phone",
+    "animationEnabled": "Enable animations",
     "save": "Save Settings",
     "saved": "Settings saved successfully",
     "saveError": "Failed to save settings"
@@ -265,6 +284,20 @@
       "Completed": "Completed",
       "Cancelled": "Cancelled"
     }
+  },
+  "notif": {
+    "accepted": "Proposal Accepted",
+    "acceptedMsg": "Your proposal for {{name}} has been accepted",
+    "rejected": "Proposal Rejected",
+    "rejectedMsg": "Your proposal for {{name}} has been rejected",
+    "newProposal": "New Proposal",
+    "newProposalMsg": "A new proposal on {{name}}",
+    "completed": "Project Completed",
+    "completedMsg": "Project {{name}} has been completed",
+    "rating": "New Rating",
+    "ratingMsgWith": "{{client}} rated you on {{name}}",
+    "ratingMsg": "A client rated you on {{name}}",
+    "general": "Notification"
   },
   "common": {
     "loading": "Loading...",

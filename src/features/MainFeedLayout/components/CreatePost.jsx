@@ -187,7 +187,7 @@ export default function CreatePost({ onPostCreated }) {
               {initials}
             </Avatar>
             <Box>
-              <Typography variant="subtitle2" fontWeight="bold" lineHeight={1.2}>
+              <Typography variant="subtitle2" fontWeight="bold" sx={{ lineHeight: 1.2 }}>
                 {fullName}
               </Typography>
               <FormControl size="small" sx={{ mt: 0.25 }}>
@@ -226,7 +226,7 @@ export default function CreatePost({ onPostCreated }) {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             variant="standard"
-            InputProps={{ disableUnderline: true }}
+            slotProps={{ input: { disableUnderline: true } }}
             sx={{
               '& .MuiInputBase-root': {
                 fontSize: '1.15rem',

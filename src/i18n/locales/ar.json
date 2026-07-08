@@ -68,7 +68,25 @@
     "following": "يتابع",
     "posts": "المنشورات",
     "rScore": "نقاط السمعة",
-    "yearsExp": "سنوات الخبرة"
+    "yearsExp": "سنوات الخبرة",
+    "title": "ملفي الشخصي",
+    "about": "حول",
+    "bio": "السيرة الذاتية",
+    "location": "الموقع",
+    "contactInfo": "معلومات الاتصال",
+    "professionalInfo": "المعلومات المهنية",
+    "industry": "الصناعة",
+    "skills": "المهارات",
+    "socialLinks": "روابط التواصل",
+    "editProfile": "تعديل الملف",
+    "reputation": "السمعة",
+    "connections": "الاتصالات",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "noBio": "لم تُضف سيرة ذاتية بعد",
+    "noSkills": "لا توجد مهارات",
+    "reputationScore": "درجة السمعة",
+    "memberSince": "عضو منذ"
   },
   "landing": {
     "chip": "تواصل احترافي، أعيد تصميمه للوضوح والزخم",
@@ -129,6 +147,7 @@
     "profileVis": "ظهور الملف الشخصي",
     "showEmail": "إظهار البريد الإلكتروني",
     "showPhone": "إظهار رقم الهاتف",
+    "animationEnabled": "تفعيل الرسوم المتحركة",
     "save": "حفظ الإعدادات",
     "saved": "تم حفظ الإعدادات بنجاح",
     "saveError": "فشل حفظ الإعدادات"
@@ -267,6 +286,20 @@
       "Completed": "مكتمل",
       "Cancelled": "ملغي"
     }
+  },
+  "notif": {
+    "accepted": "تم قبول عرضك",
+    "acceptedMsg": "في مشروع {{name}}",
+    "rejected": "تم رفض عرضك",
+    "rejectedMsg": "لمشروع {{name}}",
+    "newProposal": "عرض جديد",
+    "newProposalMsg": "في مشروع {{name}}",
+    "completed": "اكتمال المشروع",
+    "completedMsg": "تم اكتمال مشروع {{name}}",
+    "rating": "تقييم جديد",
+    "ratingMsgWith": "قام {{client}} بتقييمك في مشروع {{name}}",
+    "ratingMsg": "قام عميل بتقييمك في مشروع {{name}}",
+    "general": "إشعار"
   },
   "common": {
     "loading": "جارٍ التحميل...",
