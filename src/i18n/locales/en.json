@@ -68,6 +68,7 @@
     "posts": "Posts",
     "rScore": "R-Score",
     "yearsExp": "years experience",
+    "savedPosts": "Saved Posts",
     "title": "My Profile",
     "about": "About",
     "bio": "Bio",
@@ -166,6 +167,8 @@
     "connections": "Connections",
     "private": "Private",
     "loadMore": "Load More",
+    "showMore": "Show more",
+    "showLess": "Show less",
     "post": {
       "startAPost": "Start a post",
       "whatToTalk": "What do you want to talk about?",
@@ -184,6 +187,7 @@
       "comment": "Comment",
       "share": "Share",
       "send": "Send",
+      "save": "Save",
       "writeComment": "Write a comment...",
       "copyLink": "Copy link",
       "linkCopied": "Link copied to clipboard"

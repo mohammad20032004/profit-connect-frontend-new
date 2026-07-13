@@ -47,3 +47,19 @@ export async function getPostById(postId) {
   const { data } = await axios.get(`${API_BASE}/posts/${postId}`)
   return data
 }
+
+export async function savePost(postId) {
+  const { data } = await axios.post(`${API_BASE}/user/saved-posts/${postId}`)
+  return data
+}
+
+export async function unsavePost(postId) {
+  const { data } = await axios.delete(`${API_BASE}/user/saved-posts/${postId}`)
+  return data
+}
+
+export async function getSavedPosts() {
+  const { data } = await axios.get(`${API_BASE}/user/saved-posts`)
+  return data
+}
+

@@ -1,91 +1,136 @@
-import { Avatar, Box, Chip, Typography, Stack, alpha } from '@mui/material'
+import { Avatar, Box, Chip, Typography, Stack, alpha, Divider, Paper } from '@mui/material'
 import WorkspacePremiumRounded from '@mui/icons-material/WorkspacePremiumRounded'
 import {
-    LocationOnOutlined,
-    WorkOutlineOutlined,
-    SchoolOutlined,
-    PeopleAltOutlined,
-    PostAddOutlined,
-    TrendingUpOutlined,
+  LocationOnOutlined,
+  PeopleAltOutlined,
+  PersonOutlineOutlined,
+  PostAddOutlined,
+  BuildOutlined,
+  BookmarkBorderOutlined,
 } from '@mui/icons-material'
-
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 export default function InfoSide() {
-    const user = useSelector((state) => state.user.user)
-    const profile = useSelector((state) => state.user.profile)
-    const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
+  const user = useSelector((state) => state.user.user)
+  const profile = useSelector((state) => state.user.profile)
+  const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
+  const { t } = useTranslation()
+  const avatarSrc = profile?.avatar
+  const Rscore = profile?.rScore || 0
+  const skills = user?.professional?.skills || []
 
-    const { t } = useTranslation()
+  return (
+    <Paper elevation={0} sx={{ borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ textAlign: 'center', pt: 4, pb: 2.5, px: 2 }}>
+        <Avatar
+          src={avatarSrc}
+          sx={(theme) => ({
+            width: 110,
+            height: 110,
+            mx: 'auto',
+            mb: 2,
+            border: '3px solid',
+            borderColor: alpha(theme.palette.primary.main, 0.3),
+            boxShadow: `0 8px 24px ${alpha(theme.palette.common.black, 0.08)}`,
+          })}
+        >
+          {fullName?.charAt(0)?.toUpperCase()}
+        </Avatar>
 
+        <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.3 }}>
+          {fullName}
+        </Typography>
 
-    const avatarSrc = profile?.avatar
-    const Rscore = profile?.rScore || 0;
+        {profile?.headline && (
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, px: 1, lineHeight: 1.4 }}>
+            {profile.headline}
+          </Typography>
+        )}
 
-    return (
-        <Box sx={(theme) => ({ width: 300, bgcolor: alpha(theme.palette.primary.main, 0.06), borderRadius: 2, py: 2 })}>
-            <Box sx={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column',gap: 2, textAlign: 'center', position: 'relative', top: -40 }}>
-                <Box sx={{ mx: 'auto', width: '100%', height: '100%' }}>
-                    <Avatar src={avatarSrc} sx={{ width: 150, height: 150, border: '4px solid', borderColor: 'primary.dark', mb: 3.5, mx: 'auto' }} />
-                    <Typography variant='h4' sx={{ fontWeight: 'bolder', mb: 1.5 }}>{fullName}</Typography>
-                    {profile?.headline && (
-                        <Typography variant="subtitle2" noWrap>
-                            {profile.headline}
-                        </Typography>
-                    )}
-                   
-                    <Chip
-                        icon={Rscore >= 4000 ? <img src="/Images/High-Score.gif" width={18} height={18} alt="Score" /> : <WorkspacePremiumRounded sx={{ color: 'primary.light' }} />}
-                        label={`${t('profile.rScore')}: ${Rscore}`}
-                        sx={{
-                            bgcolor: 'background.paper',
-                            color: 'primary.dark',
-                            fontWeight: 800,
-                            height: 34,
-                            border: 'none',
-                            my: 1.5,
-                            position: 'relative',
-                            zIndex: 2
-                        }}
-                    />
- <Box>
-                        {user?.role && (
-                        <Chip label={user.role} size="small" />
-                    )}
-                    </Box>
-                </Box>
-                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-evenly' }}>
-                    <Box sx={{ width: '35%', bgcolor: 'background.paper', p: 2, borderRadius: 2 }}>
-                        <PeopleAltOutlined sx={{ color: 'primary.main' }} />
-                        <Typography variant="h6" fontWeight="bold">
-                            {profile?.followersCount ?? 0}
-                        </Typography>
-                        <Typography variant="caption">
-                            {t('profile.followers', 'Followers')}
-                        </Typography>
-                    </Box>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'center', mt: 1, flexWrap: 'wrap' }}>
+          {user?.role && <Chip label={user.role} size="small" color="primary" variant="outlined" sx={{ height: 24 }} />}
+          {profile?.location && (
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
+              <LocationOnOutlined sx={{ fontSize: 14 }} />
+              {profile.location}
+            </Typography>
+          )}
+        </Stack>
 
-                    <Box sx={{ width: '35%', bgcolor: 'background.paper', p: 2, borderRadius: 2 }}>
-                        <PeopleAltOutlined sx={{ color: 'primary.main' }} />
-                        <Typography variant="h6" fontWeight="bold">
-                            {profile?.followingCount ?? 0}
-                        </Typography>
-                        <Typography variant="caption">
-                            {t('profile.following', 'Following')}
-                        </Typography>
-                    </Box>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', top: 20 }}>
-                    {user?.professional?.skills?.length > 0 && (
-                        <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
-                            {user?.professional?.skills?.map((skill) => (
-                                <Chip key={skill} label={skill} size="small" />
-                            ))}
-                        </Stack>
-                    )}
-                </Box>
-            </Box>
-        </Box >
-    )
+        <Chip
+          icon={
+            Rscore >= 4000
+              ? <Box component="img" src="/Images/High-Score.gif" sx={{ width: 18, height: 18 }} />
+              : <WorkspacePremiumRounded sx={{ color: 'primary.light', fontSize: 18 }} />
+          }
+          label={`${t('profile.rScore')}: ${Rscore}`}
+          sx={{
+            mt: 1.5,
+            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+            color: 'primary.dark',
+            fontWeight: 700,
+            height: 30,
+            borderRadius: 1.5,
+            '& .MuiChip-icon': { ml: 0.5 },
+          }}
+        />
+      </Box>
+
+      <Divider />
+
+      <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} sx={{ py: 1.5 }}>
+        <Box sx={{ flex: 1, textAlign: 'center' }}>
+          <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.2 }}>{profile?.postsCount ?? 0}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.3 }}>
+            <PostAddOutlined sx={{ fontSize: 13 }} />
+            {t('profile.posts')}
+          </Typography>
+        </Box>
+        <Box sx={{ flex: 1, textAlign: 'center' }}>
+          <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.2 }}>{profile?.followersCount ?? 0}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.3 }}>
+            <PeopleAltOutlined sx={{ fontSize: 13 }} />
+            {t('profile.followers')}
+          </Typography>
+        </Box>
+        <Box sx={{ flex: 1, textAlign: 'center' }}>
+          <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.2 }}>{profile?.followingCount ?? 0}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.3 }}>
+            <PersonOutlineOutlined sx={{ fontSize: 13 }} />
+            {t('profile.following')}
+          </Typography>
+        </Box>
+      </Stack>
+
+      {skills.length > 0 && (
+        <>
+          <Divider />
+          <Box sx={{ px: 2, py: 2 }}>
+            <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
+              {skills.map((skill) => (
+                <Chip
+                  key={skill}
+                  label={skill}
+                  size="small"
+                  icon={<BuildOutlined sx={{ fontSize: 13 }} />}
+                  sx={{ height: 26, borderRadius: 1.5 }}
+                />
+              ))}
+            </Stack>
+          </Box>
+        </>
+      )}
+
+      <Divider />
+
+      <Box component={Link} to="/profile/savedPosts" sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 2, py: 1.8, textDecoration: 'none', color: 'text.primary', '&:hover': { bgcolor: 'action.hover' } }}>
+        <BookmarkBorderOutlined sx={{ color: 'primary.main', fontSize: 20 }} />
+        <Typography variant="subtitle2" fontWeight="bold">
+          {t('profile.savedPosts', 'Saved Posts')}
+        </Typography>
+      </Box>
+    </Paper>
+  )
 }

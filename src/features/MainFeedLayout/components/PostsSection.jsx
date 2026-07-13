@@ -29,10 +29,13 @@ import {
   ChatBubbleOutlineOutlined,
   SendOutlined,
   RepeatOutlined,
+  BookmarkBorderOutlined,
+  BookmarkOutlined,
   MoreHorizOutlined,
   AccessTimeOutlined,
   ContentCopyOutlined,
   FlagOutlined,
+  TranslateOutlined,
 } from '@mui/icons-material'
 import {
   getPosts,
@@ -41,6 +44,8 @@ import {
   likePost,
   addComment,
   deleteComment,
+  savePost,
+  unsavePost,
 } from '@/services/postService'
 import { translateText } from '@/services/translateService'
 import { motion } from 'framer-motion'
@@ -67,7 +72,7 @@ function formatTime(dateStr, t) {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-function PostCard({ post, onPostUpdated, onPostDeleted }) {
+export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
   const currentUserId = useSelector((state) => state.user.user?._id)
@@ -86,6 +91,10 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const [editLoading, setEditLoading] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const [saved, setSaved] = useState(post?.saved || false)
+  const [saveLoading, setSaveLoading] = useState(false)
+  const MAX_CHARS = 300
 
   useEffect(() => {
     const userIds = post?.likes?.map((l) => (typeof l === 'string' ? l : l._id)) || []
@@ -95,6 +104,10 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
   }, [post, currentUserId])
 
   const isOwner = currentUserId && currentUserId === post?.user?._id
+
+  useEffect(() => {
+    setExpanded(false)
+  }, [showTranslated, translatedContent])
 
   const handleTranslate = async () => {
     if (showTranslated) { setShowTranslated(false); return }
@@ -123,6 +136,23 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
     } catch {
       setLiked(prevLiked)
       setLikesCount(prevCount)
+    }
+  }
+
+  const handleSave = async () => {
+    const prevSaved = saved
+    setSaved(!prevSaved)
+    setSaveLoading(true)
+    try {
+      if (prevSaved) {
+        await unsavePost(post._id)
+      } else {
+        await savePost(post._id)
+      }
+    } catch {
+      setSaved(prevSaved)
+    } finally {
+      setSaveLoading(false)
     }
   }
 
@@ -230,9 +260,16 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
                   </Typography>
                 </Stack>
               </Box>
-              <IconButton size="small" onClick={handleOpenMenu}>
-                <MoreHorizOutlined sx={{ fontSize: 20 }} />
-              </IconButton>
+              <Stack direction="row" spacing={0.5}>
+                {post.content && (
+                  <IconButton size="small" onClick={handleTranslate}>
+                    {translating ? <CircularProgress size={16} /> : <TranslateOutlined sx={{ fontSize: 20 }} />}
+                  </IconButton>
+                )}
+                <IconButton size="small" onClick={handleOpenMenu}>
+                  <MoreHorizOutlined sx={{ fontSize: 20 }} />
+                </IconButton>
+              </Stack>
               <Menu
                 anchorEl={menuAnchor}
                 open={Boolean(menuAnchor)}
@@ -268,12 +305,26 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
 
         {post?.content && (
           <>
-            <Typography variant="body1" sx={{ mt: 2, whiteSpace: 'pre-line', lineHeight: 1.7, color: 'text.primary' }}>
-              {showTranslated && translatedContent ? translatedContent : post.content}
-            </Typography>
-            <Box onClick={handleTranslate} sx={{ mt: 1, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 0.5, color: 'primary.main', fontWeight: 600, fontSize: '0.85rem', '&:hover': { textDecoration: 'underline', color: 'primary.dark' } }}>
-              {translating ? t('dashboard.translating', 'Translating...') : showTranslated ? t('dashboard.showOriginal', 'Show original') : t('dashboard.translate', 'Translate')}
-            </Box>
+            {(() => {
+              const text = showTranslated && translatedContent ? translatedContent : post.content
+              const isLong = text.length > MAX_CHARS
+              const displayText = isLong && !expanded ? text.slice(0, MAX_CHARS) + '...' : text
+              return (
+                <Typography variant="body1" sx={{ mt: 2, whiteSpace: 'pre-line', lineHeight: 1.7, color: 'text.primary' }}>
+                  {displayText}
+                </Typography>
+              )
+            })()}
+            <Stack direction="row" spacing={2} sx={{ mt: 0.5 }}>
+              {(() => {
+                const currentText = showTranslated && translatedContent ? translatedContent : post.content
+                return currentText.length > MAX_CHARS ? (
+                  <Box onClick={() => setExpanded(!expanded)} sx={{ cursor: 'pointer', color: 'text.secondary', fontWeight: 600, fontSize: '0.85rem', '&:hover': { textDecoration: 'underline', color: 'primary.main' } }}>
+                    {expanded ? t('dashboard.showLess', 'Show less') : t('dashboard.showMore', 'Show more')}
+                  </Box>
+                ) : null
+              })()}
+            </Stack>
           </>
         )}
 
@@ -323,8 +374,8 @@ function PostCard({ post, onPostUpdated, onPostDeleted }) {
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth startIcon={<SendOutlined />} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
-            {t('dashboard.action.send')}
+          <Button fullWidth startIcon={saved ? <BookmarkOutlined /> : <BookmarkBorderOutlined />} onClick={handleSave} disabled={saveLoading} sx={{ color: saved ? 'primary.main' : 'text.secondary', fontWeight: saved ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+            {t('dashboard.action.save')}
           </Button>
         </Box>
       </Stack>
