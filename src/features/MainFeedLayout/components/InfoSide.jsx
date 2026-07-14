@@ -11,6 +11,7 @@ import {
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import Button from '@/ui/Button'
 
 export default function InfoSide() {
   const user = useSelector((state) => state.user.user)
@@ -22,7 +23,7 @@ export default function InfoSide() {
   const skills = user?.professional?.skills || []
 
   return (
-    <Paper elevation={0} sx={{ borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
+    <Paper elevation={0} sx={{ borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider', minWidth:300 }}>
       <Box sx={{ textAlign: 'center', pt: 4, pb: 2.5, px: 2 }}>
         <Avatar
           src={avatarSrc}
@@ -109,7 +110,7 @@ export default function InfoSide() {
           <Divider />
           <Box sx={{ px: 2, py: 2 }}>
             <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
-              {skills.map((skill) => (
+              {skills.slice(0, 8).map((skill) => (
                 <Chip
                   key={skill}
                   label={skill}
@@ -118,6 +119,16 @@ export default function InfoSide() {
                   sx={{ height: 26, borderRadius: 1.5 }}
                 />
               ))}
+              {skills.length > 8 && (
+                <Button
+                  component={Link}
+                  to="/profile"
+                  size="small"
+                  sx={{ height: 26, borderRadius: 1.5, textTransform: 'none', px: 1.5 }}
+                >
+                  {t('profile.more', 'More')}
+                </Button>
+              )}
             </Stack>
           </Box>
         </>

@@ -4,11 +4,14 @@ import Button from '@/ui/Button'
 import ArrowBackOutlined from '@mui/icons-material/ArrowBackOutlined'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { getSavedPosts } from '@/services/postService'
 import { PostCard } from '@/features/MainFeedLayout/components/PostsSection'
+import { adjustPostsCount } from '@/redux/slices/userSlice'
 
 export default function SavedPostsView() {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -25,7 +28,10 @@ export default function SavedPostsView() {
     return () => { active = false }
   }, [])
 
-  const handlePostDeleted = (postId) => setPosts((prev) => prev.filter((p) => p._id !== postId))
+  const handlePostDeleted = (postId) => {
+    setPosts((prev) => prev.filter((p) => p._id !== postId))
+    dispatch(adjustPostsCount(-1))
+  }
 
   return (
     <Container maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>

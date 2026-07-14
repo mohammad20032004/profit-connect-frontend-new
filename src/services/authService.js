@@ -29,3 +29,11 @@ export async function getReputationScore() {
   const { data } = await axios.get(`${API_BASE}/user/reputation-score`)
   return data
 }
+
+export async function getProfile() {
+  const token = localStorage.getItem('profit_connect_token')
+  if (!token) return null
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  const { data } = await axios.get(`${API_BASE}/user/profile`)
+  return data
+}

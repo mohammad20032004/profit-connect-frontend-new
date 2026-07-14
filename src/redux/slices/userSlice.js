@@ -28,6 +28,12 @@ const userSlice = createSlice({
         state.profile.rLevel = action.payload.level
       }
     },
+    adjustPostsCount(state, action) {
+      if (state.profile) {
+        const next = (state.profile.postsCount || 0) + action.payload
+        state.profile.postsCount = next > 0 ? next : 0
+      }
+    },
     clearUserProfile(state) {
       state.user = null
       state.profile = null
@@ -37,5 +43,5 @@ const userSlice = createSlice({
   },
 })
 
-export const { setAuthData, updateSettings, updateReputation, clearUserProfile } = userSlice.actions
+export const { setAuthData, updateSettings, updateReputation, adjustPostsCount, clearUserProfile } = userSlice.actions
 export default userSlice.reducer

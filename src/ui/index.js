@@ -15,3 +15,4 @@ export {
 export { Card, CardStat } from './Card'
 export { DatePicker, DateRange } from './DatePicker'
 export { Table, StatusChip, TableActions } from './Table'
+export { default as SkillsModal } from './SkillsModal'

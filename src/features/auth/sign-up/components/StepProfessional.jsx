@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Stack, TextField, Chip, Box, Typography } from '@mui/material'
-import SkillsModal from './SkillsModal'
+import { SkillsModal } from '@/ui'
 
 const suggestedSkills = [
   'React', 'Node.js', 'Python', 'UI/UX Design', 'Graphic Design',

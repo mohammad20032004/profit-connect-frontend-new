@@ -54,6 +54,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import CreatePost from './CreatePost'
 import AnimatedBox from '@/components/AnimatedBox'
 import { refreshReputation } from '@/services/reputation'
+import { adjustPostsCount } from '@/redux/slices/userSlice'
 
 const btnAnim = { whileTap: { scale: 0.9 }, whileHover: { scale: 1.03 }, transition: { duration: 0.15 } }
 
@@ -540,12 +541,16 @@ export default function PostsSection() {
       }
     }
     setPosts((prev) => [newPost, ...prev])
+    dispatch(adjustPostsCount(1))
     refreshReputation(dispatch)
   }
 
   const handlePostUpdated = (updatedPost) => setPosts((prev) => prev.map((p) => (p._id === updatedPost._id ? updatedPost : p)))
 
-  const handlePostDeleted = (postId) => setPosts((prev) => prev.filter((p) => p._id !== postId))
+  const handlePostDeleted = (postId) => {
+    setPosts((prev) => prev.filter((p) => p._id !== postId))
+    dispatch(adjustPostsCount(-1))
+  }
 
   return (
     <Box sx={{ height: '100%', overflow: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-track': { background: 'transparent' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(180, 160, 200, 0.3)', borderRadius: 3 } }}>

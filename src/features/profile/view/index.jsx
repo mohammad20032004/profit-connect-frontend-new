@@ -16,15 +16,22 @@ import {
   BuildOutlined,
   StarRounded,
 } from '@mui/icons-material'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { refreshProfile } from '@/services/profile'
 
 export default function ProfileView() {
   const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
   const user = useSelector((state) => state.user.user)
   const profile = useSelector((state) => state.user.profile)
   const isRtl = i18n.language === 'ar'
+
+  useEffect(() => {
+    refreshProfile(dispatch)
+  }, [dispatch])
 
   const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
   const avatarSrc = profile?.avatar

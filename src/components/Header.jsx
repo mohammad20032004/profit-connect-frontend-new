@@ -52,7 +52,7 @@ const Header = () => {
     { label: t('nav.alerts'), icon: <NotificationsIcon />, hasBadge: unreadCount > 0, badgeCount: unreadCount, link: '/alerts' },
   ]
 
-  const hiddenRoutes = ['/sign-in', '/sign-up', '/landing']
+  const hiddenRoutes = ['/sign-in', '/sign-up', '/landing', '/settings']
   const menuOpen = Boolean(anchorEl)
 
   const fullName = useMemo(
