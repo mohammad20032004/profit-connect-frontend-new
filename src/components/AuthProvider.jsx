@@ -1,16 +1,38 @@
 import { useEffect, useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
-import { setAuthData } from '@/redux/slices/userSlice'
+import { setAuthData, clearUserProfile } from '@/redux/slices/userSlice'
 import { getMe } from '@/services/authService'
 import { useTranslation } from 'react-i18next'
 import { Box, CircularProgress } from '@mui/material'
+
+let interceptorId = null
+
+function setupAxiosInterceptor(dispatch) {
+  if (interceptorId !== null) return
+  interceptorId = axios.interceptors.response.use(
+    (res) => res,
+    (err) => {
+      if (err?.response?.status === 401) {
+        localStorage.removeItem('profit_connect_token')
+        delete axios.defaults.headers.common['Authorization']
+        dispatch(clearUserProfile())
+        window.location.href = '/sign-in'
+      }
+      return Promise.reject(err)
+    },
+  )
+}
 
 function AuthProvider({ children }) {
   const dispatch = useDispatch()
   const { i18n } = useTranslation()
   const [loading, setLoading] = useState(true)
   const checked = useRef(false)
+
+  useEffect(() => {
+    setupAxiosInterceptor(dispatch)
+  }, [dispatch])
 
   useEffect(() => {
     if (checked.current) return

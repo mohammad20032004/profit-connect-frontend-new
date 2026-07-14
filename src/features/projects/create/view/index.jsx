@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Container, Typography, Stack, Paper, Grid, Button } from '@mui/material'
+import { Container, Typography, Stack, Paper, Grid } from '@mui/material'
+import Button from '@/ui/Button'
 import { ArrowBackOutlined, WorkOutlineOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { createProject, improveText } from '@/services/projectService'
@@ -74,13 +75,7 @@ export default function CreateProject() {
 
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
-        <Button onClick={() => navigate(-1)} sx={{ minWidth: 0, p: 0.5 }}>
-          <ArrowBackOutlined />
-        </Button>
-        <WorkOutlineOutlined sx={{ color: 'primary.main' }} />
-        <Typography variant="h5" fontWeight="bold">{t('projects.postProject', 'Post a New Project')}</Typography>
-      </Stack>
+      
 
       <Paper sx={{ p: 3.5, borderRadius: 3 }}>
         <Grid container spacing={2.5}>

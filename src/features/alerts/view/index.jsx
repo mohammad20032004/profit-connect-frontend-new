@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import {
-  Box, Paper, Typography, Stack, CircularProgress, Button, IconButton, alpha, Chip,
+  Box, Paper, Typography, Stack, CircularProgress, IconButton, alpha, Chip,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
@@ -103,7 +104,7 @@ export default function AlertsView() {
             )}
           </Stack>
           <Button size="small" variant="outlined" startIcon={<DoneAllOutlined />}
-            sx={{ borderRadius: 999, textTransform: 'none', fontSize: '0.8rem' }}
+            sx={{ fontSize: '0.8rem' }}
             onClick={() => items.filter(n => !n.read).forEach(n => handleMarkRead(n._id))}
           >
             {t('dashboard.markAllRead', 'Mark all read')}

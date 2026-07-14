@@ -1,4 +1,5 @@
-import { Box, Container, Paper, Avatar, Typography, Chip, Stack, Button, alpha, Grid } from '@mui/material'
+import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid } from '@mui/material'
+import Button from '@/ui/Button'
 import {
   LocationOnOutlined,
   PeopleAltOutlined,
@@ -183,13 +184,13 @@ export default function ProfileView() {
                   <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('profile.socialLinks')}</Typography>
                   <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
                     {socialLinks?.linkedin && (
-                      <Button href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" size="small" startIcon={<LinkedIn />} sx={{ textTransform: 'none', borderRadius: 1.5, fontSize: '0.8rem' }}>LinkedIn</Button>
+                      <Button href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<LinkedIn />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>LinkedIn</Button>
                     )}
                     {socialLinks?.github && (
-                      <Button href={socialLinks.github} target="_blank" rel="noopener noreferrer" size="small" startIcon={<GitHub />} sx={{ textTransform: 'none', borderRadius: 1.5, fontSize: '0.8rem' }}>GitHub</Button>
+                      <Button href={socialLinks.github} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<GitHub />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>GitHub</Button>
                     )}
                     {socialLinks?.website && (
-                      <Button href={socialLinks.website} target="_blank" rel="noopener noreferrer" size="small" startIcon={<Language />} sx={{ textTransform: 'none', borderRadius: 1.5, fontSize: '0.8rem' }}>{t('companies.website')}</Button>
+                      <Button href={socialLinks.website} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<Language />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>{t('companies.website')}</Button>
                     )}
                   </Stack>
                 </Paper>

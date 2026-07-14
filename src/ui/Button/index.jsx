@@ -6,7 +6,7 @@ import {
   CircularProgress,
 } from '@mui/material'
 
-const variants = {
+const customVariants = {
   primary: { variant: 'contained' },
   secondary: { variant: 'outlined' },
   text: { variant: 'text' },
@@ -26,17 +26,22 @@ function Button({
   sx,
   ...props
 }) {
-  const muiProps = variants[variant] || variants.primary
+  const { startIcon: startIconProp, endIcon: endIconProp, ...cleanProps } = props
+  const isCustomVariant = variant in customVariants
+  const muiProps = isCustomVariant ? customVariants[variant] : { variant }
+  const showIcon = !loading && icon
+  const computedStartIcon = startIconProp || (showIcon && iconPosition === 'left' ? icon : undefined)
+  const computedEndIcon = endIconProp || (showIcon && iconPosition === 'right' ? icon : undefined)
 
   return (
     <MuiButton
       {...muiProps}
-      {...props}
+      {...cleanProps}
       size={size}
       disabled={disabled || loading}
       fullWidth={fullWidth}
-      startIcon={!loading && icon && iconPosition === 'left' ? icon : undefined}
-      endIcon={!loading && icon && iconPosition === 'right' ? icon : undefined}
+      startIcon={computedStartIcon}
+      endIcon={computedEndIcon}
       sx={{
         ...(variant === 'primary' && {
           background: 'linear-gradient(135deg, #3D1C6E, #1F3670)',
@@ -56,6 +61,15 @@ function Button({
         ...(variant === 'danger' && {
           '&:hover': { backgroundColor: '#B91C1C' },
         }),
+        '&.Mui-disabled': {
+          background: 'rgba(122, 122, 140, 0.35)',
+          color: '#fff',
+          opacity: 1,
+          boxShadow: 'none',
+          border: 'none',
+          '-webkit-text-fill-color': '#fff',
+          cursor: 'not-allowed',
+        },
         borderRadius: 999,
         textTransform: 'none',
         fontWeight: 600,

@@ -4,8 +4,9 @@ import { useDispatch } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
-  Box, Chip, Typography, TextField, Button, InputAdornment, IconButton, Stack, Container, CircularProgress,
+  Box, Chip, Typography, TextField, InputAdornment, IconButton, Stack, Container, CircularProgress,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import { ThemeProvider, createTheme, keyframes } from '@mui/material/styles'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -229,8 +230,8 @@ export default function SignInView() {
                     <Box sx={{ animation: 'fadeUp 0.4s ease 0.24s both' }}>
                       <Button fullWidth variant="contained" type="submit" disabled={loading}
                         sx={{
-                          py: 1.55, fontSize: '1rem', fontWeight: 600, borderRadius: 999, bgcolor: '#3D1C6E',
-                          textTransform: 'none', transition: 'all 0.25s ease',
+                          py: 1.55, fontSize: '1rem', fontWeight: 600, bgcolor: '#3D1C6E',
+                          transition: 'all 0.25s ease',
                           '&:hover': { bgcolor: '#2D1055', transform: 'translateY(-1px) scale(1.02)', boxShadow: '0 6px 20px rgba(61,28,110,0.3)' },
                           '&:active': { transform: 'scale(0.98)' },
                           '&:disabled': { bgcolor: '#B5AECB' },

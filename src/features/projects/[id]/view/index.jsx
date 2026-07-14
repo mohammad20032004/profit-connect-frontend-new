@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Button, Avatar, Chip, Divider, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Tooltip, TextField,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, Divider, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Tooltip, TextField,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import {
   ArrowBackOutlined, AttachMoneyOutlined, AccessTimeOutlined, PersonOutlined,
   CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined,
@@ -143,12 +144,12 @@ export default function ProjectDetail() {
 
   if (error) return (<Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><Typography color="error" sx={{ mb: 2 }}>{error}</Typography><Button variant="outlined" onClick={() => fetchProject()}>{t('projects.retry', 'Retry')}</Button></Container>)
   if (loading) return <Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><CircularProgress /></Container>
-  if (!project) return (<Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button onClick={() => navigate('/projects')} sx={{ mt: 2 }}>{t('projects.back', 'Back to Projects')}</Button></Container>)
+  if (!project) return (<Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button variant="text" onClick={() => navigate('/projects')} sx={{ mt: 2 }}>{t('projects.back', 'Back to Projects')}</Button></Container>)
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
-        <Button onClick={() => navigate(-1)} sx={{ minWidth: 0, p: 0.5 }}><ArrowBackOutlined /></Button>
+        <Button variant="text" onClick={() => navigate(-1)} sx={{ minWidth: 0, p: 0.5 }}><ArrowBackOutlined /></Button>
         <Typography variant="h5" fontWeight="bold" sx={{ flex: 1 }} noWrap>{project.title}</Typography>
         <Chip label={t(`projects.statusOptions.${project.status}`, project.status)} color={statusColors[project.status] || 'default'} size="small" />
       </Stack>
@@ -210,9 +211,7 @@ export default function ProjectDetail() {
         <Grid size={{ xs: 12, md: 4 }}>
           <Stack spacing={2.5}>
             {isClient && project?.status !== 'Completed' && project?.status !== 'Cancelled' && (
-              <Button variant="contained" onClick={handleOpenProposals} startIcon={<PersonOutlined />} fullWidth
-                sx={{ borderRadius: 999, textTransform: 'none', fontWeight: 600 }}
-              >
+              <Button variant="contained" onClick={handleOpenProposals} startIcon={<PersonOutlined />} fullWidth>
                 {t('projects.viewProposals', 'View Proposals')} {proposals.length > 0 && `(${proposals.length})`}
               </Button>
             )}
@@ -247,9 +246,7 @@ export default function ProjectDetail() {
                     value={proposalForm.coverLetter}
                     onChange={(e) => setProposalForm(p => ({ ...p, coverLetter: e.target.value }))}
                   />
-                  <Button variant="contained" onClick={handleSubmitProposal} disabled={submitting} fullWidth
-                    sx={{ borderRadius: 999, textTransform: 'none', fontWeight: 600 }}
-                  >
+                  <Button variant="contained" onClick={handleSubmitProposal} disabled={submitting} fullWidth>
                     {submitting ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.submitProposal', 'Submit Proposal')}
                   </Button>
                 </Stack>
@@ -358,13 +355,13 @@ export default function ProjectDetail() {
                             <Button size="small" variant="contained" color="success"
                               onClick={() => handleAcceptProposal(p._id)}
                               startIcon={<VerifiedOutlined />}
-                              sx={{ borderRadius: 999, fontSize: '0.78rem', textTransform: 'none', fontWeight: 600 }}
+                              sx={{ fontSize: '0.78rem' }}
                             >
                               {t('projects.accept', 'Accept')}
                             </Button>
                             <Button size="small" variant="outlined" color="error"
                               onClick={() => handleRejectProposal(p._id)}
-                              sx={{ borderRadius: 999, fontSize: '0.78rem', textTransform: 'none', fontWeight: 600 }}
+                              sx={{ fontSize: '0.78rem' }}
                             >
                               {t('projects.reject', 'Reject')}
                             </Button>
@@ -379,7 +376,7 @@ export default function ProjectDetail() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setProposalsOpen(false)}>{t('common.close', 'Close')}</Button>
+          <Button variant="text" onClick={() => setProposalsOpen(false)}>{t('common.close', 'Close')}</Button>
         </DialogActions>
       </Dialog>
 
@@ -387,7 +384,7 @@ export default function ProjectDetail() {
         <DialogTitle>{t('projects.deleteConfirmTitle', 'Delete this project?')}</DialogTitle>
         <DialogContent><Typography variant="body2">{t('projects.deleteConfirmBody', 'This action cannot be undone.')}</Typography></DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteOpen(false)}>{t('projects.cancel', 'Cancel')}</Button>
+          <Button variant="text" onClick={() => setDeleteOpen(false)}>{t('projects.cancel', 'Cancel')}</Button>
           <Button color="error" variant="contained" onClick={handleDelete} disabled={deleteLoading}>
             {deleteLoading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.delete', 'Delete Project')}
           </Button>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Button, Card, CardContent, Avatar, Chip,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Card, CardContent, Avatar, Chip,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import { AddOutlined, BusinessOutlined, LocationOnOutlined, PeopleOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getCompanies } from '@/services/companyService'

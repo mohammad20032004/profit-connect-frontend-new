@@ -1,5 +1,6 @@
 import React from 'react'
-import { Stack, Button, CircularProgress } from '@mui/material'
+import { Stack, CircularProgress } from '@mui/material'
+import Button from '@/ui/Button'
 
 export default function ProjectFormActions({ loading, onSubmit, onCancel, t }) {
   return (

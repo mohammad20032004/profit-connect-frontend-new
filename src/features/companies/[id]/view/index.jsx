@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Button, Avatar, Chip, IconButton, Divider,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, IconButton, Divider,
   Rating, TextField, Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import {
   ArrowBackOutlined, LocationOnOutlined, BusinessOutlined, PeopleOutlined,
   LanguageOutlined, EmailOutlined, LinkedIn, Twitter, FavoriteBorderOutlined, FavoriteOutlined,
@@ -129,14 +130,14 @@ export default function CompanyDetail() {
             {company.foundedYear && <Typography variant="caption" color="text.secondary"><CalendarMonthOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />Founded {company.foundedYear}</Typography>}
           </Stack>
 
-          <Button fullWidth variant={following ? 'outlined' : 'contained'} size="small" startIcon={following ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleFollow} color={following ? 'error' : 'primary'} sx={{ mt: 1.5, borderRadius: 999, textTransform: 'none', fontWeight: 600 }}>
+          <Button fullWidth variant={following ? 'outlined' : 'contained'} size="small" startIcon={following ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleFollow} color={following ? 'error' : 'primary'} sx={{ mt: 1.5 }}>
             {following ? t('companies.unfollow') : t('companies.follow')} ({followersCount})
           </Button>
-          <Button fullWidth variant="outlined" size="small" startIcon={<StarBorderOutlined />} onClick={() => setRatingOpen(true)} sx={{ mt: 0.5, borderRadius: 999, textTransform: 'none', fontWeight: 600 }}>
+          <Button fullWidth variant="outlined" size="small" startIcon={<StarBorderOutlined />} onClick={() => setRatingOpen(true)} sx={{ mt: 0.5 }}>
             {currentUserRating ? t('companies.updateRating') : t('companies.rate')}
           </Button>
           {isOwner && (
-            <Button fullWidth variant="outlined" size="small" startIcon={<AdminPanelSettingsOutlined />} onClick={() => setAddAdminOpen(true)} sx={{ mt: 0.5, borderRadius: 999, textTransform: 'none', fontWeight: 600 }}>
+            <Button fullWidth variant="outlined" size="small" startIcon={<AdminPanelSettingsOutlined />} onClick={() => setAddAdminOpen(true)} sx={{ mt: 0.5 }}>
               {t('companies.addAdmin')}
             </Button>
           )}
@@ -145,10 +146,10 @@ export default function CompanyDetail() {
 
           <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700 }}>{t('companies.links')}</Typography>
           <Stack spacing={0.3} sx={{ mt: 0.5 }}>
-            {company.website && <Button size="small" startIcon={<LanguageOutlined />} href={company.website} target="_blank" sx={{ textTransform: 'none', justifyContent: 'flex-start', fontSize: '0.78rem', color: 'primary.main', minHeight: 28 }}>{t('companies.website')}</Button>}
-            {company.contactEmail && <Button size="small" startIcon={<EmailOutlined />} href={`mailto:${company.contactEmail}`} sx={{ textTransform: 'none', justifyContent: 'flex-start', fontSize: '0.78rem', color: 'primary.main', minHeight: 28, textOverflow: 'ellipsis', overflow: 'hidden' }}>{company.contactEmail}</Button>}
-            {company.socialLinks?.linkedin && <Button size="small" startIcon={<LinkedIn />} href={company.socialLinks.linkedin} target="_blank" sx={{ textTransform: 'none', justifyContent: 'flex-start', fontSize: '0.78rem', color: '#0A66C2', minHeight: 28 }}>LinkedIn</Button>}
-            {company.socialLinks?.twitter && <Button size="small" startIcon={<Twitter />} href={company.socialLinks.twitter} target="_blank" sx={{ textTransform: 'none', justifyContent: 'flex-start', fontSize: '0.78rem', color: '#1DA1F2', minHeight: 28 }}>X (Twitter)</Button>}
+            {company.website && <Button variant="text" size="small" startIcon={<LanguageOutlined />} href={company.website} target="_blank" sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: 'primary.main', minHeight: 28 }}>{t('companies.website')}</Button>}
+            {company.contactEmail && <Button variant="text" size="small" startIcon={<EmailOutlined />} href={`mailto:${company.contactEmail}`} sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: 'primary.main', minHeight: 28, textOverflow: 'ellipsis', overflow: 'hidden' }}>{company.contactEmail}</Button>}
+            {company.socialLinks?.linkedin && <Button variant="text" size="small" startIcon={<LinkedIn />} href={company.socialLinks.linkedin} target="_blank" sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: '#0A66C2', minHeight: 28 }}>LinkedIn</Button>}
+            {company.socialLinks?.twitter && <Button variant="text" size="small" startIcon={<Twitter />} href={company.socialLinks.twitter} target="_blank" sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: '#1DA1F2', minHeight: 28 }}>X (Twitter)</Button>}
           </Stack>
 
           {company.owner && (
@@ -219,7 +220,7 @@ export default function CompanyDetail() {
                 <Box sx={{ mb: 1, p: 1.5, bgcolor: 'action.hover', borderRadius: 2 }}>
                   <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="caption" fontWeight="bold">{t('companies.yourRating')}</Typography>
-                    <Button size="small" color="error" onClick={handleDeleteRating} sx={{ fontSize: '0.68rem', minHeight: 0, p: 0 }}>{t('companies.deleteRating')}</Button>
+                    <Button variant="text" size="small" color="error" onClick={handleDeleteRating} sx={{ fontSize: '0.68rem', minHeight: 0, p: 0 }}>{t('companies.deleteRating')}</Button>
                   </Stack>
                   <Rating value={currentUserRating.rating} readOnly size="small" />
                   {currentUserRating.review && <Typography variant="caption" sx={{ mt: 0.3, display: 'block' }}>{currentUserRating.review}</Typography>}
@@ -252,7 +253,7 @@ export default function CompanyDetail() {
         <DialogTitle>{t('companies.addAdmin')}</DialogTitle>
         <DialogContent><TextField autoFocus fullWidth label="User ID" value={adminId} onChange={(e) => setAdminId(e.target.value)} sx={{ mt: 1 }} /></DialogContent>
         <DialogActions>
-          <Button onClick={() => setAddAdminOpen(false)}>{t('companies.cancel')}</Button>
+          <Button variant="text" onClick={() => setAddAdminOpen(false)}>{t('companies.cancel')}</Button>
           <Button variant="contained" onClick={handleAddAdmin} disabled={adminLoading || !adminId.trim()}>{adminLoading ? <CircularProgress size={20} /> : t('companies.add')}</Button>
         </DialogActions>
       </Dialog>
@@ -266,7 +267,7 @@ export default function CompanyDetail() {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setRatingOpen(false)}>{t('companies.cancel')}</Button>
+          <Button variant="text" onClick={() => setRatingOpen(false)}>{t('companies.cancel')}</Button>
           <Button variant="contained" onClick={handleRatingSubmit} disabled={ratingLoading}>{ratingLoading ? <CircularProgress size={20} /> : t('common.save')}</Button>
         </DialogActions>
       </Dialog>

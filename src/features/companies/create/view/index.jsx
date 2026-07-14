@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Box, Container, Paper, Typography, Stack, Button, TextField, Grid, IconButton, Alert, CircularProgress,
+  Box, Container, Paper, Typography, Stack, TextField, Grid, IconButton, Alert, CircularProgress,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import { ArrowBackOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { createCompany } from '@/services/companyService'

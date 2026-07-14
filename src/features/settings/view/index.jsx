@@ -11,7 +11,6 @@ import {
   FormControlLabel,
   Divider,
   Avatar,
-  Button,
   Alert,
   Select,
   MenuItem,
@@ -21,6 +20,7 @@ import {
   Tabs,
   Tab,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import { SaveOutlined, LanguageOutlined, PaletteOutlined, NotificationsOutlined, LockOutlined } from '@mui/icons-material'
 import { updateSettings } from '@/redux/slices/userSlice'
 import { updateSettings as updateSettingsApi } from '@/services/settingsService'

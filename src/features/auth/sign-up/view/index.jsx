@@ -4,8 +4,9 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import {
-  Container, Box, Typography, Button, Stack, Chip, Stepper, Step, StepLabel, Paper, CircularProgress, IconButton,
+  Container, Box, Typography, Stack, Chip, Stepper, Step, StepLabel, Paper, CircularProgress, IconButton,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import { ThemeProvider, createTheme, keyframes } from '@mui/material/styles'
 import { signup } from '@/services/authService'
 import { setAuthData } from '@/redux/slices/userSlice'
@@ -278,10 +279,10 @@ export default function SignUpView() {
                   )}
 
                   <Stack direction="row" spacing={2} sx={{ justifyContent: 'space-between', mt: 3.5 }}>
-                    <Button disabled={activeStep === 0} onClick={handleBack}
+                    <Button disabled={activeStep === 0} onClick={handleBack} variant="text"
                       sx={{
-                        color: '#5C5580', fontWeight: 600, borderRadius: 999, px: 3, py: 1,
-                        transition: 'all 0.25s ease', textTransform: 'none',
+                        color: '#5C5580', fontWeight: 600, px: 3, py: 1,
+                        transition: 'all 0.25s ease',
                         '&:hover': { bgcolor: 'rgba(61,28,110,0.06)', transform: 'translateX(-2px)' },
                         '&:disabled': { opacity: 0.4 },
                       }}
@@ -291,8 +292,8 @@ export default function SignUpView() {
                     {activeStep < steps.length - 1 ? (
                       <Button variant="contained" onClick={handleNext}
                         sx={{
-                          borderRadius: 999, px: 4, py: 1, fontWeight: 600, bgcolor: '#3D1C6E',
-                          textTransform: 'none', transition: 'all 0.25s ease',
+                          px: 4, py: 1, fontWeight: 600, bgcolor: '#3D1C6E',
+                          transition: 'all 0.25s ease',
                           '&:hover': { bgcolor: '#2D1055', transform: 'translateY(-1px) scale(1.02)', boxShadow: '0 6px 20px rgba(61,28,110,0.3)' },
                           '&:active': { transform: 'scale(0.98)' },
                         }}
@@ -302,8 +303,7 @@ export default function SignUpView() {
                     ) : (
                       <Button variant="contained" onClick={handleSubmit} disabled={loading}
                         sx={{
-                          borderRadius: 999, px: 4, py: 1, fontWeight: 600, bgcolor: '#3D1C6E',
-                          textTransform: 'none', minWidth: 140, transition: 'all 0.25s ease',
+                          px: 4, py: 1, fontWeight: 600, bgcolor: '#3D1C6E', minWidth: 140, transition: 'all 0.25s ease',
                           '&:hover': { bgcolor: '#2D1055', transform: 'translateY(-1px) scale(1.02)', boxShadow: '0 6px 20px rgba(61,28,110,0.3)' },
                           '&:active': { transform: 'scale(0.98)' },
                           '&:disabled': { bgcolor: '#B5AECB' },

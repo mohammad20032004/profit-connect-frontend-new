@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Typography, Stack, CircularProgress, Button, Card, CardContent, Avatar, Chip, Paper, TextField, MenuItem, alpha,
+  Box, Container, Typography, Stack, CircularProgress, Card, CardContent, Avatar, Chip, Paper, TextField, MenuItem, alpha,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import {
   WorkOutlineOutlined, CodeOutlined, DesignServicesOutlined, AttachMoneyOutlined,
   AccessTimeOutlined, PersonOutlined, AddOutlined, SearchOutlined, PostAddOutlined,
@@ -121,12 +122,12 @@ export default function ProjectsList() {
           <Button variant={mine ? 'contained' : 'outlined'} color={mine ? 'secondary' : 'primary'}
             startIcon={<WorkOutlineOutlined />}
             onClick={() => setMine(v => !v)}
-            sx={{ flexShrink: 0, borderRadius: 999, px: 2.5, fontWeight: 600, textTransform: 'none', whiteSpace: 'nowrap', minWidth: 140 }}
+            sx={{ flexShrink: 0, px: 2.5, whiteSpace: 'nowrap', minWidth: 140 }}
           >
             {mine ? t('projects.myProjects', 'My Projects') : t('projects.myProjects', 'My Projects')}
           </Button>
           <Button variant="contained" startIcon={<PostAddOutlined />} component={Link} to="/projects/create"
-            sx={{ flexShrink: 0, borderRadius: 999, px: 3, fontWeight: 600, textTransform: 'none', whiteSpace: 'nowrap' }}
+            sx={{ flexShrink: 0, px: 3, whiteSpace: 'nowrap' }}
           >
             {t('projects.postProject', 'Post a New Project')}
           </Button>

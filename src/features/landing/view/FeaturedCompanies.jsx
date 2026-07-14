@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Button, Chip, Container, Stack, Typography, Card, Avatar, CircularProgress, Rating } from '@mui/material'
+import { Box, Chip, Container, Stack, Typography, Card, Avatar, CircularProgress, Rating } from '@mui/material'
+import Button from '@/ui/Button'
 import { keyframes } from '@mui/system'
 import BusinessOutlined from '@mui/icons-material/BusinessOutlined'
 import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined'
@@ -211,8 +212,6 @@ export default function FeaturedCompanies() {
               fontWeight: 600,
               px: 5,
               py: 1.5,
-              borderRadius: 9999,
-              textTransform: 'none',
               borderColor: 'rgba(31,13,66,0.15)',
               color: palette.berry,
               fontSize: '0.95rem',

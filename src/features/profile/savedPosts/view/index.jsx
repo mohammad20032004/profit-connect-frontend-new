@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Container, Paper, Typography, Stack, CircularProgress, Button } from '@mui/material'
+import { Container, Paper, Typography, Stack, CircularProgress } from '@mui/material'
+import Button from '@/ui/Button'
 import ArrowBackOutlined from '@mui/icons-material/ArrowBackOutlined'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -29,7 +30,7 @@ export default function SavedPostsView() {
   return (
     <Container maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 3 }}>
-        <Button component={Link} to="/profile" startIcon={<ArrowBackOutlined />} sx={{ borderRadius: 999, textTransform: 'none' }}>
+        <Button component={Link} to="/profile" variant="text" startIcon={<ArrowBackOutlined />}>
           {t('profile.title', 'My Profile')}
         </Button>
       </Stack>

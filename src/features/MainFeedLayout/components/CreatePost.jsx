@@ -5,7 +5,6 @@ import {
   Typography,
   Avatar,
   Stack,
-  Button,
   TextField,
   IconButton,
   Divider,
@@ -17,6 +16,7 @@ import {
   MenuItem,
   FormControl,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { createPost } from '@/services/postService'
@@ -294,7 +294,7 @@ export default function CreatePost({ onPostCreated }) {
             variant="contained"
             onClick={handleSubmit}
             disabled={!content.trim() || loading}
-            sx={{ borderRadius: 1, py: 1, fontWeight: 600, textTransform: 'none', fontSize: '0.95rem', '&.Mui-disabled': { background: '#e4e6eb !important', color: '#000 !important' } }}
+            sx={{ borderRadius: 1, py: 1, fontSize: '0.95rem', '&.Mui-disabled': { background: '#e4e6eb !important', color: '#000 !important' } }}
           >
             {loading ? t('dashboard.post.posting') : t('dashboard.post.post')}
           </Button>

@@ -16,12 +16,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   FormControl,
   InputLabel,
   Select,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import {
   ArrowBackOutlined,
   MoreVertOutlined,
@@ -220,7 +220,7 @@ export default function PostPage() {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
+          <Button variant="text" onClick={() => setEditOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
           <Button variant="contained" onClick={handleEditSave} disabled={editLoading || !editForm.content.trim()}>
             {editLoading ? <CircularProgress size={20} /> : t('common.save', 'Save')}
           </Button>
@@ -233,7 +233,7 @@ export default function PostPage() {
           <Typography>{t('dashboard.deleteConfirmBody', 'This action cannot be undone.')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
+          <Button variant="text" onClick={() => setDeleteDialogOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
           <Button variant="contained" color="error" onClick={handleDelete} disabled={deleteLoading}>
             {deleteLoading ? <CircularProgress size={20} /> : t('dashboard.deletePost', 'Delete')}
           </Button>

@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
-import { Stack, Box, Avatar, Typography, Button, alpha } from '@mui/material'
+import { Stack, Box, Avatar, Typography, alpha } from '@mui/material'
+import Button from '@/ui/Button'
 
 export default function StepAvatarReview({ form, setForm }) {
   const inputRef = useRef(null)
@@ -35,8 +36,8 @@ export default function StepAvatarReview({ form, setForm }) {
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.15s both' }}>
         <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={handleFile} />
         <Button variant="outlined" onClick={() => inputRef.current?.click()}
-          sx={{
-            borderRadius: 999, px: 3, borderColor: '#3D1C6E44', color: '#3D1C6E', fontWeight: 600,
+            sx={{
+            px: 3, borderColor: '#3D1C6E44', color: '#3D1C6E',
             transition: 'all 0.25s ease',
             '&:hover': { borderColor: '#3D1C6E', bgcolor: 'rgba(61,28,110,0.04)', transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(61,28,110,0.12)' },
           }}

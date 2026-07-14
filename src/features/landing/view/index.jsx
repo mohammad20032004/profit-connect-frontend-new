@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Button, Chip, Container, Stack, Typography, Card, Avatar, CircularProgress, Rating } from '@mui/material'
+import { Box, Chip, Container, Stack, Typography, Card, Avatar, CircularProgress, Rating } from '@mui/material'
+import Button from '@/ui/Button'
 import { keyframes } from '@mui/system'
 import HubIcon from '@mui/icons-material/Hub'
 import InsightsIcon from '@mui/icons-material/Insights'
@@ -388,8 +389,6 @@ function FloatButtons() {
             fontWeight: 700,
             px: 3,
             py: 1.3,
-            borderRadius: 9999,
-            textTransform: 'none',
             color: palette.navyMid,
             borderColor: 'rgba(12,24,40,0.16)',
             bgcolor: 'rgba(255,255,255,0.72)',
@@ -406,8 +405,6 @@ function FloatButtons() {
             fontWeight: 700,
             px: 4,
             py: 1.3,
-            borderRadius: 9999,
-            textTransform: 'none',
             background: 'linear-gradient(135deg, #12082a 0%, #1f0d42 55%, #3d1c6e 140%)',
             boxShadow: '0px 10px 28px rgba(18,8,42,0.3)',
             '&:hover': {

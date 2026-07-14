@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Paper, Typography, Stack, CircularProgress, Button, Avatar, Chip, Divider, alpha, Tooltip, Dialog, DialogTitle, DialogContent, Grid, useMediaQuery,
+  Box, Paper, Typography, Stack, CircularProgress, Avatar, Chip, Divider, alpha, Tooltip, Dialog, DialogTitle, DialogContent, Grid, useMediaQuery,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import {
   ArrowBackOutlined, AttachMoneyOutlined, AccessTimeOutlined, PersonOutlined, EditOutlined,
   CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined,
@@ -164,9 +165,9 @@ export default function MyProjectDetail() {
     }
   }
 
-  if (error) return (<Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}><Typography color="error">{error}</Typography><Button variant="outlined" onClick={() => fetchProject()}>{t('projects.retry', 'Retry')}</Button></Box>)
+  if (error) return (<Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}><Typography color="error">{error}</Typography><Button variant="outlined" onClick={() => fetchProject()}>{t('projects.retry', 'Retry')}</Button></Box>);
   if (loading) return <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></Box>
-  if (!project) return (<Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button onClick={() => navigate('/projects')}>{t('projects.back', 'Back to Projects')}</Button></Box>)
+  if (!project) return (<Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button variant="text" onClick={() => navigate('/projects')}>{t('projects.back', 'Back to Projects')}</Button></Box>)
 
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
@@ -212,7 +213,7 @@ export default function MyProjectDetail() {
                 </Stack>
               )}
                 <Button size="small" variant="outlined" onClick={openEdit} startIcon={<EditOutlined />} fullWidth
-                  sx={{ mt: 1.5, borderRadius: 999, textTransform: 'none', fontWeight: 600, fontSize: '0.8rem' }}
+                  sx={{ mt: 1.5, fontSize: '0.8rem' }}
                 >
                   {t('projects.edit', 'Edit')}
                 </Button>
@@ -284,13 +285,13 @@ export default function MyProjectDetail() {
                             <Button size="small" variant="contained" color="success"
                               onClick={() => handleAcceptProposal(p._id)}
                               startIcon={<VerifiedOutlined />}
-                              sx={{ borderRadius: 999, fontSize: '0.75rem', textTransform: 'none', fontWeight: 600 }}
+                              sx={{ fontSize: '0.75rem' }}
                             >
                               {t('projects.accept', 'Accept')}
                             </Button>
                             <Button size="small" variant="outlined" color="error"
                               onClick={() => handleRejectProposal(p._id)}
-                              sx={{ borderRadius: 999, fontSize: '0.75rem', textTransform: 'none', fontWeight: 600 }}
+                              sx={{ fontSize: '0.75rem' }}
                             >
                               {t('projects.reject', 'Reject')}
                             </Button>

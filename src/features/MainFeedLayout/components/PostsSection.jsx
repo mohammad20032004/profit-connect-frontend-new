@@ -8,7 +8,6 @@ import {
   IconButton,
   Divider,
   CircularProgress,
-  Button,
   TextField,
   Menu,
   MenuItem,
@@ -21,6 +20,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material'
+import Button from '@/ui/Button'
 import {
   EditOutlined,
   DeleteOutlined,
@@ -359,22 +359,22 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
 
       <Stack direction="row" sx={{ px: 1, py: 0.5 }}>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth startIcon={liked ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleLike} sx={{ color: liked ? 'error.main' : 'text.secondary', fontWeight: liked ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'error.light', color: 'error.main' } }}>
+          <Button fullWidth variant="text" startIcon={liked ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleLike} sx={{ color: liked ? 'error.main' : 'text.secondary', fontWeight: liked ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'error.light', color: 'error.main' } }}>
             {t('dashboard.action.like')}
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth startIcon={<ChatBubbleOutlineOutlined />} onClick={() => setShowComments(!showComments)} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+          <Button fullWidth variant="text" startIcon={<ChatBubbleOutlineOutlined />} onClick={() => setShowComments(!showComments)} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
             {t('dashboard.action.comment')}
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth startIcon={<RepeatOutlined />} onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`); alert(t('dashboard.action.linkCopied', 'Link copied to clipboard')) }} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+          <Button fullWidth variant="text" startIcon={<RepeatOutlined />} onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`); alert(t('dashboard.action.linkCopied', 'Link copied to clipboard')) }} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
             {t('dashboard.action.share')}
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth startIcon={saved ? <BookmarkOutlined /> : <BookmarkBorderOutlined />} onClick={handleSave} disabled={saveLoading} sx={{ color: saved ? 'primary.main' : 'text.secondary', fontWeight: saved ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+          <Button fullWidth variant="text" startIcon={saved ? <BookmarkOutlined /> : <BookmarkBorderOutlined />} onClick={handleSave} disabled={saveLoading} sx={{ color: saved ? 'primary.main' : 'text.secondary', fontWeight: saved ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
             {t('dashboard.action.save')}
           </Button>
         </Box>
@@ -454,7 +454,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
+          <Button variant="text" onClick={() => setEditOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
           <Button variant="contained" onClick={handleEditSave} disabled={editLoading || !editForm.content.trim()}>
             {editLoading ? <CircularProgress size={20} /> : t('common.save', 'Save')}
           </Button>
@@ -467,7 +467,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
           <Typography>{t('dashboard.deleteConfirmBody', 'This action cannot be undone.')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
+          <Button variant="text" onClick={() => setDeleteDialogOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
           <Button variant="contained" color="error" onClick={handleDelete} disabled={deleteLoading}>
             {deleteLoading ? <CircularProgress size={20} /> : t('dashboard.deletePost', 'Delete')}
           </Button>
@@ -570,7 +570,7 @@ export default function PostsSection() {
             </Stack>
             {hasMore && (
               <Box sx={{ textAlign: 'center', mt: 1 }}>
-                <Button variant="outlined" onClick={handleLoadMore} disabled={loading} sx={{ borderRadius: 999, px: 4 }}>
+                <Button variant="outlined" onClick={handleLoadMore} disabled={loading} sx={{ px: 4 }}>
                   {loading ? <CircularProgress size={20} /> : t('dashboard.loadMore')}
                 </Button>
               </Box>
