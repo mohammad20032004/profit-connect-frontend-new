@@ -11,7 +11,6 @@ import {
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import Button from '@/ui/Button'
 
 export default function InfoSide() {
   const user = useSelector((state) => state.user.user)
@@ -23,38 +22,45 @@ export default function InfoSide() {
   const skills = user?.professional?.skills || []
 
   return (
-    <Paper elevation={0} sx={{ borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: 'divider', minWidth:300 }}>
-      <Box sx={{ textAlign: 'center', pt: 4, pb: 2.5, px: 2 }}>
+    <Paper elevation={0} sx={{ borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', minWidth: 280, maxWidth: 320 }} role="complementary" aria-label={t('profile.profileCard', 'Profile Card')}>
+      {/* Profile Header Section */}
+      <Box sx={{ textAlign: 'center', pt: 3, pb: 2, px: 2.5 }}>
         <Avatar
           src={avatarSrc}
+          alt={fullName}
+          aria-label={t('profile.profilePicture', 'Profile Picture')}
           sx={(theme) => ({
-            width: 110,
-            height: 110,
+            width: 88,
+            height: 88,
             mx: 'auto',
-            mb: 2,
+            mb: 1.5,
             border: '3px solid',
-            borderColor: alpha(theme.palette.primary.main, 0.3),
-            boxShadow: `0 8px 24px ${alpha(theme.palette.common.black, 0.08)}`,
+            borderColor: alpha(theme.palette.primary.main, 0.25),
+            boxShadow: `0 6px 20px ${alpha(theme.palette.common.black, 0.1)}`,
+            fontSize: '1.75rem',
+            fontWeight: 700,
+            bgcolor: alpha(theme.palette.primary.main, 0.1),
+            color: theme.palette.primary.main,
           })}
         >
           {fullName?.charAt(0)?.toUpperCase()}
         </Avatar>
 
-        <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.3 }}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ lineHeight: 1.3, letterSpacing: '-0.01em' }}>
           {fullName}
         </Typography>
 
         {profile?.headline && (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, px: 1, lineHeight: 1.4 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, px: 1, lineHeight: 1.4, display: 'block' }}>
             {profile.headline}
           </Typography>
         )}
 
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'center', mt: 1, flexWrap: 'wrap' }}>
-          {user?.role && <Chip label={user.role} size="small" color="primary" variant="outlined" sx={{ height: 24 }} />}
+        <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', justifyContent: 'center', mt: 1.25, flexWrap: 'wrap', gap: 0.5 }}>
+          {user?.role && <Chip label={user.role} size="small" color="primary" variant="outlined" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 600 }} />}
           {profile?.location && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
-              <LocationOnOutlined sx={{ fontSize: 14 }} />
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.25, fontSize: '0.7rem' }}>
+              <LocationOnOutlined sx={{ fontSize: 12 }} />
               {profile.location}
             </Typography>
           )}
@@ -63,82 +69,86 @@ export default function InfoSide() {
         <Chip
           icon={
             Rscore >= 4000
-              ? <Box component="img" src="/Images/High-Score.gif" sx={{ width: 18, height: 18 }} />
-              : <WorkspacePremiumRounded sx={{ color: 'primary.light', fontSize: 18 }} />
+              ? <Box component="img" src="/Images/High-Score.gif" sx={{ width: 16, height: 16 }} />
+              : <WorkspacePremiumRounded sx={{ color: 'primary.light', fontSize: 16 }} />
           }
           label={`${t('profile.rScore')}: ${Rscore}`}
           sx={{
-            mt: 1.5,
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+            mt: 1.25,
+            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
             color: 'primary.dark',
             fontWeight: 700,
-            height: 30,
+            fontSize: '0.75rem',
+            height: 28,
             borderRadius: 1.5,
             '& .MuiChip-icon': { ml: 0.5 },
           }}
         />
       </Box>
 
-      <Divider />
+      <Divider sx={{ mx: 2 }} />
 
-      <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} sx={{ py: 1.5 }}>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>
-          <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.2 }}>{profile?.postsCount ?? 0}</Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.3 }}>
-            <PostAddOutlined sx={{ fontSize: 13 }} />
+      {/* Stats Section */}
+      <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} sx={{ py: 1.5, px: 1 }}>
+        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: 1 }, transition: 'all 0.2s' }}>
+          <Typography variant="subtitle1" fontWeight={800} sx={{ lineHeight: 1.2, color: 'text.primary' }}>{profile?.postsCount ?? 0}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25, fontSize: '0.68rem', mt: 0.25 }}>
+            <PostAddOutlined sx={{ fontSize: 12 }} />
             {t('profile.posts')}
           </Typography>
         </Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>
-          <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.2 }}>{profile?.followersCount ?? 0}</Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.3 }}>
-            <PeopleAltOutlined sx={{ fontSize: 13 }} />
+        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: 1 }, transition: 'all 0.2s' }}>
+          <Typography variant="subtitle1" fontWeight={800} sx={{ lineHeight: 1.2, color: 'text.primary' }}>{profile?.followersCount ?? 0}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25, fontSize: '0.68rem', mt: 0.25 }}>
+            <PeopleAltOutlined sx={{ fontSize: 12 }} />
             {t('profile.followers')}
           </Typography>
         </Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>
-          <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1.2 }}>{profile?.followingCount ?? 0}</Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.3 }}>
-            <PersonOutlineOutlined sx={{ fontSize: 13 }} />
+        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: 1 }, transition: 'all 0.2s' }}>
+          <Typography variant="subtitle1" fontWeight={800} sx={{ lineHeight: 1.2, color: 'text.primary' }}>{profile?.followingCount ?? 0}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25, fontSize: '0.68rem', mt: 0.25 }}>
+            <PersonOutlineOutlined sx={{ fontSize: 12 }} />
             {t('profile.following')}
           </Typography>
         </Box>
       </Stack>
 
+      {/* Skills Section */}
       {skills.length > 0 && (
         <>
-          <Divider />
-          <Box sx={{ px: 2, py: 2 }}>
-            <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
+          <Divider sx={{ mx: 2 }} />
+          <Box sx={{ px: 2, py: 1.75 }} role="list" aria-label={t('profile.skills', 'Skills')}>
+            <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.75 }}>
               {skills.slice(0, 8).map((skill) => (
                 <Chip
                   key={skill}
                   label={skill}
                   size="small"
-                  icon={<BuildOutlined sx={{ fontSize: 13 }} />}
-                  sx={{ height: 26, borderRadius: 1.5 }}
+                  role="listitem"
+                  icon={<BuildOutlined sx={{ fontSize: 12 }} aria-hidden="true" />}
+                  sx={{ height: 26, fontSize: '0.72rem', fontWeight: 500, borderRadius: 1.5, bgcolor: 'action.hover', '&:hover': { bgcolor: 'action.selected' } }}
                 />
               ))}
               {skills.length > 8 && (
-                <Button
+                <Chip
                   component={Link}
                   to="/profile"
+                  label={t('profile.more', 'More')}
                   size="small"
-                  sx={{ height: 26, borderRadius: 1.5, textTransform: 'none', px: 1.5 }}
-                >
-                  {t('profile.more', 'More')}
-                </Button>
+                  sx={{ height: 26, fontSize: '0.72rem', fontWeight: 600, borderRadius: 1.5, bgcolor: 'primary.main', color: 'primary.contrastText', cursor: 'pointer', '&:hover': { bgcolor: 'primary.dark' } }}
+                />
               )}
             </Stack>
           </Box>
         </>
       )}
 
-      <Divider />
+      <Divider sx={{ mx: 2 }} />
 
-      <Box component={Link} to="/profile/savedPosts" sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 2, py: 1.8, textDecoration: 'none', color: 'text.primary', '&:hover': { bgcolor: 'action.hover' } }}>
-        <BookmarkBorderOutlined sx={{ color: 'primary.main', fontSize: 20 }} />
-        <Typography variant="subtitle2" fontWeight="bold">
+      {/* Saved Posts Link */}
+      <Box component={Link} to="/profile/savedPosts" sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 2.5, py: 1.5, textDecoration: 'none', color: 'text.primary', transition: 'all 0.2s', '&:hover': { bgcolor: 'action.hover', '& .savedIcon': { color: 'primary.main' } } }}>
+        <BookmarkBorderOutlined className="savedIcon" sx={{ color: 'text.secondary', fontSize: 18, transition: 'color 0.2s' }} />
+        <Typography variant="body2" fontWeight={600} sx={{ fontSize: '0.85rem' }}>
           {t('profile.savedPosts', 'Saved Posts')}
         </Typography>
       </Box>

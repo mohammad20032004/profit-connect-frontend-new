@@ -16,21 +16,27 @@ function DashboardView() {
         maxWidth="xl"
         sx={{ height: '100%', py: 2 }}
       >
-        <Grid container spacing={3} sx={{ height: '100%' }}>
-          <Grid size={{ xs: 12, md: 3 }} sx={{ height: '100%', overflow: 'hidden', py: 'auto' }}>
+        <Grid container spacing={2} sx={{ height: '100%' }}>
+          <Grid
+            size={{ xs: 12, lg: 3 }}
+            sx={{ height: '100%', overflow: 'hidden', py: 'auto', display: { xs: 'none', md: 'none', lg: 'block' } }}
+          >
             <AnimatedBox delay={0} sx={{ height: '100%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
               <InfoSide />
             </AnimatedBox>
           </Grid>
           <Grid
-            size={{ xs: 12, md: 6 }}
+            size={{ xs: 12, lg: 6 }}
             sx={{ height: '100%', overflow: 'hidden' }}
           >
             <AnimatedBox delay={0.1} sx={{ height: '100%', overflow: 'hidden' }}>
               <PostsSection />
             </AnimatedBox>
           </Grid>
-          <Grid size={{ xs: 12, md: 3 }} sx={{ height: '100%', overflow: 'hidden' }}>
+          <Grid
+            size={{ xs: 12, lg: 3 }}
+            sx={{ height: '100%', overflow: 'hidden', display: { xs: 'none', md: 'none', lg: 'block' } }}
+          >
             <AnimatedBox delay={0.2} sx={{ height: '100%' }}>
               <TopCompaniesSidebar />
             </AnimatedBox>

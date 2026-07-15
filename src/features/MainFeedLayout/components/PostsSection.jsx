@@ -21,6 +21,7 @@ import {
   InputLabel,
 } from '@mui/material'
 import Button from '@/ui/Button'
+import RichTextEditor from '@/ui/RichTextEditor'
 import {
   EditOutlined,
   DeleteOutlined,
@@ -240,23 +241,23 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
     <Paper sx={{ p: 0, overflow: 'hidden' }}>
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
-          <Avatar src={avatarSrc} sx={{ width: 48, height: 48 }}>
+          <Avatar src={avatarSrc} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }}>
             {fullName?.charAt(0)?.toUpperCase()}
           </Avatar>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
               <Box sx={{ minWidth: 0 }}>
-                <Typography variant="subtitle1" fontWeight="bold" noWrap>
+                <Typography variant="subtitle2" fontWeight={700} noWrap sx={{ color: 'text.primary', fontSize: '0.9rem' }}>
                   {fullName}
                 </Typography>
                 {headline && (
-                  <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block', lineHeight: 1.2 }}>
+                  <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block', lineHeight: 1.3, mt: 0.15 }}>
                     {headline}
                   </Typography>
                 )}
-                <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', mt: 0.25 }}>
-                  <AccessTimeOutlined sx={{ fontSize: 12, color: 'text.disabled' }} />
-                  <Typography variant="caption" color="text.disabled">
+                <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', mt: 0.5 }}>
+                  <AccessTimeOutlined sx={{ fontSize: 11, color: 'text.disabled' }} />
+                  <Typography variant="caption" sx={{ fontSize: '0.65rem', color: 'text.disabled' }}>
                     {formatTime(post?.createdAt, t)}
                   </Typography>
                 </Stack>
@@ -307,19 +308,44 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
         {post?.content && (
           <>
             {(() => {
-              const text = showTranslated && translatedContent ? translatedContent : post.content
-              const isLong = text.length > MAX_CHARS
-              const displayText = isLong && !expanded ? text.slice(0, MAX_CHARS) + '...' : text
+              const htmlContent = showTranslated && translatedContent ? translatedContent : post.content
+              const plainText = htmlContent.replace(/<[^>]*>/g, '')
+              const isLong = plainText.length > MAX_CHARS
+              const displayContent = isLong && !expanded
+                ? htmlContent.slice(0, Math.min(MAX_CHARS, htmlContent.length))
+                : htmlContent
               return (
-                <Typography variant="body1" sx={{ mt: 2, whiteSpace: 'pre-line', lineHeight: 1.7, color: 'text.primary' }}>
-                  {displayText}
-                </Typography>
+                <Box
+                  className="post-content"
+                  dangerouslySetInnerHTML={{ __html: displayContent }}
+                  sx={{
+                    mt: 2,
+                    lineHeight: 1.65,
+                    color: 'text.primary',
+                    fontSize: '0.9rem',
+                    '& p': { m: '0 0 0.5em 0', '&:last-child': { mb: 0 } },
+                    '& strong': { fontWeight: 700 },
+                    '& em': { fontStyle: 'italic' },
+                    '& blockquote': {
+                      borderLeft: '3px solid',
+                      borderColor: 'primary.main',
+                      pl: 2,
+                      ml: 0,
+                      color: 'text.secondary',
+                      fontStyle: 'italic',
+                      my: 1,
+                    },
+                    '& ul, & ol': { pl: 3, my: 1 },
+                    '& li': { mb: 0.25 },
+                    '& mark': { borderRadius: '2px', px: 0.5 },
+                  }}
+                />
               )
             })()}
             <Stack direction="row" spacing={2} sx={{ mt: 0.5 }}>
               {(() => {
-                const currentText = showTranslated && translatedContent ? translatedContent : post.content
-                return currentText.length > MAX_CHARS ? (
+                const plainText = (showTranslated && translatedContent ? translatedContent : post.content).replace(/<[^>]*>/g, '')
+                return plainText.length > MAX_CHARS ? (
                   <Box onClick={() => setExpanded(!expanded)} sx={{ cursor: 'pointer', color: 'text.secondary', fontWeight: 600, fontSize: '0.85rem', '&:hover': { textDecoration: 'underline', color: 'primary.main' } }}>
                     {expanded ? t('dashboard.showLess', 'Show less') : t('dashboard.showMore', 'Show more')}
                   </Box>
@@ -403,7 +429,18 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
                       </Avatar>
                       <Box sx={{ bgcolor: 'action.hover', borderRadius: 2, p: 1.5, flex: 1, position: 'relative' }}>
                         <Typography variant="subtitle2" fontWeight="bold">{cName}</Typography>
-                        <Typography variant="body2">{comment.content}</Typography>
+                        <Box
+                          className="comment-content"
+                          dangerouslySetInnerHTML={{ __html: comment.content }}
+                          sx={{
+                            fontSize: '0.8125rem',
+                            lineHeight: 1.5,
+                            color: 'text.primary',
+                            '& strong': { fontWeight: 700 },
+                            '& em': { fontStyle: 'italic' },
+                            '& mark': { borderRadius: '2px', px: 0.5 },
+                          }}
+                        />
                         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                           <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
                             {formatTime(comment.createdAt, t)}
@@ -444,7 +481,17 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
       <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{t('dashboard.editPost', 'Edit post')}</DialogTitle>
         <DialogContent>
-          <TextField autoFocus fullWidth multiline rows={4} sx={{ mt: 1 }} value={editForm.content} onChange={(e) => setEditForm((prev) => ({ ...prev, content: e.target.value }))} />
+          <Box sx={{
+            mt: 1,
+            borderRadius: 2,
+            bgcolor: 'background.paper',
+          }}>
+            <RichTextEditor
+              content={editForm.content}
+              onChange={(html) => setEditForm((prev) => ({ ...prev, content: html }))}
+              placeholder={t('dashboard.post.whatToTalk', 'What do you want to talk about?')}
+            />
+          </Box>
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>{t('dashboard.visibility', 'Visibility')}</InputLabel>
             <Select value={editForm.visibility} label={t('dashboard.visibility', 'Visibility')} onChange={(e) => setEditForm((prev) => ({ ...prev, visibility: e.target.value }))}>
@@ -456,7 +503,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
         </DialogContent>
         <DialogActions>
           <Button variant="text" onClick={() => setEditOpen(false)}>{t('dashboard.post.cancel', 'Cancel')}</Button>
-          <Button variant="contained" onClick={handleEditSave} disabled={editLoading || !editForm.content.trim()}>
+          <Button variant="contained" onClick={handleEditSave} disabled={editLoading || editForm.content.replace(/<[^>]*>/g, '').trim().length === 0}>
             {editLoading ? <CircularProgress size={20} /> : t('common.save', 'Save')}
           </Button>
         </DialogActions>

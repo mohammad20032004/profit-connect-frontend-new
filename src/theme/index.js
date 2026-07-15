@@ -77,18 +77,18 @@ const lightPalette = {
     light: '#FBF9FE',
   },
   text: {
-    primary: '#1F0A3B',
-    secondary: '#5C5580',
-    disabled: '#B5AECB',
+    primary: '#1A0A30',
+    secondary: '#4A4260',
+    disabled: '#9E96B5',
   },
-  divider: alpha('#1F0A3B', 0.08),
+  divider: alpha('#1A0A30', 0.1),
   success: { main: '#16A34A', light: '#DCFCE7', dark: '#15803D' },
   error: { main: '#DC2626', light: '#FEE2E2', dark: '#B91C1C' },
-  warning: { main: '#F59E0B', light: '#FEF3C7', dark: '#D97706' },
-  info: { main: '#3B82F6', light: '#DBEAFE', dark: '#2563EB' },
+  warning: { main: '#D97706', light: '#FEF3C7', dark: '#B45309' },
+  info: { main: '#2563EB', light: '#DBEAFE', dark: '#1D4ED8' },
   grey: {
     50: '#F9F8FB', 100: '#F2F0F6', 200: '#E8E5EE', 300: '#D4CFE0',
-    400: '#B5AECB', 500: '#8F86AD', 600: '#6B6390', 700: '#4D4573',
+    400: '#A8A0BF', 500: '#7D75A0', 600: '#5C5580', 700: '#4D4573',
     800: '#332C55', 900: '#1A1533',
   },
 }
@@ -97,24 +97,24 @@ const darkPalette = {
   primary: darkPurpleDark,
   secondary: darkNavyDark,
   background: {
-    default: '#0F0B1A',
-    paper: '#1A1533',
-    light: '#1F1A38',
+    default: '#0D0919',
+    paper: '#181230',
+    light: '#1E1738',
   },
   text: {
-    primary: '#E8E2F2',
-    secondary: '#A89FC8',
-    disabled: '#5C5580',
+    primary: '#F0EAF8',
+    secondary: '#B8B0D0',
+    disabled: '#6B6390',
   },
-  divider: alpha('#E8E2F2', 0.08),
+  divider: alpha('#F0EAF8', 0.1),
   success: { main: '#4ADE80', light: '#052E16', dark: '#22C55E' },
   error: { main: '#F87171', light: '#450A0A', dark: '#EF4444' },
   warning: { main: '#FBBF24', light: '#451A03', dark: '#F59E0B' },
   info: { main: '#60A5FA', light: '#0C1929', dark: '#3B82F6' },
   grey: {
-    50: '#1A1533', 100: '#2D1F4A', 200: '#4B2A7A', 300: '#5C5580',
-    400: '#6B6390', 500: '#8F86AD', 600: '#A89FC8', 700: '#BFADD9',
-    800: '#D9CFED', 900: '#EBE6F5',
+    50: '#181230', 100: '#2A1F48', 200: '#4A3A78', 300: '#6B6390',
+    400: '#857DA5', 500: '#A8A0BF', 600: '#B8B0D0', 700: '#C8C0E0',
+    800: '#DDD6F0', 900: '#F0EAF8',
   },
 }
 
@@ -134,21 +134,31 @@ export const getTheme = (direction, mode = 'light') => {
     palette: { mode, ...palette },
     typography: {
       fontFamily: direction === 'ar'
-        ? '"Almarai", sans-serif'
+        ? '"Almarai", "Cairo", sans-serif'
         : '"Inter", "Roboto", sans-serif',
-      h1: { fontWeight: 800, fontSize: '2.5rem', lineHeight: 1.2 },
-      h2: { fontWeight: 700, fontSize: '2rem', lineHeight: 1.25 },
-      h3: { fontWeight: 700, fontSize: '1.5rem', lineHeight: 1.3 },
-      h4: { fontWeight: 600, fontSize: '1.25rem', lineHeight: 1.35 },
-      h5: { fontWeight: 600, fontSize: '1.1rem', lineHeight: 1.4 },
+      h1: { fontWeight: 800, fontSize: '2.5rem', lineHeight: 1.15, letterSpacing: '-0.025em' },
+      h2: { fontWeight: 700, fontSize: '2rem', lineHeight: 1.2, letterSpacing: '-0.02em' },
+      h3: { fontWeight: 700, fontSize: '1.5rem', lineHeight: 1.25, letterSpacing: '-0.015em' },
+      h4: { fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.3, letterSpacing: '-0.01em' },
+      h5: { fontWeight: 600, fontSize: '1.125rem', lineHeight: 1.35 },
       h6: { fontWeight: 600, fontSize: '1rem', lineHeight: 1.4 },
-      subtitle1: { fontWeight: 500, fontSize: '0.95rem', color: txt.secondary },
-      subtitle2: { fontWeight: 500, fontSize: '0.85rem', color: txt.secondary },
-      body1: { fontSize: '0.95rem', lineHeight: 1.6 },
-      body2: { fontSize: '0.85rem', lineHeight: 1.55 },
-      caption: { fontSize: '0.75rem', fontWeight: 500, color: palette.grey[500] },
+      subtitle1: { fontWeight: 600, fontSize: '1rem', color: txt.primary, lineHeight: 1.5 },
+      subtitle2: { fontWeight: 600, fontSize: '0.875rem', color: txt.primary, lineHeight: 1.4 },
+      body1: { fontSize: '0.9375rem', lineHeight: 1.6, color: txt.primary },
+      body2: { fontSize: '0.8125rem', lineHeight: 1.5, color: txt.secondary },
+      caption: { fontSize: '0.6875rem', fontWeight: 500, color: txt.secondary, lineHeight: 1.4 },
+      button: { fontWeight: 600, letterSpacing: '0.01em' },
+      overline: { fontWeight: 600, fontSize: '0.625rem', letterSpacing: '0.08em', textTransform: 'uppercase' },
     },
     shape: { borderRadius: 12 },
+    spacing: 8,
+    customSpacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
     shadows: [
       'none',
       `0px 2px 4px rgba(${shadowColor}, 0.04)`,
@@ -180,6 +190,15 @@ export const getTheme = (direction, mode = 'light') => {
       MuiCssBaseline: {
         styleOverrides: {
           body: { backgroundColor: bg.default },
+          '*:focus-visible': {
+            outline: `2px solid ${p.main}`,
+            outlineOffset: '2px',
+            borderRadius: '4px',
+          },
+          'a:focus-visible, button:focus-visible, [role="button"]:focus-visible': {
+            outline: `2px solid ${p.main}`,
+            outlineOffset: '2px',
+          },
         },
       },
       MuiButton: {
@@ -192,6 +211,10 @@ export const getTheme = (direction, mode = 'light') => {
             padding: '10px 24px',
             fontSize: '0.9rem',
             transition: 'all 0.2s ease',
+            '&:focus-visible': {
+              outline: `2px solid ${p.main}`,
+              outlineOffset: '2px',
+            },
           },
           contained: {
             background: `linear-gradient(135deg, ${p.main}, ${s.main})`,
@@ -250,6 +273,7 @@ export const getTheme = (direction, mode = 'light') => {
               '& fieldset': { borderColor: div },
               '&:hover fieldset': { borderColor: alpha(p.main, 0.3) },
               '&.Mui-focused fieldset': { borderColor: p.main, borderWidth: 2 },
+              '&:focus-within': { boxShadow: `0 0 0 3px ${alpha(p.main, 0.1)}` },
             },
             '& .MuiInputLabel-root.Mui-focused': { color: p.main },
           },
@@ -265,7 +289,15 @@ export const getTheme = (direction, mode = 'light') => {
       },
       MuiChip: {
         styleOverrides: {
-          root: { borderRadius: 999, fontWeight: 500, fontSize: '0.8rem' },
+          root: {
+            borderRadius: 999,
+            fontWeight: 500,
+            fontSize: '0.8rem',
+            '&:focus-visible': {
+              outline: `2px solid ${p.main}`,
+              outlineOffset: '2px',
+            },
+          },
           filled: {
             backgroundColor: alpha(p.main, 0.08),
             color: p.main,
@@ -279,7 +311,15 @@ export const getTheme = (direction, mode = 'light') => {
       },
       MuiAvatar: {
         styleOverrides: {
-          root: { boxShadow: `0 10px 24px rgba(${shadowColor}, 0.12)` },
+          root: {
+            boxShadow: `0 4px 12px rgba(${shadowColor}, 0.08)`,
+            border: `2px solid ${alpha(p.main, 0.1)}`,
+            fontWeight: 600,
+            '&.MuiAvatar-colorDefault': {
+              backgroundColor: alpha(p.main, 0.1),
+              color: p.main,
+            },
+          },
         },
       },
       MuiBadge: {
@@ -292,6 +332,11 @@ export const getTheme = (direction, mode = 'light') => {
             fontWeight: 600,
             fontSize: '0.9rem',
             '&.Mui-selected': { color: p.main },
+            '&:focus-visible': {
+              outline: `2px solid ${p.main}`,
+              outlineOffset: '-2px',
+              borderRadius: 8,
+            },
           },
         },
       },
@@ -308,6 +353,11 @@ export const getTheme = (direction, mode = 'light') => {
             margin: '2px 6px',
             padding: '10px 12px',
             '&:hover': { backgroundColor: alpha(p.main, 0.04) },
+            '&:focus-visible': {
+              backgroundColor: alpha(p.main, 0.08),
+              outline: `2px solid ${p.main}`,
+              outlineOffset: '-2px',
+            },
           },
         },
       },

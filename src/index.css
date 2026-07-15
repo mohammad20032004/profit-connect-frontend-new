@@ -72,3 +72,104 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+/* Rich Text Content Styles */
+.post-content, .comment-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.post-content p, .comment-content p {
+  margin: 0 0 0.5em 0;
+}
+
+.post-content p:last-child, .comment-content p:last-child {
+  margin-bottom: 0;
+}
+
+.post-content strong, .comment-content strong {
+  font-weight: 700;
+}
+
+.post-content em, .comment-content em {
+  font-style: italic;
+}
+
+
+
+.post-content ul, .comment-content ul,
+.post-content ol, .comment-content ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+.post-content li, .comment-content li {
+  margin-bottom: 4px;
+}
+
+.post-content mark, .comment-content mark {
+  background-color: #FEF3C7;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  outline: none;
+  min-height: 120px;
+  max-height: 400px;
+  overflow: auto;
+  padding: 12px 16px;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #5C5580;
+  opacity: 0.7;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+.ProseMirror-focused p.is-editor-empty:first-child::before {
+  color: #5C5580;
+}
+
+.ProseMirror p {
+  margin: 0 0 0.75em 0;
+}
+
+.ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+
+
+.ProseMirror ul, .ProseMirror ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+.ProseMirror li {
+  margin-bottom: 4px;
+}
+
+.ProseMirror mark {
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.ProseMirror-focused {
+  outline: none;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .ProseMirror p.is-editor-empty:first-child::before {
+    color: #A89FC8;
+  }
+
+  .ProseMirror-focused p.is-editor-empty:first-child::before {
+    color: #A89FC8;
+  }
+}

@@ -30,192 +30,148 @@ export default function TopCompaniesSidebar() {
     fetch()
   }, [])
 
+  const displayCompanies = companies.slice(0, 3)
+
   return (
     <Paper
+      elevation={0}
       sx={{
-        height: '100%',
-        overflow: 'auto',
-        borderRadius: 3,
-        bgcolor: alpha(theme.palette.background.paper, 0.85),
-        backdropFilter: 'blur(8px)',
-        '&::-webkit-scrollbar': { width: 4 },
-        '&::-webkit-scrollbar-thumb': { bgcolor: alpha(theme.palette.primary.main, 0.15), borderRadius: 4 },
+        borderRadius: 2,
+        overflow: 'hidden',
+        border: '1px solid',
+        borderColor: 'divider',
+        bgcolor: 'background.paper',
       }}
+      role="complementary"
+      aria-label="Top Companies"
     >
-      <Box sx={{ p: 2.5, pb: 0 }}>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: 700,
-            color: 'text.primary',
-            fontSize: '0.95rem',
-            letterSpacing: '-0.01em',
-          }}
-        >
+      {/* Header */}
+      <Box sx={{ px: 2, pt: 2, pb: 1 }}>
+        <Typography variant="subtitle2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '0.85rem' }}>
           Top Companies
-        </Typography>
-        <Typography variant="caption" color="text.disabled" sx={{ mt: 0.3, display: 'block' }}>
-          {companies.length} companies
         </Typography>
       </Box>
 
-      <Divider sx={{ mx: 2.5, my: 2 }} />
+      <Divider sx={{ mx: 2 }} />
 
+      {/* Content */}
       {loading ? (
-        <Box sx={{ textAlign: 'center', py: 5 }}>
-          <CircularProgress size={26} sx={{ color: alpha(theme.palette.primary.main, 0.4) }} />
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <CircularProgress size={24} sx={{ color: alpha(theme.palette.primary.main, 0.5) }} />
         </Box>
       ) : error || companies.length === 0 ? (
-        <Box sx={{ textAlign: 'center', py: 5 }}>
-          <ErrorOutlined sx={{ fontSize: 32, color: alpha(theme.palette.text.disabled, 0.5), mb: 1 }} />
-          <Typography variant="body2" color="text.disabled" sx={{ fontSize: '0.82rem' }}>
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <ErrorOutlined sx={{ fontSize: 28, color: alpha(theme.palette.text.disabled, 0.5), mb: 0.5 }} />
+          <Typography variant="caption" color="text.disabled">
             {error || 'No companies yet'}
           </Typography>
         </Box>
       ) : (
+        <Stack spacing={0} sx={{ py: 1 }}>
+          {displayCompanies.map((c) => (
+            <Box
+              key={c._id}
+              component={Link}
+              to={`/companies/${c._id}`}
+              role="listitem"
+              aria-label={`${c.name}, Rating: ${c.averageRating > 0 ? c.averageRating.toFixed(1) : 'N/A'}`}
+              sx={{
+                display: 'flex',
+                gap: 1.25,
+                alignItems: 'center',
+                textDecoration: 'none',
+                px: 2,
+                py: 1,
+                mx: 1,
+                borderRadius: 1.5,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  bgcolor: alpha(theme.palette.primary.main, 0.04),
+                  '& .companyName': { color: 'primary.main' },
+                  '& .companyArrow': { opacity: 1, transform: 'translateX(0)' },
+                },
+              }}
+            >
+              <Avatar
+                src={c.logo}
+                alt={c.name}
+                sx={{
+                  width: 36,
+                  height: 36,
+                  bgcolor: alpha(theme.palette.primary.main, 0.08),
+                  color: theme.palette.primary.main,
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+                }}
+              >
+                {c.name?.charAt(0).toUpperCase()}
+              </Avatar>
 
-<Stack spacing={0} sx={{ px: 2, py: 1.5 }}>
-  {companies.map((c, index) => (
-    <Box
-      key={c._id}
-      component={Link}
-      to={`/companies/${c._id}`}
-      sx={{
-        display: 'flex',
-        gap: 1.5,
-        alignItems: 'center',
-        textDecoration: 'none',
-        p: 1.5,
-        mb: 0.5,
-        borderRadius: 2,
-        border: '1px solid transparent', // يمنع اهتزاز العنصر عند إضافة الحد عند التمرير
-        transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)', // منحنى انتقال فاخر
-        position: 'relative',
-        '&:hover': {
-          bgcolor: alpha(theme.palette.text.primary, 0.03), // لون خلفية ناعم جداً
-          borderColor: alpha(theme.palette.divider, 0.5), // حد ناعم
-          transform: 'translateY(-1px)', // رفع خفيف للعنصر
-          boxShadow: `0 4px 12px ${alpha(theme.palette.common.black, 0.04)}`,
-          '& .companyName': { color: 'primary.main' },
-          '& .companyArrow': { opacity: 1, transform: 'translateX(0)', color: 'primary.main' },
-        },
-      }}
-    >
-      <Avatar
-        src={c.logo}
-        sx={{
-          width: 42,
-          height: 42,
-          bgcolor: alpha(theme.palette.primary.main, 0.08),
-          color: theme.palette.primary.main,
-          fontSize: '0.95rem',
-          fontWeight: 700,
-          border: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
-          boxShadow: `0 2px 8px ${alpha(theme.palette.common.black, 0.04)}`,
-          transition: 'transform 0.3s ease',
-          '&:hover': { transform: 'scale(1.05)' }, // تكبير خفيف للصورة عند التمرير
-        }}
-      >
-        {c.name?.charAt(0).toUpperCase()}
-      </Avatar>
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Typography
+                  className="companyName"
+                  variant="body2"
+                  noWrap
+                  sx={{ fontWeight: 600, fontSize: '0.8rem', lineHeight: 1.3, transition: 'color 0.2s', color: 'text.primary' }}
+                >
+                  {c.name}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
+                  <Box sx={{ display: 'flex', gap: 0.15 }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <StarRounded
+                        key={star}
+                        sx={{
+                          fontSize: 10,
+                          color: star <= Math.round(c.averageRating || 0)
+                            ? theme.palette.warning.main
+                            : theme.palette.action.disabled,
+                        }}
+                      />
+                    ))}
+                  </Box>
+                  <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.65rem', color: 'text.secondary' }}>
+                    ({c.averageRating > 0 ? c.averageRating.toFixed(1) : '0.0'})
+                  </Typography>
+                </Box>
+              </Box>
 
-      <Box sx={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-        <Typography
-          className="companyName"
-          variant="body2"
-          sx={{
-            fontWeight: 600,
-            color: 'text.primary',
-            fontSize: '0.875rem',
-            lineHeight: 1.2,
-            letterSpacing: '-0.01em', // تقريب الحروف لمظهر أكثر احترافية
-            transition: 'color 0.2s ease',
-          }}
-          noWrap
-        >
-          {c.name}
-        </Typography>
-        
-        {/* شارة التقييم الفاخرة (Premium Rating Badge) بدلاً من النجوم التقليدية */}
-        <Box
-          sx={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 0.4,
-            px: 0.7,
-            py: 0.2,
-            borderRadius: 1,
-            bgcolor: alpha(theme.palette.warning.main, 0.1),
-            border: `1px solid ${alpha(theme.palette.warning.main, 0.15)}`,
-            width: 'fit-content',
-          }}
-        >
-          <StarRounded sx={{ fontSize: 12, color: theme.palette.warning.main }} />
-          <Typography
-            variant="caption"
-            sx={{
-              color: theme.palette.warning.dark,
-              fontWeight: 700,
-              fontSize: '0.7rem',
-              lineHeight: 1,
-              letterSpacing: '0.02em',
-            }}
-          >
-            {c.averageRating?.toFixed(1)}
-          </Typography>
-        </Box>
-      </Box>
+              <ChevronRightRounded
+                className="companyArrow"
+                sx={{ fontSize: 16, color: 'text.disabled', opacity: 0, transform: 'translateX(-4px)', transition: 'all 0.2s' }}
+              />
+            </Box>
+          ))}
 
-      <ChevronRightRounded
-        className="companyArrow"
-        sx={{
-          fontSize: 18,
-          color: 'text.disabled',
-          opacity: 0,
-          transform: 'translateX(-6px)',
-          transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-        }}
-      />
-    </Box>
-  ))}
-
-  {/* فاصل أنيق قبل زر العرض الكل */}
-      <Divider sx={{ mx: 2.5, my: 2 }} />
-
-  <Box
-    component={Link}
-    to="/companies"
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 0.8,
-      py: 1.25,
-      color: 'primary.main',
-      fontWeight: 600,
-      fontSize: '0.82rem',
-      textDecoration: 'none',
-      borderRadius: 2,
-      letterSpacing: '0.01em',
-      transition: 'all 0.25s ease',
-      border: '1px solid transparent',
-      '&:hover': {
-        bgcolor: alpha(theme.palette.primary.main, 0.06),
-        borderColor: alpha(theme.palette.primary.main, 0.1),
-        '& .viewAllArrow': { transform: 'translateX(3px)' },
-      },
-    }}
-  >
-    View All
-    <ArrowForwardRounded 
-      className="viewAllArrow"
-      sx={{ 
-        fontSize: 16, 
-        transition: 'transform 0.25s ease' 
-      }} 
-    />
-  </Box>
-</Stack>      )}
+          {companies.length > 3 && (
+            <Box sx={{ px: 2, pt: 0.5, pb: 1 }}>
+              <Divider sx={{ mb: 1 }} />
+              <Box
+                component={Link}
+                to="/companies"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 0.5,
+                  py: 0.75,
+                  color: 'primary.main',
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  textDecoration: 'none',
+                  borderRadius: 1,
+                  transition: 'all 0.2s',
+                  '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) },
+                }}
+              >
+                View All
+                <ArrowForwardRounded sx={{ fontSize: 14, transition: 'transform 0.2s', '&:hover': { transform: 'translateX(2px)' } }} />
+              </Box>
+            </Box>
+          )}
+        </Stack>
+      )}
     </Paper>
   )
 }
