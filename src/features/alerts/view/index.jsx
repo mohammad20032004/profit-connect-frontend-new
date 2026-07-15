@@ -9,6 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import {
   NotificationsOutlined, CheckCircleOutlineOutlined, WorkOutlineOutlined,
   StarBorderOutlined, InfoOutlined, DoneAllOutlined, CancelOutlined,
+  GppMaybeOutlined,
 } from '@mui/icons-material'
 import { getNotifications, markNotificationRead } from '@/services/notificationService'
 import { setNotifications, markRead } from '@/redux/slices/notificationSlice'
@@ -46,6 +47,12 @@ function getNotificationDisplay(n, t) {
       msg: n.clientName
         ? t('notif.ratingMsgWith', 'قام {client} بتقييمك في مشروع {name}', { client: n.clientName, name: n.projectName })
         : t('notif.ratingMsg', 'قام عميل بتقييمك في مشروع {name}', { name: n.projectName }),
+    },
+    ai_detected: {
+      icon: <GppMaybeOutlined />,
+      color: 'warning',
+      title: t('notif.aiDetected', 'تنبيه: كشف محتوى ذكاء اصطناعي'),
+      msg: t('notif.aiDetectedMsg', 'تم رصد أن منشورك يحتوي على محتوى مولّد بالذكاء الاصطناعي بنسبة {probability}% مما قد يؤثر سلباً على نقاط R-Score الخاصة بك', { probability: n.aiProbability ?? '—' }),
     },
   }
   return map[n.type] || {

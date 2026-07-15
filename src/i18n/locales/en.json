@@ -322,6 +322,10 @@
     "rating": "New Rating",
     "ratingMsgWith": "{{client}} rated you on {{name}}",
     "ratingMsg": "A client rated you on {{name}}",
+    "aiDetected": "AI Content Detected",
+    "aiDetectedMsg": "Your post was detected with {{probability}}% AI-generated content, which may negatively affect your R-Score",
+    "aiDetectedToast": "AI content detected ({{probability}}%) — may affect your R-Score",
+    "toastNewProposalMsg": "A new proposal was submitted",
     "general": "Notification"
   },
   "common": {

@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Stack, TextField, MenuItem, InputAdornment, IconButton, Box } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 
-const roles = ['Professional', 'Client', 'Student']
+const roles = ['JobSeeker', 'Employer', 'FreelanceClient']
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
@@ -12,8 +13,16 @@ const fieldSx = {
   },
 }
 
+const ROLE_LABELS = {
+  JobSeeker: { en: 'Job Seeker', ar: 'باحث عن عمل' },
+  Employer: { en: 'Employer', ar: 'صاحب عمل' },
+  FreelanceClient: { en: 'Freelance Client', ar: 'عميل حر' },
+}
+
 export default function StepAccount({ form, onChange, errors }) {
   const [showPassword, setShowPassword] = useState(false)
+  const { i18n } = useTranslation()
+  const lang = i18n.language === 'ar' ? 'ar' : 'en'
 
   return (
     <Stack spacing={2.5}>
@@ -31,8 +40,10 @@ export default function StepAccount({ form, onChange, errors }) {
         />
       </Box>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.1s both' }}>
-        <TextField label="Account Type" value={form.role} onChange={onChange('role')} select fullWidth sx={fieldSx}>
-          {roles.map((r) => (<MenuItem key={r} value={r}>{r}</MenuItem>))}
+        <TextField label={lang === 'ar' ? 'نوع الحساب' : 'Account Type'} value={form.role} onChange={onChange('role')} select fullWidth sx={fieldSx}>
+          {roles.map((r) => (
+            <MenuItem key={r} value={r}>{ROLE_LABELS[r][lang]}</MenuItem>
+          ))}
         </TextField>
       </Box>
     </Stack>

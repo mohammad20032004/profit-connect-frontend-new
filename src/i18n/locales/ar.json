@@ -324,6 +324,10 @@
     "rating": "تقييم جديد",
     "ratingMsgWith": "قام {{client}} بتقييمك في مشروع {{name}}",
     "ratingMsg": "قام عميل بتقييمك في مشروع {{name}}",
+    "aiDetected": "تنبيه: كشف محتوى ذكاء اصطناعي",
+    "aiDetectedMsg": "تم رصد أن منشورك يحتوي على محتوى مولّد بالذكاء الاصطناعي بنسبة {{probability}}% مما قد يؤثر سلباً على نقاط R-Score الخاصة بك",
+    "aiDetectedToast": "محتوى ذكاء اصطناعي ({{probability}}%) — قد يؤثر على R-Score",
+    "toastNewProposalMsg": "تم تقديم عرض جديد",
     "general": "إشعار"
   },
   "common": {

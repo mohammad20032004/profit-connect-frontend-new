@@ -15,8 +15,24 @@ import StepPersonalInfo from '../components/StepPersonalInfo'
 import StepAccount from '../components/StepAccount'
 import StepProfessional from '../components/StepProfessional'
 import StepAvatarReview from '../components/StepAvatarReview'
+import StepCompanyInfo from '../components/StepCompanyInfo'
+import StepCompanyDetails from '../components/StepCompanyDetails'
 
-const steps = ['Personal Info', 'Account', 'Professional', 'Photo']
+const STEPS_BY_ROLE = {
+  Employer: [
+    { key: 'personal', en: 'Personal Info', ar: 'المعلومات الشخصية' },
+    { key: 'account', en: 'Account', ar: 'الحساب' },
+    { key: 'companyInfo', en: 'Company Info', ar: 'معلومات الشركة' },
+    { key: 'companyDetails', en: 'Company Details', ar: 'تفاصيل الشركة' },
+    { key: 'photo', en: 'Photo', ar: 'الصورة' },
+  ],
+  default: [
+    { key: 'personal', en: 'Personal Info', ar: 'المعلومات الشخصية' },
+    { key: 'account', en: 'Account', ar: 'الحساب' },
+    { key: 'professional', en: 'Professional', ar: 'المعلومات المهنية' },
+    { key: 'photo', en: 'Photo', ar: 'الصورة' },
+  ],
+}
 
 const lightTheme = createTheme({
   direction: 'ltr',
@@ -49,10 +65,16 @@ export default function SignUpView() {
   const [lang, setLang] = useState('en')
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phoneNumber: '',
-    password: '', role: 'Professional',
+    password: '', role: 'JobSeeker',
     industry: '', yearsOfExperience: '', skills: [],
+    companyName: '', companyDescription: '', companyIndustry: '', companyLocation: '',
+    website: '', companySize: '', foundedYear: '',
     avatar: null,
   })
+
+  const isEmployer = form.role === 'Employer'
+  const stepsConfig = isEmployer ? STEPS_BY_ROLE.Employer : STEPS_BY_ROLE.default
+  const steps = stepsConfig
 
   useEffect(() => {
     i18n.changeLanguage('en')
@@ -74,15 +96,19 @@ export default function SignUpView() {
 
   const validateStep = () => {
     const e = {}
-    if (activeStep === 0) {
+    const stepKey = steps[activeStep]?.key
+    if (stepKey === 'personal') {
       if (!form.firstName.trim()) e.firstName = 'Required'
       if (!form.lastName.trim()) e.lastName = 'Required'
       if (!form.email.trim()) e.email = 'Required'
       else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Invalid email'
     }
-    if (activeStep === 1) {
+    if (stepKey === 'account') {
       if (!form.password) e.password = 'Required'
       else if (form.password.length < 6) e.password = 'At least 6 characters'
+    }
+    if (stepKey === 'companyInfo') {
+      if (!form.companyName.trim()) e.companyName = lang === 'ar' ? 'اسم الشركة مطلوب' : 'Company name is required'
     }
     setErrors(e)
     return Object.keys(e).length === 0
@@ -107,6 +133,15 @@ export default function SignUpView() {
       if (form.industry) fd.append('industry', form.industry)
       if (form.yearsOfExperience) fd.append('yearsOfExperience', String(form.yearsOfExperience))
       form.skills.forEach((s) => fd.append('skills[]', s))
+      if (isEmployer) {
+        if (form.companyName.trim()) fd.append('companyName', form.companyName.trim())
+        if (form.companyDescription.trim()) fd.append('companyDescription', form.companyDescription.trim())
+        if (form.companyIndustry) fd.append('companyIndustry', form.companyIndustry)
+        if (form.companyLocation.trim()) fd.append('companyLocation', form.companyLocation.trim())
+        if (form.website.trim()) fd.append('website', form.website.trim())
+        if (form.companySize) fd.append('companySize', form.companySize)
+        if (form.foundedYear) fd.append('foundedYear', String(form.foundedYear))
+      }
       if (form.avatar) fd.append('avatar', form.avatar)
 
       const data = await signup(fd)
@@ -236,9 +271,9 @@ export default function SignUpView() {
                     '& .Mui-completed .MuiStepIcon-root': { color: '#16A34A' },
                   }}
                 >
-                  {steps.map((label, i) => (
-                    <Step key={label} sx={{ '& .MuiStepLabel-iconContainer': { animation: `fadeUp 0.4s ease ${0.3 + i * 0.1}s both` } }}>
-                      <StepLabel>{label}</StepLabel>
+                  {steps.map((step, i) => (
+                    <Step key={step.key} sx={{ '& .MuiStepLabel-iconContainer': { animation: `fadeUp 0.4s ease ${0.3 + i * 0.1}s both` } }}>
+                      <StepLabel>{step[lang]}</StepLabel>
                     </Step>
                   ))}
                 </Stepper>
@@ -251,10 +286,12 @@ export default function SignUpView() {
                   '&:hover': { boxShadow: '0 8px 32px rgba(12,8,24,0.1)' },
                 }}>
                   <Box key={activeStep} sx={stepAnim}>
-                    {activeStep === 0 && <StepPersonalInfo form={form} onChange={handleChange} errors={errors} />}
-                    {activeStep === 1 && <StepAccount form={form} onChange={handleChange} errors={errors} />}
-                    {activeStep === 2 && <StepProfessional form={form} onChange={handleChange} />}
-                    {activeStep === 3 && <StepAvatarReview form={form} setForm={setForm} />}
+                    {steps[activeStep]?.key === 'personal' && <StepPersonalInfo form={form} onChange={handleChange} errors={errors} />}
+                    {steps[activeStep]?.key === 'account' && <StepAccount form={form} onChange={handleChange} errors={errors} />}
+                    {steps[activeStep]?.key === 'professional' && <StepProfessional form={form} onChange={handleChange} />}
+                    {steps[activeStep]?.key === 'companyInfo' && <StepCompanyInfo form={form} onChange={handleChange} errors={errors} />}
+                    {steps[activeStep]?.key === 'companyDetails' && <StepCompanyDetails form={form} onChange={handleChange} errors={errors} />}
+                    {steps[activeStep]?.key === 'photo' && <StepAvatarReview form={form} setForm={setForm} />}
                   </Box>
 
                   {errors.submit && (
@@ -263,7 +300,7 @@ export default function SignUpView() {
                     </Typography>
                   )}
 
-                  {activeStep === 2 && form.skills.length > 0 && (
+                  {steps[activeStep]?.key === 'professional' && form.skills.length > 0 && (
                     <Box sx={{ mt: 2.5, animation: 'fadeUp 0.3s ease' }}>
                       <Typography variant="caption" fontWeight={600} sx={{ color: '#5C5580', mb: 0.5, display: 'block' }}>
                         {lang === 'en' ? `Selected skills (${form.skills.length})` : `المهارات المحددة (${form.skills.length})`}
