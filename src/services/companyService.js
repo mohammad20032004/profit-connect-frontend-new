@@ -49,3 +49,26 @@ export async function deleteMyRating(id) {
   const { data } = await api.delete(`/companies/${id}/ratings`)
   return data
 }
+
+export async function updateCompany(id, payload) {
+  const { data } = await api.put(`/companies/${id}`, payload)
+  return data
+}
+
+export async function deleteCompany(id) {
+  const { data } = await api.delete(`/companies/${id}`)
+  return data
+}
+
+export async function getCompanyFollowers(id) {
+  const { data } = await api.get(`/companies/${id}/followers`)
+  return data
+}
+
+export async function createCompanyWithDocs(formData) {
+  const { data } = await api.post('/companies', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 30000,
+  })
+  return data
+}

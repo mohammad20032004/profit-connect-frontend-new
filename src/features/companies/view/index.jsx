@@ -4,7 +4,7 @@ import {
   Box, Container, Paper, Typography, Stack, CircularProgress, Card, CardContent, Avatar, Chip,
 } from '@mui/material'
 import Button from '@/ui/Button'
-import { AddOutlined, BusinessOutlined, LocationOnOutlined, PeopleOutlined } from '@mui/icons-material'
+import { BusinessOutlined, LocationOnOutlined, PeopleOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getCompanies } from '@/services/companyService'
 
@@ -34,9 +34,6 @@ export default function CompaniesList() {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h4" fontWeight="bold">{t('companies.title', 'Companies')}</Typography>
-        <Button variant="contained" startIcon={<AddOutlined />} onClick={() => navigate('/companies/create')}>
-          {t('companies.create', 'Create Company')}
-        </Button>
       </Stack>
 
       {error ? (

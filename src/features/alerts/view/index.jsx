@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Box, Paper, Typography, Stack, CircularProgress, IconButton, alpha, Chip,
 } from '@mui/material'
@@ -9,7 +10,7 @@ import { useTheme } from '@mui/material/styles'
 import {
   NotificationsOutlined, CheckCircleOutlineOutlined, WorkOutlineOutlined,
   StarBorderOutlined, InfoOutlined, DoneAllOutlined, CancelOutlined,
-  GppMaybeOutlined,
+  GppMaybeOutlined, RocketLaunchOutlined,
 } from '@mui/icons-material'
 import { getNotifications, markNotificationRead } from '@/services/notificationService'
 import { setNotifications, markRead } from '@/redux/slices/notificationSlice'
@@ -54,6 +55,14 @@ function getNotificationDisplay(n, t) {
       title: t('notif.aiDetected', 'تنبيه: كشف محتوى ذكاء اصطناعي'),
       msg: t('notif.aiDetectedMsg', 'تم رصد أن منشورك يحتوي على محتوى مولّد بالذكاء الاصطناعي بنسبة {probability}% مما قد يؤثر سلباً على نقاط R-Score الخاصة بك', { probability: n.aiProbability ?? '—' }),
     },
+    company_setup: {
+      icon: <RocketLaunchOutlined />,
+      color: 'primary',
+      title: t('notif.companySetup', 'أكمل إعداد صفحة شركتك'),
+      msg: t('notif.companySetupMsg', 'أكمل إعداد صفحة شركتك لنشر وظائفك ومشاريعك بسهولة'),
+      actionUrl: '/employer/setup',
+      actionLabel: t('notif.companySetupAction', 'إعداد الآن'),
+    },
   }
   return map[n.type] || {
     icon: <InfoOutlined />,
@@ -77,6 +86,7 @@ function formatTime(dateStr, t) {
 export default function AlertsView() {
   const { t } = useTranslation()
   const theme = useTheme()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { items, unreadCount } = useSelector((s) => s.notifications)
   const [loading, setLoading] = useState(true)
@@ -101,7 +111,7 @@ export default function AlertsView() {
 
   return (
     <Box sx={{ height: 'calc(100vh - 88px)', overflow: 'auto', bgcolor: 'background.default' }}>
-      <Box sx={{ maxWidth: 720, mx: 'auto', p: { xs: 2, sm: 3 } }}>
+      <Box sx={{ maxWidth: 750, mx: 'auto', p: { xs: 2, sm: 3 } }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <NotificationsOutlined sx={{ fontSize: 28, color: 'primary.main' }} />
@@ -136,7 +146,7 @@ export default function AlertsView() {
                   bgcolor: n.read ? 'transparent' : alpha(theme.palette[display.color].main, 0.04),
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.4) },
+                 
                 }}
                   onClick={() => { if (!n.read) handleMarkRead(n._id) }}
                 >
@@ -159,6 +169,21 @@ export default function AlertsView() {
                       <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
                         {formatTime(n.createdAt, t)}
                       </Typography>
+                      {display.actionUrl && (
+                        <Button
+                          size="small"
+                          variant="contained"
+                          startIcon={<RocketLaunchOutlined sx={{ fontSize: 14 }} />}
+                          onClick={(e) => { e.stopPropagation(); navigate(display.actionUrl) }}
+                          sx={{
+                            mt: 1, fontSize: '0.75rem', textTransform: 'none', fontWeight: 600,
+                            color: '#fff', bgcolor: 'primary.main',
+                            '&:hover': { bgcolor: 'primary.dark', color: '#fff' },
+                          }}
+                        >
+                          {display.actionLabel}
+                        </Button>
+                      )}
                     </Box>
                     {!n.read && (
                       <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleMarkRead(n._id) }} sx={{ mt: -0.5, mr: -0.5 }}>

@@ -290,7 +290,7 @@ export default function CreatePost({ onPostCreated }) {
         slotProps={{
           paper: {
             sx: {
-              borderRadius: 3,
+              borderRadius: 1,
               overflow: 'hidden',
             }
           }

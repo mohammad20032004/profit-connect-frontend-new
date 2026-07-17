@@ -327,6 +327,9 @@
     "aiDetected": "تنبيه: كشف محتوى ذكاء اصطناعي",
     "aiDetectedMsg": "تم رصد أن منشورك يحتوي على محتوى مولّد بالذكاء الاصطناعي بنسبة {{probability}}% مما قد يؤثر سلباً على نقاط R-Score الخاصة بك",
     "aiDetectedToast": "محتوى ذكاء اصطناعي ({{probability}}%) — قد يؤثر على R-Score",
+    "companySetup": "أكمل إعداد صفحة شركتك",
+    "companySetupMsg": "أكمل إعداد صفحة شركتك لنشر وظائفك ومشاريعك بسهولة",
+    "companySetupAction": "إعداد الآن",
     "toastNewProposalMsg": "تم تقديم عرض جديد",
     "general": "إشعار"
   },

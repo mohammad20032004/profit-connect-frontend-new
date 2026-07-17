@@ -24,6 +24,11 @@ import ProjectDetail from "../features/projects/[id]/view"
 import CreateProject from "../features/projects/create/view"
 import MyProjectDetail from "../features/myProject/[id]/view"
 
+import EmployerWelcome from "../features/employer/welcome/view"
+import EmployerDashboard from "../features/employer/dashboard/view"
+import EmployerSetup from "../features/employer/setup/view"
+import EmployerPending from "../features/employer/pending/view"
+
 function Layout() {
   return (
     <ThemeProvider>
@@ -58,6 +63,12 @@ const router = createBrowserRouter([
       { path: "/projects/create", element: <CreateProject /> },
       { path: "/projects/:id", element: <ProjectDetail /> },
       { path: "/myProject/:id", element: <MyProjectDetail /> },
+
+      { path: "/employer/welcome", element: <EmployerWelcome /> },
+      { path: "/employer/dashboard", element: <EmployerDashboard /> },
+      { path: "/employer/setup", element: <EmployerSetup /> },
+      { path: "/employer/pending", element: <EmployerPending /> },
+
       { path: "*", element: <NotFoundView /> },
     ],
   },

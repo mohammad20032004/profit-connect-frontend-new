@@ -26,6 +26,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
+import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -299,6 +300,18 @@ const Header = () => {
             secondary={t('menu.settingsDesc')}
           />
         </MenuItem>
+
+        {user?.role === 'Employer' && (
+          <MenuItem component={Link} to="/employer/dashboard" onClick={handleCloseMenu} sx={{ py: 1.4, px: 2 }}>
+            <ListItemIcon>
+              <BusinessOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText
+              primary={t('menu.companyDashboard', 'Company Dashboard')}
+              secondary={t('menu.companyDashboardDesc', 'Manage your company page')}
+            />
+          </MenuItem>
+        )}
 
         <Divider />
 

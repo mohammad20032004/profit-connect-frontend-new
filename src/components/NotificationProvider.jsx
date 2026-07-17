@@ -7,7 +7,7 @@ import { CloseOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import {
   CheckCircleOutlineOutlined, CancelOutlined, WorkOutlineOutlined,
-  StarBorderOutlined, InfoOutlined, GppMaybeOutlined,
+  StarBorderOutlined, InfoOutlined, GppMaybeOutlined, RocketLaunchOutlined,
 } from '@mui/icons-material'
 import { getRecentNotifications } from '@/services/notificationService'
 import { addNotifications } from '@/redux/slices/notificationSlice'
@@ -73,6 +73,18 @@ const TYPE_CONFIG = {
     msgFallback: 'AI-generated content detected — may affect R-Score',
     interpolate: (n) => ({ probability: n.aiProbability ?? '—' }),
   },
+  company_setup: {
+    severity: 'info',
+    icon: <RocketLaunchOutlined sx={{ fontSize: 20 }} />,
+    duration: 10000,
+    titleKey: 'notif.companySetup',
+    titleFallback: 'Complete Your Company Setup',
+    msgKey: 'notif.companySetupMsg',
+    msgFallback: 'Complete your company page to start posting jobs and projects',
+    actionUrl: '/employer/setup',
+    actionLabelKey: 'notif.companySetupAction',
+    actionLabelFallback: 'Setup Now',
+  },
 }
 
 const FALLBACK = {
@@ -119,6 +131,10 @@ export default function NotificationProvider({ children }) {
             msg: cfg.msgKey
               ? t(cfg.msgKey, cfg.msgFallback, cfg.interpolate(latest))
               : cfg.msgFallback,
+            actionUrl: cfg.actionUrl || null,
+            actionLabel: cfg.actionLabelKey
+              ? t(cfg.actionLabelKey, cfg.actionLabelFallback)
+              : cfg.actionLabelFallback || null,
           })
         }
       }
@@ -160,14 +176,30 @@ export default function NotificationProvider({ children }) {
           variant="filled"
           icon={false}
           action={
-            <IconButton size="small" onClick={handleClose} sx={{ color: 'inherit', opacity: 0.8, '&:hover': { opacity: 1 } }}>
-              <CloseOutlined sx={{ fontSize: 16 }} />
-            </IconButton>
+            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+              {toast?.actionUrl && (
+                <IconButton
+                  size="small"
+                  onClick={() => { window.location.href = toast.actionUrl; setToast(null) }}
+                  sx={{
+                    color: '#fff', bgcolor: alpha('#fff', 0.15),
+                    fontSize: '0.7rem', fontWeight: 700, px: 1, borderRadius: 1,
+                    '&:hover': { bgcolor: alpha('#fff', 0.25) },
+                  }}
+                >
+                  <RocketLaunchOutlined sx={{ fontSize: 14, mr: 0.5 }} />
+                  {toast.actionLabel}
+                </IconButton>
+              )}
+              <IconButton size="small" onClick={handleClose} sx={{ color: 'inherit', opacity: 0.8, width: 35, height: 35, mx: 1.5 }}>
+                <CloseOutlined sx={{ fontSize: 16 }} />
+              </IconButton>
+            </Stack>
           }
           sx={{
             width: '100%',
             minWidth: 320,
-            maxWidth: 420,
+            maxWidth: 450,
             alignItems: 'flex-start',
             borderRadius: 2,
             boxShadow: `0 8px 32px ${alpha(theme.palette[toast?.severity || 'info'].main, 0.35)}`,
