@@ -3,22 +3,23 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, IconButton, Divider,
-  Rating, TextField, Dialog, DialogTitle, DialogContent, DialogActions,
+  Rating, TextField, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
-  ArrowBackOutlined, LocationOnOutlined, BusinessOutlined, PeopleOutlined,
+  ArrowBackOutlined, LocationOnOutlined,
   LanguageOutlined, EmailOutlined, LinkedIn, Twitter, FavoriteBorderOutlined, FavoriteOutlined,
   VerifiedOutlined, CalendarMonthOutlined, GroupsOutlined,
-  StarBorderOutlined, AdminPanelSettingsOutlined,
+  StarBorderOutlined, AdminPanelSettingsOutlined, EditOutlined, DeleteOutlineOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { getCompanyById, toggleFollow, addAdmin, upsertRating, deleteMyRating } from '@/services/companyService'
+import { getCompanyById, toggleFollow, addAdmin, upsertRating, deleteMyRating, updateCompany, deleteCompany } from '@/services/companyService'
 
 export default function CompanyDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const currentUserId = useSelector((state) => state.user.user?._id)
   const [company, setCompany] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -32,6 +33,32 @@ export default function CompanyDetail() {
   const [ratingValue, setRatingValue] = useState(5)
   const [ratingReview, setRatingReview] = useState('')
   const [ratingLoading, setRatingLoading] = useState(false)
+
+  const [editOpen, setEditOpen] = useState(false)
+  const [editForm, setEditForm] = useState({})
+  const [editLoading, setEditLoading] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+
+  const INDUSTRIES = [
+    { value: 'web-development', en: 'Web Development', ar: 'تطوير المواقع' },
+    { value: 'mobile-development', en: 'Mobile Development', ar: 'تطوير تطبيقات الجوال' },
+    { value: 'frontend', en: 'Frontend Development', ar: 'تطوير الواجهات الأمامية' },
+    { value: 'backend', en: 'Backend Development', ar: 'تطوير الخلفيات' },
+    { value: 'fullstack', en: 'Full Stack Development', ar: 'تطوير شامل' },
+    { value: 'devops', en: 'DevOps & Cloud', ar: 'DevOps والحوسبة السحابية' },
+    { value: 'ai-ml', en: 'AI & Machine Learning', ar: 'الذكاء الاصطناعي والتعلم الآلي' },
+    { value: 'data-science', en: 'Data Science & Analytics', ar: 'علوم البيانات والتحليلات' },
+    { value: 'cybersecurity', en: 'Cybersecurity', ar: 'الأمن السيبراني' },
+    { value: 'ui-ux', en: 'UI/UX Design', ar: 'تصميم واجهات وتجربة المستخدم' },
+    { value: 'qa-testing', en: 'QA & Testing', ar: 'الجودة والاختبار' },
+    { value: 'game-dev', en: 'Game Development', ar: 'تطوير الألعاب' },
+    { value: 'blockchain', en: 'Blockchain & Web3', ar: 'بلوكتشين وويب 3' },
+    { value: 'iot', en: 'IoT & Embedded Systems', ar: 'إنترنت الأشياء والأنظمة المدمجة' },
+    { value: 'saas', en: 'SaaS Products', ar: 'منتجات SaaS' },
+    { value: 'ecommerce-tech', en: 'E-commerce Tech', ar: 'تقنيات التجارة الإلكترونية' },
+    { value: 'other', en: 'Other', ar: 'أخرى' },
+  ]
 
   const fetchCompany = async (showLoader = true) => {
     if (showLoader) setLoading(true)
@@ -81,6 +108,60 @@ export default function CompanyDetail() {
   const handleDeleteRating = async () => {
     try { await deleteMyRating(id); fetchCompany(false) }
     catch (err) { alert(err?.response?.data?.message || t('common.error')) }
+  }
+
+  const openEdit = () => {
+    setEditForm({
+      name: company.name || '',
+      description: company.description || '',
+      industry: company.industry || '',
+      location: company.location || '',
+      companySize: company.companySize || '',
+      foundedYear: company.foundedYear || '',
+      website: company.website || '',
+      contactEmail: company.contactEmail || '',
+    })
+    setEditOpen(true)
+  }
+
+  const handleEditChange = (key) => (e) => setEditForm((p) => ({ ...p, [key]: e.target.value }))
+
+  const handleEditSubmit = async () => {
+    if (!editForm.name.trim()) return
+    setEditLoading(true)
+    try {
+      const payload = {
+        name: editForm.name.trim(),
+        description: editForm.description.trim(),
+        industry: editForm.industry,
+        location: editForm.location.trim(),
+        companySize: editForm.companySize,
+        foundedYear: editForm.foundedYear ? Number(editForm.foundedYear) : undefined,
+        website: editForm.website.trim(),
+        contactEmail: editForm.contactEmail.trim(),
+      }
+      const res = await updateCompany(id, payload)
+      if (res?.success) {
+        setEditOpen(false)
+        fetchCompany(false)
+      }
+    } catch (err) {
+      alert(err?.response?.data?.message || t('common.error'))
+    } finally {
+      setEditLoading(false)
+    }
+  }
+
+  const handleDeleteCompany = async () => {
+    setDeleteLoading(true)
+    try {
+      await deleteCompany(id)
+      navigate('/companies')
+    } catch (err) {
+      alert(err?.response?.data?.message || t('common.error'))
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   if (error) return (
@@ -140,6 +221,16 @@ export default function CompanyDetail() {
             <Button fullWidth variant="outlined" size="small" startIcon={<AdminPanelSettingsOutlined />} onClick={() => setAddAdminOpen(true)} sx={{ mt: 0.5 }}>
               {t('companies.addAdmin')}
             </Button>
+          )}
+          {isOwner && (
+            <Stack direction="row" spacing={0.5} sx={{ mt: 0.5 }}>
+              <Button fullWidth variant="outlined" size="small" startIcon={<EditOutlined />} onClick={openEdit} sx={{ flex: 1 }}>
+                {t('companies.edit', 'Edit')}
+              </Button>
+              <Button fullWidth variant="outlined" size="small" color="error" startIcon={<DeleteOutlineOutlined />} onClick={() => setDeleteOpen(true)} sx={{ flex: 1 }}>
+                {t('companies.delete', 'Delete')}
+              </Button>
+            </Stack>
           )}
 
           <Divider sx={{ my: 1.5 }} />
@@ -269,6 +360,65 @@ export default function CompanyDetail() {
         <DialogActions>
           <Button variant="text" onClick={() => setRatingOpen(false)}>{t('companies.cancel')}</Button>
           <Button variant="contained" onClick={handleRatingSubmit} disabled={ratingLoading}>{ratingLoading ? <CircularProgress size={20} /> : t('common.save')}</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle component="div">
+          <Typography variant="h6" fontWeight="bold">
+            {lang === 'ar' ? 'تعديل بيانات الشركة' : 'Edit Company'}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <TextField label={lang === 'ar' ? 'اسم الشركة *' : 'Company Name *'} value={editForm.name || ''} onChange={handleEditChange('name')} fullWidth required />
+            <TextField label={lang === 'ar' ? 'الوصف' : 'Description'} value={editForm.description || ''} onChange={handleEditChange('description')} fullWidth multiline rows={3} />
+            <TextField label={lang === 'ar' ? 'المجال' : 'Industry'} value={editForm.industry || ''} onChange={handleEditChange('industry')} select fullWidth>
+              <MenuItem value="">
+                <em>{lang === 'ar' ? 'اختر المجال' : 'Select industry'}</em>
+              </MenuItem>
+              {INDUSTRIES.map((ind) => (
+                <MenuItem key={ind.value} value={ind.value}>{ind[lang]}</MenuItem>
+              ))}
+            </TextField>
+            <TextField label={lang === 'ar' ? 'الموقع' : 'Location'} value={editForm.location || ''} onChange={handleEditChange('location')} fullWidth />
+            <TextField label={lang === 'ar' ? 'الحجم' : 'Company Size'} value={editForm.companySize || ''} onChange={handleEditChange('companySize')} fullWidth placeholder="e.g. 51-200" />
+            <TextField label={lang === 'ar' ? 'سنة التأسيس' : 'Founded Year'} value={editForm.foundedYear || ''} onChange={handleEditChange('foundedYear')} fullWidth type="number" />
+            <TextField label={lang === 'ar' ? 'الموقع الإلكتروني' : 'Website'} value={editForm.website || ''} onChange={handleEditChange('website')} fullWidth placeholder="https://" />
+            <TextField label={lang === 'ar' ? 'البريد الإلكتروني' : 'Contact Email'} value={editForm.contactEmail || ''} onChange={handleEditChange('contactEmail')} fullWidth type="email" />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="text" onClick={() => setEditOpen(false)}>{t('companies.cancel')}</Button>
+          <Button variant="contained" onClick={handleEditSubmit} disabled={editLoading || !editForm.name?.trim()}>
+            {editLoading ? <CircularProgress size={20} /> : t('common.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle component="div">
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <DeleteOutlineOutlined sx={{ color: 'error.main', fontSize: 28 }} />
+            <Typography variant="h6" fontWeight="bold" color="error">
+              {lang === 'ar' ? 'حذف الشركة' : 'Delete Company'}
+            </Typography>
+          </Stack>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            {lang === 'ar'
+              ? 'هل أنت متأكد من حذف هذه الشركة؟ لا يمكن التراجع عن هذا الإجراء.'
+              : 'Are you sure you want to delete this company? This action cannot be undone.'}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="text" onClick={() => setDeleteOpen(false)}>{t('companies.cancel')}</Button>
+          <Button variant="contained" color="error" onClick={handleDeleteCompany} disabled={deleteLoading}>
+            {deleteLoading ? <CircularProgress size={20} /> : t('companies.delete', 'Delete')}
+          </Button>
         </DialogActions>
       </Dialog>
     </Container>

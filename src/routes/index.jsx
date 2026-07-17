@@ -18,7 +18,6 @@ import NotFoundView from "../features/not-found/view"
 import PostPage from "../features/post/view"
 import CompaniesList from "../features/companies/view"
 import CompanyDetail from "../features/companies/[id]/view"
-import CreateCompany from "../features/companies/create/view"
 import ProjectsList from "../features/projects/view"
 import ProjectDetail from "../features/projects/[id]/view"
 import CreateProject from "../features/projects/create/view"
@@ -56,7 +55,6 @@ const router = createBrowserRouter([
 
       { path: "/posts/:postId", element: <PostPage /> },
       { path: "/companies", element: <CompaniesList /> },
-      { path: "/companies/create", element: <CreateCompany /> },
       { path: "/companies/:id", element: <CompanyDetail /> },
       { path: "/network", element: <div>Network</div> },
       { path: "/projects", element: <ProjectsList /> },

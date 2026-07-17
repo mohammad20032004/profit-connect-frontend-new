@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE
 
 function authHeaders() {
   const token = localStorage.getItem('profit_connect_token')

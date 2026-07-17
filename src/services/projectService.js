@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE
 
 export async function getProjects(params = {}) {
   const { data } = await axios.get(`${API_BASE}/projects`, { params })

@@ -60,7 +60,9 @@
     "rating": "Rating",
     "adminsCount": "{{count}} admins",
     "retry": "Retry",
-    "back": "Back to companies"
+    "back": "Back to companies",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "profile": {
     "followers": "Followers",
