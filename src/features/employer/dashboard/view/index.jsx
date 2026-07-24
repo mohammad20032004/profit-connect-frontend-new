@@ -1,22 +1,145 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, alpha, Divider,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, alpha, Grid,
+  Fade, Divider,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
   BusinessOutlined, PeopleOutlined, StarOutlineOutlined, EditOutlined,
   CheckCircleOutlineOutlined, PendingOutlined, CancelOutlined, TrendingUpOutlined,
-  RocketLaunchOutlined,
+  RocketLaunchOutlined, InfoOutlined, LocationOnOutlined, LanguageOutlined,
+  EmailOutlined, CalendarMonthOutlined, GroupsOutlined, LinkedIn, Twitter,
+  VerifiedOutlined, GroupAddOutlined, WorkOutlineOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getMyCompany, getReputationScore } from '@/services/employerService'
+import Map from 'ol/Map'
+import View from 'ol/View'
+import TileLayer from 'ol/layer/Tile'
+import VectorLayer from 'ol/layer/Vector'
+import VectorSource from 'ol/source/Vector'
+import OSM from 'ol/source/OSM'
+import Feature from 'ol/Feature'
+import Point from 'ol/geom/Point'
+import { fromLonLat } from 'ol/proj'
+import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style'
+import 'ol/ol.css'
 
 const STATUS_CONFIG = {
-  Pending: { color: 'warning', icon: <PendingOutlined />, en: 'Pending Review', ar: 'قيد المراجعة' },
-  Approved: { color: 'success', icon: <CheckCircleOutlineOutlined />, en: 'Approved', ar: 'معتمدة' },
-  Rejected: { color: 'error', icon: <CancelOutlined />, en: 'Rejected', ar: 'مرفوضة' },
+  Pending: { color: 'warning', icon: <PendingOutlined /> },
+  Approved: { color: 'success', icon: <CheckCircleOutlineOutlined /> },
+  Rejected: { color: 'error', icon: <CancelOutlined /> },
+}
+
+const INDUSTRIES = {
+  'web-development': { en: 'Web Development', ar: 'تطوير المواقع' },
+  'mobile-development': { en: 'Mobile Development', ar: 'تطوير تطبيقات الجوال' },
+  'frontend': { en: 'Frontend Development', ar: 'تطوير الواجهات الأمامية' },
+  'backend': { en: 'Backend Development', ar: 'تطوير الخلفيات' },
+  'fullstack': { en: 'Full Stack Development', ar: 'تطوير شامل' },
+  'devops': { en: 'DevOps & Cloud', ar: 'DevOps والحوسبة السحابية' },
+  'ai-ml': { en: 'AI & Machine Learning', ar: 'الذكاء الاصطناعي والتعلم الآلي' },
+  'data-science': { en: 'Data Science & Analytics', ar: 'علوم البيانات والتحليلات' },
+  'cybersecurity': { en: 'Cybersecurity', ar: 'الأمن السيبراني' },
+  'ui-ux': { en: 'UI/UX Design', ar: 'تصميم واجهات وتجربة المستخدم' },
+  'qa-testing': { en: 'QA & Testing', ar: 'الجودة والاختبار' },
+  'game-dev': { en: 'Game Development', ar: 'تطوير الألعاب' },
+  'blockchain': { en: 'Blockchain & Web3', ar: 'بلوكتشين وويب 3' },
+  'iot': { en: 'IoT & Embedded Systems', ar: 'إنترنت الأشياء والأنظمة المدمجة' },
+  'saas': { en: 'SaaS Products', ar: 'منتجات SaaS' },
+  'ecommerce-tech': { en: 'E-commerce Tech', ar: 'تقنيات التجارة الإلكترونية' },
+  'other': { en: 'Other', ar: 'أخرى' },
+}
+
+const COMPANY_SIZES = {
+  '1-10': { en: '1-10 employees', ar: '1-10 موظفين' },
+  '11-50': { en: '11-50 employees', ar: '11-50 موظف' },
+  '51-200': { en: '51-200 employees', ar: '51-200 موظف' },
+  '201-500': { en: '201-500 employees', ar: '201-500 موظف' },
+  '501-1000': { en: '501-1000 employees', ar: '501-1000 موظف' },
+  '1000+': { en: '1000+ employees', ar: '1000+ موظف' },
+}
+
+function formatLocation(loc, lang) {
+  if (!loc) return null
+  if (typeof loc === 'string') return loc
+  const parts = [loc.city, loc.country].filter(Boolean)
+  return parts.join(', ') || null
+}
+
+function LocationMap({ location }) {
+  const mapRef = useRef(null)
+  const mapInstance = useRef(null)
+
+  const coords = location?.coordinates
+  const center = coords
+    ? (Array.isArray(coords.coordinates)
+        ? fromLonLat(coords.coordinates)
+        : coords.x != null ? fromLonLat([coords.x, coords.y]) : fromLonLat([46.6753, 24.7136]))
+    : fromLonLat([46.6753, 24.7136])
+
+  useEffect(() => {
+    if (!mapRef.current || mapInstance.current) return
+
+    const markerStyle = new Style({
+      image: new CircleStyle({
+        radius: 10,
+        fill: new Fill({ color: '#3D1C6E' }),
+        stroke: new Stroke({ color: 'white', width: 3 }),
+      }),
+    })
+    const outerStyle = new Style({
+      image: new CircleStyle({
+        radius: 18,
+        fill: new Fill({ color: 'rgba(61, 28, 110, 0.15)' }),
+        stroke: new Stroke({ color: 'rgba(61, 28, 110, 0.3)', width: 1 }),
+      }),
+    })
+
+    const markerFeature = new Feature({ geometry: new Point(center) })
+    markerFeature.setStyle([outerStyle, markerStyle])
+    const vectorSource = new VectorSource({ features: [markerFeature] })
+
+    const map = new Map({
+      target: mapRef.current,
+      layers: [
+        new TileLayer({ source: new OSM() }),
+        new VectorLayer({ source: vectorSource }),
+      ],
+      view: new View({ center, zoom: 12 }),
+      controls: [],
+    })
+    mapInstance.current = map
+    return () => { map.setTarget(null); mapInstance.current = null }
+  }, [])
+
+  useEffect(() => { mapInstance.current?.updateSize() })
+
+  return (
+    <Box ref={mapRef} sx={{
+      width: '100%', height: 220, borderRadius: 1, overflow: 'hidden',
+      border: '1px solid', borderColor: 'divider',
+    }} />
+  )
+}
+
+function InfoRow({ icon, label, value }) {
+  if (!value) return null
+  return (
+    <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+      <Box sx={{ color: 'text.secondary', display: 'flex', alignItems: 'center', minWidth: 20 }}>
+        {icon}
+      </Box>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1.3 }}>
+          {label}
+        </Typography>
+        <Typography variant="body2" fontWeight={500} noWrap>{value}</Typography>
+      </Box>
+    </Stack>
+  )
 }
 
 export default function EmployerDashboard() {
@@ -24,7 +147,7 @@ export default function EmployerDashboard() {
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const navigate = useNavigate()
   const user = useSelector((s) => s.user.user)
-  const [company, setCompany] = useState(null)
+  const [company, setCompany] = useState(user?.company || null)
   const [reputation, setReputation] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -64,7 +187,7 @@ export default function EmployerDashboard() {
     return (
       <Container maxWidth="md" sx={{ py: 4, textAlign: 'center' }}>
         <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>
-        <Button variant="outlined" onClick={() => fetchData()}>{t('companies.retry', 'Retry')}</Button>
+        <Button variant="outlined" onClick={() => fetchData()}>{t('companies.retry')}</Button>
       </Container>
     )
   }
@@ -82,15 +205,13 @@ export default function EmployerDashboard() {
               <RocketLaunchOutlined sx={{ fontSize: 36, color: 'primary.main' }} />
             </Box>
             <Typography variant="h5" fontWeight="bold">
-              {lang === 'ar' ? 'لم تنشئ صفحة شركة بعد' : 'No company page yet'}
+              {t('employer.dashboard.noCompanyYet')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', maxWidth: 400 }}>
-              {lang === 'ar'
-                ? 'أنشئ صفحة شركتك لإظهارها للمتقدمين.'
-                : 'Create your company page to showcase it to candidates.'}
+              {t('employer.dashboard.noCompanyDesc')}
             </Typography>
             <Button variant="contained" size="large" onClick={() => navigate('/employer/setup')} sx={{ px: 4 }}>
-              {lang === 'ar' ? 'إنشاء صفحة الشركة' : 'Create Company Page'}
+              {t('employer.dashboard.createCompanyPage')}
             </Button>
           </Stack>
         </Container>
@@ -99,119 +220,295 @@ export default function EmployerDashboard() {
   }
 
   const status = STATUS_CONFIG[company.status] || STATUS_CONFIG.Pending
+  const statusKey = company.status?.toLowerCase() || 'pending'
+  const locationStr = formatLocation(company.location, lang)
+  const industryLabel = company.industry ? INDUSTRIES[company.industry]?.[lang] : null
+  const sizeLabel = company.companySize ? COMPANY_SIZES[company.companySize]?.[lang] : null
+  const hasLocation = company.location && (locationStr || company.location.coordinates)
 
   return (
     <Box sx={{ minHeight: 'calc(100vh - 88px)', bgcolor: 'background.default' }}>
-      <Container maxWidth="md" sx={{ py: { xs: 3, md: 4 } }}>
-        <Stack spacing={2.5}>
-          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h5" fontWeight="bold">
-              {lang === 'ar' ? 'لوحة التحكم' : 'Dashboard'}
-            </Typography>
-            <Button variant="outlined" startIcon={<EditOutlined />} onClick={() => navigate('/settings')}>
-              {lang === 'ar' ? 'تعديل الملف' : 'Edit Profile'}
-            </Button>
-          </Stack>
+      <Container maxWidth="md" sx={{ py: { xs: 2, md: 3 } }}>
+        <Stack spacing={2}>
 
-          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-            <Avatar src={company.logo} sx={{ width: 56, height: 56, bgcolor: 'primary.main', fontSize: 22 }}>
-              {company.name?.charAt(0)}
-            </Avatar>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography variant="h6" fontWeight="bold" noWrap>{company.name}</Typography>
-              <Chip
-                icon={status.icon}
-                label={status[lang]}
-                size="small"
-                color={status.color}
-                sx={{ mt: 0.3, fontWeight: 600 }}
-              />
-            </Box>
-          </Stack>
+          {/* Cover + Logo + Name + Status */}
+          <Fade in timeout={500}>
+            <Paper sx={{ borderRadius: 1.5, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+              {/* Cover Photo */}
+              <Box sx={{
+                height: 120, bgcolor: 'grey.100',
+                backgroundImage: company.coverPhoto ? `url(${company.coverPhoto})` : 'none',
+                backgroundSize: 'cover', backgroundPosition: 'center',
+                bgcolor: !company.coverPhoto ? alpha('#3D1C6E', 0.06) : undefined,
+              }} />
 
-          <Stack direction="row" spacing={1.5}>
-            <Paper sx={{
-              flex: 1, p: 2.5, borderRadius: 3, textAlign: 'center',
-              border: '1px solid', borderColor: 'divider',
-            }}>
-              <PeopleOutlined sx={{ fontSize: 28, color: 'primary.main', mb: 0.5 }} />
-              <Typography variant="h5" fontWeight="bold">{company.followersCount ?? 0}</Typography>
-              <Typography variant="caption" color="text.secondary">
-                {lang === 'ar' ? 'المتابعون' : 'Followers'}
-              </Typography>
+              <Box sx={{ px: { xs: 2, md: 3 }, pb: 2.5 }}>
+                <Stack direction="row" spacing={2} sx={{ mt: -4, alignItems: 'flex-end' }}>
+                  <Avatar
+                    src={company.logo}
+                    sx={{
+                      width: 80, height: 80, bgcolor: 'primary.main', fontSize: 28,
+                      border: '3px solid', borderColor: 'background.paper',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  >
+                    {company.name?.charAt(0)}
+                  </Avatar>
+                  <Box sx={{ flex: 1, minWidth: 0, pb: 0.5 }}>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 0.5 }}>
+                      <Typography variant="h5" fontWeight="bold" noWrap>{company.name}</Typography>
+                      {company.isVerified && (
+                        <VerifiedOutlined sx={{ fontSize: 20, color: 'primary.main' }} />
+                      )}
+                    </Stack>
+                    <Chip
+                      icon={status.icon}
+                      label={t(`employer.status.${statusKey}`)}
+                      size="small"
+                      color={status.color}
+                      sx={{ mt: 0.5, fontWeight: 600 }}
+                    />
+                  </Box>
+                </Stack>
+              </Box>
             </Paper>
+          </Fade>
 
-            <Paper sx={{
-              flex: 1, p: 2.5, borderRadius: 3, textAlign: 'center',
-              border: '1px solid', borderColor: 'divider',
-            }}>
-              <StarOutlineOutlined sx={{ fontSize: 28, color: 'warning.main', mb: 0.5 }} />
-              <Typography variant="h5" fontWeight="bold">{reputation?.score ?? '—'}</Typography>
-              <Typography variant="caption" color="text.secondary">
-                {lang === 'ar' ? 'نقاط السمعة' : 'R-Score'}
-              </Typography>
-            </Paper>
-
-            <Paper sx={{
-              flex: 1, p: 2.5, borderRadius: 3, textAlign: 'center',
-              border: '1px solid', borderColor: 'divider',
-            }}>
-              <TrendingUpOutlined sx={{ fontSize: 28, color: 'success.main', mb: 0.5 }} />
-              <Typography variant="h5" fontWeight="bold">{reputation?.level || '—'}</Typography>
-              <Typography variant="caption" color="text.secondary">
-                {lang === 'ar' ? 'المستوى' : 'Level'}
-              </Typography>
-            </Paper>
-          </Stack>
-
+          {/* Status Banners */}
           {company.status === 'Pending' && (
-            <Paper sx={{
-              p: 2.5, borderRadius: 3,
-              bgcolor: alpha('#F59E0B', 0.06),
-              border: '1px solid', borderColor: alpha('#F59E0B', 0.2),
-            }}>
-              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-                <PendingOutlined sx={{ color: 'warning.main', fontSize: 28 }} />
-                <Box>
-                  <Typography variant="body2" fontWeight={600}>
-                    {lang === 'ar' ? 'طلبك قيد المراجعة' : 'Your application is under review'}
+            <Fade in timeout={550}>
+              <Paper sx={{
+                p: 2.5, borderRadius: 1.5,
+                bgcolor: alpha('#F59E0B', 0.05),
+                border: '1px solid', borderColor: alpha('#F59E0B', 0.2),
+              }}>
+                <Stack spacing={1.5}>
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                    <PendingOutlined sx={{ color: 'warning.main', fontSize: 24 }} />
+                    <Typography variant="body1" fontWeight={700} color="warning.dark">
+                      {t('employer.dashboard.pendingReview')}
+                    </Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary">
+                    {t('employer.dashboard.pendingDesc')}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {lang === 'ar'
-                      ? 'سيتم مراجعة طلبك من قبل فريق الدعم قريباً.'
-                      : 'Your application will be reviewed by our support team soon.'}
-                  </Typography>
-                </Box>
-              </Stack>
-            </Paper>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                    <InfoOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
+                    <Typography variant="caption" color="text.secondary">
+                      {t('employer.dashboard.pendingAdmins')}
+                    </Typography>
+                  </Stack>
+                  <Button variant="outlined" size="small" onClick={() => navigate('/employer/pending')} sx={{ alignSelf: 'flex-start' }}>
+                    {t('employer.dashboard.trackStatus')}
+                  </Button>
+                </Stack>
+              </Paper>
+            </Fade>
           )}
 
-          {company.status === 'Rejected' && company.rejectionReason && (
-            <Paper sx={{
-              p: 2.5, borderRadius: 3,
-              bgcolor: alpha('#DC2626', 0.06),
-              border: '1px solid', borderColor: alpha('#DC2626', 0.2),
-            }}>
-              <Typography variant="body2" fontWeight={600} color="error">
-                {lang === 'ar' ? 'سبب الرفض:' : 'Rejection reason:'}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                {company.rejectionReason}
-              </Typography>
-            </Paper>
+          {company.status === 'Rejected' && (
+            <Fade in timeout={550}>
+              <Paper sx={{
+                p: 2.5, borderRadius: 1.5,
+                bgcolor: alpha('#DC2626', 0.05),
+                border: '1px solid', borderColor: alpha('#DC2626', 0.2),
+              }}>
+                <Stack spacing={1.5}>
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                    <CancelOutlined sx={{ color: 'error.main', fontSize: 24 }} />
+                    <Typography variant="body1" fontWeight={700} color="error.main">
+                      {t('employer.dashboard.rejectedMessage')}
+                    </Typography>
+                  </Stack>
+                  {company.rejectionReason && (
+                    <Box>
+                      <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                        {t('employer.dashboard.rejectionReason')}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        {company.rejectionReason}
+                      </Typography>
+                    </Box>
+                  )}
+                  <Button variant="contained" size="small" onClick={() => navigate('/employer/setup')} sx={{ alignSelf: 'flex-start' }}>
+                    {t('employer.dashboard.resubmit')}
+                  </Button>
+                </Stack>
+              </Paper>
+            </Fade>
           )}
 
           {company.status === 'Approved' && (
-            <Button
-              variant="contained"
-              fullWidth
-              size="large"
-              onClick={() => navigate(`/companies/${company._id}`)}
-              sx={{ py: 1.5, fontWeight: 700 }}
-            >
-              {lang === 'ar' ? 'عرض صفحة الشركة' : 'View Company Page'}
-            </Button>
+            <Fade in timeout={550}>
+              <Paper sx={{
+                p: 2, borderRadius: 1.5,
+                bgcolor: alpha('#16A34A', 0.05),
+                border: '1px solid', borderColor: alpha('#16A34A', 0.15),
+              }}>
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                  <CheckCircleOutlineOutlined sx={{ color: 'success.main', fontSize: 22 }} />
+                  <Typography variant="body2" color="success.dark" fontWeight={500}>
+                    {t('employer.dashboard.approvedMessage')}
+                  </Typography>
+                </Stack>
+              </Paper>
+            </Fade>
           )}
+
+          {/* Stats */}
+          <Fade in timeout={600}>
+            <Stack direction="row" spacing={1.5}>
+              <Paper sx={{
+                flex: 1, p: 2, borderRadius: 1.5, textAlign: 'center',
+                border: '1px solid', borderColor: 'divider',
+              }}>
+                <PeopleOutlined sx={{ fontSize: 24, color: 'primary.main', mb: 0.3 }} />
+                <Typography variant="h5" fontWeight="bold">{company.followersCount ?? 0}</Typography>
+                <Typography variant="caption" color="text.secondary">{t('employer.dashboard.followers')}</Typography>
+              </Paper>
+              <Paper sx={{
+                flex: 1, p: 2, borderRadius: 1.5, textAlign: 'center',
+                border: '1px solid', borderColor: 'divider',
+              }}>
+                <StarOutlineOutlined sx={{ fontSize: 24, color: 'warning.main', mb: 0.3 }} />
+                <Typography variant="h5" fontWeight="bold">{reputation?.score ?? company.averageRating ?? '—'}</Typography>
+                <Typography variant="caption" color="text.secondary">{t('employer.dashboard.rScore')}</Typography>
+              </Paper>
+              <Paper sx={{
+                flex: 1, p: 2, borderRadius: 1.5, textAlign: 'center',
+                border: '1px solid', borderColor: 'divider',
+              }}>
+                <TrendingUpOutlined sx={{ fontSize: 24, color: 'success.main', mb: 0.3 }} />
+                <Typography variant="h5" fontWeight="bold">{reputation?.level || '—'}</Typography>
+                <Typography variant="caption" color="text.secondary">{t('employer.dashboard.level')}</Typography>
+              </Paper>
+            </Stack>
+          </Fade>
+
+          {/* Quick Actions */}
+          <Fade in timeout={700}>
+            <Stack direction="row" spacing={1.5}>
+              <Button variant="outlined" fullWidth startIcon={<GroupAddOutlined />}
+                onClick={() => navigate('/employer/employees')} size="small"
+                sx={{ borderRadius: 1.5 }}>
+                {lang === 'ar' ? 'إدارة الفريق' : 'Manage Team'}
+              </Button>
+              <Button variant="outlined" fullWidth startIcon={<WorkOutlineOutlined />}
+                onClick={() => navigate('/employee/jobs')} size="small"
+                sx={{ borderRadius: 1.5 }}>
+                {lang === 'ar' ? 'إدارة الوظائف' : 'Manage Jobs'}
+              </Button>
+            </Stack>
+          </Fade>
+
+          {/* Company Details */}
+          <Fade in timeout={700}>
+            <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+              <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
+                {t('employer.setup.companyInfoSummary')}
+              </Typography>
+              <Stack spacing={1.75}>
+                <InfoRow
+                  icon={<BusinessOutlined sx={{ fontSize: 18 }} />}
+                  label={t('companies.description')}
+                  value={company.description}
+                />
+                <InfoRow
+                  icon={<BusinessOutlined sx={{ fontSize: 18 }} />}
+                  label={t('companies.industry')}
+                  value={industryLabel}
+                />
+                <InfoRow
+                  icon={<GroupsOutlined sx={{ fontSize: 18 }} />}
+                  label={t('companies.companySize')}
+                  value={sizeLabel}
+                />
+                <InfoRow
+                  icon={<CalendarMonthOutlined sx={{ fontSize: 18 }} />}
+                  label={t('companies.foundedYear')}
+                  value={company.foundedYear}
+                />
+                <InfoRow
+                  icon={<LanguageOutlined sx={{ fontSize: 18 }} />}
+                  label={t('companies.website')}
+                  value={company.website}
+                />
+                <InfoRow
+                  icon={<EmailOutlined sx={{ fontSize: 18 }} />}
+                  label={t('companies.contactEmail')}
+                  value={company.contactEmail}
+                />
+                <InfoRow
+                  icon={<LocationOnOutlined sx={{ fontSize: 18 }} />}
+                  label={t('companies.location')}
+                  value={locationStr}
+                />
+              </Stack>
+            </Paper>
+          </Fade>
+
+          {/* Social Links */}
+          {(company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
+            <Fade in timeout={750}>
+              <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
+                  {lang === 'ar' ? 'روابط التواصل' : 'Social Links'}
+                </Typography>
+                <Stack direction="row" spacing={2}>
+                  {company.socialLinks?.linkedin && (
+                    <Chip
+                      icon={<LinkedIn sx={{ fontSize: 16 }} />}
+                      label="LinkedIn"
+                      component="a"
+                      href={company.socialLinks.linkedin}
+                      target="_blank"
+                      rel="noopener"
+                      clickable
+                      size="small"
+                      sx={{ fontWeight: 500 }}
+                    />
+                  )}
+                  {company.socialLinks?.twitter && (
+                    <Chip
+                      icon={<Twitter sx={{ fontSize: 16 }} />}
+                      label="Twitter"
+                      component="a"
+                      href={company.socialLinks.twitter}
+                      target="_blank"
+                      rel="noopener"
+                      clickable
+                      size="small"
+                      sx={{ fontWeight: 500 }}
+                    />
+                  )}
+                </Stack>
+              </Paper>
+            </Fade>
+          )}
+
+          {/* Location Map */}
+          {hasLocation && (
+            <Fade in timeout={800}>
+              <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
+                  {t('companies.location')}
+                </Typography>
+                <LocationMap location={company.location} />
+                {(company.location?.street || company.location?.buildingNumber) && (
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                    {[company.location.street, company.location.buildingNumber].filter(Boolean).join(', ')}
+                  </Typography>
+                )}
+              </Paper>
+            </Fade>
+          )}
+
+          {/* Created At */}
+          <Fade in timeout={850}>
+            <Typography variant="caption" color="text.disabled" sx={{ textAlign: 'center', display: 'block', py: 1 }}>
+              {lang === 'ar' ? 'تم الإنشاء:' : 'Created:'} {new Date(company.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </Typography>
+          </Fade>
         </Stack>
       </Container>
     </Box>

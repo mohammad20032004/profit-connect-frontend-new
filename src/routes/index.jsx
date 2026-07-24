@@ -27,6 +27,12 @@ import EmployerWelcome from "../features/employer/welcome/view"
 import EmployerDashboard from "../features/employer/dashboard/view"
 import EmployerSetup from "../features/employer/setup/view"
 import EmployerPending from "../features/employer/pending/view"
+import EmployeeManagement from "../features/employer/employees/view"
+
+import EmployeeDashboard from "../features/employee/dashboard/view"
+import EmployeeJobs from "../features/employee/jobs/view"
+import CreateJob from "../features/employee/jobs/create/view"
+import JobApplicants from "../features/employee/jobs/applicants/view"
 
 function Layout() {
   return (
@@ -66,6 +72,12 @@ const router = createBrowserRouter([
       { path: "/employer/dashboard", element: <EmployerDashboard /> },
       { path: "/employer/setup", element: <EmployerSetup /> },
       { path: "/employer/pending", element: <EmployerPending /> },
+      { path: "/employer/employees", element: <EmployeeManagement /> },
+
+      { path: "/employee/dashboard", element: <EmployeeDashboard /> },
+      { path: "/employee/jobs", element: <EmployeeJobs /> },
+      { path: "/employee/jobs/create", element: <CreateJob /> },
+      { path: "/employee/jobs/:jobId/applicants", element: <JobApplicants /> },
 
       { path: "*", element: <NotFoundView /> },
     ],

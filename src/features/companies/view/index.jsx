@@ -15,6 +15,13 @@ export default function CompaniesList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  const formatLocation = (loc) => {
+    if (!loc) return ''
+    if (typeof loc === 'string') return loc
+    const parts = [loc.city, loc.country].filter(Boolean)
+    return parts.join(', ') || ''
+  }
+
   const fetch = async () => {
     setLoading(true)
     setError('')
@@ -63,7 +70,7 @@ export default function CompaniesList() {
                   </Typography>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                     {c.industry && <Chip icon={<BusinessOutlined />} label={c.industry} size="small" />}
-                    {c.location && <Chip icon={<LocationOnOutlined />} label={c.location} size="small" />}
+                    {c.location && <Chip icon={<LocationOnOutlined />} label={formatLocation(c.location)} size="small" />}
                     <Chip icon={<PeopleOutlined />} label={`${c.followersCount ?? 0}`} size="small" />
                     {c.averageRating > 0 && (
                       <Chip label={`${t('companies.rating', 'Rating')}: ${c.averageRating.toFixed(1)}`} size="small" color="primary" />

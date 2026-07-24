@@ -1,17 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, TextField, Grid, Stepper, Step, StepLabel,
-  CircularProgress, Alert, IconButton, Chip, alpha, LinearProgress, MenuItem, Fade,
+  CircularProgress, Alert, IconButton, Chip, alpha, LinearProgress, MenuItem, Fade, Divider,
+  Autocomplete,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
   ArrowBackOutlined, ArrowForwardOutlined, CloudUploadOutlined, DeleteOutlineOutlined,
   BusinessCenterOutlined, DescriptionOutlined, CheckCircleOutlineOutlined,
+  LocationOnOutlined, PendingOutlined, CancelOutlined, DashboardOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { createCompanyWithDocs } from '@/services/companyService'
+import { getMyCompany } from '@/services/employerService'
+
+import Map from 'ol/Map'
+import View from 'ol/View'
+import TileLayer from 'ol/layer/Tile'
+import VectorLayer from 'ol/layer/Vector'
+import VectorSource from 'ol/source/Vector'
+import OSM from 'ol/source/OSM'
+import Feature from 'ol/Feature'
+import Point from 'ol/geom/Point'
+import { fromLonLat, toLonLat } from 'ol/proj'
+import { Style, Circle as CircleStyle, Fill, Stroke, Text } from 'ol/style'
+
+import 'ol/ol.css'
 
 const INDUSTRIES = [
   { value: 'web-development', en: 'Web Development', ar: 'تطوير المواقع' },
@@ -42,29 +58,238 @@ const COMPANY_SIZES = [
   { value: '1000+', en: '1000+ employees', ar: '1000+ موظف' },
 ]
 
+const COUNTRIES = [
+  {
+    value: 'SA', en: 'Saudi Arabia', ar: 'المملكة العربية السعودية',
+    cities: [
+      { value: 'riyadh', en: 'Riyadh', ar: 'الرياض' },
+      { value: 'jeddah', en: 'Jeddah', ar: 'جدة' },
+      { value: 'mecca', en: 'Mecca', ar: 'مكة المكرمة' },
+      { value: 'medina', en: 'Medina', ar: 'المدينة المنورة' },
+      { value: 'dammam', en: 'Dammam', ar: 'الدمام' },
+      { value: 'khobar', en: 'Khobar', ar: 'الخبر' },
+      { value: 'dhahran', en: 'Dhahran', ar: 'الظهران' },
+      { value: 'tabuk', en: 'Tabuk', ar: 'تبوك' },
+      { value: 'abha', en: 'Abha', ar: 'أبها' },
+      { value: 'buraidah', en: 'Buraidah', ar: 'بريدة' },
+      { value: 'khamis_mushait', en: 'Khamis Mushait', ar: 'خميس مشيط' },
+      { value: 'hail', en: 'Hail', ar: 'حائل' },
+      { value: 'jizan', en: 'Jizan', ar: 'جازان' },
+      { value: 'najran', en: 'Najran', ar: 'نجران' },
+      { value: 'alkharj', en: 'Al Kharj', ar: 'الخرج' },
+      { value: 'yanbu', en: 'Yanbu', ar: 'ينبع' },
+      { value: 'sakaka', en: 'Sakaka', ar: 'سكاكا' },
+      { value: 'al_jubail', en: 'Al Jubail', ar: 'الجبيل' },
+      { value: 'ras_tanura', en: 'Ras Tanura', ar: 'رأس تنورة' },
+    ],
+  },
+  {
+    value: 'AE', en: 'United Arab Emirates', ar: 'الإمارات العربية المتحدة',
+    cities: [
+      { value: 'dubai', en: 'Dubai', ar: 'دبي' },
+      { value: 'abu_dhabi', en: 'Abu Dhabi', ar: 'أبو ظبي' },
+      { value: 'sharjah', en: 'Sharjah', ar: 'الشارقة' },
+      { value: 'ajman', en: 'Ajman', ar: 'عجمان' },
+      { value: 'ras_al_khaimah', en: 'Ras Al Khaimah', ar: 'رأس الخيمة' },
+      { value: 'fujairah', en: 'Fujairah', ar: 'الفجيرة' },
+      { value: 'umm_al_quwain', en: 'Umm Al Quwain', ar: 'أم القيوين' },
+      { value: 'al_ain', en: 'Al Ain', ar: 'العين' },
+    ],
+  },
+  {
+    value: 'EG', en: 'Egypt', ar: 'مصر',
+    cities: [
+      { value: 'cairo', en: 'Cairo', ar: 'القاهرة' },
+      { value: 'alexandria', en: 'Alexandria', ar: 'الإسكندرية' },
+      { value: 'giza', en: 'Giza', ar: 'الجيزة' },
+      { value: 'sharm_el_sheikh', en: 'Sharm El Sheikh', ar: 'شرم الشيخ' },
+      { value: 'luxor', en: 'Luxor', ar: 'الأقصر' },
+      { value: 'aswan', en: 'Aswan', ar: 'أسوان' },
+      { value: 'port_said', en: 'Port Said', ar: 'بورسعيد' },
+      { value: 'suez', en: 'Suez', ar: 'السويس' },
+    ],
+  },
+  {
+    value: 'JO', en: 'Jordan', ar: 'الأردن',
+    cities: [
+      { value: 'amman', en: 'Amman', ar: 'عمّان' },
+      { value: 'irbid', en: 'Irbid', ar: 'إربد' },
+      { value: 'zarqa', en: 'Zarqa', ar: 'الزرقاء' },
+      { value: 'aqaba', en: 'Aqaba', ar: 'العقبة' },
+      { value: 'maan', en: "Ma'an", ar: 'معان' },
+      { value: 'salt', en: 'Salt', ar: 'السلط' },
+    ],
+  },
+  {
+    value: 'LB', en: 'Lebanon', ar: 'لبنان',
+    cities: [
+      { value: 'beirut', en: 'Beirut', ar: 'بيروت' },
+      { value: 'tripoli', en: 'Tripoli', ar: 'طرابلس' },
+      { value: 'sidon', en: 'Sidon', ar: 'صيدا' },
+      { value: 'tyre', en: 'Tyre', ar: 'صور' },
+      { value: 'byblos', en: 'Byblos', ar: 'جبيل' },
+    ],
+  },
+  {
+    value: 'KW', en: 'Kuwait', ar: 'الكويت',
+    cities: [
+      { value: 'kuwait_city', en: 'Kuwait City', ar: 'مدينة الكويت' },
+      { value: 'hawalli', en: 'Hawalli', ar: 'حولي' },
+      { value: 'salmiya', en: 'Salmiya', ar: 'السالمية' },
+      { value: 'farwaniya', en: 'Farwaniya', ar: 'الفروانية' },
+      { value: 'jahra', en: 'Jahra', ar: 'الجهراء' },
+    ],
+  },
+  {
+    value: 'QA', en: 'Qatar', ar: 'قطر',
+    cities: [
+      { value: 'doha', en: 'Doha', ar: 'الدوحة' },
+      { value: 'al_wakrah', en: 'Al Wakrah', ar: 'الوكرة' },
+      { value: 'al_khor', en: 'Al Khor', ar: 'الخور' },
+      { value: 'duhan', en: 'Dukhan', ar: 'دخان' },
+    ],
+  },
+  {
+    value: 'BH', en: 'Bahrain', ar: 'البحرين',
+    cities: [
+      { value: 'manama', en: 'Manama', ar: 'المنامة' },
+      { value: 'muharraq', en: 'Muharraq', ar: 'المحرق' },
+      { value: 'riffa', en: 'Riffa', ar: 'الريف' },
+      { value: 'hamad_town', en: 'Hamad Town', ar: 'مدينة حمد' },
+    ],
+  },
+  {
+    value: 'OM', en: 'Oman', ar: 'عُمان',
+    cities: [
+      { value: 'muscat', en: 'Muscat', ar: 'مسقط' },
+      { value: 'salalah', en: 'Salalah', ar: 'صلالة' },
+      { value: 'sohar', en: 'Sohar', ar: 'صحار' },
+      { value: 'nizwa', en: 'Nizwa', ar: 'نزوى' },
+      { value: 'sur', en: 'Sur', ar: 'صور' },
+    ],
+  },
+  {
+    value: 'IQ', en: 'Iraq', ar: 'العراق',
+    cities: [
+      { value: 'baghdad', en: 'Baghdad', ar: 'بغداد' },
+      { value: 'basra', en: 'Basra', ar: 'البصرة' },
+      { value: 'erbil', en: 'Erbil', ar: 'أربيل' },
+      { value: 'sulaymaniyah', en: 'Sulaymaniyah', ar: 'السليمانية' },
+      { value: 'mosul', en: 'Mosul', ar: 'الموصل' },
+    ],
+  },
+  {
+    value: 'MA', en: 'Morocco', ar: 'المغرب',
+    cities: [
+      { value: 'casablanca', en: 'Casablanca', ar: 'الدار البيضاء' },
+      { value: 'rabat', en: 'Rabat', ar: 'الرباط' },
+      { value: 'marrakech', en: 'Marrakech', ar: 'مراكش' },
+      { value: 'fes', en: 'Fes', ar: 'فاس' },
+      { value: 'tangier', en: 'Tangier', ar: 'طنجة' },
+    ],
+  },
+  {
+    value: 'TN', en: 'Tunisia', ar: 'تونس',
+    cities: [
+      { value: 'tunis', en: 'Tunis', ar: 'تونس' },
+      { value: 'sfax', en: 'Sfax', ar: 'صفاقس' },
+      { value: 'sousse', en: 'Sousse', ar: 'سوسة' },
+    ],
+  },
+  {
+    value: 'DZ', en: 'Algeria', ar: 'الجزائر',
+    cities: [
+      { value: 'algiers', en: 'Algiers', ar: 'الجزائر' },
+      { value: 'oran', en: 'Oran', ar: 'وهران' },
+      { value: 'constantine', en: 'Constantine', ar: 'قسنطينة' },
+    ],
+  },
+  {
+    value: 'SD', en: 'Sudan', ar: 'السودان',
+    cities: [
+      { value: 'khartoum', en: 'Khartoum', ar: 'الخرطوم' },
+      { value: 'omdurman', en: 'Omdurman', ar: 'الدومرمان' },
+    ],
+  },
+  { value: 'other', en: 'Other', ar: 'أخرى', cities: [] },
+]
+
 const CURRENT_YEAR = new Date().getFullYear()
 const MAX_DOCS = 5
 const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
 
-const fadeUp = (delay = 0) => ({
-  animation: `fadeUp 0.5s ease ${delay}s both`,
-})
+const DEFAULT_CENTER = [46.6753, 24.7136]
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
-    borderRadius: 2,
+    borderRadius: 1,
     transition: 'all 0.3s ease',
-    '&:hover': { boxShadow: '0 4px 16px rgba(61,28,110,0.08)' },
-    '&.Mui-focused': { boxShadow: '0 4px 20px rgba(61,28,110,0.14)' },
-  },
-  '& .MuiInputLabel-outlined': {
-    transition: 'all 0.2s ease',
+    '&:hover': { boxShadow: '0 2px 8px rgba(61,28,110,0.06)' },
+    '&.Mui-focused': { boxShadow: '0 2px 12px rgba(61,28,110,0.12)' },
   },
 }
 
-const stepIcons = {
-  0: <BusinessCenterOutlined />,
-  1: <DescriptionOutlined />,
+const sectionTitleSx = {
+  fontSize: '0.7rem',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: 1,
+  color: 'text.secondary',
+}
+
+function LocationMap({ coordinates, onCoordinatesChange }) {
+  const mapRef = useRef(null)
+  const mapInstance = useRef(null)
+  const markerRef = useRef(null)
+
+  const markerStyle = new Style({
+    image: new CircleStyle({
+      radius: 10,
+      fill: new Fill({ color: '#3D1C6E' }),
+      stroke: new Stroke({ color: 'white', width: 3 }),
+    }),
+  })
+
+  const outerStyle = new Style({
+    image: new CircleStyle({
+      radius: 18,
+      fill: new Fill({ color: 'rgba(61, 28, 110, 0.15)' }),
+      stroke: new Stroke({ color: 'rgba(61, 28, 110, 0.3)', width: 1 }),
+    }),
+  })
+
+  useEffect(() => {
+    if (!mapRef.current || mapInstance.current) return
+    const initialCoords = coordinates ? fromLonLat([coordinates.x, coordinates.y]) : fromLonLat(DEFAULT_CENTER)
+    const markerFeature = new Feature({ geometry: new Point(initialCoords) })
+    markerFeature.setStyle([outerStyle, markerStyle])
+    const vectorSource = new VectorSource({ features: [markerFeature] })
+    const map = new Map({
+      target: mapRef.current,
+      layers: [new TileLayer({ source: new OSM() }), new VectorLayer({ source: vectorSource })],
+      view: new View({ center: initialCoords, zoom: coordinates ? 12 : 5 }),
+    })
+    markerRef.current = markerFeature
+    map.on('click', (evt) => {
+      markerFeature.getGeometry().setCoordinates(evt.coordinate)
+      const [lon, lat] = toLonLat(evt.coordinate)
+      onCoordinatesChange({ x: Math.round(lon * 1000000) / 1000000, y: Math.round(lat * 1000000) / 1000000 })
+    })
+    mapInstance.current = map
+    return () => { map.setTarget(null); mapInstance.current = null }
+  }, [])
+
+  useEffect(() => { mapInstance.current?.updateSize() })
+
+  return (
+    <Box ref={mapRef} sx={{
+      width: '100%', height: 320, borderRadius: 1, overflow: 'hidden',
+      border: '1px solid', borderColor: 'divider',
+      '& .ol-control': { background: 'rgba(255,255,255,0.9) !important', borderRadius: '4px !important', padding: '2px !important' },
+      '& .ol-zoom': { top: '8px !important', left: '8px !important' },
+      '& .ol-attribution': { display: 'none !important' },
+    }} />
+  )
 }
 
 export default function EmployerSetup() {
@@ -74,15 +299,22 @@ export default function EmployerSetup() {
   const user = useSelector((s) => s.user.user)
   const profile = user?.employerProfile || {}
 
+  const [existingCompany, setExistingCompany] = useState(user?.company || null)
+  const [checkingCompany, setCheckingCompany] = useState(!user?.company)
   const [step, setStep] = useState(0)
-  const [slideDir, setSlideDir] = useState('forward')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     name: profile.companyName || '',
     description: profile.companyDescription || '',
     industry: profile.companyIndustry || '',
-    location: profile.companyLocation || '',
+    location: {
+      country: profile.companyLocation?.country || '',
+      city: profile.companyLocation?.city || '',
+      street: profile.companyLocation?.street || '',
+      buildingNumber: profile.companyLocation?.buildingNumber || '',
+      coordinates: profile.companyLocation?.coordinates || null,
+    },
     website: profile.website || '',
     companySize: profile.companySize || '',
     foundedYear: profile.foundedYear || '',
@@ -90,33 +322,52 @@ export default function EmployerSetup() {
   })
   const [documents, setDocuments] = useState([])
 
-  const set = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }))
+  useEffect(() => {
+    if (user?.company) {
+      setExistingCompany(user.company)
+      setCheckingCompany(false)
+      return
+    }
+    const checkCompany = async () => {
+      try {
+        const res = await getMyCompany()
+        if (res?.success && res?.data) {
+          setExistingCompany(res.data)
+        }
+      } catch { /* no company */ }
+      finally { setCheckingCompany(false) }
+    }
+    checkCompany()
+  }, [])
+
+  const set = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }))
+  const setLocationField = (key) => (e) => setForm((p) => ({ ...p, location: { ...p.location, [key]: e.target.value } }))
+  const handleCoordinatesChange = (coords) => setForm((p) => ({ ...p, location: { ...p.location, coordinates: coords } }))
+
+  const selectedCountry = COUNTRIES.find((c) => c.en === form.location.country || c.ar === form.location.country)
 
   const handleDocAdd = (e) => {
     const files = Array.from(e.target.files || [])
     const remaining = MAX_DOCS - documents.length
     const valid = files.slice(0, remaining).filter((f) => {
       if (!ALLOWED_TYPES.includes(f.type)) {
-        setError(lang === 'ar' ? 'الملف غير مدعوم. استخدم PDF أو JPG أو PNG' : 'Unsupported file. Use PDF, JPG, or PNG')
+        setError(t('employer.setup.unsupportedFile'))
         return false
       }
       if (f.size > 10 * 1024 * 1024) {
-        setError(lang === 'ar' ? 'الملف كبير جداً. الحد الأقصى 10 ميغابايت' : 'File too large. Max 10MB')
+        setError(t('employer.setup.fileTooLarge'))
         return false
       }
       return true
     })
-    setDocuments((prev) => [...prev, ...valid])
+    setDocuments((p) => [...p, ...valid])
     e.target.value = ''
   }
 
-  const handleDocRemove = (index) => {
-    setDocuments((prev) => prev.filter((_, i) => i !== index))
-  }
+  const handleDocRemove = (i) => setDocuments((p) => p.filter((_, j) => j !== i))
 
   const handleStep = (dir) => {
-    setSlideDir(dir)
-    setStep((s) => dir === 'forward' ? Math.min(s + 1, 1) : Math.max(s - 1, 0))
+    setStep((s) => dir === 'forward' ? Math.min(s + 1, 2) : Math.max(s - 1, 0))
   }
 
   const handleSubmit = async () => {
@@ -128,17 +379,18 @@ export default function EmployerSetup() {
       fd.append('name', form.name.trim())
       if (form.description.trim()) fd.append('description', form.description.trim())
       if (form.industry) fd.append('industry', form.industry)
-      if (form.location.trim()) fd.append('location', form.location.trim())
+      const locationObj = { country: form.location.country, city: form.location.city }
+      if (form.location.street.trim()) locationObj.street = form.location.street.trim()
+      if (form.location.buildingNumber.trim()) locationObj.buildingNumber = form.location.buildingNumber.trim()
+      if (form.location.coordinates) locationObj.coordinates = form.location.coordinates
+      fd.append('location', JSON.stringify(locationObj))
       if (form.website.trim()) fd.append('website', form.website.trim())
       if (form.companySize) fd.append('companySize', form.companySize)
       if (form.foundedYear) fd.append('foundedYear', String(form.foundedYear))
       if (form.contactEmail.trim()) fd.append('contactEmail', form.contactEmail.trim())
       documents.forEach((doc) => fd.append('documents', doc))
-
       const res = await createCompanyWithDocs(fd)
-      if (res?.success) {
-        navigate('/employer/pending')
-      }
+      if (res?.success) navigate('/employer/pending')
     } catch (err) {
       setError(err?.response?.data?.message || t('common.error'))
     } finally {
@@ -147,353 +399,465 @@ export default function EmployerSetup() {
   }
 
   const steps = [
-    { en: 'Company Info', ar: 'معلومات الشركة', icon: <BusinessCenterOutlined /> },
-    { en: 'Documents', ar: 'الوثائق', icon: <DescriptionOutlined /> },
+    { key: 'stepInfo', icon: <BusinessCenterOutlined /> },
+    { key: 'stepLocation', icon: <LocationOnOutlined /> },
+    { key: 'stepDocs', icon: <DescriptionOutlined /> },
   ]
 
-  const slideAnim = slideDir === 'forward'
-    ? { animation: 'slideInRight 0.4s ease both' }
-    : { animation: 'slideInLeft 0.4s ease both' }
+  const stepValidation = [
+    !!form.name.trim(),
+    !!(form.location.country && form.location.city),
+    true,
+  ]
 
   return (
     <Box sx={{
-      minHeight: 'calc(100vh - 88px)', bgcolor: 'background.default',
-      '@keyframes fadeUp': { from: { opacity: 0, transform: 'translateY(16px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
-      '@keyframes slideInRight': { from: { opacity: 0, transform: 'translateX(24px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
-      '@keyframes slideInLeft': { from: { opacity: 0, transform: 'translateX(-24px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
+      minHeight: 'calc(100vh - 88px)', bgcolor: 'grey.50',
+      '@keyframes fadeUp': { from: { opacity: 0, transform: 'translateY(12px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
+      '@keyframes slideInRight': { from: { opacity: 0, transform: 'translateX(16px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
+      '@keyframes slideInLeft': { from: { opacity: 0, transform: 'translateX(-16px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
       '@keyframes pulse': { '0%,100%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.05)' } },
     }}>
-      <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
-        <Stack spacing={2}>
-          {/* Header */}
-          <Stack direction="row" sx={{ alignItems: 'center', gap: 1, ...fadeUp(0) }}>
-            <IconButton onClick={() => navigate(-1)} size="small" sx={{
-              transition: 'all 0.2s',
-              '&:hover': { transform: 'scale(1.1)', bgcolor: alpha('#3D1C6E', 0.08) },
-            }}>
-              <ArrowBackOutlined />
-            </IconButton>
-            <Typography variant="h5" fontWeight="bold">
-              {lang === 'ar' ? 'إنشاء صفحة الشركة' : 'Create Company Page'}
-            </Typography>
-          </Stack>
-
-          {/* Stepper with icons */}
-          <Paper sx={{
-            p: 2, borderRadius: 3, ...fadeUp(0.1),
-            border: '1px solid', borderColor: 'divider',
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,246,252,0.9) 100%)',
-            backdropFilter: 'blur(10px)',
-          }}>
-            <Stepper activeStep={step} alternativeLabel sx={{
-              '& .MuiStepLabel-label': { fontSize: '0.82rem', fontWeight: 600, mt: 0.5 },
-              '& .Mui-active .MuiStepLabel-label': { color: 'primary.main' },
-              '& .Mui-completed .MuiStepLabel-label': { color: 'success.main' },
-              '& .MuiStepIcon-root': { fontSize: '1.8rem', transition: 'all 0.3s ease' },
-              '& .Mui-active .MuiStepIcon-root': { color: 'primary.main', filter: 'drop-shadow(0 2px 8px rgba(61,28,110,0.3))' },
-              '& .Mui-completed .MuiStepIcon-root': { color: 'success.main' },
-            }}>
-              {steps.map((s, i) => (
-                <Step key={s.en}>
-                  <StepLabel>{s[lang]}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Paper>
-
-          {loading && <LinearProgress sx={{ borderRadius: 1 }} />}
-          {error && (
-            <Fade in>
-              <Alert severity="error" onClose={() => setError('')} sx={{ borderRadius: 2 }}>
-                {error}
-              </Alert>
-            </Fade>
-          )}
-
-          {/* Main content area */}
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-            {/* Left sidebar - summary */}
-            <Paper sx={{
-              width: 240, flexShrink: 0, borderRadius: 3, p: 2,
-              border: '1px solid', borderColor: 'divider',
-              display: { xs: 'none', md: 'block' },
-              ...fadeUp(0.15),
-            }}>
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, color: 'primary.main' }}>
-                {lang === 'ar' ? 'ملخص' : 'Summary'}
-              </Typography>
-              <Stack spacing={1.5}>
-                {[
-                  { label: lang === 'ar' ? 'اسم الشركة' : 'Company Name', value: form.name, required: true },
-                  { label: lang === 'ar' ? 'المجال' : 'Industry', value: form.industry ? INDUSTRIES.find((i) => i.value === form.industry)?.[lang] : '' },
-                  { label: lang === 'ar' ? 'الموقع' : 'Location', value: form.location },
-                  { label: lang === 'ar' ? 'الحجم' : 'Size', value: form.companySize },
-                  { label: lang === 'ar' ? 'السنة' : 'Year', value: form.foundedYear },
-                ].map((item, i) => (
-                  <Box key={i} sx={{
-                    p: 1, borderRadius: 1.5,
-                    bgcolor: item.value ? alpha('#16A34A', 0.06) : alpha('#F59E0B', 0.06),
-                    border: '1px solid',
-                    borderColor: item.value ? alpha('#16A34A', 0.15) : alpha('#F59E0B', 0.15),
-                    transition: 'all 0.3s ease',
+      <Container maxWidth={(step === 1 && !existingCompany && !checkingCompany) ? 'lg' : 'md'} sx={{ py: 3, transition: 'max-width 0.3s ease' }}>
+        {checkingCompany ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 12 }}>
+            <CircularProgress />
+          </Box>
+        ) : existingCompany ? (
+          <Fade in timeout={500}>
+            <Box>
+              <Paper sx={{ p: 4, borderRadius: 1.5, border: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
+                <Stack spacing={2.5} sx={{ alignItems: 'center' }}>
+                  <Box sx={{
+                    width: 64, height: 64, borderRadius: '16px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    bgcolor: alpha('#3D1C6E', 0.08),
                   }}>
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
-                      {item.label} {item.required && '*'}
+                    <BusinessCenterOutlined sx={{ fontSize: 32, color: 'primary.main' }} />
+                  </Box>
+
+                  <Typography variant="h5" fontWeight="bold">{existingCompany.name}</Typography>
+
+                  <Chip
+                    icon={existingCompany.status === 'Approved' ? <CheckCircleOutlineOutlined /> :
+                      existingCompany.status === 'Rejected' ? <CancelOutlined /> : <PendingOutlined />}
+                    label={t(`employer.status.${existingCompany.status?.toLowerCase() || 'pending'}`)}
+                    color={existingCompany.status === 'Approved' ? 'success' :
+                      existingCompany.status === 'Rejected' ? 'error' : 'warning'}
+                    sx={{ fontWeight: 600 }}
+                  />
+
+                  <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 420 }}>
+                    {existingCompany.status === 'Pending'
+                      ? t('employer.setup.companyExistsPending')
+                      : existingCompany.status === 'Approved'
+                        ? t('employer.setup.companyExistsApproved')
+                        : t('employer.setup.companyExistsRejected')}
+                  </Typography>
+
+                  <Stack direction="row" spacing={1.5}>
+                    {existingCompany.status === 'Approved' && (
+                      <Button
+                        variant="contained"
+                        startIcon={<DashboardOutlined />}
+                        onClick={() => navigate('/employer/dashboard')}
+                        sx={{ px: 4, fontWeight: 700 }}
+                      >
+                        {t('employer.setup.dashboard')}
+                      </Button>
+                    )}
+                    {existingCompany.status === 'Pending' && (
+                      <Button
+                        variant="outlined"
+                        onClick={() => navigate('/employer/pending')}
+                        sx={{ px: 4 }}
+                      >
+                        {t('employer.setup.trackStatus')}
+                      </Button>
+                    )}
+                    {existingCompany.status === 'Rejected' && (
+                      <Button
+                        variant="contained"
+                        onClick={() => navigate('/employer/setup')}
+                        sx={{ px: 4 }}
+                      >
+                        {t('employer.setup.editResubmit')}
+                      </Button>
+                    )}
+                    <Button
+                      variant="text"
+                      onClick={() => navigate(-1)}
+                      sx={{ color: 'text.secondary' }}
+                    >
+                      {t('employer.setup.goBack')}
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Paper>
+            </Box>
+          </Fade>
+        ) : (
+        <Fade in timeout={500}>
+          <Box>
+            {/* Stepper */}
+            <Paper sx={{ p: { xs: 2, md: 3 }, mb: 2, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+              <Stepper activeStep={step} sx={{
+                '& .MuiStepLabel-label': { fontSize: '0.8rem', fontWeight: 600, mt: 0.5 },
+                '& .Mui-active .MuiStepLabel-label': { color: 'primary.main' },
+                '& .Mui-completed .MuiStepLabel-label': { color: 'success.main' },
+                '& .MuiStepIcon-root': { fontSize: '1.6rem' },
+                '& .Mui-active .MuiStepIcon-root': { color: 'primary.main', filter: 'drop-shadow(0 2px 6px rgba(61,28,110,0.3))' },
+                '& .Mui-completed .MuiStepIcon-root': { color: 'success.main' },
+              }}>
+                {steps.map((s) => (
+                  <Step key={s.key}>
+                    <StepLabel>{t(`employer.setup.${s.key}`)}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </Paper>
+
+            {/* Error */}
+            {error && (
+              <Fade in>
+                <Alert severity="error" onClose={() => setError('')} sx={{ mb: 2, borderRadius: 1 }}>
+                  {error}
+                </Alert>
+              </Fade>
+            )}
+
+            {loading && <LinearProgress sx={{ mb: 2, borderRadius: 1 }} />}
+
+            {/* Form Card */}
+            <Paper sx={{ borderRadius: 1.5, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+              {/* Step 0: Company Info */}
+              {step === 0 && (
+                <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
+                  <Box sx={{ mb: 2.5 }}>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      {t('employer.setup.companyNameLabel')}
                     </Typography>
-                    <Typography variant="body2" fontWeight={500} noWrap>
-                      {item.value || '—'}
+                    <Typography variant="body2" color="text.secondary">
+                      {t('employer.setup.descriptionPlaceholder')}
                     </Typography>
                   </Box>
-                ))}
-              </Stack>
 
+                  <Divider sx={{ mb: 2.5 }} />
+
+                  <Stack spacing={2}>
+                    <TextField
+                      label={t('employer.setup.companyName')}
+                      value={form.name} onChange={set('name')}
+                      required fullWidth size="small" sx={fieldSx}
+                    />
+                    <TextField
+                      label={t('employer.setup.description')}
+                      value={form.description} onChange={set('description')}
+                      fullWidth multiline rows={2} size="small" sx={fieldSx}
+                    />
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          label={t('employer.setup.industry')}
+                          value={form.industry} onChange={set('industry')}
+                          select fullWidth size="small" sx={fieldSx}
+                        >
+                          <MenuItem value="">
+                            <em>{t('employer.setup.selectIndustry')}</em>
+                          </MenuItem>
+                          {INDUSTRIES.map((ind) => (
+                            <MenuItem key={ind.value} value={ind.value}>{ind[lang]}</MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          label={t('employer.setup.companySize')}
+                          value={form.companySize} onChange={set('companySize')}
+                          select fullWidth size="small" sx={fieldSx}
+                        >
+                          <MenuItem value="">
+                            <em>{t('employer.setup.selectIndustry')}</em>
+                          </MenuItem>
+                          {COMPANY_SIZES.map((s) => (
+                            <MenuItem key={s.value} value={s.value}>{s[lang]}</MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+                    </Grid>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          label={t('employer.setup.foundedYear')}
+                          value={form.foundedYear} onChange={set('foundedYear')}
+                          select fullWidth size="small" sx={fieldSx}
+                        >
+                          <MenuItem value="">
+                            <em>{t('employer.setup.selectIndustry')}</em>
+                          </MenuItem>
+                          {Array.from({ length: 50 }, (_, i) => CURRENT_YEAR - i).map((y) => (
+                            <MenuItem key={y} value={y}>{y}</MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          label={t('employer.setup.website')}
+                          value={form.website} onChange={set('website')}
+                          fullWidth size="small" placeholder="https://" sx={fieldSx}
+                        />
+                      </Grid>
+                    </Grid>
+                    <TextField
+                      label={t('employer.setup.contactEmail')}
+                      value={form.contactEmail} onChange={set('contactEmail')}
+                      fullWidth size="small" type="email" sx={fieldSx}
+                    />
+                  </Stack>
+                </Box>
+              )}
+
+              {/* Step 1: Location */}
               {step === 1 && (
-                <Box sx={{ mt: 2, p: 1, borderRadius: 1.5, bgcolor: alpha('#3D1C6E', 0.04) }}>
-                  <Typography variant="caption" color="text.secondary">
-                    {lang === 'ar' ? 'الوثائق المرفقة' : 'Attached Documents'}
-                  </Typography>
-                  <Typography variant="body2" fontWeight={600}>
-                    {documents.length}/{MAX_DOCS} {lang === 'ar' ? 'ملفات' : 'files'}
-                  </Typography>
+                <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      {t('employer.setup.locationTitle')}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t('employer.setup.locationDesc')}
+                    </Typography>
+                  </Box>
+
+                  <Divider sx={{ mb: 2 }} />
+
+                  <Box sx={{ display: 'flex', gap: 3, alignItems: 'stretch', flexDirection: { xs: 'column', md: 'row' } }}>
+                    {/* Left: Info + Fields */}
+                    <Box sx={{ flex: { xs: '1 1 100%', md: '0 0 380px' }, minWidth: 0 }}>
+                      {/* Step 0 summary */}
+                      <Box sx={{
+                        p: 1.5, borderRadius: 1, mb: 2,
+                        border: '1px solid', borderColor: 'divider',
+                        bgcolor: alpha('#3D1C6E', 0.03),
+                      }}>
+                        <Typography variant="caption" fontWeight={700} color="primary.main" sx={{ display: 'block', mb: 1, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                          {t('employer.setup.companyInfoSummary')}
+                        </Typography>
+                        <Stack spacing={0.75}>
+                          {[
+                            { label: t('employer.setup.name'), value: form.name },
+                            { label: t('employer.setup.industry'), value: form.industry ? INDUSTRIES.find((i) => i.value === form.industry)?.[lang] : '—' },
+                            { label: t('employer.setup.size'), value: form.companySize ? COMPANY_SIZES.find((s) => s.value === form.companySize)?.[lang] : '—' },
+                          ].map((item, i) => (
+                            <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Typography variant="caption" color="text.secondary">{item.label}</Typography>
+                              <Typography variant="caption" fontWeight={600} noWrap sx={{ maxWidth: '60%', textAlign: lang === 'ar' ? 'left' : 'right' }}>
+                                {item.value || '—'}
+                              </Typography>
+                            </Box>
+                          ))}
+                        </Stack>
+                      </Box>
+
+                      {/* Location fields */}
+                      <Stack spacing={1.75}>
+                        <Autocomplete
+                          freeSolo
+                          options={COUNTRIES.map((c) => lang === 'ar' ? c.ar : c.en)}
+                          inputValue={form.location.country}
+                          onInputChange={(_, v) => {
+                            setForm((p) => ({ ...p, location: { ...p.location, country: v, city: '' } }))
+                          }}
+                          renderInput={(params) => (
+                            <TextField {...params} label={t('employer.setup.country')} size="small" sx={fieldSx} />
+                          )}
+                          size="small"
+                        />
+                        <Autocomplete
+                          freeSolo
+                          options={selectedCountry?.cities?.map((c) => lang === 'ar' ? c.ar : c.en) || []}
+                          inputValue={form.location.city}
+                          onInputChange={(_, v) => {
+                            setForm((p) => ({ ...p, location: { ...p.location, city: v } }))
+                          }}
+                          renderInput={(params) => (
+                            <TextField {...params} label={t('employer.setup.city')} size="small" sx={fieldSx} />
+                          )}
+                          size="small"
+                        />
+                        <TextField
+                          label={t('employer.setup.street')}
+                          value={form.location.street}
+                          onChange={setLocationField('street')}
+                          fullWidth size="small" sx={fieldSx}
+                        />
+                        <TextField
+                          label={t('employer.setup.buildingNumber')}
+                          value={form.location.buildingNumber}
+                          onChange={setLocationField('buildingNumber')}
+                          fullWidth size="small" sx={fieldSx}
+                        />
+                        {form.location.coordinates && (
+                          <Stack direction="row" spacing={1}>
+                            <Chip
+                              icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
+                              label={`Lat: ${form.location.coordinates.y}`}
+                              size="small" variant="outlined"
+                              sx={{ borderRadius: 1, fontSize: '0.7rem' }}
+                            />
+                            <Chip
+                              icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
+                              label={`Lng: ${form.location.coordinates.x}`}
+                              size="small" variant="outlined"
+                              sx={{ borderRadius: 1, fontSize: '0.7rem' }}
+                            />
+                          </Stack>
+                        )}
+                      </Stack>
+                    </Box>
+
+                    {/* Right: Map */}
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="body2" fontWeight={600} color="text.secondary" sx={{ mb: 1 }}>
+                        {t('employer.setup.clickMap')}
+                      </Typography>
+                      <LocationMap
+                        coordinates={form.location.coordinates}
+                        onCoordinatesChange={handleCoordinatesChange}
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+              )}
+
+              {/* Step 2: Documents */}
+              {step === 2 && (
+                <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
+                  <Box sx={{ mb: 2.5 }}>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      {t('employer.setup.docsTitle')}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t('employer.setup.docsDesc', { max: MAX_DOCS })}
+                    </Typography>
+                  </Box>
+
+                  <Divider sx={{ mb: 2.5 }} />
+
+                  <Box
+                    sx={{
+                      border: '2px dashed', borderColor: 'divider', borderRadius: 1,
+                      p: { xs: 3, md: 4 }, textAlign: 'center', cursor: 'pointer',
+                      transition: 'all 0.2s ease', bgcolor: alpha('#3D1C6E', 0.02),
+                      mb: 2.5,
+                      '&:hover': { borderColor: 'primary.main', bgcolor: alpha('#3D1C6E', 0.05) },
+                    }}
+                    component="label"
+                  >
+                    <input type="file" hidden multiple accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={handleDocAdd} />
+                    <CloudUploadOutlined sx={{ fontSize: 44, color: 'primary.main', mb: 1 }} />
+                    <Typography variant="body1" fontWeight={600} sx={{ mb: 0.5 }}>
+                      {t('employer.setup.clickToSelect')}
+                    </Typography>
+                    <Typography variant="caption" color="text.disabled">
+                      PDF, JPG, PNG — {t('employer.setup.fileLimit')}
+                    </Typography>
+                  </Box>
+
+                  {documents.length > 0 && (
+                    <Box sx={{ mb: 2 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <LinearProgress
+                          variant="determinate"
+                          value={(documents.length / MAX_DOCS) * 100}
+                          sx={{ flex: 1, borderRadius: 5, height: 4 }}
+                        />
+                        <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                          {documents.length}/{MAX_DOCS}
+                        </Typography>
+                      </Box>
+                      <Stack spacing={1}>
+                        {documents.map((doc, i) => (
+                          <Fade in key={i} timeout={300}>
+                            <Stack direction="row" spacing={1} sx={{
+                              alignItems: 'center', p: 1, borderRadius: 1,
+                              border: '1px solid', borderColor: 'divider',
+                              bgcolor: 'background.paper',
+                              '&:hover': { bgcolor: alpha('#3D1C6E', 0.02) },
+                            }}>
+                              <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: 'success.main' }} />
+                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                <Typography variant="body2" fontWeight={500} noWrap>{doc.name}</Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                  {(doc.size / 1024 / 1024).toFixed(1)} MB
+                                </Typography>
+                              </Box>
+                              <IconButton size="small" onClick={() => handleDocRemove(i)} color="error"
+                                sx={{ '&:hover': { transform: 'scale(1.1)' }, transition: 'transform 0.2s' }}>
+                                <DeleteOutlineOutlined sx={{ fontSize: 18 }} />
+                              </IconButton>
+                            </Stack>
+                          </Fade>
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+
+                  {documents.length === 0 && (
+                    <Box sx={{ p: 3, borderRadius: 1, textAlign: 'center', border: '1px dashed', borderColor: 'divider', bgcolor: alpha('#3D1C6E', 0.02) }}>
+                      <DescriptionOutlined sx={{ fontSize: 32, color: 'text.disabled', mb: 0.5 }} />
+                      <Typography variant="body2" color="text.disabled">
+                        {t('employer.setup.noDocuments')}
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
               )}
             </Paper>
 
-            {/* Main form */}
-            <Paper sx={{
-              flex: 1, borderRadius: 3, overflow: 'hidden',
-              border: '1px solid', borderColor: 'divider',
-            }}>
-              {loading && <LinearProgress sx={{ borderRadius: 0 }} />}
-
-              <Fade in key={step} timeout={400}>
-                <Box sx={slideAnim}>
-                  {step === 0 && (
-                    <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
-                      <Typography variant="h6" fontWeight="bold" sx={{ mb: 0.5, ...fadeUp(0.1) }}>
-                        {lang === 'ar' ? 'بيانات الشركة' : 'Company Information'}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 3, ...fadeUp(0.15) }}>
-                        {lang === 'ar' ? 'أدخل البيانات الأساسية لشركتك' : 'Enter your company basic details'}
-                      </Typography>
-
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} sx={fadeUp(0.15)}>
-                          <TextField
-                            label={lang === 'ar' ? 'اسم الشركة *' : 'Company Name *'}
-                            value={form.name} onChange={set('name')}
-                            required fullWidth sx={fieldSx}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sx={fadeUp(0.2)}>
-                          <TextField
-                            label={lang === 'ar' ? 'وصف النشاط' : 'Description'}
-                            value={form.description} onChange={set('description')}
-                            fullWidth multiline rows={2} sx={fieldSx}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} sx={fadeUp(0.25)}>
-                          <TextField
-                            label={lang === 'ar' ? 'المجال' : 'Industry'}
-                            value={form.industry} onChange={set('industry')}
-                            select fullWidth sx={fieldSx}
-                          >
-                            <MenuItem value="">
-                              <em>{lang === 'ar' ? 'اختر المجال' : 'Select industry'}</em>
-                            </MenuItem>
-                            {INDUSTRIES.map((ind) => (
-                              <MenuItem key={ind.value} value={ind.value}>{ind[lang]}</MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                        <Grid item xs={12} sm={6} sx={fadeUp(0.3)}>
-                          <TextField
-                            label={lang === 'ar' ? 'الموقع' : 'Location'}
-                            value={form.location} onChange={set('location')}
-                            fullWidth sx={fieldSx}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4} sx={fadeUp(0.35)}>
-                          <TextField
-                            label={lang === 'ar' ? 'حجم الشركة' : 'Company Size'}
-                            value={form.companySize} onChange={set('companySize')}
-                            select fullWidth sx={fieldSx}
-                          >
-                            <MenuItem value="">
-                              <em>{lang === 'ar' ? 'اختر' : 'Select'}</em>
-                            </MenuItem>
-                            {COMPANY_SIZES.map((s) => (
-                              <MenuItem key={s.value} value={s.value}>{s[lang]}</MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                        <Grid item xs={12} sm={4} sx={fadeUp(0.4)}>
-                          <TextField
-                            label={lang === 'ar' ? 'سنة التأسيس' : 'Founded Year'}
-                            value={form.foundedYear} onChange={set('foundedYear')}
-                            select fullWidth sx={fieldSx}
-                          >
-                            <MenuItem value="">
-                              <em>{lang === 'ar' ? 'اختر' : 'Select'}</em>
-                            </MenuItem>
-                            {Array.from({ length: 50 }, (_, i) => CURRENT_YEAR - i).map((y) => (
-                              <MenuItem key={y} value={y}>{y}</MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                        <Grid item xs={12} sm={4} sx={fadeUp(0.45)}>
-                          <TextField
-                            label={lang === 'ar' ? 'الموقع الإلكتروني' : 'Website'}
-                            value={form.website} onChange={set('website')}
-                            fullWidth placeholder="https://" sx={fieldSx}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sx={fadeUp(0.5)}>
-                          <TextField
-                            label={lang === 'ar' ? 'البريد الإلكتروني للتواصل' : 'Contact Email'}
-                            value={form.contactEmail} onChange={set('contactEmail')}
-                            fullWidth type="email" sx={fieldSx}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  )}
-
-                  {step === 1 && (
-                    <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
-                      <Typography variant="h6" fontWeight="bold" sx={{ mb: 0.5, ...fadeUp(0.1) }}>
-                        {lang === 'ar' ? 'الوثائق الرسمية' : 'Official Documents'}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 3, ...fadeUp(0.15) }}>
-                        {lang === 'ar'
-                          ? `ارفق السجل التجاري أو الرخصة — حتى ${MAX_DOCS} ملفات`
-                          : `Upload Commercial Register or License — up to ${MAX_DOCS} files`}
-                      </Typography>
-
-                      <Box
-                        sx={{
-                          border: '2px dashed', borderColor: 'divider', borderRadius: 3,
-                          p: 4, textAlign: 'center', cursor: 'pointer',
-                          transition: 'all 0.3s ease',
-                          bgcolor: alpha('#3D1C6E', 0.02),
-                          '&:hover': {
-                            borderColor: 'primary.main',
-                            bgcolor: alpha('#3D1C6E', 0.06),
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 8px 24px rgba(61,28,110,0.1)',
-                          },
-                          ...fadeUp(0.2),
-                        }}
-                        component="label"
-                      >
-                        <input type="file" hidden multiple accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={handleDocAdd} />
-                        <CloudUploadOutlined sx={{ fontSize: 48, color: 'primary.main', mb: 1, animation: 'pulse 2s ease-in-out infinite' }} />
-                        <Typography variant="body1" fontWeight={600} sx={{ mb: 0.5 }}>
-                          {lang === 'ar' ? 'اضغط لاختيار الملفات' : 'Click to select files'}
-                        </Typography>
-                        <Typography variant="caption" color="text.disabled">
-                          PDF, JPG, PNG — {lang === 'ar' ? 'حد أقصى 10 ميغابايت للملف' : 'Max 10MB per file'}
-                        </Typography>
-                      </Box>
-
-                      {documents.length > 0 && (
-                        <Stack spacing={1} sx={{ mt: 2 }}>
-                          {documents.map((doc, i) => (
-                            <Fade in key={i} timeout={300}>
-                              <Stack direction="row" spacing={1} sx={{
-                                alignItems: 'center', p: 1, borderRadius: 2,
-                                border: '1px solid', borderColor: 'divider',
-                                bgcolor: 'background.paper',
-                                transition: 'all 0.2s',
-                                '&:hover': { bgcolor: alpha('#3D1C6E', 0.03) },
-                              }}>
-                                <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: 'success.main' }} />
-                                <Box sx={{ flex: 1, minWidth: 0 }}>
-                                  <Typography variant="body2" fontWeight={500} noWrap>{doc.name}</Typography>
-                                  <Typography variant="caption" color="text.secondary">
-                                    {(doc.size / 1024 / 1024).toFixed(1)} MB
-                                  </Typography>
-                                </Box>
-                                <IconButton size="small" onClick={() => handleDocRemove(i)} color="error"
-                                  sx={{ '&:hover': { transform: 'scale(1.1)' }, transition: 'transform 0.2s' }}>
-                                  <DeleteOutlineOutlined sx={{ fontSize: 18 }} />
-                                </IconButton>
-                              </Stack>
-                            </Fade>
-                          ))}
-                        </Stack>
-                      )}
-
-                      {documents.length > 0 && (
-                        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1, ...fadeUp(0.3) }}>
-                          <LinearProgress
-                            variant="determinate"
-                            value={(documents.length / MAX_DOCS) * 100}
-                            sx={{ flex: 1, borderRadius: 10, height: 6 }}
-                          />
-                          <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                            {documents.length}/{MAX_DOCS}
-                          </Typography>
-                        </Box>
-                      )}
-                    </Box>
-                  )}
-                </Box>
-              </Fade>
-            </Paper>
+            {/* Navigation */}
+            <Stack direction="row" justifyContent="space-between" sx={{ mt: 2.5 }}>
+              <Button
+                variant="text"
+                disabled={step === 0}
+                onClick={() => handleStep('backward')}
+                startIcon={<ArrowBackOutlined />}
+                sx={{ color: 'text.secondary', fontWeight: 600, '&:disabled': { opacity: 0.3 } }}
+              >
+                {t('employer.setup.back')}
+              </Button>
+              {step < 2 ? (
+                <Button
+                  variant="contained"
+                  onClick={() => handleStep('forward')}
+                  endIcon={<ArrowForwardOutlined />}
+                  disabled={!stepValidation[step]}
+                  sx={{
+                    px: 4, fontWeight: 600, borderRadius: 1,
+                    '&:hover': { boxShadow: '0 4px 16px rgba(61,28,110,0.25)' },
+                  }}
+                >
+                  {t('employer.setup.next')}
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={handleSubmit}
+                  disabled={loading || !form.name.trim()}
+                  sx={{
+                    px: 4, fontWeight: 600, borderRadius: 1,
+                    '&:hover': { boxShadow: '0 4px 16px rgba(61,28,110,0.25)' },
+                    '&:disabled': { bgcolor: '#B5AECB' },
+                  }}
+                >
+                  {loading ? <CircularProgress size={20} sx={{ color: 'white' }} />
+                    : (t('employer.setup.submit'))}
+                </Button>
+              )}
+            </Stack>
           </Box>
-
-          {/* Navigation buttons */}
-          <Stack direction="row" spacing={2} sx={{ justifyContent: 'space-between', ...fadeUp(0.4) }}>
-            <Button
-              variant="text"
-              disabled={step === 0}
-              onClick={() => handleStep('backward')}
-              startIcon={<ArrowBackOutlined />}
-              sx={{
-                color: 'text.secondary', fontWeight: 600,
-                transition: 'all 0.2s',
-                '&:hover': { transform: 'translateX(-4px)' },
-                '&:disabled': { opacity: 0.3 },
-              }}
-            >
-              {lang === 'ar' ? 'رجوع' : 'Back'}
-            </Button>
-            {step < steps.length - 1 ? (
-              <Button
-                variant="contained"
-                onClick={() => handleStep('forward')}
-                endIcon={<ArrowForwardOutlined />}
-                disabled={!form.name.trim()}
-                sx={{
-                  px: 4, fontWeight: 600, borderRadius: 2,
-                  transition: 'all 0.3s ease',
-                  '&:hover': { transform: 'translateY(-2px) scale(1.02)', boxShadow: '0 6px 20px rgba(61,28,110,0.3)' },
-                  '&:active': { transform: 'scale(0.98)' },
-                }}
-              >
-                {lang === 'ar' ? 'التالي' : 'Next'}
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                onClick={handleSubmit}
-                disabled={loading || !form.name.trim()}
-                sx={{
-                  px: 4, fontWeight: 600, borderRadius: 2,
-                  transition: 'all 0.3s ease',
-                  '&:hover': { transform: 'translateY(-2px) scale(1.02)', boxShadow: '0 6px 20px rgba(61,28,110,0.3)' },
-                  '&:active': { transform: 'scale(0.98)' },
-                  '&:disabled': { bgcolor: '#B5AECB' },
-                }}
-              >
-                {loading
-                  ? <CircularProgress size={20} sx={{ color: 'white' }} />
-                  : (lang === 'ar' ? 'إرسال الطلب' : 'Submit Application')}
-              </Button>
-            )}
-          </Stack>
-        </Stack>
+        </Fade>
+        )}
       </Container>
     </Box>
   )

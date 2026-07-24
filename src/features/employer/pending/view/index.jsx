@@ -14,8 +14,7 @@ import { getMyCompany } from '@/services/employerService'
 const POLL_INTERVAL = 60000
 
 export default function EmployerPending() {
-  const { t, i18n } = useTranslation()
-  const lang = i18n.language === 'ar' ? 'ar' : 'en'
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [company, setCompany] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -56,11 +55,8 @@ export default function EmployerPending() {
       : <PendingOutlined sx={{ fontSize: 72, color: 'warning.main' }} />
 
   const statusColor = isApproved ? 'success' : isRejected ? 'error' : 'warning'
-  const statusText = {
-    Pending: { en: 'Under Review', ar: 'قيد المراجعة' },
-    Approved: { en: 'Approved', ar: 'تم الاعتماد' },
-    Rejected: { en: 'Rejected', ar: 'مرفوض' },
-  }
+  const statusKey = status.toLowerCase()
+  const statusColors = { success: '16A34A', error: 'DC2626', warning: 'F59E0B' }
 
   return (
     <Box sx={{ minHeight: 'calc(100vh - 88px)', bgcolor: 'background.default' }}>
@@ -79,39 +75,37 @@ export default function EmployerPending() {
 
               <Paper sx={{
                 px: 3, py: 1.5, borderRadius: 10,
-                bgcolor: alpha(`#${statusColor === 'success' ? '16A34A' : statusColor === 'error' ? 'DC2626' : 'F59E0B'}`, 0.1),
-                border: `1px solid`, borderColor: alpha(`#${statusColor === 'success' ? '16A34A' : statusColor === 'error' ? 'DC2626' : 'F59E0B'}`, 0.25),
+                bgcolor: alpha(`#${statusColors[statusColor]}`, 0.1),
+                border: `1px solid`, borderColor: alpha(`#${statusColors[statusColor]}`, 0.25),
               }}>
                 <Typography variant="body2" fontWeight={700} color={`${statusColor}.main`}>
-                  {statusText[status]?.[lang] || status}
+                  {t(`employer.pending.${statusKey}`)}
                 </Typography>
               </Paper>
 
               <Typography variant="h5" fontWeight="bold" sx={{ textAlign: 'center' }}>
                 {isApproved
-                  ? (lang === 'ar' ? 'تم اعتماد شركتك!' : 'Your company has been approved!')
+                  ? t('employer.pending.titleApproved')
                   : isRejected
-                    ? (lang === 'ar' ? 'تم رفض طلبك' : 'Your application was rejected')
-                    : (lang === 'ar' ? 'طلبك قيد المراجعة' : 'Your application is under review')}
+                    ? t('employer.pending.titleRejected')
+                    : t('employer.pending.titlePending')}
               </Typography>
 
               <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', maxWidth: 400 }}>
                 {isApproved
-                  ? (lang === 'ar' ? 'يمكنك الآن الوصول إلى لوحة التحكم وإدارة صفحتك.' : 'You can now access the dashboard and manage your page.')
+                  ? t('employer.pending.descApproved')
                   : isRejected
-                    ? (lang === 'ar'
-                      ? `السبب: ${company?.rejectionReason || 'غير محدد'}. يمكنك تعديل البيانات وإعادة الإرسال.`
-                      : `Reason: ${company?.rejectionReason || 'Not specified'}. You can edit your info and resubmit.`)
-                    : (lang === 'ar'
-                      ? 'نراجع طلبك حالياً. سيتم إشعارك عند اكتمال المراجعة.'
-                      : 'We are currently reviewing your application. You will be notified when it is complete.')}
+                    ? (company?.rejectionReason
+                        ? t('employer.pending.descRejected', { reason: company.rejectionReason })
+                        : t('employer.pending.descRejectedNoReason'))
+                    : t('employer.pending.descPending')}
               </Typography>
 
               {polling && !isApproved && !isRejected && (
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                   <CircularProgress size={14} />
                   <Typography variant="caption" color="text.secondary">
-                    {lang === 'ar' ? 'جاري التحقق تلقائياً...' : 'Auto-checking...'}
+                    {t('employer.pending.autoChecking')}
                   </Typography>
                 </Stack>
               )}
@@ -125,7 +119,7 @@ export default function EmployerPending() {
                     onClick={() => navigate('/employer/dashboard')}
                     sx={{ px: 4 }}
                   >
-                    {lang === 'ar' ? 'لوحة التحكم' : 'Go to Dashboard'}
+                    {t('employer.pending.goToDashboard')}
                   </Button>
                 )}
                 {isRejected && (
@@ -135,7 +129,7 @@ export default function EmployerPending() {
                     onClick={() => navigate('/employer/setup')}
                     sx={{ px: 4 }}
                   >
-                    {lang === 'ar' ? 'تعديل وإعادة الإرسال' : 'Edit & Resubmit'}
+                    {t('employer.pending.editResubmit')}
                   </Button>
                 )}
                 {!isApproved && !isRejected && (
@@ -144,7 +138,7 @@ export default function EmployerPending() {
                     startIcon={<RefreshOutlined />}
                     onClick={() => fetchStatus()}
                   >
-                    {lang === 'ar' ? 'تحقق الآن' : 'Check Now'}
+                    {t('employer.pending.checkNow')}
                   </Button>
                 )}
               </Stack>

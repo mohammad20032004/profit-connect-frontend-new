@@ -35,6 +35,13 @@ export default function CompanyDetail() {
   const [ratingLoading, setRatingLoading] = useState(false)
 
   const [editOpen, setEditOpen] = useState(false)
+
+  const formatLocation = (loc) => {
+    if (!loc) return ''
+    if (typeof loc === 'string') return loc
+    const parts = [loc.city, loc.country].filter(Boolean)
+    return parts.join(', ') || ''
+  }
   const [editForm, setEditForm] = useState({})
   const [editLoading, setEditLoading] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -115,7 +122,7 @@ export default function CompanyDetail() {
       name: company.name || '',
       description: company.description || '',
       industry: company.industry || '',
-      location: company.location || '',
+      location: formatLocation(company.location),
       companySize: company.companySize || '',
       foundedYear: company.foundedYear || '',
       website: company.website || '',
@@ -206,7 +213,7 @@ export default function CompanyDetail() {
           </Stack>
 
           <Stack spacing={0.5} sx={{ mt: 1.5 }}>
-            {company.location && <Typography variant="caption" color="text.secondary"><LocationOnOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />{company.location}</Typography>}
+            {company.location && <Typography variant="caption" color="text.secondary"><LocationOnOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />{formatLocation(company.location)}</Typography>}
             {company.companySize && <Typography variant="caption" color="text.secondary"><GroupsOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />{company.companySize}</Typography>}
             {company.foundedYear && <Typography variant="caption" color="text.secondary"><CalendarMonthOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />Founded {company.foundedYear}</Typography>}
           </Stack>

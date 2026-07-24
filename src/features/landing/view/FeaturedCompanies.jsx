@@ -25,6 +25,13 @@ export default function FeaturedCompanies() {
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
 
+  const formatLocation = (loc) => {
+    if (!loc) return ''
+    if (typeof loc === 'string') return loc
+    const parts = [loc.city, loc.country].filter(Boolean)
+    return parts.join(', ') || ''
+  }
+
   useEffect(() => {
     const fetch = async () => {
       try {
@@ -185,7 +192,7 @@ export default function FeaturedCompanies() {
 
                   <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap', '& > *': { minWidth: 0 } }}>
                     {c.location && (
-                      <Chip icon={<LocationOnOutlined sx={{ fontSize: 14 }} />} label={c.location} size="small" sx={{ color: '#6d6882', borderColor: 'rgba(31,13,66,0.1)', fontSize: '0.76rem', fontWeight: 500 }} variant="outlined" />
+                      <Chip icon={<LocationOnOutlined sx={{ fontSize: 14 }} />} label={formatLocation(c.location)} size="small" sx={{ color: '#6d6882', borderColor: 'rgba(31,13,66,0.1)', fontSize: '0.76rem', fontWeight: 500 }} variant="outlined" />
                     )}
                     <Chip icon={<PeopleOutlined sx={{ fontSize: 14 }} />} label={`${c.followersCount ?? 0}`} size="small" sx={{ color: '#6d6882', borderColor: 'rgba(31,13,66,0.1)', fontSize: '0.76rem', fontWeight: 500 }} variant="outlined" />
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 'auto' }}>
