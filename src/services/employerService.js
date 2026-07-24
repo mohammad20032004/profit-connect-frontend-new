@@ -11,7 +11,7 @@ api.interceptors.request.use((config) => {
 })
 
 export async function getMyCompany() {
-  const { data } = await api.get('/companies/my')
+  const { data } = await api.get('/companies/me')
   return data
 }
 

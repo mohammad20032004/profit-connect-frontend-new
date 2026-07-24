@@ -67,7 +67,7 @@ function Button({
           opacity: 1,
           boxShadow: 'none',
           border: 'none',
-          '-webkit-text-fill-color': '#fff',
+          WebkitTextFillColor: '#fff',
           cursor: 'not-allowed',
         },
         borderRadius: 999,

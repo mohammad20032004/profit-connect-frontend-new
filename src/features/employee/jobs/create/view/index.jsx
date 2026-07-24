@@ -116,11 +116,11 @@ export default function CreateJob() {
                   fullWidth multiline rows={3} size="small" sx={fieldSx} />
 
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField label={t('jobs.location')} value={form.location} onChange={set('location')}
                       fullWidth size="small" sx={fieldSx} placeholder={t('jobs.locationPlaceholder')} />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField label={t('jobs.type')} value={form.type} onChange={set('type')} select fullWidth size="small" sx={fieldSx}>
                       <MenuItem value=""><em>{lang === 'ar' ? 'اختر' : 'Select'}</em></MenuItem>
                       {['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'].map((v) => (
@@ -131,7 +131,7 @@ export default function CreateJob() {
                 </Grid>
 
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4}>
+                  <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField label={t('jobs.workLevel')} value={form.workLevel} onChange={set('workLevel')} select fullWidth size="small" sx={fieldSx}>
                       <MenuItem value=""><em>{lang === 'ar' ? 'اختر' : 'Select'}</em></MenuItem>
                       {['Entry', 'Mid', 'Senior', 'Lead'].map((v) => (
@@ -139,7 +139,7 @@ export default function CreateJob() {
                       ))}
                     </TextField>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField label={t('jobs.workPlace')} value={form.workPlace} onChange={set('workPlace')} select fullWidth size="small" sx={fieldSx}>
                       <MenuItem value=""><em>{lang === 'ar' ? 'اختر' : 'Select'}</em></MenuItem>
                       {['Remote', 'Onsite', 'Hybrid'].map((v) => (
@@ -147,7 +147,7 @@ export default function CreateJob() {
                       ))}
                     </TextField>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField label={t('jobs.currency')} value={form.currency} onChange={set('currency')} select fullWidth size="small" sx={fieldSx}>
                       {CURRENCIES.map((c) => (<MenuItem key={c} value={c}>{c}</MenuItem>))}
                     </TextField>
@@ -155,11 +155,11 @@ export default function CreateJob() {
                 </Grid>
 
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <TextField label={t('jobs.salaryMin')} value={form.salaryMin} onChange={set('salaryMin')}
                       fullWidth size="small" type="number" sx={fieldSx} />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <TextField label={t('jobs.salaryMax')} value={form.salaryMax} onChange={set('salaryMax')}
                       fullWidth size="small" type="number" sx={fieldSx} />
                   </Grid>

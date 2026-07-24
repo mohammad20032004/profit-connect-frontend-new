@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -15,17 +15,8 @@ import {
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getMyCompany, getReputationScore } from '@/services/employerService'
-import Map from 'ol/Map'
-import View from 'ol/View'
-import TileLayer from 'ol/layer/Tile'
-import VectorLayer from 'ol/layer/Vector'
-import VectorSource from 'ol/source/Vector'
-import OSM from 'ol/source/OSM'
-import Feature from 'ol/Feature'
-import Point from 'ol/geom/Point'
-import { fromLonLat } from 'ol/proj'
-import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style'
-import 'ol/ol.css'
+import LocationMap from '@/components/LocationMap'
+import { extractCoordinates } from '@/utils/coordinates'
 
 const STATUS_CONFIG = {
   Pending: { color: 'warning', icon: <PendingOutlined /> },
@@ -67,62 +58,6 @@ function formatLocation(loc, lang) {
   if (typeof loc === 'string') return loc
   const parts = [loc.city, loc.country].filter(Boolean)
   return parts.join(', ') || null
-}
-
-function LocationMap({ location }) {
-  const mapRef = useRef(null)
-  const mapInstance = useRef(null)
-
-  const coords = location?.coordinates
-  const center = coords
-    ? (Array.isArray(coords.coordinates)
-        ? fromLonLat(coords.coordinates)
-        : coords.x != null ? fromLonLat([coords.x, coords.y]) : fromLonLat([46.6753, 24.7136]))
-    : fromLonLat([46.6753, 24.7136])
-
-  useEffect(() => {
-    if (!mapRef.current || mapInstance.current) return
-
-    const markerStyle = new Style({
-      image: new CircleStyle({
-        radius: 10,
-        fill: new Fill({ color: '#3D1C6E' }),
-        stroke: new Stroke({ color: 'white', width: 3 }),
-      }),
-    })
-    const outerStyle = new Style({
-      image: new CircleStyle({
-        radius: 18,
-        fill: new Fill({ color: 'rgba(61, 28, 110, 0.15)' }),
-        stroke: new Stroke({ color: 'rgba(61, 28, 110, 0.3)', width: 1 }),
-      }),
-    })
-
-    const markerFeature = new Feature({ geometry: new Point(center) })
-    markerFeature.setStyle([outerStyle, markerStyle])
-    const vectorSource = new VectorSource({ features: [markerFeature] })
-
-    const map = new Map({
-      target: mapRef.current,
-      layers: [
-        new TileLayer({ source: new OSM() }),
-        new VectorLayer({ source: vectorSource }),
-      ],
-      view: new View({ center, zoom: 12 }),
-      controls: [],
-    })
-    mapInstance.current = map
-    return () => { map.setTarget(null); mapInstance.current = null }
-  }, [])
-
-  useEffect(() => { mapInstance.current?.updateSize() })
-
-  return (
-    <Box ref={mapRef} sx={{
-      width: '100%', height: 220, borderRadius: 1, overflow: 'hidden',
-      border: '1px solid', borderColor: 'divider',
-    }} />
-  )
 }
 
 function InfoRow({ icon, label, value }) {
@@ -224,55 +159,12 @@ export default function EmployerDashboard() {
   const locationStr = formatLocation(company.location, lang)
   const industryLabel = company.industry ? INDUSTRIES[company.industry]?.[lang] : null
   const sizeLabel = company.companySize ? COMPANY_SIZES[company.companySize]?.[lang] : null
-  const hasLocation = company.location && (locationStr || company.location.coordinates)
+  const hasLocation = company.location && (locationStr || company.location.coordinates || extractCoordinates(company.location))
 
   return (
     <Box sx={{ minHeight: 'calc(100vh - 88px)', bgcolor: 'background.default' }}>
-      <Container maxWidth="md" sx={{ py: { xs: 2, md: 3 } }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
         <Stack spacing={2}>
-
-          {/* Cover + Logo + Name + Status */}
-          <Fade in timeout={500}>
-            <Paper sx={{ borderRadius: 1.5, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
-              {/* Cover Photo */}
-              <Box sx={{
-                height: 120, bgcolor: 'grey.100',
-                backgroundImage: company.coverPhoto ? `url(${company.coverPhoto})` : 'none',
-                backgroundSize: 'cover', backgroundPosition: 'center',
-                bgcolor: !company.coverPhoto ? alpha('#3D1C6E', 0.06) : undefined,
-              }} />
-
-              <Box sx={{ px: { xs: 2, md: 3 }, pb: 2.5 }}>
-                <Stack direction="row" spacing={2} sx={{ mt: -4, alignItems: 'flex-end' }}>
-                  <Avatar
-                    src={company.logo}
-                    sx={{
-                      width: 80, height: 80, bgcolor: 'primary.main', fontSize: 28,
-                      border: '3px solid', borderColor: 'background.paper',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    }}
-                  >
-                    {company.name?.charAt(0)}
-                  </Avatar>
-                  <Box sx={{ flex: 1, minWidth: 0, pb: 0.5 }}>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 0.5 }}>
-                      <Typography variant="h5" fontWeight="bold" noWrap>{company.name}</Typography>
-                      {company.isVerified && (
-                        <VerifiedOutlined sx={{ fontSize: 20, color: 'primary.main' }} />
-                      )}
-                    </Stack>
-                    <Chip
-                      icon={status.icon}
-                      label={t(`employer.status.${statusKey}`)}
-                      size="small"
-                      color={status.color}
-                      sx={{ mt: 0.5, fontWeight: 600 }}
-                    />
-                  </Box>
-                </Stack>
-              </Box>
-            </Paper>
-          </Fade>
 
           {/* Status Banners */}
           {company.status === 'Pending' && (
@@ -355,153 +247,265 @@ export default function EmployerDashboard() {
             </Fade>
           )}
 
-          {/* Stats */}
-          <Fade in timeout={600}>
-            <Stack direction="row" spacing={1.5}>
-              <Paper sx={{
-                flex: 1, p: 2, borderRadius: 1.5, textAlign: 'center',
-                border: '1px solid', borderColor: 'divider',
-              }}>
-                <PeopleOutlined sx={{ fontSize: 24, color: 'primary.main', mb: 0.3 }} />
-                <Typography variant="h5" fontWeight="bold">{company.followersCount ?? 0}</Typography>
-                <Typography variant="caption" color="text.secondary">{t('employer.dashboard.followers')}</Typography>
-              </Paper>
-              <Paper sx={{
-                flex: 1, p: 2, borderRadius: 1.5, textAlign: 'center',
-                border: '1px solid', borderColor: 'divider',
-              }}>
-                <StarOutlineOutlined sx={{ fontSize: 24, color: 'warning.main', mb: 0.3 }} />
-                <Typography variant="h5" fontWeight="bold">{reputation?.score ?? company.averageRating ?? '—'}</Typography>
-                <Typography variant="caption" color="text.secondary">{t('employer.dashboard.rScore')}</Typography>
-              </Paper>
-              <Paper sx={{
-                flex: 1, p: 2, borderRadius: 1.5, textAlign: 'center',
-                border: '1px solid', borderColor: 'divider',
-              }}>
-                <TrendingUpOutlined sx={{ fontSize: 24, color: 'success.main', mb: 0.3 }} />
-                <Typography variant="h5" fontWeight="bold">{reputation?.level || '—'}</Typography>
-                <Typography variant="caption" color="text.secondary">{t('employer.dashboard.level')}</Typography>
-              </Paper>
-            </Stack>
-          </Fade>
+          {/* Two Column Layout */}
+          <Fade in timeout={500}>
+            <Grid container spacing={2.5}>
 
-          {/* Quick Actions */}
-          <Fade in timeout={700}>
-            <Stack direction="row" spacing={1.5}>
-              <Button variant="outlined" fullWidth startIcon={<GroupAddOutlined />}
-                onClick={() => navigate('/employer/employees')} size="small"
-                sx={{ borderRadius: 1.5 }}>
-                {lang === 'ar' ? 'إدارة الفريق' : 'Manage Team'}
-              </Button>
-              <Button variant="outlined" fullWidth startIcon={<WorkOutlineOutlined />}
-                onClick={() => navigate('/employee/jobs')} size="small"
-                sx={{ borderRadius: 1.5 }}>
-                {lang === 'ar' ? 'إدارة الوظائف' : 'Manage Jobs'}
-              </Button>
-            </Stack>
-          </Fade>
+              {/* Left Column - Company Profile */}
+              <Grid size={{ xs: 12, md: 5 }}>
+                <Stack spacing={2}>
+                  {/* Cover + Logo + Name + Status */}
+                  <Paper sx={{ borderRadius: 1.5, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+                    <Box sx={{
+                      height: 100, bgcolor: 'grey.100',
+                      backgroundImage: company.coverPhoto ? `url(${company.coverPhoto})` : 'none',
+                      backgroundSize: 'cover', backgroundPosition: 'center',
+                      bgcolor: !company.coverPhoto ? alpha('#3D1C6E', 0.06) : undefined,
+                    }} />
+                    <Box sx={{ px: { xs: 2, md: 2.5 }, pb: 2.5 }}>
+                      <Stack direction="row" spacing={2} sx={{ mt: -4.5, alignItems: 'flex-end' }}>
+                        <Avatar
+                          src={company.logo}
+                          sx={{
+                            width: 80, height: 80, bgcolor: 'primary.main', fontSize: 28,
+                            border: '3px solid', borderColor: 'background.paper',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                          }}
+                        >
+                          {company.name?.charAt(0)}
+                        </Avatar>
+                        <Box sx={{ flex: 1, minWidth: 0, pb: 0.5 }}>
+                          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 0.5 }}>
+                            <Typography variant="h6" fontWeight="bold" noWrap>{company.name}</Typography>
+                            {company.isVerified && (
+                              <VerifiedOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
+                            )}
+                          </Stack>
+                          <Chip
+                            icon={status.icon}
+                            label={t(`employer.status.${statusKey}`)}
+                            size="small"
+                            color={status.color}
+                            sx={{ mt: 0.5, fontWeight: 600, fontSize: '0.7rem' }}
+                          />
+                        </Box>
+                      </Stack>
+                    </Box>
+                  </Paper>
 
-          {/* Company Details */}
-          <Fade in timeout={700}>
-            <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
-              <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
-                {t('employer.setup.companyInfoSummary')}
-              </Typography>
-              <Stack spacing={1.75}>
-                <InfoRow
-                  icon={<BusinessOutlined sx={{ fontSize: 18 }} />}
-                  label={t('companies.description')}
-                  value={company.description}
-                />
-                <InfoRow
-                  icon={<BusinessOutlined sx={{ fontSize: 18 }} />}
-                  label={t('companies.industry')}
-                  value={industryLabel}
-                />
-                <InfoRow
-                  icon={<GroupsOutlined sx={{ fontSize: 18 }} />}
-                  label={t('companies.companySize')}
-                  value={sizeLabel}
-                />
-                <InfoRow
-                  icon={<CalendarMonthOutlined sx={{ fontSize: 18 }} />}
-                  label={t('companies.foundedYear')}
-                  value={company.foundedYear}
-                />
-                <InfoRow
-                  icon={<LanguageOutlined sx={{ fontSize: 18 }} />}
-                  label={t('companies.website')}
-                  value={company.website}
-                />
-                <InfoRow
-                  icon={<EmailOutlined sx={{ fontSize: 18 }} />}
-                  label={t('companies.contactEmail')}
-                  value={company.contactEmail}
-                />
-                <InfoRow
-                  icon={<LocationOnOutlined sx={{ fontSize: 18 }} />}
-                  label={t('companies.location')}
-                  value={locationStr}
-                />
-              </Stack>
-            </Paper>
-          </Fade>
+                  {/* Stats */}
+                  <Stack direction="row" spacing={1.5}>
+                    <Paper sx={{
+                      flex: 1, p: 1.5, borderRadius: 1.5, textAlign: 'center',
+                      border: '1px solid', borderColor: 'divider',
+                    }}>
+                      <PeopleOutlined sx={{ fontSize: 22, color: 'primary.main', mb: 0.2 }} />
+                      <Typography variant="h6" fontWeight="bold">{company.followersCount ?? 0}</Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>{t('employer.dashboard.followers')}</Typography>
+                    </Paper>
+                    <Paper sx={{
+                      flex: 1, p: 1.5, borderRadius: 1.5, textAlign: 'center',
+                      border: '1px solid', borderColor: 'divider',
+                    }}>
+                      <StarOutlineOutlined sx={{ fontSize: 22, color: 'warning.main', mb: 0.2 }} />
+                      <Typography variant="h6" fontWeight="bold">{reputation?.score ?? company.averageRating ?? '—'}</Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>{t('employer.dashboard.rScore')}</Typography>
+                    </Paper>
+                    <Paper sx={{
+                      flex: 1, p: 1.5, borderRadius: 1.5, textAlign: 'center',
+                      border: '1px solid', borderColor: 'divider',
+                    }}>
+                      <TrendingUpOutlined sx={{ fontSize: 22, color: 'success.main', mb: 0.2 }} />
+                      <Typography variant="h6" fontWeight="bold">{reputation?.level || '—'}</Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>{t('employer.dashboard.level')}</Typography>
+                    </Paper>
+                  </Stack>
 
-          {/* Social Links */}
-          {(company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
-            <Fade in timeout={750}>
-              <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
-                  {lang === 'ar' ? 'روابط التواصل' : 'Social Links'}
-                </Typography>
-                <Stack direction="row" spacing={2}>
-                  {company.socialLinks?.linkedin && (
-                    <Chip
-                      icon={<LinkedIn sx={{ fontSize: 16 }} />}
-                      label="LinkedIn"
-                      component="a"
-                      href={company.socialLinks.linkedin}
-                      target="_blank"
-                      rel="noopener"
-                      clickable
-                      size="small"
-                      sx={{ fontWeight: 500 }}
-                    />
+                  {/* Company Details */}
+                  <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+                    <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
+                      {t('employer.setup.companyInfoSummary')}
+                    </Typography>
+                    <Stack spacing={1.75}>
+                      <InfoRow
+                        icon={<BusinessOutlined sx={{ fontSize: 18 }} />}
+                        label={t('companies.description')}
+                        value={company.description}
+                      />
+                      <InfoRow
+                        icon={<BusinessOutlined sx={{ fontSize: 18 }} />}
+                        label={t('companies.industry')}
+                        value={industryLabel}
+                      />
+                      <InfoRow
+                        icon={<GroupsOutlined sx={{ fontSize: 18 }} />}
+                        label={t('companies.companySize')}
+                        value={sizeLabel}
+                      />
+                      <InfoRow
+                        icon={<CalendarMonthOutlined sx={{ fontSize: 18 }} />}
+                        label={t('companies.foundedYear')}
+                        value={company.foundedYear}
+                      />
+                      <InfoRow
+                        icon={<LanguageOutlined sx={{ fontSize: 18 }} />}
+                        label={t('companies.website')}
+                        value={company.website}
+                      />
+                      <InfoRow
+                        icon={<EmailOutlined sx={{ fontSize: 18 }} />}
+                        label={t('companies.contactEmail')}
+                        value={company.contactEmail}
+                      />
+                      <InfoRow
+                        icon={<LocationOnOutlined sx={{ fontSize: 18 }} />}
+                        label={t('companies.location')}
+                        value={locationStr}
+                      />
+                    </Stack>
+                  </Paper>
+
+                  {/* Social Links */}
+                  {(company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
+                    <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+                      <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
+                        {lang === 'ar' ? 'روابط التواصل' : 'Social Links'}
+                      </Typography>
+                      <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1 }}>
+                        {company.socialLinks?.linkedin && (
+                          <Chip
+                            icon={<LinkedIn sx={{ fontSize: 16 }} />}
+                            label="LinkedIn"
+                            component="a"
+                            href={company.socialLinks.linkedin}
+                            target="_blank"
+                            rel="noopener"
+                            clickable
+                            size="small"
+                            sx={{ fontWeight: 500 }}
+                          />
+                        )}
+                        {company.socialLinks?.twitter && (
+                          <Chip
+                            icon={<Twitter sx={{ fontSize: 16 }} />}
+                            label="Twitter"
+                            component="a"
+                            href={company.socialLinks.twitter}
+                            target="_blank"
+                            rel="noopener"
+                            clickable
+                            size="small"
+                            sx={{ fontWeight: 500 }}
+                          />
+                        )}
+                      </Stack>
+                    </Paper>
                   )}
-                  {company.socialLinks?.twitter && (
-                    <Chip
-                      icon={<Twitter sx={{ fontSize: 16 }} />}
-                      label="Twitter"
-                      component="a"
-                      href={company.socialLinks.twitter}
-                      target="_blank"
-                      rel="noopener"
-                      clickable
-                      size="small"
-                      sx={{ fontWeight: 500 }}
-                    />
+
+                  {/* Quick Actions */}
+                  <Stack direction="row" spacing={1.5}>
+                    <Button variant="outlined" fullWidth startIcon={<GroupAddOutlined />}
+                      onClick={() => navigate('/employer/employees')} size="small"
+                      sx={{ borderRadius: 1.5 }}>
+                      {lang === 'ar' ? 'إدارة الفريق' : 'Manage Team'}
+                    </Button>
+                    <Button variant="outlined" fullWidth startIcon={<WorkOutlineOutlined />}
+                      onClick={() => navigate('/employee/jobs')} size="small"
+                      sx={{ borderRadius: 1.5 }}>
+                      {lang === 'ar' ? 'إدارة الوظائف' : 'Manage Jobs'}
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Grid>
+
+              {/* Right Column - Map & Location */}
+              <Grid size={{ xs: 12, md: 7 }}>
+                <Stack spacing={2}>
+                  {/* Cover Photo Full */}
+                  <Paper sx={{ borderRadius: 1.5, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+                    <Box sx={{
+                      height: 200, bgcolor: 'grey.100',
+                      backgroundImage: company.coverPhoto ? `url(${company.coverPhoto})` : 'none',
+                      backgroundSize: 'cover', backgroundPosition: 'center',
+                      bgcolor: !company.coverPhoto ? alpha('#3D1C6E', 0.06) : undefined,
+                    }} />
+                  </Paper>
+
+                  {/* Location Map */}
+                  {hasLocation && (
+                    <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+                      <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
+                        {t('companies.location')}
+                      </Typography>
+                      <LocationMap location={company.location} readonly height={280} controls={false} />
+                      <Stack spacing={0.5} sx={{ mt: 1.5 }}>
+                        {(company.location?.country || company.location?.city) && (
+                          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                            <LocationOnOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
+                            <Typography variant="body2" fontWeight={500}>
+                              {[company.location?.city, company.location?.country].filter(Boolean).join(', ')}
+                            </Typography>
+                          </Stack>
+                        )}
+                        {(company.location?.street || company.location?.buildingNumber) && (
+                          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                            <LocationOnOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
+                            <Typography variant="caption" color="text.secondary">
+                              {[company.location.street, company.location.buildingNumber].filter(Boolean).join(', ')}
+                            </Typography>
+                          </Stack>
+                        )}
+                        {(() => {
+                          const coords = extractCoordinates(company.location)
+                          if (!coords) return null
+                          return (
+                            <Stack direction="row" spacing={2} sx={{ mt: 0.5 }}>
+                              <Typography variant="caption" color="text.secondary">
+                                Lat: {coords[1].toFixed(6)}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                Lng: {coords[0].toFixed(6)}
+                              </Typography>
+                            </Stack>
+                          )
+                        })()}
+                      </Stack>
+                    </Paper>
+                  )}
+
+                  {/* Country & City Info Cards */}
+                  {hasLocation && (
+                    <Stack direction="row" spacing={2}>
+                      {company.location?.country && (
+                        <Paper sx={{
+                          flex: 1, p: 2, borderRadius: 1.5,
+                          border: '1px solid', borderColor: 'divider', textAlign: 'center',
+                        }}>
+                          <LocationOnOutlined sx={{ fontSize: 28, color: 'primary.main', mb: 0.5 }} />
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                            {lang === 'ar' ? 'الدولة' : 'Country'}
+                          </Typography>
+                          <Typography variant="body2" fontWeight={600}>{company.location.country}</Typography>
+                        </Paper>
+                      )}
+                      {company.location?.city && (
+                        <Paper sx={{
+                          flex: 1, p: 2, borderRadius: 1.5,
+                          border: '1px solid', borderColor: 'divider', textAlign: 'center',
+                        }}>
+                          <LocationOnOutlined sx={{ fontSize: 28, color: 'secondary.main', mb: 0.5 }} />
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+                            {lang === 'ar' ? 'المدينة' : 'City'}
+                          </Typography>
+                          <Typography variant="body2" fontWeight={600}>{company.location.city}</Typography>
+                        </Paper>
+                      )}
+                    </Stack>
                   )}
                 </Stack>
-              </Paper>
-            </Fade>
-          )}
-
-          {/* Location Map */}
-          {hasLocation && (
-            <Fade in timeout={800}>
-              <Paper sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
-                  {t('companies.location')}
-                </Typography>
-                <LocationMap location={company.location} />
-                {(company.location?.street || company.location?.buildingNumber) && (
-                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                    {[company.location.street, company.location.buildingNumber].filter(Boolean).join(', ')}
-                  </Typography>
-                )}
-              </Paper>
-            </Fade>
-          )}
+              </Grid>
+            </Grid>
+          </Fade>
 
           {/* Created At */}
           <Fade in timeout={850}>

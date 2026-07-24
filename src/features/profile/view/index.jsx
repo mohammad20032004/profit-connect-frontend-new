@@ -44,7 +44,7 @@ export default function ProfileView() {
     <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
       <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 } }}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4} lg={3.5}>
+          <Grid size={{ xs: 12, md: 4, lg: 3.5 }}>
             <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
               <Avatar
                 src={avatarSrc}
@@ -111,7 +111,7 @@ export default function ProfileView() {
             </Stack>
           </Grid>
 
-          <Grid item xs={12} md={8} lg={8.5}>
+          <Grid size={{ xs: 12, md: 8, lg: 8.5 }}>
             <Stack spacing={2.5}>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>

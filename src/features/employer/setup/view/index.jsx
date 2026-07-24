@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -15,19 +15,8 @@ import {
 import { useTranslation } from 'react-i18next'
 import { createCompanyWithDocs } from '@/services/companyService'
 import { getMyCompany } from '@/services/employerService'
-
-import Map from 'ol/Map'
-import View from 'ol/View'
-import TileLayer from 'ol/layer/Tile'
-import VectorLayer from 'ol/layer/Vector'
-import VectorSource from 'ol/source/Vector'
-import OSM from 'ol/source/OSM'
-import Feature from 'ol/Feature'
-import Point from 'ol/geom/Point'
-import { fromLonLat, toLonLat } from 'ol/proj'
-import { Style, Circle as CircleStyle, Fill, Stroke, Text } from 'ol/style'
-
-import 'ol/ol.css'
+import LocationMap from '@/components/LocationMap'
+import { extractCoordinates } from '@/utils/coordinates'
 
 const INDUSTRIES = [
   { value: 'web-development', en: 'Web Development', ar: 'تطوير المواقع' },
@@ -218,8 +207,6 @@ const CURRENT_YEAR = new Date().getFullYear()
 const MAX_DOCS = 5
 const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
 
-const DEFAULT_CENTER = [46.6753, 24.7136]
-
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
     borderRadius: 1,
@@ -235,61 +222,6 @@ const sectionTitleSx = {
   textTransform: 'uppercase',
   letterSpacing: 1,
   color: 'text.secondary',
-}
-
-function LocationMap({ coordinates, onCoordinatesChange }) {
-  const mapRef = useRef(null)
-  const mapInstance = useRef(null)
-  const markerRef = useRef(null)
-
-  const markerStyle = new Style({
-    image: new CircleStyle({
-      radius: 10,
-      fill: new Fill({ color: '#3D1C6E' }),
-      stroke: new Stroke({ color: 'white', width: 3 }),
-    }),
-  })
-
-  const outerStyle = new Style({
-    image: new CircleStyle({
-      radius: 18,
-      fill: new Fill({ color: 'rgba(61, 28, 110, 0.15)' }),
-      stroke: new Stroke({ color: 'rgba(61, 28, 110, 0.3)', width: 1 }),
-    }),
-  })
-
-  useEffect(() => {
-    if (!mapRef.current || mapInstance.current) return
-    const initialCoords = coordinates ? fromLonLat([coordinates.x, coordinates.y]) : fromLonLat(DEFAULT_CENTER)
-    const markerFeature = new Feature({ geometry: new Point(initialCoords) })
-    markerFeature.setStyle([outerStyle, markerStyle])
-    const vectorSource = new VectorSource({ features: [markerFeature] })
-    const map = new Map({
-      target: mapRef.current,
-      layers: [new TileLayer({ source: new OSM() }), new VectorLayer({ source: vectorSource })],
-      view: new View({ center: initialCoords, zoom: coordinates ? 12 : 5 }),
-    })
-    markerRef.current = markerFeature
-    map.on('click', (evt) => {
-      markerFeature.getGeometry().setCoordinates(evt.coordinate)
-      const [lon, lat] = toLonLat(evt.coordinate)
-      onCoordinatesChange({ x: Math.round(lon * 1000000) / 1000000, y: Math.round(lat * 1000000) / 1000000 })
-    })
-    mapInstance.current = map
-    return () => { map.setTarget(null); mapInstance.current = null }
-  }, [])
-
-  useEffect(() => { mapInstance.current?.updateSize() })
-
-  return (
-    <Box ref={mapRef} sx={{
-      width: '100%', height: 320, borderRadius: 1, overflow: 'hidden',
-      border: '1px solid', borderColor: 'divider',
-      '& .ol-control': { background: 'rgba(255,255,255,0.9) !important', borderRadius: '4px !important', padding: '2px !important' },
-      '& .ol-zoom': { top: '8px !important', left: '8px !important' },
-      '& .ol-attribution': { display: 'none !important' },
-    }} />
-  )
 }
 
 export default function EmployerSetup() {
@@ -556,7 +488,7 @@ export default function EmployerSetup() {
                       fullWidth multiline rows={2} size="small" sx={fieldSx}
                     />
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label={t('employer.setup.industry')}
                           value={form.industry} onChange={set('industry')}
@@ -570,7 +502,7 @@ export default function EmployerSetup() {
                           ))}
                         </TextField>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label={t('employer.setup.companySize')}
                           value={form.companySize} onChange={set('companySize')}
@@ -586,7 +518,7 @@ export default function EmployerSetup() {
                       </Grid>
                     </Grid>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label={t('employer.setup.foundedYear')}
                           value={form.foundedYear} onChange={set('foundedYear')}
@@ -600,7 +532,7 @@ export default function EmployerSetup() {
                           ))}
                         </TextField>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label={t('employer.setup.website')}
                           value={form.website} onChange={set('website')}
@@ -697,22 +629,26 @@ export default function EmployerSetup() {
                           onChange={setLocationField('buildingNumber')}
                           fullWidth size="small" sx={fieldSx}
                         />
-                        {form.location.coordinates && (
-                          <Stack direction="row" spacing={1}>
-                            <Chip
-                              icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
-                              label={`Lat: ${form.location.coordinates.y}`}
-                              size="small" variant="outlined"
-                              sx={{ borderRadius: 1, fontSize: '0.7rem' }}
-                            />
-                            <Chip
-                              icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
-                              label={`Lng: ${form.location.coordinates.x}`}
-                              size="small" variant="outlined"
-                              sx={{ borderRadius: 1, fontSize: '0.7rem' }}
-                            />
-                          </Stack>
-                        )}
+                        {(() => {
+                          const parsed = extractCoordinates(form.location.coordinates)
+                          if (!parsed) return null
+                          return (
+                            <Stack direction="row" spacing={1}>
+                              <Chip
+                                icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
+                                label={`Lat: ${parsed[1].toFixed(6)}`}
+                                size="small" variant="outlined"
+                                sx={{ borderRadius: 1, fontSize: '0.7rem' }}
+                              />
+                              <Chip
+                                icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
+                                label={`Lng: ${parsed[0].toFixed(6)}`}
+                                size="small" variant="outlined"
+                                sx={{ borderRadius: 1, fontSize: '0.7rem' }}
+                              />
+                            </Stack>
+                          )
+                        })()}
                       </Stack>
                     </Box>
 
@@ -816,7 +752,7 @@ export default function EmployerSetup() {
             </Paper>
 
             {/* Navigation */}
-            <Stack direction="row" justifyContent="space-between" sx={{ mt: 2.5 }}>
+            <Stack direction="row" sx={{ mt: 2.5, justifyContent: 'space-between' }}>
               <Button
                 variant="text"
                 disabled={step === 0}
