@@ -28,6 +28,7 @@ import EmployerDashboard from "../features/employer/dashboard/view"
 import EmployerSetup from "../features/employer/setup/view"
 import EmployerPending from "../features/employer/pending/view"
 import EmployeeManagement from "../features/employer/employees/view"
+import EmployerApplications from "../features/employer/applications/view"
 
 import EmployeeDashboard from "../features/employee/dashboard/view"
 import EmployeeJobs from "../features/employee/jobs/view"
@@ -76,6 +77,7 @@ const router = createBrowserRouter([
       { path: "/employer/setup", element: <EmployerSetup /> },
       { path: "/employer/pending", element: <EmployerPending /> },
       { path: "/employer/employees", element: <EmployeeManagement /> },
+      { path: "/employer/applications", element: <EmployerApplications /> },
 
       { path: "/employee/dashboard", element: <EmployeeDashboard /> },
       { path: "/employee/jobs", element: <EmployeeJobs /> },

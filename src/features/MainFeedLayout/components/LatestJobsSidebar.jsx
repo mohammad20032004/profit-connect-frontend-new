@@ -54,7 +54,7 @@ export default function LatestJobsSidebar() {
       ) : (
         <Stack spacing={0} sx={{ py: 1 }}>
           {displayJobs.map((job) => (
-            <Box key={job._id} component={Link} to={`/projects/${job._id}`} role="listitem"
+            <Box key={job._id} component={Link} to={`/jobs/${job._id}`} role="listitem"
               sx={{
                 display: 'flex', gap: 1.25, alignItems: 'flex-start', textDecoration: 'none',
                 px: 2, py: 1, mx: 1, borderRadius: 1.5, transition: 'all 0.2s ease',

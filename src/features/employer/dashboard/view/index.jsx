@@ -12,7 +12,7 @@ import {
   CheckCircleOutlineOutlined, PendingOutlined, CancelOutlined, TrendingUpOutlined,
   RocketLaunchOutlined, LocationOnOutlined, LanguageOutlined,
   LinkedIn, Twitter,
-  VerifiedOutlined, GroupAddOutlined, WorkOutlineOutlined,
+  VerifiedOutlined, GroupAddOutlined, WorkOutlineOutlined, PeopleOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getMyCompany, getReputationScore } from '@/services/employerService'
@@ -422,6 +422,21 @@ export default function EmployerDashboard() {
                           }}
                         >
                           {lang === 'ar' ? 'إدارة الوظائف' : 'Manage Jobs'}
+                        </Button>
+                      </motion.div>
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          variant="primary"
+                          fullWidth
+                          startIcon={<PeopleOutlined />}
+                          onClick={() => navigate('/employer/applications')}
+                          sx={{
+                            justifyContent: 'flex-start',
+                            bgcolor: '#3D1C6E',
+                            '&:hover': { bgcolor: '#2E1555' },
+                          }}
+                        >
+                          {lang === 'ar' ? 'طلبات التقديم' : 'Applications'}
                         </Button>
                       </motion.div>
                     </Stack>

@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles'
 import {
   NotificationsOutlined, CheckCircleOutlineOutlined, WorkOutlineOutlined,
   StarBorderOutlined, InfoOutlined, DoneAllOutlined, CancelOutlined,
-  GppMaybeOutlined, RocketLaunchOutlined,
+  GppMaybeOutlined, RocketLaunchOutlined, BadgeOutlined,
 } from '@mui/icons-material'
 import { getNotifications, markNotificationRead } from '@/services/notificationService'
 import { setNotifications, markRead } from '@/redux/slices/notificationSlice'
@@ -62,6 +62,14 @@ function getNotificationDisplay(n, t) {
       msg: t('notif.companySetupMsg', 'أكمل إعداد صفحة شركتك لنشر وظائفك ومشاريعك بسهولة'),
       actionUrl: '/employer/setup',
       actionLabel: t('notif.companySetupAction', 'إعداد الآن'),
+    },
+    job_application_status: {
+      icon: <BadgeOutlined />,
+      color: n.applicationStatus === 'Accepted' ? 'success' : n.applicationStatus === 'Rejected' ? 'error' : 'info',
+      title: n.message || t('notif.jobApplicationStatus', 'تحديث حالة طلب التوظيف'),
+      msg: n.message || '',
+      actionUrl: n.jobId ? `/jobs/${n.jobId}` : null,
+      actionLabel: t('notif.jobApplicationView', 'عرض الوظيفة'),
     },
   }
   return map[n.type] || {

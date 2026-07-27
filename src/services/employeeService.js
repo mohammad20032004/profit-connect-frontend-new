@@ -64,8 +64,8 @@ export async function toggleJobStatus(jobId, status) {
 }
 
 // Employee: Applicants
-export async function getJobApplicants(jobId) {
-  const { data } = await api.get(`/employee/jobs/${jobId}/applicants`)
+export async function getJobApplicants(jobId, params = {}) {
+  const { data } = await api.get(`/employee/jobs/${jobId}/applicants`, { params })
   return data
 }
 

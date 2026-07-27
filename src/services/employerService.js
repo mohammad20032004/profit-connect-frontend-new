@@ -41,3 +41,23 @@ export async function getCompanyStats(companyId) {
   const { data } = await api.get(`/companies/${companyId}/stats`)
   return data
 }
+
+export async function getEmployerJobs(params = {}) {
+  const { data } = await api.get('/employee/jobs', { params })
+  return data
+}
+
+export async function getEmployerApplications(jobId, params = {}) {
+  const { data } = await api.get(`/employee/jobs/${jobId}/applicants`, { params })
+  return data
+}
+
+export async function updateApplicationStatus(applicationId, status) {
+  const { data } = await api.put(`/employee/jobs/applications/${applicationId}/status`, { status })
+  return data
+}
+
+export async function getEmployerApplicationsStats() {
+  const { data } = await api.get('/employee/stats')
+  return data
+}
