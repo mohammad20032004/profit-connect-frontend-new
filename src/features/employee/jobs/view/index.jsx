@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, CircularProgress, Chip, alpha, Fade, Divider,
 } from '@mui/material'
@@ -30,6 +31,8 @@ export default function EmployeeJobs() {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const navigate = useNavigate()
+  const user = useSelector((s) => s.user.user)
+  const companyId = user?.company?._id || user?.company
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
@@ -38,12 +41,13 @@ export default function EmployeeJobs() {
     setLoading(true)
     try {
       const params = {}
+      if (companyId) params.companyId = companyId
       if (filter !== 'all') params.status = filter
       const res = await getEmployeeJobs(params)
       if (res?.success) setJobs(res.data || [])
     } catch { /* ignore */ }
     finally { setLoading(false) }
-  }, [filter])
+  }, [filter, companyId])
 
   useEffect(() => { fetchJobs() }, [fetchJobs])
 

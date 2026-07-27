@@ -72,3 +72,11 @@ export async function createCompanyWithDocs(formData) {
   })
   return data
 }
+
+export async function updateCompanyMedia(id, formData) {
+  const { data } = await api.put(`/companies/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 30000,
+  })
+  return data
+}

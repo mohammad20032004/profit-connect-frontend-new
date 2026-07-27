@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, TextField, Grid, CircularProgress,
-  Fade, Divider, Chip, IconButton, MenuItem, Fade as FadeIn,
+  Fade, Divider, Chip, IconButton, MenuItem, alpha,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
@@ -26,6 +27,8 @@ export default function CreateJob() {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const navigate = useNavigate()
+  const user = useSelector((s) => s.user.user)
+  const companyId = user?.company?._id || user?.company
 
   const [form, setForm] = useState({
     title: '',
@@ -54,10 +57,15 @@ export default function CreateJob() {
       setError(t('jobs.fillRequired'))
       return
     }
+    if (!companyId) {
+      setError(lang === 'ar' ? 'يجب إنشاء ملف الشركة أولاً' : 'Please set up your company first')
+      return
+    }
     setLoading(true)
     setError('')
     try {
       const payload = {
+        companyId,
         title: form.title.trim(),
         description: form.description.trim(),
         location: form.location.trim(),
@@ -142,8 +150,8 @@ export default function CreateJob() {
                   <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField label={t('jobs.workPlace')} value={form.workPlace} onChange={set('workPlace')} select fullWidth size="small" sx={fieldSx}>
                       <MenuItem value=""><em>{lang === 'ar' ? 'اختر' : 'Select'}</em></MenuItem>
-                      {['Remote', 'Onsite', 'Hybrid'].map((v) => (
-                        <MenuItem key={v} value={v}>{t(`jobs.place${v}`)}</MenuItem>
+                      {['Remote', 'On-site', 'Hybrid'].map((v) => (
+                        <MenuItem key={v} value={v}>{t(`jobs.place${v.replace('-', '')}`)}</MenuItem>
                       ))}
                     </TextField>
                   </Grid>

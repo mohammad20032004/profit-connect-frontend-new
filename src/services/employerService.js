@@ -36,3 +36,8 @@ export async function updateProfileAvatar(formData) {
   })
   return data
 }
+
+export async function getCompanyStats(companyId) {
+  const { data } = await api.get(`/companies/${companyId}/stats`)
+  return data
+}
