@@ -34,6 +34,9 @@ import EmployeeJobs from "../features/employee/jobs/view"
 import CreateJob from "../features/employee/jobs/create/view"
 import JobApplicants from "../features/employee/jobs/applicants/view"
 
+import JobsView from "../features/jobs/view"
+import JobDetailView from "../features/jobs/[id]/view"
+
 function Layout() {
   return (
     <ThemeProvider>
@@ -78,6 +81,9 @@ const router = createBrowserRouter([
       { path: "/employee/jobs", element: <EmployeeJobs /> },
       { path: "/employee/jobs/create", element: <CreateJob /> },
       { path: "/employee/jobs/:jobId/applicants", element: <JobApplicants /> },
+
+      { path: "/jobs", element: <JobsView /> },
+      { path: "/jobs/:id", element: <JobDetailView /> },
 
       { path: "*", element: <NotFoundView /> },
     ],

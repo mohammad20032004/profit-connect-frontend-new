@@ -109,16 +109,13 @@ function StatMini({ label, value, color, index = 0 }) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      whileHover={{ y: -4, boxShadow: `0 8px 20px ${alpha(color, 0.2)}` }}
       transition={{ duration: 0.2 }}
       style={{ flex: 1, minWidth: 120 }}
     >
       <Paper sx={{
         py: 1.25, px: 1, borderRadius: 1, textAlign: 'center',
         border: '1px solid', borderColor: 'divider',
-        borderTop: `3px solid ${color}`,
         transition: 'border-color 0.2s ease',
-        '&:hover': { borderColor: color },
       }}>
         <Typography variant="h6" fontWeight={800} fontSize="1rem" sx={{ color, lineHeight: 1 }}>
           <AnimatedNumber value={value} />

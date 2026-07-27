@@ -79,3 +79,9 @@ export async function getEmployeeStats() {
   const { data } = await api.get('/employee/stats')
   return data
 }
+
+// Public: Latest Jobs
+export async function getLatestJobs(limit = 5) {
+  const { data } = await api.get('/jobs', { params: { limit } })
+  return data
+}

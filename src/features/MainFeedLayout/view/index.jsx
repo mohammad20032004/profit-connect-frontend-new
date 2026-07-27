@@ -1,7 +1,8 @@
-import { Box, Container, Grid } from '@mui/material'
+import { Box, Container, Grid, Stack } from '@mui/material'
 import InfoSide from '../components/InfoSide'
 import PostsSection from '../components/PostsSection'
 import TopCompaniesSidebar from '../components/TopCompaniesSidebar'
+import LatestJobsSidebar from '../components/LatestJobsSidebar'
 import AnimatedBox from '@/components/AnimatedBox'
 
 function DashboardView() {
@@ -35,11 +36,16 @@ function DashboardView() {
           </Grid>
           <Grid
             size={{ xs: 12, lg: 3 }}
-            sx={{ height: '100%', overflow: 'hidden', display: { xs: 'none', md: 'none', lg: 'block' } }}
+            sx={{ height: '100%', overflow: 'auto', display: { xs: 'none', md: 'none', lg: 'block' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}
           >
-            <AnimatedBox delay={0.2} sx={{ height: '100%' }}>
-              <TopCompaniesSidebar />
-            </AnimatedBox>
+            <Stack spacing={2}>
+              <AnimatedBox delay={0.2}>
+                <TopCompaniesSidebar />
+              </AnimatedBox>
+              <AnimatedBox delay={0.3}>
+                <LatestJobsSidebar />
+              </AnimatedBox>
+            </Stack>
           </Grid>
         </Grid>
       </Container>

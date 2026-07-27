@@ -19,7 +19,7 @@ import { getMyCompany, getReputationScore } from '@/services/employerService'
 import { updateCompanyMedia } from '@/services/companyService'
 import LocationMap from '@/components/LocationMap'
 import { extractCoordinates } from '@/utils/coordinates'
-import EmployerStats from './EmployerStats'
+import EmployerStats from '../components/EmployerStats'
 import { fadeUp, staggerContainer } from '@/utils/animations'
 
 const STATUS_CONFIG = {
@@ -262,7 +262,7 @@ export default function EmployerDashboard() {
             <Box
               onClick={() => coverInputRef.current?.click()}
               sx={{
-                height: { xs: 100, md: 130 },
+                height: { xs: 100, md: 130, lg: 180 }, width: '100%',
                 backgroundImage: company.coverPhoto ? `url(${company.coverPhoto})` : 'none',
                 backgroundSize: 'cover', backgroundPosition: 'center',
                 background: company.coverPhoto ? undefined : (t) => alpha(t.palette.primary.main, 0.06),
