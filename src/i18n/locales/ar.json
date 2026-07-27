@@ -17,7 +17,9 @@
     "signOut": "تسجيل الخروج",
     "profileDesc": "افتح بيانات ملفك الشخصي العام والخاص",
     "settingsDesc": "سيتم إضافة شاشة الإعدادات لاحقًا",
-    "signOutDesc": "إزالة الجلسة من هذا الجهاز"
+    "signOutDesc": "إزالة الجلسة من هذا الجهاز",
+    "companyDashboard": "لوحة تحكم الشركة",
+    "companyDashboardDesc": "إدارة صفحة شركتك"
   },
   "auth": {
     "signIn": "تسجيل الدخول",

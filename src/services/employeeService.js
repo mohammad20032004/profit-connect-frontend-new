@@ -58,6 +58,11 @@ export async function deleteJob(jobId) {
   return data
 }
 
+export async function toggleJobStatus(jobId, status) {
+  const { data } = await api.put(`/jobs/${jobId}/status`, { status })
+  return data
+}
+
 // Employee: Applicants
 export async function getJobApplicants(jobId) {
   const { data } = await api.get(`/employee/jobs/${jobId}/applicants`)

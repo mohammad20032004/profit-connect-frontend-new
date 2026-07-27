@@ -17,7 +17,9 @@
     "signOut": "Sign Out",
     "profileDesc": "Open your public and personal profile data",
     "settingsDesc": "Settings screen will be added next",
-    "signOutDesc": "Remove session from this device"
+    "signOutDesc": "Remove session from this device",
+    "companyDashboard": "Company Dashboard",
+    "companyDashboardDesc": "Manage your company page"
   },
   "auth": {
     "signIn": "Sign In",

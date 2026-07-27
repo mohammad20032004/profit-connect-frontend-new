@@ -10,7 +10,7 @@ import {
   AccessTimeOutlined, OpenInNewOutlined, CloseOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { getEmployeeJobs } from '@/services/employeeService'
+import { getEmployeeJobs, toggleJobStatus } from '@/services/employeeService'
 
 const TYPE_LABELS = {
   'Full-time': { en: 'Full-time', ar: 'دوام كامل' },
@@ -36,6 +36,20 @@ export default function EmployeeJobs() {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+  const [toggling, setToggling] = useState(null)
+
+  const handleToggleStatus = async (e, job) => {
+    e.stopPropagation()
+    const newStatus = job.status === 'Open' ? 'Closed' : 'Open'
+    setToggling(job._id)
+    try {
+      const res = await toggleJobStatus(job._id, newStatus)
+      if (res?.success) {
+        setJobs((prev) => prev.map((j) => j._id === job._id ? { ...j, status: newStatus } : j))
+      }
+    } catch { /* ignore */ }
+    finally { setToggling(null) }
+  }
 
   const fetchJobs = useCallback(async () => {
     setLoading(true)
@@ -109,10 +123,11 @@ export default function EmployeeJobs() {
                       </Box>
                       <Chip
                         icon={job.status === 'Open' ? <OpenInNewOutlined sx={{ fontSize: 14 }} /> : <CloseOutlined sx={{ fontSize: 14 }} />}
-                        label={t(`jobs.status${job.status}`)}
+                        label={toggling === job._id ? '...' : t(`jobs.status${job.status}`)}
                         size="small"
                         color={job.status === 'Open' ? 'success' : 'default'}
-                        sx={{ fontWeight: 600 }}
+                        onClick={(e) => handleToggleStatus(e, job)}
+                        sx={{ fontWeight: 600, cursor: 'pointer' }}
                       />
                     </Stack>
 
