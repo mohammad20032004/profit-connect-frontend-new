@@ -58,7 +58,7 @@ export default function CompaniesList() {
       ) : (
         <Stack spacing={2}>
           {companies.map((c) => (
-            <Card key={c._id} sx={{ cursor: 'pointer' }} onClick={() => navigate(`/companies/${c._id}`)}>
+            <Card key={c._id || c.id} sx={{ cursor: 'pointer' }} onClick={() => navigate(`/companies/${c._id || c.id}`)}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Avatar src={c.logo} sx={{ width: 64, height: 64, bgcolor: 'primary.main' }}>
                   {c.name?.charAt(0)}

@@ -1,128 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Dialog, DialogTitle, DialogContent, TextField, Box, Chip, Typography, Stack, InputAdornment, IconButton } from '@mui/material'
 import { SearchOutlined, CloseOutlined } from '@mui/icons-material'
-import {
-  SiReact, SiVuedotjs, SiAngular, SiNextdotjs, SiNodedotjs, SiExpress, SiNestjs, SiFastify, SiNuxt, SiSvelte, SiRemix, SiGatsby, SiAstro, SiDeno, SiBun, SiKoa, SiHtmx,
-  SiPython, SiDjango, SiFlask, SiFastapi, SiPytorch, SiTensorflow, SiJupyter, SiNumpy, Si365Datascience,
-  SiSpringboot, SiHibernate, SiKotlin, SiQuarkus, SiJunit5,
-  SiDotnet, SiBlazor, SiUnity, SiMonogame,
-  SiGo, SiGin,
-  SiRust, SiTauri, SiActix, SiRocket, SiTokio, SiYew, SiLeptos,
-  SiPhp, SiLaravel, SiSymfony, SiCodeigniter, SiCakephp, SiYii, SiWordpress, SiDrupal,
-  SiRubyonrails, SiRubysinatra, SiSidekiq,
-  SiSwift, SiFlutter, SiDart, SiIonic, SiReactos, SiGetx, SiAndroid, SiJetpackcompose, SiApple, SiUikit, SiApachecordova, SiCapacitor, SiNativescript,
-  SiMongodb, SiPostgresql, SiMysql, SiSqlite, SiMariadb, SiRedis, SiElasticsearch, SiApachecassandra, SiFirebase, SiSnowflake, SiApachehbase,
-  SiDocker, SiKubernetes, SiGooglecloud, SiTerraform, SiAnsible, SiJenkins, SiGithubactions, SiHelm, SiPrometheus, SiGrafana, SiDatadog, SiSentry, SiNewrelic, SiServerless,
-  SiGit, SiGithub, SiGitlab, SiBitbucket, SiMercurial, SiPerforce, SiSourcetree, SiGitkraken,
-  SiFigma, SiSketch, SiFramer, SiAbstract,
-  SiGraphql, SiApollographql, SiRelay, SiPrisma, SiSequelize, SiKnexdotjs, SiDrizzle, SiTypeorm, SiMongoose,
-  SiWebpack, SiVite, SiRollupdotjs, SiBabel, SiGulp, SiGrunt, SiEsbuild, SiSwc, SiRecoil, SiReactquery, SiHtml5, SiPostcss, SiCssmodules,
-  SiJest, SiVitest, SiMocha, SiChai, SiCypress, SiPuppeteer, SiSelenium, SiTestinglibrary,
-  SiApachekafka, SiApachespark, SiApachehadoop, SiApachehive, SiApacheflink, SiApachetomcat, SiElasticstack,
-  SiNginx, SiApache, SiTraefikproxy, SiCaddy, SiGunicorn, SiEclipsejetty,
-  SiStorybook, SiDocusaurus, SiPostman,
-  SiGnubash, SiZsh, SiFishshell, SiLinux,
-  SiTypescript, SiJavascript, SiSass, SiTailwindcss, SiBootstrap, SiMui, SiChakraui, SiStyledcomponents,
-  SiRedux, SiMobx, SiPinia,
-  SiThreedotjs, SiUnrealengine, SiBlender, SiSolidity, SiWebgl, SiBabylondotjs, SiAframe, SiIpfs, SiBlockchaindotcom,
-  SiJira, SiTrello, SiNotion, SiAsana, SiConfluence, SiLinear,
-  SiIntellijidea, SiWebstorm, SiVim, SiNeovim,
-  SiElixir, SiPhoenixframework, SiHaskell, SiScala, SiClojure, SiJulia, SiErlang, SiFortran, SiCommonlisp, SiOcaml, SiZig, SiCrystal, SiCplusplus, SiC, SiOdin, SiNim, SiFsharp,
-  SiEthereum, SiWeb3Dotjs, SiScikitlearn, SiGeopandas,
-  SiSwagger, SiInsomnia, SiReadme, SiGitbook, SiMintlify, SiSemrush, SiOpenapiinitiative,
-  SiVapor,
-  SiScrumalliance, SiOpenid, SiGoogleanalytics, SiGooglesearchconsole,
-  SiMicrostrategy, SiRoadmapdotsh, SiVitepress, SiMqtt, SiFresh, SiElastic, SiSocket, SiPuma, SiAmp,
-  SiCss, SiRuby, SiR, SiVllm, SiSecurityscorecard, SiSolid, SiZap, SiCorsair, SiGreasyfork, SiMozilla,
-  SiOpenjdk, SiSocketdotio,
-  SiEslint, SiPrettier, SiStylelint, SiCommitlint, SiPrecommit, SiWebrtc,
-  SiPnpm, SiYarn, SiNpm, SiLerna, SiNx, SiTurborepo,
-  SiAndroidstudio, SiXcode, SiRider, SiGoland, SiPycharm, SiDatagrip, SiRubymine, SiClion, SiResharper,
-  SiVagrant, SiPacker, SiNomad, SiConsul, SiVault, SiVmware, SiOctopusdeploy, SiTeamcity,
-  SiJasmine, SiCoveralls, SiCodecov, SiCodacy, SiTravisci, SiCircleci,
-} from 'react-icons/si'
-
-const skillIcons = {
-  React: SiReact, 'Vue.js': SiVuedotjs, Angular: SiAngular, 'Next.js': SiNextdotjs, 'Nuxt.js': SiNuxt,
-  Svelte: SiSvelte, Remix: SiRemix, Gatsby: SiGatsby, Astro: SiAstro, 'Solid.js': null, htmx: SiHtmx,
-  'Node.js': SiNodedotjs, Deno: SiDeno, Bun: SiBun, 'Express.js': SiExpress, NestJS: SiNestjs, Fastify: SiFastify, Koa: SiKoa,
-  Python: SiPython, Django: SiDjango, Flask: SiFlask, FastAPI: SiFastapi,
-  PyTorch: SiPytorch, TensorFlow: SiTensorflow, Jupyter: SiJupyter, NumPy: SiNumpy,
-  'Data Science': Si365Datascience,
-  'Spring Boot': SiSpringboot, Hibernate: SiHibernate, Kotlin: SiKotlin, Quarkus: SiQuarkus,
-  JUnit: SiJunit5,
-  '.NET Core': SiDotnet, Blazor: SiBlazor, Unity: SiUnity, MonoGame: SiMonogame,
-  Go: SiGo, Gin: SiGin,
-  Rust: SiRust, Tauri: SiTauri, Actix: SiActix, Rocket: SiRocket, Tokio: SiTokio, Yew: SiYew, Leptos: SiLeptos,
-  PHP: SiPhp, Laravel: SiLaravel, Symfony: SiSymfony, CodeIgniter: SiCodeigniter, CakePHP: SiCakephp, Yii: SiYii, WordPress: SiWordpress, Drupal: SiDrupal,
-  Rails: SiRubyonrails, Sinatra: SiRubysinatra, Sidekiq: SiSidekiq, Puma: SiPuma,
-  Swift: SiSwift, UIKit: SiUikit,
-  Flutter: SiFlutter, Dart: SiDart, Ionic: SiIonic, 'React Native': SiReactos, GetX: SiGetx,
-  Android: SiAndroid, 'Jetpack Compose': SiJetpackcompose,
-  iOS: SiApple,
-  Cordova: SiApachecordova, Capacitor: SiCapacitor, NativeScript: SiNativescript,
-  MongoDB: SiMongodb, PostgreSQL: SiPostgresql, MySQL: SiMysql, SQLite: SiSqlite, MariaDB: SiMariadb,
-  Redis: SiRedis, Elasticsearch: SiElasticsearch, Cassandra: SiApachecassandra, Firebase: SiFirebase,
-  Snowflake: SiSnowflake, HBase: SiApachehbase,
-  Docker: SiDocker, GCP: SiGooglecloud, Terraform: SiTerraform, Ansible: SiAnsible, Jenkins: SiJenkins,
-  'GitHub Actions': SiGithubactions, Kubernetes: SiKubernetes, Serverless: SiServerless,
-  Helm: SiHelm, Prometheus: SiPrometheus, Grafana: SiGrafana, Datadog: SiDatadog, Sentry: SiSentry, 'New Relic': SiNewrelic,
-  'ELK Stack': SiElasticstack,
-  Git: SiGit, GitHub: SiGithub, GitLab: SiGitlab, Bitbucket: SiBitbucket,
-  Mercurial: SiMercurial, Perforce: SiPerforce, SourceTree: SiSourcetree, GitKraken: SiGitkraken,
-  Linux: SiLinux, Bash: SiGnubash, Zsh: SiZsh, Fish: SiFishshell,
-  Figma: SiFigma, Sketch: SiSketch, Framer: SiFramer, Abstract: SiAbstract,
-  GraphQL: SiGraphql, Apollo: SiApollographql, Relay: SiRelay,
-  Prisma: SiPrisma, Sequelize: SiSequelize, Knex: SiKnexdotjs,
-  Drizzle: SiDrizzle, TypeORM: SiTypeorm, Mongoose: SiMongoose,
-  Webpack: SiWebpack, Vite: SiVite, Rollup: SiRollupdotjs, Babel: SiBabel, Gulp: SiGulp,
-  Grunt: SiGrunt, ESBuild: SiEsbuild, Swc: SiSwc, Recoil: SiRecoil,
-  HTML: SiHtml5, PostCSS: SiPostcss, 'CSS Modules': SiCssmodules,
-  'React Query': SiReactquery,
-  Jest: SiJest, Vitest: SiVitest, Mocha: SiMocha, Chai: SiChai, Cypress: SiCypress, Puppeteer: SiPuppeteer, Selenium: SiSelenium,
-  'Testing Library': SiTestinglibrary,
-  Kafka: SiApachekafka, Spark: SiApachespark, Hadoop: SiApachehadoop, Hive: SiApachehive,
-  Flink: SiApacheflink, Tomcat: SiApachetomcat, Jetty: SiEclipsejetty,
-  Nginx: SiNginx, Apache: SiApache, Traefik: SiTraefikproxy, Caddy: SiCaddy, 'Gunicorn': SiGunicorn,
-  Storybook: SiStorybook, Docusaurus: SiDocusaurus, Postman: SiPostman,
-  TypeScript: SiTypescript, JavaScript: SiJavascript, Sass: SiSass, 'Tailwind CSS': SiTailwindcss,
-  Bootstrap: SiBootstrap, 'Material UI': SiMui, 'Chakra UI': SiChakraui, 'Styled Components': SiStyledcomponents,
-  Redux: SiRedux, MobX: SiMobx, Pinia: SiPinia,
-  'Three.js': SiThreedotjs, 'Unreal Engine': SiUnrealengine, Blender: SiBlender,
-  Solidity: SiSolidity, WebGL: SiWebgl, 'Babylon.js': SiBabylondotjs, 'A-Frame': SiAframe, IPFS: SiIpfs,
-  Blockchain: SiBlockchaindotcom,
-  Jira: SiJira, Trello: SiTrello, Notion: SiNotion, Asana: SiAsana, Confluence: SiConfluence, Linear: SiLinear,
-  Scrum: SiScrumalliance,
-  IntelliJ: SiIntellijidea, WebStorm: SiWebstorm, Vim: SiVim, Neovim: SiNeovim,
-  Elixir: SiElixir, Phoenix: SiPhoenixframework, Haskell: SiHaskell, Scala: SiScala, Clojure: SiClojure, Julia: SiJulia,
-  Erlang: SiErlang, Fortran: SiFortran, Lisp: SiCommonlisp, OCaml: SiOcaml, Zig: SiZig, Crystal: SiCrystal,
-  'C++': SiCplusplus, C: SiC, Odin: SiOdin, Nim: SiNim, 'F#': SiFsharp,
-  Ethereum: SiEthereum, Web3: SiWeb3Dotjs,
-  'Scikit-learn': SiScikitlearn, Pandas: SiGeopandas,
-  Swagger: SiSwagger, Insomnia: SiInsomnia, ReadMe: SiReadme, GitBook: SiGitbook, Mintlify: SiMintlify,
-  SEMrush: SiSemrush, Vapor: SiVapor,
-  OpenAPI: SiOpenapiinitiative,
-  'Google Analytics': SiGoogleanalytics, 'Search Console': SiGooglesearchconsole,
-  Strategy: SiMicrostrategy, Roadmap: SiRoadmapdotsh,
-  VitePress: SiVitepress, Vitepress: SiVitepress,
-  OpenID: SiOpenid,
-  MQTT: SiMqtt, Fresh: SiFresh, Socket: SiSocket,
-  Analytics: SiGoogleanalytics,
-  CSS: SiCss, Ruby: SiRuby, R: SiR,
-  LLM: SiVllm, Security: SiSecurityscorecard, SOLID: SiSolid, Zap: SiZap, CORS: SiCorsair, Fork: SiGreasyfork, Moz: SiMozilla,
-  Java: SiOpenjdk,
-  'Solid.js': SiSolid, SCSS: SiSass, 'CSS-in-JS': SiStyledcomponents,
-  'C#': SiDotnet, 'ASP.NET': SiDotnet,
-  'WebSocket': SiSocketdotio, 'WebRTC': SiWebrtc,
-  ESLint: SiEslint, Prettier: SiPrettier, Stylelint: SiStylelint, Commitlint: SiCommitlint, 'Pre-commit': SiPrecommit,
-  npm: SiNpm, Yarn: SiYarn, pnpm: SiPnpm, Lerna: SiLerna, Nx: SiNx, Turborepo: SiTurborepo,
-  'Android Studio': SiAndroidstudio, Xcode: SiXcode, Rider: SiRider, GoLand: SiGoland,
-  PyCharm: SiPycharm, DataGrip: SiDatagrip, RubyMine: SiRubymine, CLion: SiClion, ReSharper: SiResharper,
-  Vagrant: SiVagrant, Packer: SiPacker, Nomad: SiNomad, Consul: SiConsul, Vault: SiVault,
-  VMware: SiVmware, 'Octopus Deploy': SiOctopusdeploy, TeamCity: SiTeamcity,
-  'Socket.io': SiSocketdotio, Jasmine: SiJasmine, Coveralls: SiCoveralls,
-  Codecov: SiCodecov, Codacy: SiCodacy, 'Travis CI': SiTravisci, CircleCI: SiCircleci,
-}
+import SkillIcon from '../SkillIcon'
 
 const SKILL_DB = [
   { cat: 'Frontend', skills: ['React', 'Vue.js', 'Angular', 'Next.js', 'Nuxt.js', 'Svelte', 'Solid.js', 'Remix', 'Gatsby', 'Astro', 'HTML', 'CSS', 'SCSS', 'Tailwind CSS', 'Bootstrap', 'Material UI', 'Chakra UI', 'Styled Components', 'Sass', 'PostCSS', 'CSS Modules', 'CSS-in-JS', 'Emotion'] },
@@ -157,16 +36,6 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]]
   }
   return a
-}
-
-const letterColors = ['#2D1055', '#3a008b', '#0f0024']
-function SkillIcon({ name }) {
-  const Icon = skillIcons[name]
-  if (!Icon) {
-    const c = name.charCodeAt(0) || 0
-    return <Box component="span" sx={{ width: 12, height: 10, minWidth: 12, borderRadius: '4px', bgcolor: letterColors[c % letterColors.length], color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, lineHeight: 1 }}>{name[0].toUpperCase()}</Box>
-  }
-  return <Icon size={12} />
 }
 
 export default function SkillsModal({ open, onClose, selected, onToggle }) {

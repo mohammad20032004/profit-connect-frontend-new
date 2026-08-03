@@ -19,6 +19,7 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Fab,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import RichTextEditor from '@/ui/RichTextEditor'
@@ -49,7 +50,7 @@ import {
   unsavePost,
 } from '@/services/postService'
 import { translateText } from '@/services/translateService'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useSelector, useDispatch } from 'react-redux'
 import CreatePost from './CreatePost'
@@ -77,7 +78,7 @@ function formatTime(dateStr, t) {
 export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
-  const currentUserId = useSelector((state) => state.user.user?._id)
+  const currentUserId = useSelector((state) => state.user.user?._id || state.user.user?.id)
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(0)
   const [comments, setComments] = useState([])
@@ -99,13 +100,13 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const MAX_CHARS = 300
 
   useEffect(() => {
-    const userIds = post?.likes?.map((l) => (typeof l === 'string' ? l : l._id)) || []
+    const userIds = post?.likes?.map((l) => (typeof l === 'string' ? l : l._id || l.id)) || []
     setLiked(userIds.includes(currentUserId))
     setLikesCount(post?.likes?.length || 0)
     setComments(post?.comments || [])
   }, [post, currentUserId])
 
-  const isOwner = currentUserId && currentUserId === post?.user?._id
+  const isOwner = currentUserId && currentUserId === (post?.user?._id || post?.user?.id)
 
   useEffect(() => {
     setExpanded(false)
@@ -227,7 +228,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   }
 
   const canDeleteComment = (comment) => {
-    const commentUserId = typeof comment.user === 'string' ? comment.user : comment.user?._id
+    const commentUserId = typeof comment.user === 'string' ? comment.user : comment.user?._id || comment.user?.id
     return currentUserId && (currentUserId === commentUserId || isOwner)
   }
 
@@ -545,6 +546,9 @@ export default function PostsSection() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState(null)
+  const scrollRef = useRef(null)
+  const [showCreateFAB, setShowCreateFAB] = useState(false)
+  const [createPostOpen, setCreatePostOpen] = useState(false)
 
   const fetchPosts = useCallback(async (p = 1) => {
     setLoading(true)
@@ -562,6 +566,17 @@ export default function PostsSection() {
   }, [])
 
   useEffect(() => { fetchPosts(1) }, [fetchPosts])
+
+  const lastScrollTop = useRef(0)
+
+  const handleScroll = () => {
+    const el = scrollRef.current
+    if (!el) return
+    const isScrollingUp = el.scrollTop < lastScrollTop.current
+    lastScrollTop.current = el.scrollTop
+    if (isScrollingUp) setShowCreateFAB(true)
+    else if (el.scrollTop > 0) setShowCreateFAB(false)
+  }
 
   const handleLoadMore = () => {
     const nextPage = page + 1
@@ -600,36 +615,66 @@ export default function PostsSection() {
   }
 
   return (
-    <Box sx={{ height: '100%', overflow: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-track': { background: 'transparent' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(180, 160, 200, 0.3)', borderRadius: 3 } }}>
-      <Stack spacing={2} sx={{ pb: 2 }}>
-        <CreatePost onPostCreated={handlePostCreated} />
-        {loading && posts.length === 0 ? (
-          <Stack spacing={2}>
-            {[1, 2, 3].map((i) => <PostSkeleton key={i} />)}
-          </Stack>
-        ) : posts.length === 0 ? (
-          <Paper sx={{ p: 4, textAlign: 'center' }}>
-            <Typography variant="h6" color="text.secondary">{t('dashboard.noPosts')}</Typography>
-          </Paper>
-        ) : (
-          <>
+    <Box sx={{ position: 'relative', height: '100%' }}>
+      <Box ref={scrollRef} onScroll={handleScroll} sx={{ height: '100%', overflow: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-track': { background: 'transparent' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(180, 160, 200, 0.3)', borderRadius: 3 } }}>
+        <Stack spacing={2} sx={{ pb: 2 }}>
+          <CreatePost onPostCreated={handlePostCreated} open={createPostOpen} onOpenChange={setCreatePostOpen} />
+          {loading && posts.length === 0 ? (
             <Stack spacing={2}>
-              {posts.map((post, idx) => (
-                <AnimatedBox key={post._id} delay={Math.min(idx * 0.05, 0.3)}>
-                  <PostCard post={post} onPostUpdated={handlePostUpdated} onPostDeleted={handlePostDeleted} />
-                </AnimatedBox>
-              ))}
+              {[1, 2, 3].map((i) => <PostSkeleton key={i} />)}
             </Stack>
-            {hasMore && (
-              <Box sx={{ textAlign: 'center', mt: 1 }}>
-                <Button variant="outlined" onClick={handleLoadMore} disabled={loading} sx={{ px: 4 }}>
-                  {loading ? <CircularProgress size={20} /> : t('dashboard.loadMore')}
-                </Button>
-              </Box>
-            )}
-          </>
+          ) : posts.length === 0 ? (
+            <Paper sx={{ p: 4, textAlign: 'center' }}>
+              <Typography variant="h6" color="text.secondary">{t('dashboard.noPosts')}</Typography>
+            </Paper>
+          ) : (
+            <>
+              <Stack spacing={2}>
+                {posts.map((post, idx) => (
+                  <AnimatedBox key={post._id} delay={Math.min(idx * 0.05, 0.3)}>
+                    <PostCard post={post} onPostUpdated={handlePostUpdated} onPostDeleted={handlePostDeleted} />
+                  </AnimatedBox>
+                ))}
+              </Stack>
+              {hasMore && (
+                <Box sx={{ textAlign: 'center', mt: 1 }}>
+                  <Button variant="outlined" onClick={handleLoadMore} disabled={loading} sx={{ px: 4 }}>
+                    {loading ? <CircularProgress size={20} /> : t('dashboard.loadMore')}
+                  </Button>
+                </Box>
+              )}
+            </>
+          )}
+        </Stack>
+      </Box>
+
+      <AnimatePresence>
+        {showCreateFAB && (
+          <motion.div
+            initial={{ opacity: 0, y: 40, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: 40, x: '-50%' }}
+            transition={{ duration: 0.2 }}
+            style={{ position: 'absolute', bottom: 20, left: '50%', zIndex: 20 }}
+          >
+            <Fab
+              color="primary"
+              variant="extended"
+              onClick={() => setCreatePostOpen(true)}
+              sx={{
+                borderRadius: 999,
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                textTransform: 'none',
+                boxShadow: 6,
+              }}
+            >
+              <EditOutlined sx={{ mr: 0.75 }} />
+              {t('dashboard.post.startAPost', 'Start a post')}
+            </Fab>
+          </motion.div>
         )}
-      </Stack>
+      </AnimatePresence>
     </Box>
   )
 }

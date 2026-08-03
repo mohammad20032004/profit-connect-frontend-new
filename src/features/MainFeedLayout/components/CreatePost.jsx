@@ -40,13 +40,18 @@ const DRAFT_KEY = 'profit_connect_post_draft'
 
 const EMOJI_LIST = ['😀', '😂', '😍', '🥳', '🤔', '👍', '❤️', '🔥', '✨', '💡', '🚀', '💻', '📱', '🎯', '⭐', '💪']
 
-export default function CreatePost({ onPostCreated }) {
+export default function CreatePost({ onPostCreated, open: openProp, onOpenChange }) {
   const { t } = useTranslation()
   const profile = useSelector((state) => state.user.profile)
   const user = useSelector((state) => state.user.user)
   const imageInputRef = useRef(null)
   const videoInputRef = useRef(null)
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = openProp ?? internalOpen
+  const setOpen = (v) => {
+    setInternalOpen(v)
+    if (onOpenChange) onOpenChange(v)
+  }
   const [content, setContent] = useState('')
   const [visibility, setVisibility] = useState('public')
   const [image, setImage] = useState(null)

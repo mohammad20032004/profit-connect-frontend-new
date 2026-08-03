@@ -72,9 +72,9 @@ export default function TopCompaniesSidebar() {
         <Stack spacing={0} sx={{ py: 1 }}>
           {displayCompanies.map((c) => (
             <Box
-              key={c._id}
+              key={c._id || c.id}
               component={Link}
-              to={`/companies/${c._id}`}
+              to={`/companies/${c._id || c.id}`}
               role="listitem"
               aria-label={`${c.name}, Rating: ${c.averageRating > 0 ? c.averageRating.toFixed(1) : 'N/A'}`}
               sx={{

@@ -307,7 +307,7 @@ export default function JobDetailView() {
 
                 {/* Company Card */}
                 <Paper
-                  onClick={() => navigate(`/companies/${job.company?._id}`)}
+                  onClick={() => navigate(`/companies/${job.company?._id || job.company?.id}`)}
                   sx={{
                     p: 2.5, borderRadius: 2, border: '1px solid', borderColor: 'divider',
                     cursor: 'pointer', transition: 'all 0.2s ease',

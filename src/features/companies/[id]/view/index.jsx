@@ -20,7 +20,7 @@ export default function CompanyDetail() {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
-  const currentUserId = useSelector((state) => state.user.user?._id)
+  const currentUserId = useSelector((state) => state.user.user?._id || state.user.user?.id)
   const [company, setCompany] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -75,7 +75,10 @@ export default function CompanyDetail() {
       if (res?.success) {
         setCompany(res.data)
         setFollowersCount(res.data.followersCount)
-        const isFollower = res.data.followers?.some((f) => f?.toString() === currentUserId || f?._id === currentUserId)
+        const isFollower = res.data.followers?.some((f) => {
+          const fid = typeof f === 'string' ? f : f?._id || f?.id
+          return fid && fid.toString() === currentUserId?.toString()
+        })
         setFollowing(isFollower)
       }
     } catch (err) {
@@ -87,8 +90,11 @@ export default function CompanyDetail() {
 
   useEffect(() => { fetchCompany() }, [id])
 
-  const isOwner = currentUserId === company?.owner?._id
-  const currentUserRating = company?.ratings?.find((r) => r.user?._id === currentUserId)
+  const isOwner = currentUserId && currentUserId === (company?.owner?._id || company?.owner?.id)
+  const currentUserRating = company?.ratings?.find((r) => {
+    const rid = r.user?._id || r.user?.id
+    return rid && rid.toString() === currentUserId?.toString()
+  })
 
   const handleFollow = async () => {
     const prev = following; const prevCount = followersCount
@@ -328,7 +334,13 @@ export default function CompanyDetail() {
                 <Typography variant="body2" color="text.secondary">{t('companies.noRatings')}</Typography>
               ) : (
                 <Stack spacing={1}>
-                  {company.ratings.filter((r) => r.user?._id !== currentUserId).concat(company.ratings.filter((r) => r.user?._id === currentUserId)).map((r) => (
+                  {company.ratings.filter((r) => {
+                    const rid = r.user?._id || r.user?.id
+                    return !(rid && rid.toString() === currentUserId?.toString())
+                  }).concat(company.ratings.filter((r) => {
+                    const rid = r.user?._id || r.user?.id
+                    return rid && rid.toString() === currentUserId?.toString()
+                  })).map((r) => (
                     <Box key={r._id} sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
                       <Avatar src={r.user?.profile?.avatar} sx={{ width: 28, height: 28 }}>{r.user?.profile?.firstName?.charAt(0)}</Avatar>
                       <Box sx={{ flex: 1 }}>

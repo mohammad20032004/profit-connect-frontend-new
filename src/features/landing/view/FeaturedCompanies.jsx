@@ -138,7 +138,7 @@ export default function FeaturedCompanies() {
                 key={c._id}
                 elevation={0}
                 component={Link}
-                to={`/companies/${c._id}`}
+                to={`/companies/${c._id || c.id}`}
                 sx={{
                   textDecoration: 'none',
                   p: 3.5,

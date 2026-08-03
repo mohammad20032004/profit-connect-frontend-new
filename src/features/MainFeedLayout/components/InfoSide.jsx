@@ -5,9 +5,9 @@ import {
   PeopleAltOutlined,
   PersonOutlineOutlined,
   PostAddOutlined,
-  BuildOutlined,
   BookmarkBorderOutlined,
 } from '@mui/icons-material'
+import { SkillIcon } from '@/ui'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -125,7 +125,7 @@ export default function InfoSide() {
                   label={skill}
                   size="small"
                   role="listitem"
-                  icon={<BuildOutlined sx={{ fontSize: 12 }} aria-hidden="true" />}
+                  icon={<SkillIcon name={skill} size={12} />}
                   sx={{ height: 26, fontSize: '0.72rem', fontWeight: 500, borderRadius: 1.5, bgcolor: 'action.hover', '&:hover': { bgcolor: 'action.selected' } }}
                 />
               ))}

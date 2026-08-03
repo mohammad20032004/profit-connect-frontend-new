@@ -82,9 +82,9 @@ export default function TopUsersSidebar() {
             const isTopThree = index < 3
             return (
               <Box
-                key={user._id}
+                key={user._id || user.id}
                 component={Link}
-                to={`/user-profile/${user._id}`}
+                to={`/user-profile/${user._id || user.id}`}
                 role="listitem"
                 aria-label={`${fullName}, R-Score: ${profile.rScore ?? 'N/A'}`}
                 sx={{
