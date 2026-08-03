@@ -19,15 +19,15 @@ import {
 import SearchIcon from '@mui/icons-material/Search'
 import HomeIcon from '@mui/icons-material/Home'
 import PeopleIcon from '@mui/icons-material/People'
-import WorkIcon from '@mui/icons-material/WorkOutlineOutlined'
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenterOutlined'
+import WorkIcon from '@mui/icons-material/Work'
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import AppsIcon from '@mui/icons-material/Apps'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import PersonIcon from '@mui/icons-material/Person'
+import SettingsIcon from '@mui/icons-material/Settings'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
-import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined'
+import BusinessIcon from '@mui/icons-material/Business'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -220,24 +220,6 @@ const Header = () => {
               </Box>
             </Box>
 
-            <Box
-              sx={{
-                display: { xs: 'none', md: 'flex' },
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: 'text.secondary',
-                '&:hover': { color: 'text.primary' },
-                height: '100%',
-                gap: 0.3,
-              }}
-            >
-              <AppsIcon sx={{ fontSize: 24 }} />
-              <Typography variant="caption" sx={{ fontSize: '12px', lineHeight: 1.2 }}>
-                {t('header.forBusiness')}
-              </Typography>
-            </Box>
           </Stack>
         </Toolbar>
       </Container>
@@ -285,7 +267,7 @@ const Header = () => {
           sx={{ py: 1.4, px: 2 }}
         >
           <ListItemIcon>
-            <PersonOutlinedIcon fontSize="small" />
+            <PersonIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText
             primary={t('menu.viewProfile')}
@@ -295,7 +277,7 @@ const Header = () => {
 
         <MenuItem component={Link} to="/settings" onClick={handleCloseMenu} sx={{ py: 1.4, px: 2 }}>
           <ListItemIcon>
-            <SettingsOutlinedIcon fontSize="small" />
+            <SettingsIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText
             primary={t('menu.accountSettings')}
@@ -306,7 +288,7 @@ const Header = () => {
         {user?.role === 'Employer' && (
           <MenuItem component={Link} to="/employer/dashboard" onClick={handleCloseMenu} sx={{ py: 1.4, px: 2 }}>
             <ListItemIcon>
-              <BusinessOutlinedIcon fontSize="small" />
+              <BusinessIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText
               primary={t('menu.companyDashboard', 'Company Dashboard')}

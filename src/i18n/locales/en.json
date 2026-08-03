@@ -32,6 +32,15 @@
     "companies": "Companies",
     "salaries": "Salaries"
   },
+  "sidebar": {
+    "topCompanies": "Top Companies",
+    "latestJobs": "Latest Jobs",
+    "topUsers": "Top Users",
+    "viewAll": "View All",
+    "noCompanies": "No companies yet",
+    "noJobs": "No jobs yet",
+    "noUsers": "No users yet"
+  },
   "companies": {
     "title": "Companies",
     "create": "Create Company",
@@ -197,6 +206,7 @@
     "post": {
       "startAPost": "Start a post",
       "whatToTalk": "What do you want to talk about?",
+      "writeSomething": "Write something to share with your network",
       "cancel": "Cancel",
       "post": "Post",
       "posting": "Posting...",

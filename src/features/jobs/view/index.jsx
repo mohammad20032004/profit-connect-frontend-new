@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import {
   Box, Container, Paper, Typography, Stack, Grid, Avatar, Chip, alpha,
   Pagination, CircularProgress, Divider, InputBase, TextField, Button,
-  FormControlLabel, Checkbox, Collapse, IconButton,
+  Collapse, IconButton,
 } from '@mui/material'
 import {
   SearchOutlined, LocationOnOutlined, WorkOutlineOutlined,
   AttachMoneyOutlined, FilterListOutlined, CloseOutlined,
   ExpandMoreOutlined, ExpandLessOutlined,
+  HomeOutlined, SchoolOutlined, PublicOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -53,20 +54,45 @@ function timeAgo(dateStr, lang) {
   return new Date(dateStr).toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric' })
 }
 
-function FilterSection({ title, defaultOpen = false, children }) {
+function FilterSection({ title, icon, defaultOpen = false, count, children }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <Box sx={{ mb: 0.5 }}>
+    <Box sx={{ mb: 0.5, '&:last-child': { mb: 0 } }}>
       <Button
         fullWidth
         onClick={() => setOpen(!open)}
-        endIcon={open ? <ExpandLessOutlined /> : <ExpandMoreOutlined />}
-        sx={{ justifyContent: 'space-between', textTransform: 'none', color: 'text.primary', fontWeight: 700, fontSize: '0.8rem', px: 0, py: 0.75, minWidth: 0 }}
+        sx={{
+          justifyContent: 'space-between', textTransform: 'none',
+          color: open ? '#3D1C6E' : 'text.secondary',
+          fontWeight: 700, fontSize: '0.78rem', px: 1.5, py: 1, minWidth: 0,
+          borderRadius: 1.5,
+          bgcolor: open ? alpha('#3D1C6E', 0.04) : 'transparent',
+          '&:hover': { bgcolor: alpha('#3D1C6E', 0.06) },
+          transition: 'all 0.2s ease',
+        }}
+        endIcon={
+          <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+            {count > 0 && (
+              <Box sx={{
+                width: 20, height: 20, borderRadius: '50%',
+                bgcolor: '#3D1C6E', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '0.6rem', fontWeight: 700,
+              }}>
+                {count}
+              </Box>
+            )}
+            {open ? <ExpandLessOutlined sx={{ fontSize: 18 }} /> : <ExpandMoreOutlined sx={{ fontSize: 18 }} />}
+          </Stack>
+        }
       >
-        {title}
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          {icon}
+          <span>{title}</span>
+        </Stack>
       </Button>
       <Collapse in={open}>
-        <Stack spacing={0.25} sx={{ pb: 1 }}>
+        <Stack spacing={0.5} sx={{ pb: 1, px: 1.5, pt: 0.5 }}>
           {children}
         </Stack>
       </Collapse>
@@ -142,101 +168,146 @@ export default function JobsView() {
       )
     : jobs
 
+  const countActive = types.length + places.length + levels.length + (country ? 1 : 0) + (minSalary ? 1 : 0) + (maxSalary ? 1 : 0)
+
+  const FilterChips = ({ options, selected, onChange }) => (
+    <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
+      {options.map((opt) => {
+        const on = selected.includes(opt)
+        return (
+          <Chip
+            key={opt}
+            label={opt}
+            size="small"
+            onClick={() => onChange(opt)}
+            sx={{
+              height: 28, fontSize: '0.7rem', fontWeight: on ? 700 : 500,
+              bgcolor: on ? '#3D1C6E' : alpha('#3D1C6E', 0.06),
+              color: on ? '#fff' : 'text.secondary',
+              border: on ? 'none' : `1px solid ${alpha('#3D1C6E', 0.12)}`,
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                bgcolor: on ? '#2E1555' : alpha('#3D1C6E', 0.12),
+              },
+            }}
+          />
+        )
+      })}
+    </Stack>
+  )
+
   const FiltersContent = (
-    <Stack spacing={2}>
-      <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
-        <FilterListOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
-        <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: '0.85rem' }}>
-          {lang === 'ar' ? 'الفلاتر' : 'Filters'}
-        </Typography>
-        {hasActiveFilters && (
-          <Button size="small" onClick={clearFilters} sx={{ ml: 'auto', textTransform: 'none', fontSize: '0.7rem', color: 'error.main', minWidth: 0, py: 0 }}>
+    <Stack spacing={0.5}>
+      {/* Header */}
+      <Box sx={{ px: 1.5, pt: 1, pb: 0.5 }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Box sx={{
+            width: 30, height: 30, borderRadius: 1,
+            bgcolor: alpha('#3D1C6E', 0.08),
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <FilterListOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />
+          </Box>
+          <Typography variant="subtitle2" fontWeight={800} sx={{ fontSize: '0.85rem' }}>
+            {lang === 'ar' ? 'الفلاتر' : 'Filters'}
+          </Typography>
+          {countActive > 0 && (
+            <Box sx={{
+              ml: 'auto', px: 1, py: 0.25, borderRadius: 1,
+              bgcolor: alpha('#3D1C6E', 0.08),
+            }}>
+              <Typography variant="caption" fontWeight={700} color="#3D1C6E" sx={{ fontSize: '0.65rem' }}>
+                {countActive}
+              </Typography>
+            </Box>
+          )}
+        </Stack>
+      </Box>
+
+      {countActive > 0 && (
+        <Box sx={{ px: 1.5, pb: 0.5 }}>
+          <Button
+            size="small"
+            onClick={clearFilters}
+            sx={{
+              textTransform: 'none', fontSize: '0.7rem', color: '#DC2626',
+              fontWeight: 600, minWidth: 0, p: 0.5,
+              '&:hover': { bgcolor: alpha('#DC2626', 0.06) },
+            }}
+          >
             {lang === 'ar' ? 'مسح الكل' : 'Clear all'}
           </Button>
-        )}
-      </Stack>
+        </Box>
+      )}
 
-      <Divider />
+      <Divider sx={{ mx: 1.5 }} />
 
       {/* Job Type */}
-      <FilterSection title={lang === 'ar' ? 'نوع العمل' : 'Job Type'}>
-        {TYPE_OPTIONS.map((opt) => (
-          <FormControlLabel
-            key={opt}
-            control={
-              <Checkbox
-                checked={types.includes(opt)}
-                onChange={() => toggleFilter(types, setTypes, opt)}
-                size="small"
-                sx={{ py: 0.25, color: 'text.secondary', '&.Mui-checked': { color: 'primary.main' } }}
-              />
-            }
-            label={<Typography variant="body2" fontSize="0.8rem" fontWeight={types.includes(opt) ? 600 : 400}>{opt}</Typography>}
-            sx={{ mx: 0, my: 0 }}
-          />
-        ))}
+      <FilterSection
+        title={lang === 'ar' ? 'نوع العمل' : 'Job Type'}
+        icon={<WorkOutlineOutlined sx={{ fontSize: 15 }} />}
+        count={types.length}
+        defaultOpen
+      >
+        <FilterChips options={TYPE_OPTIONS} selected={types} onChange={(v) => toggleFilter(types, setTypes, v)} />
       </FilterSection>
 
-      <Divider />
+      <Divider sx={{ mx: 1.5 }} />
 
       {/* Work Place */}
-      <FilterSection title={lang === 'ar' ? 'مكان العمل' : 'Work Place'}>
-        {PLACE_OPTIONS.map((opt) => (
-          <FormControlLabel
-            key={opt}
-            control={
-              <Checkbox
-                checked={places.includes(opt)}
-                onChange={() => toggleFilter(places, setPlaces, opt)}
-                size="small"
-                sx={{ py: 0.25, color: 'text.secondary', '&.Mui-checked': { color: 'primary.main' } }}
-              />
-            }
-            label={<Typography variant="body2" fontSize="0.8rem" fontWeight={places.includes(opt) ? 600 : 400}>{opt}</Typography>}
-            sx={{ mx: 0, my: 0 }}
-          />
-        ))}
+      <FilterSection
+        title={lang === 'ar' ? 'مكان العمل' : 'Work Place'}
+        icon={<HomeOutlined sx={{ fontSize: 15 }} />}
+        count={places.length}
+      >
+        <FilterChips options={PLACE_OPTIONS} selected={places} onChange={(v) => toggleFilter(places, setPlaces, v)} />
       </FilterSection>
 
-      <Divider />
+      <Divider sx={{ mx: 1.5 }} />
 
       {/* Experience Level */}
-      <FilterSection title={lang === 'ar' ? 'مستوى الخبرة' : 'Experience Level'}>
-        {LEVEL_OPTIONS.map((opt) => (
-          <FormControlLabel
-            key={opt}
-            control={
-              <Checkbox
-                checked={levels.includes(opt)}
-                onChange={() => toggleFilter(levels, setLevels, opt)}
-                size="small"
-                sx={{ py: 0.25, color: 'text.secondary', '&.Mui-checked': { color: 'primary.main' } }}
-              />
-            }
-            label={<Typography variant="body2" fontSize="0.8rem" fontWeight={levels.includes(opt) ? 600 : 400}>{opt}</Typography>}
-            sx={{ mx: 0, my: 0 }}
-          />
-        ))}
+      <FilterSection
+        title={lang === 'ar' ? 'مستوى الخبرة' : 'Experience Level'}
+        icon={<SchoolOutlined sx={{ fontSize: 15 }} />}
+        count={levels.length}
+      >
+        <FilterChips options={LEVEL_OPTIONS} selected={levels} onChange={(v) => toggleFilter(levels, setLevels, v)} />
       </FilterSection>
 
-      <Divider />
+      <Divider sx={{ mx: 1.5 }} />
 
       {/* Country */}
-      <FilterSection title={lang === 'ar' ? 'الدولة' : 'Country'}>
+      <FilterSection
+        title={lang === 'ar' ? 'الدولة' : 'Country'}
+        icon={<PublicOutlined sx={{ fontSize: 15 }} />}
+        count={country ? 1 : 0}
+      >
         <TextField
           size="small"
           fullWidth
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           placeholder={lang === 'ar' ? 'مثال: السعودية' : 'e.g. Saudi Arabia'}
-          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem' } }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 1.5, fontSize: '0.8rem',
+              bgcolor: alpha('#3D1C6E', 0.03),
+              '&.Mui-focused': {
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#3D1C6E', borderWidth: 2 },
+              },
+            },
+          }}
         />
       </FilterSection>
 
-      <Divider />
+      <Divider sx={{ mx: 1.5 }} />
 
       {/* Salary Range */}
-      <FilterSection title={lang === 'ar' ? 'نطاق الراتب' : 'Salary Range'}>
+      <FilterSection
+        title={lang === 'ar' ? 'نطاق الراتب' : 'Salary Range'}
+        icon={<AttachMoneyOutlined sx={{ fontSize: 15 }} />}
+        count={(minSalary ? 1 : 0) + (maxSalary ? 1 : 0)}
+      >
         <Stack direction="row" spacing={1}>
           <TextField
             size="small"
@@ -246,7 +317,15 @@ export default function JobsView() {
             onChange={(e) => setMinSalary(e.target.value)}
             placeholder={lang === 'ar' ? 'الحد الأدنى' : 'Min'}
             inputProps={{ min: 0 }}
-            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem' } }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 1.5, fontSize: '0.8rem',
+                bgcolor: alpha('#3D1C6E', 0.03),
+                '&.Mui-focused': {
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: '#3D1C6E', borderWidth: 2 },
+                },
+              },
+            }}
           />
           <TextField
             size="small"
@@ -256,10 +335,22 @@ export default function JobsView() {
             onChange={(e) => setMaxSalary(e.target.value)}
             placeholder={lang === 'ar' ? 'الحد الأقصى' : 'Max'}
             inputProps={{ min: 0 }}
-            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5, fontSize: '0.8rem' } }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 1.5, fontSize: '0.8rem',
+                bgcolor: alpha('#3D1C6E', 0.03),
+                '&.Mui-focused': {
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: '#3D1C6E', borderWidth: 2 },
+                },
+              },
+            }}
           />
         </Stack>
       </FilterSection>
+
+      <Box sx={{ px: 1.5, pb: 1.5 }}>
+        <Divider />
+      </Box>
     </Stack>
   )
 
@@ -295,23 +386,30 @@ export default function JobsView() {
                   animate={{ x: 0 }}
                   exit={{ x: -320 }}
                   transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                  style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 300, background: '#fff', zIndex: 1201, overflowY: 'auto', padding: 16 }}
+                  style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 300, background: '#fff', zIndex: 1201, overflowY: 'auto' }}
                 >
-                  <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                    <Typography variant="subtitle1" fontWeight={700}>{lang === 'ar' ? 'الفلاتر' : 'Filters'}</Typography>
-                    <IconButton size="small" onClick={() => setMobileFilterOpen(false)}>
-                      <CloseOutlined fontSize="small" />
-                    </IconButton>
-                  </Stack>
-                  {FiltersContent}
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={() => setMobileFilterOpen(false)}
-                    sx={{ mt: 2, bgcolor: '#3D1C6E', '&:hover': { bgcolor: '#2E1555' }, textTransform: 'none', borderRadius: 1.5 }}
-                  >
-                    {lang === 'ar' ? 'تطبيق الفلاتر' : 'Apply Filters'}
-                  </Button>
+                  <Box sx={{ p: 2 }}>
+                    <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                      <Typography variant="subtitle1" fontWeight={800} sx={{ color: '#3D1C6E' }}>
+                        {lang === 'ar' ? 'الفلاتر' : 'Filters'}
+                      </Typography>
+                      <IconButton size="small" onClick={() => setMobileFilterOpen(false)} sx={{ color: 'text.secondary' }}>
+                        <CloseOutlined fontSize="small" />
+                      </IconButton>
+                    </Stack>
+                    {FiltersContent}
+                  </Box>
+                  <Box sx={{ position: 'sticky', bottom: 0, p: 2, bgcolor: '#fff', borderTop: `1px solid ${alpha('#000', 0.08)}` }}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      onClick={() => setMobileFilterOpen(false)}
+                      sx={{ bgcolor: '#3D1C6E', '&:hover': { bgcolor: '#2E1555' }, textTransform: 'none', borderRadius: 1.5, py: 1.25 }}
+                    >
+                      {lang === 'ar' ? 'عرض النتائج' : 'Show Results'}
+                      {countActive > 0 && ` (${countActive})`}
+                    </Button>
+                  </Box>
                 </motion.div>
               </>
             )}

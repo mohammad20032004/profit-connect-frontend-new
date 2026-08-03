@@ -3,6 +3,7 @@ import InfoSide from '../components/InfoSide'
 import PostsSection from '../components/PostsSection'
 import TopCompaniesSidebar from '../components/TopCompaniesSidebar'
 import LatestJobsSidebar from '../components/LatestJobsSidebar'
+import TopUsersSidebar from '../components/TopUsersSidebar'
 import AnimatedBox from '@/components/AnimatedBox'
 
 function DashboardView() {
@@ -20,11 +21,16 @@ function DashboardView() {
         <Grid container spacing={2} sx={{ height: '100%' }}>
           <Grid
             size={{ xs: 12, lg: 3 }}
-            sx={{ height: '100%', overflow: 'hidden', py: 'auto', display: { xs: 'none', md: 'none', lg: 'block' } }}
+            sx={{ height: '100%', overflow: 'auto', py: 'auto', display: { xs: 'none', md: 'none', lg: 'block' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}
           >
-            <AnimatedBox delay={0} sx={{ height: '100%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-              <InfoSide />
-            </AnimatedBox>
+            <Stack spacing={2} sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              <AnimatedBox delay={0}>
+                <InfoSide />
+              </AnimatedBox>
+              <AnimatedBox delay={0.15} sx={{ width: '100%' }}>
+                <TopUsersSidebar />
+              </AnimatedBox>
+            </Stack>
           </Grid>
           <Grid
             size={{ xs: 12, lg: 6 }}

@@ -3,10 +3,12 @@ import { Box, Typography, Paper, Avatar, CircularProgress, Stack, Chip, alpha, D
 import { ErrorOutlined, WorkOutlineOutlined, LocationOnOutlined, ArrowForwardRounded } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 import { getLatestJobs } from '@/services/employeeService'
 
 export default function LatestJobsSidebar() {
   const theme = useTheme()
+  const { t } = useTranslation()
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -37,9 +39,9 @@ export default function LatestJobsSidebar() {
   }
 
   return (
-    <Paper elevation={0} sx={{ borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }} role="complementary" aria-label="Latest Jobs">
+    <Paper elevation={0} sx={{ borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }} role="complementary" aria-label={t('sidebar.latestJobs')}>
       <Box sx={{ px: 2, pt: 2, pb: 1 }}>
-        <Typography variant="subtitle2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '0.85rem' }}>Latest Jobs</Typography>
+        <Typography variant="subtitle2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '0.85rem' }}>{t('sidebar.latestJobs')}</Typography>
       </Box>
       <Divider sx={{ mx: 2 }} />
       {loading ? (
@@ -49,7 +51,7 @@ export default function LatestJobsSidebar() {
       ) : error || displayJobs.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <ErrorOutlined sx={{ fontSize: 28, color: alpha(theme.palette.text.disabled, 0.5), mb: 0.5 }} />
-          <Typography variant="caption" color="text.disabled">{error || 'No jobs yet'}</Typography>
+          <Typography variant="caption" color="text.disabled">{error || t('sidebar.noJobs')}</Typography>
         </Box>
       ) : (
         <Stack spacing={0} sx={{ py: 1 }}>
@@ -114,7 +116,7 @@ export default function LatestJobsSidebar() {
             <Box sx={{ px: 2, pt: 0.5, pb: 1 }}>
               <Divider sx={{ mb: 1 }} />
               <Box component={Link} to="/jobs" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, py: 0.75, color: 'primary.main', fontWeight: 600, fontSize: '0.75rem', textDecoration: 'none', borderRadius: 1, transition: 'all 0.2s', '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) } }}>
-                View All
+                {t('sidebar.viewAll')}
                 <ArrowForwardRounded sx={{ fontSize: 14, transition: 'transform 0.2s', '&:hover': { transform: 'translateX(2px)' } }} />
               </Box>
             </Box>

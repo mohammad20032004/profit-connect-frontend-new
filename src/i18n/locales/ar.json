@@ -32,6 +32,15 @@
     "companies": "الشركات",
     "salaries": "الرواتب"
   },
+  "sidebar": {
+    "topCompanies": "أفضل الشركات",
+    "latestJobs": "أحدث الوظائف",
+    "topUsers": "أفضل الأشخاص",
+    "viewAll": "عرض الكل",
+    "noCompanies": "لا توجد شركات بعد",
+    "noJobs": "لا توجد وظائف بعد",
+    "noUsers": "لا يوجد مستخدمون بعد"
+  },
   "companies": {
     "title": "الشركات",
     "create": "إنشاء شركة",
@@ -198,6 +207,7 @@
     "post": {
       "startAPost": "انشر منشوراً",
       "whatToTalk": "عن ماذا تريد أن تتحدث؟",
+      "writeSomething": "اكتب شيئاً لمشاركته مع شبكتك",
       "cancel": "إلغاء",
       "post": "نشر",
       "posting": "جاري النشر...",

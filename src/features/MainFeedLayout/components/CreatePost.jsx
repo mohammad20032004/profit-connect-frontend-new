@@ -30,7 +30,6 @@ import {
   VideocamOutlined,
   CloseOutlined,
   PublicOutlined,
-  PeopleOutlined,
   LockOutlined,
   EmojiEmotionsOutlined,
   DeleteOutlineOutlined,
@@ -362,12 +361,6 @@ export default function CreatePost({ onPostCreated }) {
                     <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
                       <PublicOutlined sx={{ fontSize: 16, color: 'success.main' }} />
                       <span>{t('dashboard.public', 'Public')}</span>
-                    </Stack>
-                  </MenuItem>
-                  <MenuItem value="connections">
-                    <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
-                      <PeopleOutlined sx={{ fontSize: 16, color: 'info.main' }} />
-                      <span>{t('dashboard.connections', 'Connections')}</span>
                     </Stack>
                   </MenuItem>
                   <MenuItem value="private">

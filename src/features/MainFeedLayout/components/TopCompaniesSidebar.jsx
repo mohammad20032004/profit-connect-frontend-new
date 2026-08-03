@@ -3,10 +3,12 @@ import { Box, Typography, Paper, Avatar, CircularProgress, Stack, Rating, alpha,
 import { ErrorOutlined, StarRounded, ChevronRightRounded, ArrowForwardRounded } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 
 export default function TopCompaniesSidebar() {
   const theme = useTheme()
+  const { t } = useTranslation()
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -43,12 +45,12 @@ export default function TopCompaniesSidebar() {
         bgcolor: 'background.paper',
       }}
       role="complementary"
-      aria-label="Top Companies"
+      aria-label={t('sidebar.topCompanies')}
     >
       {/* Header */}
       <Box sx={{ px: 2, pt: 2, pb: 1 }}>
         <Typography variant="subtitle2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '0.85rem' }}>
-          Top Companies
+          {t('sidebar.topCompanies')}
         </Typography>
       </Box>
 
@@ -63,7 +65,7 @@ export default function TopCompaniesSidebar() {
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <ErrorOutlined sx={{ fontSize: 28, color: alpha(theme.palette.text.disabled, 0.5), mb: 0.5 }} />
           <Typography variant="caption" color="text.disabled">
-            {error || 'No companies yet'}
+            {error || t('sidebar.noCompanies')}
           </Typography>
         </Box>
       ) : (
@@ -165,7 +167,7 @@ export default function TopCompaniesSidebar() {
                   '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) },
                 }}
               >
-                View All
+                {t('sidebar.viewAll')}
                 <ArrowForwardRounded sx={{ fontSize: 14, transition: 'transform 0.2s', '&:hover': { transform: 'translateX(2px)' } }} />
               </Box>
             </Box>
