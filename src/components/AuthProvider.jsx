@@ -14,10 +14,15 @@ function setupAxiosInterceptor(dispatch) {
     (res) => res,
     (err) => {
       if (err?.response?.status === 401) {
-        localStorage.removeItem('profit_connect_token')
-        delete axios.defaults.headers.common['Authorization']
-        dispatch(clearUserProfile())
-        window.location.href = '/sign-in'
+        const url = err?.config?.url || ''
+        const isLoginRequest = url.includes('/auth/login')
+        const alreadyOnSignIn = window.location.pathname === '/sign-in'
+        if (!isLoginRequest && !alreadyOnSignIn) {
+          localStorage.removeItem('profit_connect_token')
+          delete axios.defaults.headers.common['Authorization']
+          dispatch(clearUserProfile())
+          window.location.href = '/sign-in'
+        }
       }
       return Promise.reject(err)
     },

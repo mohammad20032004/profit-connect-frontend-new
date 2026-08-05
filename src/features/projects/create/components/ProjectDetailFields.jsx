@@ -51,12 +51,12 @@ export default function ProjectDetailFields({ form, onChange, t, onImprove, impr
         <TextField placeholder={t('projects.descriptionPlaceholder', 'Describe the project in detail...')} value={form.description} onChange={onChange('description')} fullWidth size="small" multiline rows={rows} sx={{ '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0 } }} />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <TextField label={t('projects.skillsLabel', 'Required Skills')} placeholder={t('projects.skillsPlaceholder', 'e.g. React, Node.js, MongoDB')} value={form.skills} onChange={onChange('skills')} fullWidth size="small" helperText="Separate skills with commas" />
+        <TextField label={t('projects.skillsLabel', 'Required Skills')} placeholder={t('projects.skillsPlaceholder', 'e.g. React, Node.js, MongoDB')} value={form.skills} onChange={onChange('skills')} fullWidth size="small" helperText={t('projects.skillsHelper', 'Separate skills with commas')} />
         <Box sx={{ mt: 1.5 }}>
           {skillGroups.map((group) => (
             <Box key={group.label} sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, display: 'block', mb: 0.5 }}>{group.label}</Typography>
-              <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, display: 'block', mb: 0.5 }}>{t(`projects.skillGroups.${group.label}`, group.label)}</Typography>
+              <Stack direction="row" spacing={0.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
                 {group.skills.map((skill) => (
                   <Chip
                     key={skill}

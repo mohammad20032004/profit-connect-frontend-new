@@ -78,12 +78,14 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
           size="small"
           autoFocus
           sx={{ mt: 2 , mb: 2}}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchOutlined sx={{ color: '#B5AECB', fontSize: 20 }} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchOutlined sx={{ color: '#B5AECB', fontSize: 20 }} />
+                </InputAdornment>
+              ),
+            },
           }}
         />
       </DialogTitle>

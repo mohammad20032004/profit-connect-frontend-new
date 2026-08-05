@@ -35,6 +35,14 @@ function getNotificationDisplay(n, t) {
       title: t('notif.newProposal', 'عرض جديد'),
       msg: t('notif.newProposalMsg', 'في مشروع {name}', { name: n.projectName }),
     },
+    proposal_received: {
+      icon: <WorkOutlineOutlined />,
+      color: 'primary',
+      title: t('notif.proposalReceived', 'عرض جديد على مشروعك'),
+      msg: t('notif.proposalReceivedMsg', 'هناك عرض جديد على مشروع {name}', { name: n.projectName }),
+      actionUrl: n.projectId ? `/myProject/${n.projectId}` : null,
+      actionLabel: t('notif.viewProposals', 'عرض العروض'),
+    },
     project_completed: {
       icon: <CheckCircleOutlineOutlined />,
       color: 'success',

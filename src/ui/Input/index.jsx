@@ -53,14 +53,16 @@ function PasswordField({ label, ...props }) {
     <TextField
       label={label}
       type={show ? 'text' : 'password'}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton onClick={() => setShow(!show)} edge="end" size="small">
-              {show ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-            </IconButton>
-          </InputAdornment>
-        ),
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={() => setShow(!show)} edge="end" size="small">
+                {show ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        },
       }}
       {...props}
     />
@@ -250,8 +252,10 @@ function FileUpload({ label, value, onChange, accept, multiple, sx, ...props }) 
     <TextField
       label={label}
       type="file"
-      InputLabelProps={{ shrink: true }}
-      inputProps={{ accept, multiple }}
+      slotProps={{
+        inputLabel: { shrink: true },
+        htmlInput: { accept, multiple },
+      }}
       onChange={onChange}
       sx={{
         '& input[type="file"]': { padding: '8px 0', fontSize: '0.85rem' },

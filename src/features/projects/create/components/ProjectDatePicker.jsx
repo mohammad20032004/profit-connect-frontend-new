@@ -10,13 +10,15 @@ export default function ProjectDatePicker({ value, onChange, label, t }) {
       onChange={onChange}
       fullWidth
       size="small"
-      InputLabelProps={{ shrink: true }}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <CalendarMonthOutlined sx={{ color: 'primary.main', fontSize: 20 }} />
-          </InputAdornment>
-        ),
+      slotProps={{
+        inputLabel: { shrink: true },
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <CalendarMonthOutlined sx={{ color: 'primary.main', fontSize: 20 }} />
+            </InputAdornment>
+          ),
+        },
       }}
       sx={{
         '& .MuiOutlinedInput-root': {

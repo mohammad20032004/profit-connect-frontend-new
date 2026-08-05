@@ -7,7 +7,7 @@ import {
 import Button from '@/ui/Button'
 import {
   ArrowBackOutlined, AttachMoneyOutlined, AccessTimeOutlined, PersonOutlined, EditOutlined,
-  CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined,
+  CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined, ManageSearchOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
@@ -68,6 +68,14 @@ export default function MyProjectDetail() {
   }, [id])
 
   useEffect(() => { fetchProposals() }, [fetchProposals])
+
+  useEffect(() => {
+    const handleProposalReceived = (e) => {
+      if (e.detail?.projectId === id) fetchProposals()
+    }
+    window.addEventListener('proposal:received', handleProposalReceived)
+    return () => window.removeEventListener('proposal:received', handleProposalReceived)
+  }, [id, fetchProposals])
 
   const isClient = currentUserId === project?.client?._id
   const isInProgress = project?.status === 'InProgress'
@@ -200,7 +208,7 @@ export default function MyProjectDetail() {
                   <Typography variant="body1" fontWeight="bold">{project.deadline ? new Date(project.deadline).toLocaleDateString() : '-'}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('projects.deadline', 'Deadline')}</Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center', flex: 1 }}>
+                <Box sx={{ textAlign: 'center', flex: 1}}>
                   <PersonOutlined sx={{ fontSize: 20, color: 'primary.main' }} />
                   <Typography variant="body1" fontWeight="bold">{proposals.length}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('projects.proposals', 'Proposals')}</Typography>
@@ -212,11 +220,18 @@ export default function MyProjectDetail() {
                   {project.skills.map((s) => (<Chip key={s} label={s} size="small" variant="outlined" sx={{ fontSize: '0.75rem' }} />))}
                 </Stack>
               )}
-                <Button size="small" variant="outlined" onClick={openEdit} startIcon={<EditOutlined />} fullWidth
-                  sx={{ mt: 1.5, fontSize: '0.8rem' }}
-                >
-                  {t('projects.edit', 'Edit')}
-                </Button>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mt: 1.5 }}>
+                  <Button size="small" variant="outlined" onClick={openEdit} startIcon={<EditOutlined />}
+                    sx={{ fontSize: '0.8rem', flex: 1, width: '100%' }}
+                  >
+                    {t('projects.edit', 'Edit')}
+                  </Button>
+                  <Button size="small" variant="contained" onClick={() => navigate(`/myProject/${id}/manage`)} startIcon={<ManageSearchOutlined />}
+                    sx={{ fontSize: '0.8rem', flex: 1, width: '100%' }}
+                  >
+                    {t('manage.button', 'Manage')}
+                  </Button>
+                </Stack>
             </Paper>
 
             {project.description && (
@@ -238,7 +253,7 @@ export default function MyProjectDetail() {
           {proposalsLoading ? (
             <Box sx={{ textAlign: 'center', py: 6 }}><CircularProgress /></Box>
           ) : proposals.length === 0 ? (
-            <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3 }}>
+            <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3, bgcolor: 'transparent', boxShadow: 'none' }}>
               <WorkOutlineOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
               <Typography color="text.secondary">{t('projects.noProposals', 'No proposals yet')}</Typography>
             </Paper>
@@ -264,7 +279,7 @@ export default function MyProjectDetail() {
                               <StarBorderOutlined sx={{ fontSize: 16, color: '#16A34A' }} />
                             </Tooltip>
                           )}
-                          <Chip label={p.status} size="small"
+                          <Chip label={t(`projects.proposalStatus.${p.status}`, p.status)} size="small"
                             color={p.status === 'Pending' ? 'warning' : p.status === 'Accepted' ? 'success' : 'default'}
                             sx={{ height: 20, fontSize: '0.68rem', fontWeight: 600, ml: 'auto' }}
                           />

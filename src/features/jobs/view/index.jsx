@@ -316,7 +316,7 @@ export default function JobsView() {
             value={minSalary}
             onChange={(e) => setMinSalary(e.target.value)}
             placeholder={lang === 'ar' ? 'الحد الأدنى' : 'Min'}
-            inputProps={{ min: 0 }}
+            slotProps={{ htmlInput: { min: 0 } }}
             sx={{
               '& .MuiOutlinedInput-root': {
                 borderRadius: 1.5, fontSize: '0.8rem',
@@ -334,7 +334,7 @@ export default function JobsView() {
             value={maxSalary}
             onChange={(e) => setMaxSalary(e.target.value)}
             placeholder={lang === 'ar' ? 'الحد الأقصى' : 'Max'}
-            inputProps={{ min: 0 }}
+            slotProps={{ htmlInput: { min: 0 } }}
             sx={{
               '& .MuiOutlinedInput-root': {
                 borderRadius: 1.5, fontSize: '0.8rem',

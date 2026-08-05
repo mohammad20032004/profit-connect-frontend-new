@@ -28,14 +28,16 @@ export default function StepAccount({ form, onChange, errors }) {
     <Stack spacing={2.5}>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
         <TextField label="Password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={onChange('password')} required fullWidth error={!!errors.password} helperText={errors.password || 'At least 6 characters'} sx={fieldSx}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword((s) => !s)} edge="end" sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.1)' } }}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowPassword((s) => !s)} edge="end" sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.1)' } }}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
           }}
         />
       </Box>

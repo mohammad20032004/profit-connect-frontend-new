@@ -64,7 +64,7 @@ export default function CreateProject() {
         if (form.budgetMax) payload.budget.max = Number(form.budgetMax)
       }
       const res = await createProject(payload)
-      if (res?.success) navigate(`/projects/${res.data._id}`)
+      if (res?.success) navigate(`/myProject/${res.data._id || res.data.id}`)
       else setError(res?.message || t('common.error'))
     } catch (err) {
       setError(err?.response?.data?.message || err.message || t('common.error'))

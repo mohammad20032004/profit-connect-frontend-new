@@ -43,6 +43,19 @@ const TYPE_CONFIG = {
     msgFallback: 'A new proposal was submitted',
     interpolate: (n) => ({ name: n.projectName }),
   },
+  proposal_received: {
+    severity: 'info',
+    icon: <WorkOutlineOutlined sx={{ fontSize: 20 }} />,
+    duration: 5000,
+    titleKey: 'notif.proposalReceived',
+    titleFallback: 'New Proposal on Your Project',
+    msgKey: 'notif.proposalReceivedMsg',
+    msgFallback: 'A new proposal was submitted on your project',
+    interpolate: (n) => ({ name: n.projectName }),
+    actionUrl: (n) => (n.projectId ? `/myProject/${n.projectId}` : null),
+    actionLabelKey: 'notif.viewProposals',
+    actionLabelFallback: 'View Proposals',
+  },
   project_completed: {
     severity: 'success',
     icon: <CheckCircleOutlineOutlined sx={{ fontSize: 20 }} />,
@@ -121,6 +134,12 @@ export default function NotificationProvider({ children }) {
           newOnes.forEach((n) => knownIds.current.add(n._id))
           dispatch(addNotifications(res.data))
 
+          newOnes.forEach((n) => {
+            if ((n.type === 'proposal_received' || n.type === 'proposal_new') && n.projectId) {
+              window.dispatchEvent(new CustomEvent('proposal:received', { detail: { projectId: n.projectId } }))
+            }
+          })
+
           const latest = newOnes[newOnes.length - 1]
           const cfg = getToastConfig(latest.type)
           setToast({
@@ -131,7 +150,7 @@ export default function NotificationProvider({ children }) {
             msg: cfg.msgKey
               ? t(cfg.msgKey, cfg.msgFallback, cfg.interpolate(latest))
               : cfg.msgFallback,
-            actionUrl: cfg.actionUrl || null,
+            actionUrl: typeof cfg.actionUrl === 'function' ? cfg.actionUrl(latest) : (cfg.actionUrl || null),
             actionLabel: cfg.actionLabelKey
               ? t(cfg.actionLabelKey, cfg.actionLabelFallback)
               : cfg.actionLabelFallback || null,

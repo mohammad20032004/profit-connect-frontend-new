@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, Divider, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Tooltip, TextField,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, Divider, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Tooltip, TextField, Snackbar, Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
@@ -41,6 +41,7 @@ export default function ProjectDetail() {
   const [proposalForm, setProposalForm] = useState({ bidAmount: '', deliveryTime: '', coverLetter: '' })
   const [submitting, setSubmitting] = useState(false)
   const [proposalSent, setProposalSent] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
 
   const fetchProject = async (showLoader = true) => {
     if (showLoader) setLoading(true)
@@ -85,7 +86,7 @@ export default function ProjectDetail() {
         } catch { /* ignore */ } finally { setProposalsLoading(false) }
       }
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     }
   }
 
@@ -96,7 +97,7 @@ export default function ProjectDetail() {
         setProposals(prev => prev.map(p => p._id === proposalId ? { ...p, status: 'Rejected' } : p))
       }
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     }
   }
 
@@ -105,7 +106,7 @@ export default function ProjectDetail() {
       const res = await completeProject(id)
       if (res?.success) fetchProject(false)
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     }
   }
 
@@ -115,7 +116,7 @@ export default function ProjectDetail() {
       await deleteProject(id)
       navigate('/projects')
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     } finally {
       setDeleteLoading(false)
       setDeleteOpen(false)
@@ -136,7 +137,7 @@ export default function ProjectDetail() {
         setProposalForm({ bidAmount: '', deliveryTime: '', coverLetter: '' })
       }
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || err.message || t('common.error'))
     } finally {
       setSubmitting(false)
     }
@@ -344,7 +345,7 @@ export default function ProjectDetail() {
                             <AccessTimeOutlined sx={{ fontSize: 14, color: '#5C5580' }} />
                             <Typography variant="caption" color="text.secondary">{p.deliveryTime}</Typography>
                           </Stack>
-                          <Chip label={p.status} size="small"
+                          <Chip label={t(`projects.proposalStatus.${p.status}`, p.status)} size="small"
                             color={p.status === 'Pending' ? 'warning' : p.status === 'Accepted' ? 'success' : 'default'}
                             sx={{ height: 20, fontSize: '0.68rem', fontWeight: 600, ml: 'auto' }}
                           />
@@ -390,6 +391,18 @@ export default function ProjectDetail() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={!!toastMsg}
+        autoHideDuration={4000}
+        onClose={() => setToastMsg('')}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{ mt: 8 }}
+      >
+        <Alert severity="error" variant="filled" onClose={() => setToastMsg('')} sx={{ borderRadius: 2, alignItems: 'center' }}>
+          {toastMsg}
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }

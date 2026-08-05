@@ -82,7 +82,9 @@ export default function SignInView() {
       }
       navigate('/')
     } catch (err) {
-      const msg = err?.response?.data?.message || err.message || (lang === 'en' ? 'Something went wrong' : 'حدث خطأ')
+      const data = err?.response?.data
+      const fallback = lang === 'en' ? 'Something went wrong. Please try again.' : 'حدث خطأ. حاول مرة أخرى.'
+      const msg = data?.message || data?.error || data?.msg || err.message || fallback
       setError(msg)
     } finally {
       setLoading(false)
@@ -200,14 +202,16 @@ export default function SignInView() {
                         value={formData.password}
                         onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                         sx={fieldSx}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => setShowPassword(s => !s)} edge="end" sx={{ color: '#5C5580' }}>
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton onClick={() => setShowPassword(s => !s)} edge="end" sx={{ color: '#5C5580' }}>
+                                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          },
                         }}
                       />
                     </Box>

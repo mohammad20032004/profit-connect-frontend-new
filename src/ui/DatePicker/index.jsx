@@ -127,11 +127,13 @@ function DatePicker({
         label={label}
         value={displayValue}
         onClick={(e) => setAnchorEl(e.currentTarget)}
-        InputProps={{
-          readOnly: true,
-          endAdornment: (
-            <CalendarTodayIcon sx={{ fontSize: 18, color: '#8F86AD', cursor: 'pointer' }} />
-          ),
+        slotProps={{
+          input: {
+            readOnly: true,
+            endAdornment: (
+              <CalendarTodayIcon sx={{ fontSize: 18, color: '#8F86AD', cursor: 'pointer' }} />
+            ),
+          },
         }}
         sx={{
           '& .MuiOutlinedInput-root': {
