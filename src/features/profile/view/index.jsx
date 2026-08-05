@@ -2,8 +2,6 @@ import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid } f
 import Button from '@/ui/Button'
 import {
   LocationOnOutlined,
-  PeopleAltOutlined,
-  PostAddOutlined,
   WorkspacePremiumRounded,
   LinkedIn,
   GitHub,
@@ -12,7 +10,6 @@ import {
   PhoneOutlined,
   EditOutlined,
   BusinessCenterOutlined,
-  SchoolOutlined,
   BuildOutlined,
   StarRounded,
 } from '@mui/icons-material'
@@ -21,13 +18,13 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
 import { refreshProfile } from '@/services/profile'
+import WalletCard from '../components/WalletCard'
 
 export default function ProfileView() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.user)
   const profile = useSelector((state) => state.user.profile)
-  const isRtl = i18n.language === 'ar'
 
   useEffect(() => {
     refreshProfile(dispatch)
@@ -113,6 +110,8 @@ export default function ProfileView() {
 
           <Grid size={{ xs: 12, md: 8, lg: 8.5 }}>
             <Stack spacing={2.5}>
+
+              <WalletCard />
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, flex: 1 }}>
