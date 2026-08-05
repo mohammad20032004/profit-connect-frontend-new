@@ -122,6 +122,16 @@ export async function depositPayment(payload) {
   return data
 }
 
+export async function getMyPayments(params = {}) {
+  const { data } = await axios.get(`${API_BASE}/payments`, { params })
+  return data
+}
+
+export async function releasePayment(paymentId) {
+  const { data } = await axios.put(`${API_BASE}/payments/${paymentId}/release`)
+  return data
+}
+
 export async function createPayment(id, payload) {
   const { data } = await axios.post(`${API_BASE}/projects/${id}/payments`, payload)
   return data

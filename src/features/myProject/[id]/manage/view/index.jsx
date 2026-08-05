@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Box, Paper, Typography, Stack, CircularProgress, Chip, Tabs, Tab, Snackbar, Alert,
 } from '@mui/material'
@@ -22,11 +22,12 @@ const statusColors = { Open: 'success', InProgress: 'info', Completed: 'default'
 export default function ManageProject() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t } = useTranslation()
   const [overview, setOverview] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(() => (searchParams.get('tab') === 'payments' ? 3 : 0))
   const [toast, setToast] = useState({ open: false, severity: 'success', msg: '' })
 
   const fetchOverview = useCallback(async (showLoader = true) => {

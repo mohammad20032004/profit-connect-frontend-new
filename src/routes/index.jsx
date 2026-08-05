@@ -23,6 +23,7 @@ import ProjectDetail from "../features/projects/[id]/view"
 import CreateProject from "../features/projects/create/view"
 import MyProjectDetail from "../features/myProject/[id]/view"
 import ManageProject from "../features/myProject/[id]/manage/view"
+import PaymentsView from "../features/payments/view"
 
 import EmployerWelcome from "../features/employer/welcome/view"
 import EmployerDashboard from "../features/employer/dashboard/view"
@@ -62,6 +63,7 @@ const router = createBrowserRouter([
       { path: "/user-profile/:userId", element: <UserProfileUserIdView /> },
       { path: "/about", element: <AboutView /> },
       { path: "/alerts", element: <AlertsView /> },
+      { path: "/payments", element: <PaymentsView /> },
       { path: "/settings", element: <SettingsView /> },
 
       { path: "/posts/:postId", element: <PostPage /> },

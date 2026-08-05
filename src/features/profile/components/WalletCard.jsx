@@ -5,12 +5,20 @@ import {
 } from '@mui/material'
 import {
   AccountBalanceWalletOutlined, HourglassTopOutlined, TrendingUpOutlined, SwapHorizOutlined,
-  ArrowUpward, ArrowDownward, LockOutlined,
+  ArrowUpward, ArrowDownward, LockOutlined, ReceiptLongOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import Button from '@/ui/Button'
 import { TextField } from '@/ui'
 import { getWallet, requestWithdrawal } from '@/services/walletService'
+import { getMyPayments } from '@/services/projectService'
+
+const PAY_STATUS = {
+  held: { color: '#D97706', labelKey: 'profile.payHeld' },
+  released: { color: '#16A34A', labelKey: 'profile.payReleased' },
+  refunded: { color: '#DC2626', labelKey: 'profile.payRefunded' },
+  cancelled: { color: '#5C5580', labelKey: 'profile.payCancelled' },
+}
 
 const TXN_COLORS = {
   release: '#16A34A',
@@ -34,11 +42,20 @@ const TXN_ICONS = {
 
 const fmt = (n) => Number(n || 0).toLocaleString()
 
+const fullName = (user) => {
+  if (!user) return ''
+  if (typeof user === 'string') return user
+  const prof = user.profile || {}
+  return [prof.firstName, prof.lastName].filter(Boolean).join(' ') || user.name || user.email || ''
+}
+
 export default function WalletCard() {
   const { t } = useTranslation()
   const [wallet, setWallet] = useState(null)
   const [txns, setTxns] = useState([])
+  const [received, setReceived] = useState([])
   const [loading, setLoading] = useState(true)
+  const [receivedLoading, setReceivedLoading] = useState(true)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState('')
   const [bankName, setBankName] = useState('')
@@ -61,8 +78,22 @@ export default function WalletCard() {
     return () => { active = false }
   }, [])
 
+  useEffect(() => {
+    let active = true
+    getMyPayments({ direction: 'received' })
+      .then((res) => {
+        if (!active || !res?.success) return
+        setReceived(res.data || [])
+      })
+      .catch(() => {})
+      .finally(() => { if (active) setReceivedLoading(false) })
+    return () => { active = false }
+  }, [])
+
   const balance = wallet?.balance ?? 0
   const holding = wallet?.holding ?? 0
+  const inEscrow = wallet?.inEscrow ?? 0
+  const inEscrowCount = wallet?.inEscrowCount ?? 0
   const totalEarned = wallet?.totalEarned ?? 0
   const totalWithdrawn = wallet?.totalWithdrawn ?? 0
 
@@ -165,8 +196,9 @@ export default function WalletCard() {
         ) : (
           <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1.5 }}>
             {statItem(t('profile.availableBalance', 'Available balance'), balance, '#16A34A', <LockOutlined sx={{ fontSize: 18 }} />)}
+            {statItem(`${t('profile.inEscrow', 'In escrow')}${inEscrowCount ? ` (${inEscrowCount})` : ''}`, inEscrow, '#3D1C6E', <ReceiptLongOutlined sx={{ fontSize: 18 }} />)}
             {statItem(t('profile.holding', 'Held for review'), holding, '#D97706', <HourglassTopOutlined sx={{ fontSize: 18 }} />)}
-            {statItem(t('profile.totalEarned', 'Total earned'), totalEarned, '#3D1C6E', <TrendingUpOutlined sx={{ fontSize: 18 }} />)}
+            {statItem(t('profile.totalEarned', 'Total earned'), totalEarned, '#7D5DAB', <TrendingUpOutlined sx={{ fontSize: 18 }} />)}
             {statItem(t('profile.totalWithdrawn', 'Total withdrawn'), totalWithdrawn, '#576FA2', <SwapHorizOutlined sx={{ fontSize: 18 }} />)}
           </Stack>
         )}
@@ -204,6 +236,52 @@ export default function WalletCard() {
                   </Box>
                   <Typography variant="body2" fontWeight={800} sx={{ color: positive ? 'success.main' : '#5C5580', fontSize: '0.8rem' }}>
                     {positive ? '+' : ''}{fmt(tx.amount)}
+                  </Typography>
+                </Stack>
+              )
+            })}
+          </Stack>
+        )}
+      </Box>
+
+      <Divider sx={{ my: 1.75 }} />
+
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="caption" fontWeight={700} sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.62rem', color: 'text.secondary' }}>
+          {t('profile.receivedPayments', 'Payments to you')}
+        </Typography>
+        <Button component="a" href="/payments" size="small" variant="text" sx={{ fontSize: '0.7rem', fontWeight: 700, minWidth: 0, p: 0 }}>
+          {t('profile.viewAllPayments', 'View all')}
+        </Button>
+      </Stack>
+      <Box sx={{ mt: 1 }}>
+        {receivedLoading ? (
+          <Typography variant="caption" color="text.secondary">{t('common.loading', 'Loading...')}</Typography>
+        ) : received.length === 0 ? (
+          <Typography variant="caption" color="text.secondary">{t('profile.noReceivedPayments', 'No payments received yet')}</Typography>
+        ) : (
+          <Stack spacing={0.75}>
+            {received.slice(0, 5).map((p, i) => {
+              const st = PAY_STATUS[p.status] || { color: '#5C5580', labelKey: p.status }
+              return (
+                <Stack key={i} direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+                  <Box sx={{
+                    width: 28, height: 28, borderRadius: 1, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    bgcolor: alpha(st.color, 0.1), color: st.color,
+                  }}>
+                    <ReceiptLongOutlined sx={{ fontSize: 16 }} />
+                  </Box>
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body2" fontWeight={600} sx={{ fontSize: '0.8rem' }} noWrap>
+                      {p.note || `${fullName(p.payer) || p.project?.title || ''} → ${fullName(p.payee) || t('profile.you', 'You')}`}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.62rem' }}>
+                      {t(st.labelKey, st.labelKey)} • {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : ''}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" fontWeight={800} sx={{ color: st.color, fontSize: '0.8rem' }}>
+                    {fmt(p.amount)}
                   </Typography>
                 </Stack>
               )

@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid } from '@mui/material'
+import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
 import {
   LocationOnOutlined,
@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
 import { refreshProfile } from '@/services/profile'
 import WalletCard from '../components/WalletCard'
+import MyProposalsCard from '../components/MyProposalsCard'
 
 export default function ProfileView() {
   const { t } = useTranslation()
@@ -37,25 +38,83 @@ export default function ProfileView() {
   const skills = professional?.skills || []
   const Rscore = profile?.rScore || 0
 
+  const contactBtnSx = {
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    bgcolor: '#1F3670',
+    color: '#fff',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      bgcolor: '#3D1C6E',
+      transform: 'translateY(-2px)',
+      boxShadow: '0 6px 16px rgba(31,54,112,0.45)',
+    },
+  }
+
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+    <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
       <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 } }}>
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 4, lg: 3.5 }}>
+          <Grid size={{ xs: 12, md: 4, lg: 3 }}>
             <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
-              <Avatar
-                src={avatarSrc}
-                sx={{
-                  width: { xs: 100, md: 140 },
-                  height: { xs: 100, md: 140 },
-                  border: '4px solid',
-                  borderColor: 'primary.light',
-                  boxShadow: 4,
-                  bgcolor: 'primary.light',
-                }}
-              >
-                {fullName?.charAt(0)?.toUpperCase()}
-              </Avatar>
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Avatar
+                  src={avatarSrc}
+                  sx={{
+                    width: { xs: 100, md: 140 },
+                    height: { xs: 100, md: 140 },
+                    border: '4px solid',
+                    borderColor: 'primary.light',
+                    boxShadow: 4,
+                    bgcolor: 'primary.light',
+                  }}
+                >
+                  {fullName?.charAt(0)?.toUpperCase()}
+                </Avatar>
+
+                <Stack spacing={1}>
+                  {socialLinks?.linkedin && (
+                    <IconButton
+                      component="a"
+                      href={socialLinks.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      size="small"
+                      aria-label="LinkedIn"
+                      sx={contactBtnSx}
+                    >
+                      <LinkedIn sx={{ fontSize: 17 }} />
+                    </IconButton>
+                  )}
+                  {socialLinks?.github && (
+                    <IconButton
+                      component="a"
+                      href={socialLinks.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      size="small"
+                      aria-label="GitHub"
+                      sx={contactBtnSx}
+                    >
+                      <GitHub sx={{ fontSize: 17 }} />
+                    </IconButton>
+                  )}
+                  {socialLinks?.website && (
+                    <IconButton
+                      component="a"
+                      href={socialLinks.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      size="small"
+                      aria-label="Website"
+                      sx={contactBtnSx}
+                    >
+                      <Language sx={{ fontSize: 17 }} />
+                    </IconButton>
+                  )}
+                </Stack>
+              </Stack>
 
               <Box>
                 <Typography variant="h5" fontWeight="bold">
@@ -105,10 +164,12 @@ export default function ProfileView() {
                   <Typography variant="caption" color="text.secondary">{t('profile.following')}</Typography>
                 </Box>
               </Stack>
+
+              <MyProposalsCard />
             </Stack>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 8, lg: 8.5 }}>
+          <Grid size={{ xs: 12, md: 8, lg: 9 }}>
             <Stack spacing={2.5}>
 
               <WalletCard />
@@ -180,23 +241,6 @@ export default function ProfileView() {
                           ))}
                         </Stack>
                       </Box>
-                    )}
-                  </Stack>
-                </Paper>
-              )}
-
-              {(socialLinks?.linkedin || socialLinks?.github || socialLinks?.website) && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-                  <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('profile.socialLinks')}</Typography>
-                  <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
-                    {socialLinks?.linkedin && (
-                      <Button href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<LinkedIn />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>LinkedIn</Button>
-                    )}
-                    {socialLinks?.github && (
-                      <Button href={socialLinks.github} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<GitHub />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>GitHub</Button>
-                    )}
-                    {socialLinks?.website && (
-                      <Button href={socialLinks.website} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<Language />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>{t('companies.website')}</Button>
                     )}
                   </Stack>
                 </Paper>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Box, Paper, Typography, Stack, CircularProgress, IconButton, alpha, Chip,
@@ -11,6 +11,7 @@ import {
   NotificationsOutlined, CheckCircleOutlineOutlined, WorkOutlineOutlined,
   StarBorderOutlined, InfoOutlined, DoneAllOutlined, CancelOutlined,
   GppMaybeOutlined, RocketLaunchOutlined, BadgeOutlined,
+  PaymentsOutlined, AccountBalanceWalletOutlined, RestoreOutlined, VerifiedOutlined,
 } from '@mui/icons-material'
 import { getNotifications, markNotificationRead } from '@/services/notificationService'
 import { setNotifications, markRead } from '@/redux/slices/notificationSlice'
@@ -20,70 +21,110 @@ function getNotificationDisplay(n, t) {
     proposal_accepted: {
       icon: <CheckCircleOutlineOutlined />,
       color: 'success',
-      title: t('notif.accepted', 'تم قبول عرضك'),
-      msg: t('notif.acceptedMsg', 'في مشروع {name}', { name: n.projectName }),
+      title: t('notif.accepted', 'طھظ… ظ‚ط¨ظˆظ„ ط¹ط±ط¶ظƒ'),
+      msg: t('notif.acceptedMsg', 'ظپظٹ ظ…ط´ط±ظˆط¹ {name}', { name: n.projectName }),
     },
     proposal_rejected: {
       icon: <CancelOutlined />,
       color: 'error',
-      title: t('notif.rejected', 'تم رفض عرضك'),
-      msg: t('notif.rejectedMsg', 'لمشروع {name}', { name: n.projectName }),
+      title: t('notif.rejected', 'طھظ… ط±ظپط¶ ط¹ط±ط¶ظƒ'),
+      msg: t('notif.rejectedMsg', 'ظ„ظ…ط´ط±ظˆط¹ {name}', { name: n.projectName }),
     },
     proposal_new: {
       icon: <WorkOutlineOutlined />,
       color: 'primary',
-      title: t('notif.newProposal', 'عرض جديد'),
-      msg: t('notif.newProposalMsg', 'في مشروع {name}', { name: n.projectName }),
+      title: t('notif.newProposal', 'ط¹ط±ط¶ ط¬ط¯ظٹط¯'),
+      msg: t('notif.newProposalMsg', 'ظپظٹ ظ…ط´ط±ظˆط¹ {name}', { name: n.projectName }),
     },
     proposal_received: {
       icon: <WorkOutlineOutlined />,
       color: 'primary',
-      title: t('notif.proposalReceived', 'عرض جديد على مشروعك'),
-      msg: t('notif.proposalReceivedMsg', 'هناك عرض جديد على مشروع {name}', { name: n.projectName }),
+      title: t('notif.proposalReceived', 'ط¹ط±ط¶ ط¬ط¯ظٹط¯ ط¹ظ„ظ‰ ظ…ط´ط±ظˆط¹ظƒ'),
+      msg: t('notif.proposalReceivedMsg', 'ظ‡ظ†ط§ظƒ ط¹ط±ط¶ ط¬ط¯ظٹط¯ ط¹ظ„ظ‰ ظ…ط´ط±ظˆط¹ {name}', { name: n.projectName }),
       actionUrl: n.projectId ? `/myProject/${n.projectId}` : null,
-      actionLabel: t('notif.viewProposals', 'عرض العروض'),
+      actionLabel: t('notif.viewProposals', 'ط¹ط±ط¶ ط§ظ„ط¹ط±ظˆط¶'),
     },
     project_completed: {
       icon: <CheckCircleOutlineOutlined />,
       color: 'success',
-      title: t('notif.completed', 'اكتمال المشروع'),
-      msg: t('notif.completedMsg', 'تم اكتمال مشروع {name}', { name: n.projectName }),
+      title: t('notif.completed', 'ط§ظƒطھظ…ط§ظ„ ط§ظ„ظ…ط´ط±ظˆط¹'),
+      msg: t('notif.completedMsg', 'طھظ… ط§ظƒطھظ…ط§ظ„ ظ…ط´ط±ظˆط¹ {name}', { name: n.projectName }),
     },
     rating_received: {
       icon: <StarBorderOutlined />,
       color: 'warning',
-      title: t('notif.rating', 'تقييم جديد'),
+      title: t('notif.rating', 'طھظ‚ظٹظٹظ… ط¬ط¯ظٹط¯'),
       msg: n.clientName
-        ? t('notif.ratingMsgWith', 'قام {client} بتقييمك في مشروع {name}', { client: n.clientName, name: n.projectName })
-        : t('notif.ratingMsg', 'قام عميل بتقييمك في مشروع {name}', { name: n.projectName }),
+        ? t('notif.ratingMsgWith', 'ظ‚ط§ظ… {client} ط¨طھظ‚ظٹظٹظ…ظƒ ظپظٹ ظ…ط´ط±ظˆط¹ {name}', { client: n.clientName, name: n.projectName })
+        : t('notif.ratingMsg', 'ظ‚ط§ظ… ط¹ظ…ظٹظ„ ط¨طھظ‚ظٹظٹظ…ظƒ ظپظٹ ظ…ط´ط±ظˆط¹ {name}', { name: n.projectName }),
     },
     ai_detected: {
       icon: <GppMaybeOutlined />,
       color: 'warning',
-      title: t('notif.aiDetected', 'تنبيه: كشف محتوى ذكاء اصطناعي'),
-      msg: t('notif.aiDetectedMsg', 'تم رصد أن منشورك يحتوي على محتوى مولّد بالذكاء الاصطناعي بنسبة {probability}% مما قد يؤثر سلباً على نقاط R-Score الخاصة بك', { probability: n.aiProbability ?? '—' }),
+      title: t('notif.aiDetected', 'طھظ†ط¨ظٹظ‡: ظƒط´ظپ ظ…ط­طھظˆظ‰ ط°ظƒط§ط، ط§طµط·ظ†ط§ط¹ظٹ'),
+      msg: t('notif.aiDetectedMsg', 'طھظ… ط±طµط¯ ط£ظ† ظ…ظ†ط´ظˆط±ظƒ ظٹط­طھظˆظٹ ط¹ظ„ظ‰ ظ…ط­طھظˆظ‰ ظ…ظˆظ„ظ‘ط¯ ط¨ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ ط¨ظ†ط³ط¨ط© {probability}% ظ…ظ…ط§ ظ‚ط¯ ظٹط¤ط«ط± ط³ظ„ط¨ط§ظ‹ ط¹ظ„ظ‰ ظ†ظ‚ط§ط· R-Score ط§ظ„ط®ط§طµط© ط¨ظƒ', { probability: n.aiProbability ?? 'â€”' }),
     },
     company_setup: {
       icon: <RocketLaunchOutlined />,
       color: 'primary',
-      title: t('notif.companySetup', 'أكمل إعداد صفحة شركتك'),
-      msg: t('notif.companySetupMsg', 'أكمل إعداد صفحة شركتك لنشر وظائفك ومشاريعك بسهولة'),
+      title: t('notif.companySetup', 'ط£ظƒظ…ظ„ ط¥ط¹ط¯ط§ط¯ طµظپط­ط© ط´ط±ظƒطھظƒ'),
+      msg: t('notif.companySetupMsg', 'ط£ظƒظ…ظ„ ط¥ط¹ط¯ط§ط¯ طµظپط­ط© ط´ط±ظƒطھظƒ ظ„ظ†ط´ط± ظˆط¸ط§ط¦ظپظƒ ظˆظ…ط´ط§ط±ظٹط¹ظƒ ط¨ط³ظ‡ظˆظ„ط©'),
       actionUrl: '/employer/setup',
-      actionLabel: t('notif.companySetupAction', 'إعداد الآن'),
+      actionLabel: t('notif.companySetupAction', 'ط¥ط¹ط¯ط§ط¯ ط§ظ„ط¢ظ†'),
     },
     job_application_status: {
       icon: <BadgeOutlined />,
       color: n.applicationStatus === 'Accepted' ? 'success' : n.applicationStatus === 'Rejected' ? 'error' : 'info',
-      title: n.message || t('notif.jobApplicationStatus', 'تحديث حالة طلب التوظيف'),
+      title: n.message || t('notif.jobApplicationStatus', 'طھط­ط¯ظٹط« ط­ط§ظ„ط© ط·ظ„ط¨ ط§ظ„طھظˆط¸ظٹظپ'),
       msg: n.message || '',
       actionUrl: n.jobId ? `/jobs/${n.jobId}` : null,
-      actionLabel: t('notif.jobApplicationView', 'عرض الوظيفة'),
+      actionLabel: t('notif.jobApplicationView', 'ط¹ط±ط¶ ط§ظ„ظˆط¸ظٹظپط©'),
+    },
+    payment_deposited: {
+      icon: <PaymentsOutlined />,
+      color: 'success',
+      title: t('notif.paymentDeposited', 'ط¯ظپط¹ط© ظˆط§ط±ط¯ط©'),
+      msg: t('notif.paymentDepositedMsg', 'طھظ… ط¥ظٹط¯ط§ط¹ {{amount}} {{currency}} ط¨ط§ط³ظ…ظƒ ظˆظ‡ظˆ ظ…ط­ط¬ظˆط² ظ„ط¯ظ‰ ط§ظ„ظ…ظ†طµط©.', { amount: n.amount ?? 'â€”', currency: n.currency || '', name: n.projectName }),
+      actionUrl: n.projectId ? `/payments?projectId=${n.projectId}` : null,
+      actionLabel: t('notif.viewPayments', 'ط¹ط±ط¶ ط§ظ„ط¯ظپط¹ط§طھ'),
+    },
+    payment_released: {
+      icon: <AccountBalanceWalletOutlined />,
+      color: 'success',
+      title: t('notif.paymentReleased', 'طھظ… طھط­ط±ظٹط± ط§ظ„ط¯ظپط¹ط©'),
+      msg: t('notif.paymentReleasedMsg', 'طھظ… طھط­ط±ظٹط± {{amount}} {{currency}} ط¥ظ„ظ‰ ظ…ط­ظپط¸طھظƒ.', { amount: n.amount ?? 'â€”', currency: n.currency || '', name: n.projectName }),
+      actionUrl: n.projectId ? `/payments?projectId=${n.projectId}` : null,
+      actionLabel: t('notif.viewPayments', 'ط¹ط±ط¶ ط§ظ„ط¯ظپط¹ط§طھ'),
+    },
+    payment_refunded: {
+      icon: <RestoreOutlined />,
+      color: 'warning',
+      title: t('notif.paymentRefunded', 'ط¯ظپط¹ط© ظ…ط³طھط±ط¬ط¹ط©'),
+      msg: t('notif.paymentRefundedMsg', 'طھظ… ط§ط³طھط±ط¬ط§ط¹ ط¯ظپط¹ط© ط¨ظ‚ظٹظ…ط© {{amount}} {{currency}}.', { amount: n.amount ?? 'â€”', currency: n.currency || '', name: n.projectName }),
+      actionUrl: n.projectId ? `/payments?projectId=${n.projectId}` : null,
+      actionLabel: t('notif.viewPayments', 'ط¹ط±ط¶ ط§ظ„ط¯ظپط¹ط§طھ'),
+    },
+    withdrawal_approved: {
+      icon: <VerifiedOutlined />,
+      color: 'success',
+      title: t('notif.withdrawalApproved', 'طھظ…طھ ط§ظ„ظ…ظˆط§ظپظ‚ط© ط¹ظ„ظ‰ ط§ظ„ط³ط­ط¨'),
+      msg: t('notif.withdrawalApprovedMsg', 'طھظ…طھ ط§ظ„ظ…ظˆط§ظپظ‚ط© ط¹ظ„ظ‰ ط·ظ„ط¨ ط³ط­ط¨ {{amount}} {{currency}}.', { amount: n.amount ?? 'â€”', currency: n.currency || '' }),
+      actionUrl: '/profile',
+      actionLabel: t('profile.wallet', 'ط§ظ„ظ…ط­ظپط¸ط©'),
+    },
+    withdrawal_rejected: {
+      icon: <CancelOutlined />,
+      color: 'error',
+      title: t('notif.withdrawalRejected', 'طھظ… ط±ظپط¶ ط§ظ„ط³ط­ط¨'),
+      msg: t('notif.withdrawalRejectedMsg', 'طھظ… ط±ظپط¶ ط·ظ„ط¨ ط³ط­ط¨ {{amount}} {{currency}}.', { amount: n.amount ?? 'â€”', currency: n.currency || '' }),
+      actionUrl: '/profile',
+      actionLabel: t('profile.wallet', 'ط§ظ„ظ…ط­ظپط¸ط©'),
     },
   }
   return map[n.type] || {
     icon: <InfoOutlined />,
     color: 'info',
-    title: t('notif.general', 'إشعار'),
+    title: t('notif.general', 'ط¥ط´ط¹ط§ط±'),
     msg: '',
   }
 }

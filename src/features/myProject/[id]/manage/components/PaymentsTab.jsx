@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Box, Paper, Typography, Stack, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions,
   Chip, useMediaQuery, alpha, Avatar, CircularProgress,
@@ -7,21 +7,22 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   AddOutlined, PaymentsOutlined, DeleteOutlined, CheckCircleOutlineOutlined,
   AttachMoneyOutlined, CalendarMonthOutlined, ReceiptLongOutlined, SavingsOutlined,
-  LockOutlined, Apple, InfoOutlined, PersonOutlined,
+  LockOutlined, Apple, InfoOutlined, PersonOutlined, VerifiedOutlined, HourglassTopOutlined,
 } from '@mui/icons-material'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import Button from '@/ui/Button'
 import { TextField } from '@/ui'
-import { depositPayment, getProposals, updatePayment, deletePayment } from '@/services/projectService'
+import { depositPayment, getProposals, getMyPayments, releasePayment } from '@/services/projectService'
 import { SectionHeader, StatCard } from './ManageShared'
 import { COLORS, formatDate, formatCurrency } from './manageConstants'
 import { scaleIn, staggerContainer } from '@/utils/animations'
 
-const PAYMENT_STATUS = {
-  Pending: { color: COLORS.warning },
-  Paid: { color: COLORS.success },
-  Overdue: { color: COLORS.error },
+const ESCROW_STATUS = {
+  held: { color: COLORS.warning, labelKey: 'manage.escrowStatus.held', icon: <HourglassTopOutlined /> },
+  released: { color: COLORS.success, labelKey: 'manage.escrowStatus.released', icon: <VerifiedOutlined /> },
+  refunded: { color: COLORS.error, labelKey: 'manage.escrowStatus.refunded', icon: <ReceiptLongOutlined /> },
+  cancelled: { color: '#5C5580', labelKey: 'manage.escrowStatus.cancelled', icon: <DeleteOutlined /> },
 }
 
 const METHODS = [
@@ -42,6 +43,24 @@ const formatExpiry = (v) => {
   const d = v.replace(/\D/g, '').slice(0, 4)
   return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d
 }
+
+const sameProject = (p, id) => {
+  const proj = p.project || {}
+  const pid = p.projectId || proj._id || proj.id || proj
+  return pid === id || String(pid) === String(id)
+}
+
+const paymentRef = (p) => p.reference || p.referenceNo || p.transactionRef || `#${(p._id || '').slice(-8)}`
+
+const fullName = (user) => {
+  if (!user) return ''
+  if (typeof user === 'string') return user
+  const prof = user.profile || {}
+  return [prof.firstName, prof.lastName].filter(Boolean).join(' ') || user.name || user.email || ''
+}
+
+const payeeName = (p) => fullName(p.payee)
+const payerName = (p) => fullName(p.payer)
 
 function MethodCard({ m, selected, onSelect }) {
   const { t } = useTranslation()
@@ -109,17 +128,35 @@ export default function PaymentsTab({ id, overview, onChanged }) {
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  const payments = overview.payments || []
-  const summary = overview.paymentsSummary || { total: 0, paid: 0, pending: 0 }
   const currency = overview.budget?.currency || 'SAR'
 
-  const [dialog, setDialog] = useState(null) // 'add' | payment (for mark paid)
-  const [form, setForm] = useState({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', transactionRef: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
+  const [open, setOpen] = useState(false)
+  const [form, setForm] = useState({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
   const [saving, setSaving] = useState(false)
+  const [releasingId, setReleasingId] = useState(null)
+  const [releaseTarget, setReleaseTarget] = useState(null)
   const [error, setError] = useState('')
   const [accepted, setAccepted] = useState(null)
   const [loadingPayee, setLoadingPayee] = useState(true)
   const [payeeId, setPayeeId] = useState(null)
+
+  const [invoices, setInvoices] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchInvoices = useCallback(() => {
+    setLoading(true)
+    getMyPayments({ direction: 'sent' })
+      .then((res) => {
+        const list = res?.data || []
+        setInvoices(Array.isArray(list) ? list.filter((p) => sameProject(p, id)) : [])
+      })
+      .catch(() => setInvoices([]))
+      .finally(() => setLoading(false))
+  }, [id])
+
+  useEffect(() => {
+    fetchInvoices()
+  }, [fetchInvoices])
 
   useEffect(() => {
     let active = true
@@ -156,15 +193,13 @@ export default function PaymentsTab({ id, overview, onChanged }) {
 
   const isCard = CARD_METHODS.includes(form.method)
 
-  const openAdd = () => {
-    setDialog('add')
-    setForm({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', transactionRef: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
-    setError('')
-  }
+  const total = invoices.reduce((s, p) => s + (Number(p.amount) || 0), 0)
+  const heldTotal = invoices.filter((p) => p.status === 'held').reduce((s, p) => s + (Number(p.amount) || 0), 0)
+  const releasedTotal = invoices.filter((p) => p.status === 'released').reduce((s, p) => s + (Number(p.amount) || 0), 0)
 
-  const openMarkPaid = (p) => {
-    setDialog(p)
-    setForm({ title: p.title || '', amount: p.amount || '', dueDate: p.dueDate || '', method: p.method || 'Visa', note: p.note || '', transactionRef: p.transactionRef || '' })
+  const openAdd = () => {
+    setOpen(true)
+    setForm({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
     setError('')
   }
 
@@ -205,8 +240,9 @@ export default function PaymentsTab({ id, overview, onChanged }) {
       }
       const res = await depositPayment(payload)
       if (res?.success) {
-        setDialog(null)
+        setOpen(false)
         onChanged()
+        fetchInvoices()
       } else {
         setError(res?.message || t('common.error'))
       }
@@ -217,30 +253,23 @@ export default function PaymentsTab({ id, overview, onChanged }) {
     }
   }
 
-  const handleMarkPaid = async (p) => {
-    setSaving(true)
+  const handleRelease = async (p) => {
+    setReleasingId(p._id)
     setError('')
     try {
-      const res = await updatePayment(id, p._id, { status: 'Paid', transactionRef: form.transactionRef.trim() || undefined })
+      const res = await releasePayment(p._id)
       if (res?.success) {
-        setDialog(null)
+        setReleaseTarget(null)
         onChanged()
+        fetchInvoices()
       } else {
         setError(res?.message || t('common.error'))
       }
     } catch (err) {
       setError(err?.response?.data?.message || err.message || t('common.error'))
     } finally {
-      setSaving(false)
+      setReleasingId(null)
     }
-  }
-
-  const handleDelete = async (p) => {
-    if (!window.confirm(t('manage.deletePaymentConfirm', 'Delete this payment?'))) return
-    try {
-      const res = await deletePayment(id, p._id)
-      if (res?.success) onChanged()
-    } catch { /* ignore */ }
   }
 
   return (
@@ -253,24 +282,35 @@ export default function PaymentsTab({ id, overview, onChanged }) {
       </Stack>
 
       <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1.5 }}>
-        <StatCard icon={<SavingsOutlined sx={{ fontSize: 20 }} />} label={t('manage.totalAmount', 'Total')} value={summary.total ?? 0} color={COLORS.navy} index={0} />
-        <StatCard icon={<CheckCircleOutlineOutlined sx={{ fontSize: 20 }} />} label={t('manage.paid', 'Paid')} value={summary.paid ?? 0} color={COLORS.success} index={1} />
-        <StatCard icon={<CalendarMonthOutlined sx={{ fontSize: 20 }} />} label={t('manage.pendingPay', 'Pending')} value={summary.pending ?? 0} color={COLORS.warning} index={2} />
+        <StatCard icon={<SavingsOutlined sx={{ fontSize: 20 }} />} label={t('manage.totalAmount', 'Total')} value={total} color={COLORS.navy} index={0} />
+        <StatCard icon={<HourglassTopOutlined sx={{ fontSize: 20 }} />} label={t('manage.held', 'Held')} value={heldTotal} color={COLORS.warning} index={1} />
+        <StatCard icon={<VerifiedOutlined sx={{ fontSize: 20 }} />} label={t('manage.released', 'Released')} value={releasedTotal} color={COLORS.success} index={2} />
       </Stack>
 
-      {payments.length === 0 ? (
+      {error && (
+        <Typography variant="body2" color="error.main" sx={{ p: 1, borderRadius: 1.5, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600 }}>
+          {error}
+        </Typography>
+      )}
+
+      {loading ? (
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', justifyContent: 'center', py: 6 }}>
+          <CircularProgress size={22} />
+          <Typography variant="caption" color="text.secondary">...</Typography>
+        </Stack>
+      ) : invoices.length === 0 ? (
         <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3, borderStyle: 'dashed' }}>
           <ReceiptLongOutlined sx={{ fontSize: 44, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
-          <Typography color="text.secondary">{t('manage.noPayments', 'No payments recorded yet')}</Typography>
+          <Typography color="text.secondary">{t('manage.noInvoices', 'No payments yet')}</Typography>
         </Paper>
       ) : (
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <Stack spacing={1.5}>
             <AnimatePresence>
-              {payments.map((p, i) => {
-                const cfg = PAYMENT_STATUS[p.status] || PAYMENT_STATUS.Pending
-                const isPaid = p.status === 'Paid'
+              {invoices.map((p, i) => {
+                const cfg = ESCROW_STATUS[p.status] || ESCROW_STATUS.held
                 const mm = methodMeta(p.method)
+                const payee = payeeName(p)
                 return (
                   <motion.div
                     key={p._id}
@@ -283,7 +323,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                   >
                     <Paper variant="outlined" sx={{
                       p: 2, borderRadius: 2.5,
-                      borderColor: isPaid ? alpha(COLORS.success, 0.35) : p.status === 'Overdue' ? alpha(COLORS.error, 0.35) : 'divider',
+                      borderColor: p.status === 'held' ? alpha(cfg.color, 0.4) : p.status === 'released' ? alpha(COLORS.success, 0.35) : 'divider',
                       transition: 'all 0.2s ease',
                       '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },
                     }}>
@@ -293,12 +333,12 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           bgcolor: alpha(cfg.color, 0.1), color: cfg.color,
                         }}>
-                          {isPaid ? <CheckCircleOutlineOutlined /> : <ReceiptLongOutlined />}
+                          {cfg.icon}
                         </Box>
                         <Box sx={{ flex: 1, minWidth: 0 }}>
                           <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                            <Typography variant="body1" fontWeight={700}>{p.title || t('manage.untitledPayment', 'Payment')}</Typography>
-                            <Chip label={t(`manage.payStatus.${p.status}`, p.status)} size="small"
+                            <Typography variant="body1" fontWeight={700}>{p.note || t('manage.untitledPayment', 'Payment')}</Typography>
+                            <Chip label={t(cfg.labelKey, p.status)} size="small"
                               sx={{ height: 20, fontSize: '0.66rem', fontWeight: 700, color: cfg.color, bgcolor: alpha(cfg.color, 0.1) }} />
                           </Stack>
                           <Stack direction="row" spacing={2} sx={{ mt: 0.5, flexWrap: 'wrap', gap: 1 }}>
@@ -308,7 +348,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                             </Stack>
                             <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                               <CalendarMonthOutlined sx={{ fontSize: 14, color: '#5C5580' }} />
-                              <Typography variant="caption" color="text.secondary">{formatDate(p.dueDate, lang)}</Typography>
+                              <Typography variant="caption" color="text.secondary">{formatDate(p.createdAt, lang)}</Typography>
                             </Stack>
                             <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                               <Box sx={{
@@ -320,28 +360,31 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                               </Box>
                               <Typography variant="caption" color="text.secondary">{t(`manage.method.${p.method}`, p.method)}</Typography>
                             </Stack>
+                            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+                              <ReceiptLongOutlined sx={{ fontSize: 14, color: '#5C5580' }} />
+                              <Typography variant="caption" color="text.secondary" dir="ltr">{paymentRef(p)}</Typography>
+                            </Stack>
                           </Stack>
-                          {p.paidDate && (
-                            <Typography variant="caption" color="success.main" sx={{ mt: 0.5, display: 'block' }}>
-                              {t('manage.paidOn', 'Paid on')}: {formatDate(p.paidDate, lang)}
-                              {p.transactionRef ? ` • ${p.transactionRef}` : ''}
-                            </Typography>
+                          {payee && (
+                            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', mt: 0.5 }}>
+                              <PersonOutlined sx={{ fontSize: 14, color: '#5C5580' }} />
+                              <Typography variant="caption" color="text.secondary">
+                                {t('manage.payeeLabel', 'Payee')}: {payee}
+                              </Typography>
+                            </Stack>
                           )}
                           {p.note && <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>{p.note}</Typography>}
                         </Box>
                         <Stack direction="row" spacing={0.5}>
-                          {!isPaid && (
-                            <Tooltip title={t('manage.markPaid', 'Mark as Paid')}>
-                              <IconButton size="small" color="success" onClick={() => openMarkPaid(p)}>
-                                <CheckCircleOutlineOutlined sx={{ fontSize: 19 }} />
-                              </IconButton>
+                          {p.status === 'held' && (
+                            <Tooltip title={t('manage.releasePay', 'Release to Wallet')}>
+                              <span>
+                                <IconButton size="small" color="success" onClick={() => setReleaseTarget(p)} disabled={releasingId === p._id}>
+                                  {releasingId === p._id ? <CircularProgress size={16} /> : <VerifiedOutlined sx={{ fontSize: 19 }} />}
+                                </IconButton>
+                              </span>
                             </Tooltip>
                           )}
-                          <Tooltip title={t('manage.delete', 'Delete')}>
-                            <IconButton size="small" color="error" onClick={() => handleDelete(p)}>
-                              <DeleteOutlined sx={{ fontSize: 18 }} />
-                            </IconButton>
-                          </Tooltip>
                         </Stack>
                       </Stack>
                     </Paper>
@@ -354,7 +397,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
       )}
 
       {/* Integrated payment dialog */}
-      <Dialog open={dialog === 'add'} onClose={() => setDialog(null)} fullWidth fullScreen={isMobile}
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth fullScreen={isMobile}
         sx={{ '& .MuiDialog-paper': { borderRadius: isMobile ? 0 : 2.5, maxWidth: 580 } }}>
         <DialogTitle sx={{ pb: 1 }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
@@ -477,7 +520,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
             <Typography variant="caption">{t('manage.secureNote', 'Payments are protected with SSL encryption.')}</Typography>
           </Stack>
           <Stack direction="row" spacing={1}>
-            <Button variant="outlined" onClick={() => setDialog(null)}>{t('projects.cancel', 'Cancel')}</Button>
+            <Button variant="outlined" onClick={() => setOpen(false)}>{t('projects.cancel', 'Cancel')}</Button>
             <Button variant="contained" color="success" onClick={handleAdd} disabled={saving || !selectedPayee} startIcon={<CheckCircleOutlineOutlined />}>
               {t('manage.payNow', 'Pay')} {formatCurrency(Number(form.amount) || 0, currency)}
             </Button>
@@ -485,27 +528,42 @@ export default function PaymentsTab({ id, overview, onChanged }) {
         </DialogActions>
       </Dialog>
 
-      {/* Mark paid dialog */}
-      <Dialog open={typeof dialog === 'object' && dialog !== null} onClose={() => setDialog(null)} fullWidth fullScreen={isMobile}
-        sx={{ '& .MuiDialog-paper': { borderRadius: isMobile ? 0 : 2, maxWidth: 480 } }}>
-        <DialogTitle>{t('manage.markPaid', 'Mark as Paid')}</DialogTitle>
+      {/* Release confirmation dialog */}
+      <Dialog open={!!releaseTarget} onClose={() => { if (!saving && !releasingId) setReleaseTarget(null) }} fullWidth maxWidth="xs">
+        <DialogTitle sx={{ pb: 1 }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <VerifiedOutlined sx={{ color: COLORS.success }} />
+            <Typography variant="h6" fontWeight={800}>{t('manage.releaseTitle', 'Release Payment')}</Typography>
+          </Stack>
+        </DialogTitle>
         <DialogContent dividers>
-          {typeof dialog === 'object' && dialog !== null && (
+          {releaseTarget && (
             <Stack spacing={2}>
-              <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: alpha(COLORS.success, 0.05) }}>
-                <Typography variant="body2" fontWeight={700}>{dialog.title || t('manage.untitledPayment', 'Payment')}</Typography>
-                <Typography variant="h6" fontWeight={800} color="success.main">{formatCurrency(dialog.amount, currency)}</Typography>
+              <Paper variant="outlined" sx={{
+                p: 2, borderRadius: 2, bgcolor: alpha(COLORS.success, 0.05), borderColor: alpha(COLORS.success, 0.25),
+                textAlign: 'center',
+              }}>
+                <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>{releaseTarget.note || t('manage.untitledPayment', 'Payment')}</Typography>
+                <Typography variant="h6" fontWeight={800} color="success.main">{formatCurrency(releaseTarget.amount, currency)}</Typography>
               </Paper>
-              <TextField label={t('manage.transactionRef', 'Transaction Reference')} value={form.transactionRef} onChange={set('transactionRef')}
-                placeholder={t('manage.transactionRefPlaceholder', 'e.g. TXN-123456')} />
+              <Box sx={{
+                p: 1.75, borderRadius: 2, border: '1px dashed',
+                borderColor: alpha(COLORS.warning, 0.5), bgcolor: alpha(COLORS.warning, 0.05),
+                display: 'flex', alignItems: 'flex-start', gap: 1,
+              }}>
+                <InfoOutlined sx={{ fontSize: 18, color: COLORS.warning, mt: 0.2 }} />
+                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                  {t('manage.releaseConfirm', 'Release this payment to the recipient\'s wallet? The platform fee will be deducted.')}
+                </Typography>
+              </Box>
             </Stack>
           )}
           {error && <Typography color="error" variant="body2" sx={{ textAlign: 'center', mt: 1.5 }}>{error}</Typography>}
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => setDialog(null)}>{t('projects.cancel', 'Cancel')}</Button>
-          <Button variant="contained" color="success" onClick={() => handleMarkPaid(dialog)} disabled={saving}>
-            {t('manage.confirmPaid', 'Confirm Payment')}
+          <Button variant="outlined" onClick={() => setReleaseTarget(null)} disabled={saving || releasingId}>{t('projects.cancel', 'Cancel')}</Button>
+          <Button variant="contained" color="success" onClick={() => handleRelease(releaseTarget)} disabled={saving || !releaseTarget} startIcon={<VerifiedOutlined />}>
+            {t('manage.confirmRelease', 'Release')}
           </Button>
         </DialogActions>
       </Dialog>
