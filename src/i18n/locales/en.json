@@ -584,6 +584,7 @@
     "total": "Total payments",
     "inEscrow": "In escrow",
     "released": "Released",
+    "filters": "Filters",
     "searchPlaceholder": "Search by note, project, reference...",
     "clearFilters": "Clear filters",
     "direction": "Direction",

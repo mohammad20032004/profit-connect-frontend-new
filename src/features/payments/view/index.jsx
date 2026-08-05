@@ -225,7 +225,7 @@ export default function PaymentsView() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: 6 }}>
-      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1000, mx: 'auto' }}>
+      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1140, mx: 'auto' }}>
         <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, mb: 2.5, border: '1px solid', borderColor: 'divider', boxShadow: '0 6px 20px rgba(31,10,59,0.04)' }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
             <Box sx={{
@@ -264,35 +264,44 @@ export default function PaymentsView() {
           {statItem(t('payments.released', 'Released'), totals.released, COLORS.success, <VerifiedOutlined sx={{ fontSize: 18 }} />)}
         </Stack>
 
-        <Paper variant="outlined" sx={{ p: 2, borderRadius: 2.5, mb: 2.5 }}>
-          <Stack spacing={1.5}>
-            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} sx={{ alignItems: 'flex-start' }}>
+          {/* Sidebar filters */}
+          <Paper variant="outlined" sx={{
+            p: 2, borderRadius: 2.5,
+            width: { xs: '100%', md: 260 }, flexShrink: 0,
+            position: { md: 'sticky' }, top: { md: 24 }, zIndex: 2,
+          }}>
+            <Stack spacing={2}>
+              <Typography variant="subtitle2" fontWeight={800} color="text.secondary">
+                {t('payments.filters', 'Filters')}
+              </Typography>
               <TextField
                 label={t('payments.searchPlaceholder', 'Search by note, project, reference...')}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                sx={{ flex: 1, minWidth: 240 }}
+                size="small"
                 slotProps={{
                   input: { startAdornment: <SearchOutlined sx={{ fontSize: 18, color: 'text.secondary', mr: 1 }} /> },
                 }}
               />
-              <Button variant="outlined" size="small" startIcon={<ClearAllOutlined />} onClick={clearAll} sx={{ height: 40 }}>
-                {t('payments.clearFilters', 'Clear filters')}
-              </Button>
-            </Stack>
-            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
-              <ToggleButtonGroup
-                exclusive
-                size="small"
-                value={dir}
-                onChange={(_, v) => v && setDir(v)}
-                aria-label={t('payments.direction', 'Direction')}
-              >
-                <ToggleButton value="all">{t('payments.all', 'All')}</ToggleButton>
-                <ToggleButton value="sent">{t('payments.sent', 'Sent')}</ToggleButton>
-                <ToggleButton value="received">{t('payments.received', 'Received')}</ToggleButton>
-              </ToggleButtonGroup>
-              <FormControl size="small" sx={{ minWidth: 170 }}>
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.75, fontWeight: 700 }}>
+                  {t('payments.direction', 'Direction')}
+                </Typography>
+                <ToggleButtonGroup
+                  exclusive
+                  size="small"
+                  value={dir}
+                  onChange={(_, v) => v && setDir(v)}
+                  aria-label={t('payments.direction', 'Direction')}
+                  sx={{ width: '100%' }}
+                >
+                  <ToggleButton value="all" sx={{ flex: 1 }}>{t('payments.all', 'All')}</ToggleButton>
+                  <ToggleButton value="sent" sx={{ flex: 1 }}>{t('payments.sent', 'Sent')}</ToggleButton>
+                  <ToggleButton value="received" sx={{ flex: 1 }}>{t('payments.received', 'Received')}</ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
+              <FormControl size="small" fullWidth>
                 <InputLabel>{t('payments.status', 'Status')}</InputLabel>
                 <Select value={status} onChange={(e) => setStatus(e.target.value)} label={t('payments.status', 'Status')}>
                   <MenuItem value="all">{t('payments.statusAll', 'All statuses')}</MenuItem>
@@ -302,9 +311,13 @@ export default function PaymentsView() {
                   <MenuItem value="cancelled">{t('manage.escrowStatus.cancelled', 'Cancelled')}</MenuItem>
                 </Select>
               </FormControl>
+              <Button variant="outlined" size="small" startIcon={<ClearAllOutlined />} onClick={clearAll} fullWidth sx={{ height: 40 }}>
+                {t('payments.clearFilters', 'Clear filters')}
+              </Button>
             </Stack>
-          </Stack>
-        </Paper>
+          </Paper>
+
+          <Box sx={{ flex: 1, minWidth: 0 }}>
 
         {success && (
           <Typography variant="body2" color="success.main" sx={{ mt: 1.25, p: 1.5, borderRadius: 1.5, bgcolor: alpha('#16A34A', 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
@@ -437,6 +450,8 @@ export default function PaymentsView() {
           <InfoOutlined sx={{ fontSize: 14 }} />
           {t('payments.hint', 'Payments you receive are held in escrow until the payer releases them. A platform fee may be deducted from the released amount.')}
         </Typography>
+          </Box>
+        </Stack>
       </Box>
 
       {/* Release confirmation dialog */}
