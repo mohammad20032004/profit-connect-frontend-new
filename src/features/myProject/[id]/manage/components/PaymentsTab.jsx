@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import {
   Box, Paper, Typography, Stack, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions,
   Chip, useMediaQuery, alpha, Avatar, CircularProgress,
@@ -71,7 +71,7 @@ function MethodCard({ m, selected, onSelect }) {
       aria-checked={selected}
       sx={{
         flex: '1 1 0', minWidth: 96, cursor: 'pointer',
-        borderRadius: 2.5, p: 1.5, textAlign: 'center',
+        borderRadius: 1.5, p: 1.5, textAlign: 'center',
         border: '2px solid', userSelect: 'none',
         borderColor: selected ? m.color : 'divider',
         bgcolor: selected ? m.bg : 'background.paper',
@@ -93,7 +93,7 @@ function CardPreview({ form, currency }) {
   const m = methodMeta(form.method)
   return (
     <Box sx={{
-      borderRadius: 2.5, p: 2.5, color: '#fff',
+      borderRadius: 1.5, p: 2.5, color: '#fff',
       background: `linear-gradient(135deg, ${m.color} 0%, ${alpha(m.color, 0.72)} 100%)`,
       boxShadow: `0 10px 24px ${alpha(m.color, 0.35)}`,
       position: 'relative', overflow: 'hidden',
@@ -106,7 +106,7 @@ function CardPreview({ form, currency }) {
         <PaymentsOutlined sx={{ fontSize: 22, opacity: 0.9 }} />
       </Stack>
       <Typography variant="h6" fontWeight={800} letterSpacing={1.5} dir="ltr" sx={{ textAlign: 'left' }}>
-        {form.cardNumber || '•••• •••• •••• ••••'}
+        {form.cardNumber || 'â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢'}
       </Typography>
       <Stack direction="row" sx={{ mt: 2, alignItems: 'center', justifyContent: 'space-between' }}>
         <Box>
@@ -299,7 +299,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
           <Typography variant="caption" color="text.secondary">...</Typography>
         </Stack>
       ) : invoices.length === 0 ? (
-        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3, borderStyle: 'dashed' }}>
+        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1.5, borderStyle: 'dashed' }}>
           <ReceiptLongOutlined sx={{ fontSize: 44, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
           <Typography color="text.secondary">{t('manage.noInvoices', 'No payments yet')}</Typography>
         </Paper>
@@ -322,14 +322,14 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                     layout
                   >
                     <Paper variant="outlined" sx={{
-                      p: 2, borderRadius: 2.5,
+                      p: 2, borderRadius: 1.5,
                       borderColor: p.status === 'held' ? alpha(cfg.color, 0.4) : p.status === 'released' ? alpha(COLORS.success, 0.35) : 'divider',
                       transition: 'all 0.2s ease',
                       '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },
                     }}>
                       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
                         <Box sx={{
-                          width: 40, height: 40, borderRadius: 2, flexShrink: 0,
+                          width: 40, height: 40, borderRadius: 1.5, flexShrink: 0,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           bgcolor: alpha(cfg.color, 0.1), color: cfg.color,
                         }}>
@@ -408,12 +408,12 @@ export default function PaymentsTab({ id, overview, onChanged }) {
         <DialogContent dividers>
           <Stack spacing={2.25}>
             <Box sx={{
-              p: 1.75, borderRadius: 2.5, border: '1px dashed',
+              p: 1.75, borderRadius: 1.5, border: '1px dashed',
               borderColor: alpha(COLORS.warning, 0.5), bgcolor: alpha(COLORS.warning, 0.05),
               display: 'flex', alignItems: 'center', gap: 1,
             }}>
               <LockOutlined sx={{ fontSize: 18, color: COLORS.warning }} />
-              <Typography variant="caption" color="text.secondary">{t('manage.demoNote', 'Demo environment — no real payment is processed.')}</Typography>
+              <Typography variant="caption" color="text.secondary">{t('manage.demoNote', 'Demo environment â€” no real payment is processed.')}</Typography>
             </Box>
 
             {loadingPayee ? (
@@ -423,7 +423,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
               </Stack>
             ) : teamMembers.length === 0 ? (
               <Paper variant="outlined" sx={{
-                p: 1.5, borderRadius: 2.5, display: 'flex', alignItems: 'center', gap: 1.5,
+                p: 1.5, borderRadius: 1.5, display: 'flex', alignItems: 'center', gap: 1.5,
                 bgcolor: alpha(COLORS.warning, 0.06), borderColor: alpha(COLORS.warning, 0.4),
               }}>
                 <InfoOutlined sx={{ fontSize: 20, color: COLORS.warning }} />
@@ -446,7 +446,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                     return (
                       <Box key={m.id} onClick={() => setPayeeId(m.id)}
                         sx={{
-                          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 1.5, p: 1.25, borderRadius: 2,
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 1.5, p: 1.25, borderRadius: 1.5,
                           border: '2px solid', userSelect: 'none',
                           borderColor: selected ? COLORS.success : 'divider',
                           bgcolor: selected ? alpha(COLORS.success, 0.06) : 'background.paper',
@@ -491,12 +491,12 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                   inputProps={{ inputMode: 'numeric' }} dir="ltr" />
                 <Stack direction="row" spacing={1.5}>
                   <TextField label={t('manage.cardExpiry', 'Expiry')} value={form.cardExpiry} onChange={setCardExpiry} placeholder="MM/YY" dir="ltr" sx={{ flex: 1 }} />
-                  <TextField label={t('manage.cardCvv', 'CVV')} value={form.cardCvv} onChange={setCardCvv} placeholder="•••" type="password" dir="ltr" sx={{ flex: 1 }} />
+                  <TextField label={t('manage.cardCvv', 'CVV')} value={form.cardCvv} onChange={setCardCvv} placeholder="â€¢â€¢â€¢" type="password" dir="ltr" sx={{ flex: 1 }} />
                 </Stack>
               </>
             ) : (
               <Paper variant="outlined" sx={{
-                p: 1.75, borderRadius: 2.5,
+                p: 1.75, borderRadius: 1.5,
                 bgcolor: form.method === 'PayPal' ? alpha('#003087', 0.05) : alpha('#111111', 0.04),
                 borderColor: form.method === 'PayPal' ? alpha('#003087', 0.25) : alpha('#111111', 0.15),
                 display: 'flex', alignItems: 'center', gap: 1.5,
@@ -540,14 +540,14 @@ export default function PaymentsTab({ id, overview, onChanged }) {
           {releaseTarget && (
             <Stack spacing={2}>
               <Paper variant="outlined" sx={{
-                p: 2, borderRadius: 2, bgcolor: alpha(COLORS.success, 0.05), borderColor: alpha(COLORS.success, 0.25),
+                p: 2, borderRadius: 1.5, bgcolor: alpha(COLORS.success, 0.05), borderColor: alpha(COLORS.success, 0.25),
                 textAlign: 'center',
               }}>
                 <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>{releaseTarget.note || t('manage.untitledPayment', 'Payment')}</Typography>
                 <Typography variant="h6" fontWeight={800} color="success.main">{formatCurrency(releaseTarget.amount, currency)}</Typography>
               </Paper>
               <Box sx={{
-                p: 1.75, borderRadius: 2, border: '1px dashed',
+                p: 1.75, borderRadius: 1.5, border: '1px dashed',
                 borderColor: alpha(COLORS.warning, 0.5), bgcolor: alpha(COLORS.warning, 0.05),
                 display: 'flex', alignItems: 'flex-start', gap: 1,
               }}>

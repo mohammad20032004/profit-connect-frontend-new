@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Stack, Chip, alpha, Paper } from '@mui/material'
 import { motion, useInView } from 'framer-motion'
 import { COLORS } from './manageConstants'
@@ -57,7 +57,7 @@ export function StatCard({ icon, label, value, suffix, color = COLORS.primary, d
       style={{ flex: 1, minWidth: 130 }}
     >
       <Paper sx={{
-        p: 1.5, borderRadius: 2, textAlign: 'center', height: '100%',
+        p: 1.5, borderRadius: 1.5, textAlign: 'center', height: '100%',
         border: '1px solid', borderColor: 'divider',
         transition: 'border-color 0.2s ease',
         '&:hover': { borderColor: 'primary.main' },

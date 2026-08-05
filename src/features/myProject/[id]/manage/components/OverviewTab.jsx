@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Box, Paper, Typography, Stack, Grid, LinearProgress, Avatar, alpha } from '@mui/material'
 import { motion } from 'framer-motion'
 import {
@@ -94,7 +94,7 @@ function TimelineProgress({ overview }) {
         />
       </Box>
       <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-        {t('manage.durationDays', 'Duration')}: <strong>{overview.durationDays ?? 0}</strong> {lang === 'ar' ? 'يوم' : 'days'} • {t('manage.status', 'Status')}: <strong>{overview.status}</strong>
+        {t('manage.durationDays', 'Duration')}: <strong>{overview.durationDays ?? 0}</strong> {lang === 'ar' ? 'ظٹظˆظ…' : 'days'} â€¢ {t('manage.status', 'Status')}: <strong>{overview.status}</strong>
       </Typography>
     </>
   )
@@ -164,7 +164,7 @@ export default function OverviewTab({ overview }) {
         {/* Stat cards */}
         <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1.5 }}>
           <StatCard icon={<SpeedOutlined sx={{ fontSize: 20 }} />} label={t('manage.progress', 'Progress')} value={overview.progress ?? 0} suffix="%" color={overview.progress >= 50 ? COLORS.primary : COLORS.warning} index={0} />
-          <StatCard icon={<CalendarMonthOutlined sx={{ fontSize: 20 }} />} label={t('manage.durationDays', 'Duration')} value={overview.durationDays ?? 0} suffix={lang === 'ar' ? ' يوم' : 'd'} color={COLORS.navy} index={1} />
+          <StatCard icon={<CalendarMonthOutlined sx={{ fontSize: 20 }} />} label={t('manage.durationDays', 'Duration')} value={overview.durationDays ?? 0} suffix={lang === 'ar' ? ' ظٹظˆظ…' : 'd'} color={COLORS.navy} index={1} />
           <StatCard icon={<FlagOutlined sx={{ fontSize: 20 }} />} label={t('manage.milestonesCount', 'Milestones')} value={overview.milestonesCount ?? 0} color={COLORS.purple} index={2} />
           <StatCard icon={<GroupOutlined sx={{ fontSize: 20 }} />} label={t('manage.teamCount', 'Team')} value={overview.teamCount ?? 0} color={COLORS.secondary} index={3} />
         </Stack>
@@ -173,20 +173,20 @@ export default function OverviewTab({ overview }) {
           {/* Progress ring + payments */}
           <Grid size={{ xs: 12, md: 6 }}>
             <motion.div variants={scaleIn} custom={0} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 3, height: '100%' }}>
+              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
                 <SectionHeader icon={<SpeedOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.overview', 'Overview')} />
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} sx={{ alignItems: 'center', justifyContent: 'space-around' }}>
                   <ProgressRing value={overview.progress ?? 0} />
                   <Stack spacing={1.25} sx={{ flex: 1, minWidth: 0 }}>
                     <Box>
                       <Typography variant="caption" color="text.secondary">{t('manage.totalBudget', 'Total Budget')}</Typography>
-                      <Typography variant="h6" fontWeight={800}>{overview.budget ? formatCurrency(overview.budget.min, overview.budget.currency) : '—'}</Typography>
+                      <Typography variant="h6" fontWeight={800}>{overview.budget ? formatCurrency(overview.budget.min, overview.budget.currency) : 'â€”'}</Typography>
                     </Box>
                     {overview.startDate && (
                       <Box>
                         <Typography variant="caption" color="text.secondary">{t('manage.dateRange', 'Project Period')}</Typography>
                         <Typography variant="body2" fontWeight={600}>
-                          {formatDate(overview.startDate, lang)} — {formatDate(overview.endDate || overview.deadline, lang)}
+                          {formatDate(overview.startDate, lang)} â€” {formatDate(overview.endDate || overview.deadline, lang)}
                         </Typography>
                       </Box>
                     )}
@@ -203,7 +203,7 @@ export default function OverviewTab({ overview }) {
           {/* Payments doughnut */}
           <Grid size={{ xs: 12, md: 6 }}>
             <motion.div variants={scaleIn} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 3, height: '100%' }}>
+              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
                 <SectionHeader icon={<PaymentsOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.paymentsSummary', 'Payments Summary')} />
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <Box sx={{ width: 180, height: 180 }}>
@@ -240,7 +240,7 @@ export default function OverviewTab({ overview }) {
           {/* Time elapsed progress */}
           <Grid size={{ xs: 12, md: 6 }}>
             <motion.div variants={scaleIn} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 3, height: '100%' }}>
+              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
                 <SectionHeader icon={<CalendarMonthOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.timelineElapsed', 'Timeline Progress')} />
                 <TimelineProgress overview={overview} />
               </Paper>
@@ -250,7 +250,7 @@ export default function OverviewTab({ overview }) {
           {/* Milestones breakdown */}
           <Grid size={{ xs: 12, md: 6 }}>
             <motion.div variants={scaleIn} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 3, height: '100%' }}>
+              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
                 <SectionHeader icon={<TaskAltOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.milestonesBreakdown', 'Milestones')} />
                 <Box sx={{ height: 190 }}>
                   {milestones.length === 0 ? (
@@ -269,13 +269,13 @@ export default function OverviewTab({ overview }) {
         {/* Team preview */}
         {team.length > 0 && (
           <motion.div variants={scaleIn} custom={4} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <Paper sx={{ p: 2.5, borderRadius: 3 }}>
+            <Paper sx={{ p: 2.5, borderRadius: 1.5 }}>
               <SectionHeader icon={<GroupOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.team', 'Team')} />
               <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
                 {team.map((m, i) => {
                   const user = m.freelancer || {}
                   const prof = user.profile || {}
-                  const name = [prof.firstName, prof.lastName].filter(Boolean).join(' ') || user.email || '—'
+                  const name = [prof.firstName, prof.lastName].filter(Boolean).join(' ') || user.email || 'â€”'
                   return (
                     <motion.div key={m._id} custom={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: i * 0.08 }}>
@@ -283,7 +283,7 @@ export default function OverviewTab({ overview }) {
                         <Avatar src={prof.avatar} sx={{ width: 38, height: 38 }}>{name.charAt(0)}</Avatar>
                         <Box>
                           <Typography variant="body2" fontWeight={700}>{name}</Typography>
-                          <Typography variant="caption" color="text.secondary">{m.role || '—'}</Typography>
+                          <Typography variant="caption" color="text.secondary">{m.role || 'â€”'}</Typography>
                         </Box>
                       </Stack>
                     </motion.div>

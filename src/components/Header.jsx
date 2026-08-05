@@ -34,6 +34,7 @@ import { useTranslation } from 'react-i18next'
 import Logo from './common/Logo'
 import LanguageSwitcher from './LanguageSwitcher'
 import { clearUserProfile } from '../redux/slices/userSlice'
+import { logoutRequest } from '../services/authService'
 
 const Header = () => {
   const { t } = useTranslation()
@@ -86,7 +87,12 @@ const Header = () => {
   }
 
   const handleLogout = () => {
+    const refreshToken = window.localStorage.getItem('profit_connect_refresh_token')
+    if (refreshToken) {
+      logoutRequest(refreshToken).catch(() => {})
+    }
     window.localStorage.removeItem('profit_connect_token')
+    window.localStorage.removeItem('profit_connect_refresh_token')
     dispatch(clearUserProfile())
     handleCloseMenu()
     navigate('/landing')

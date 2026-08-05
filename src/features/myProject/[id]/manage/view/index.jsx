@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Box, Paper, Typography, Stack, CircularProgress, Chip, Tabs, Tab, Snackbar, Alert,
@@ -81,12 +81,12 @@ export default function ManageProject() {
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: 6 }}>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
         {/* Header */}
-        <Paper sx={{ p: 2, borderRadius: 3, mb: 2.5, border: '1px solid', borderColor: 'divider', boxShadow: '0 6px 20px rgba(31,10,59,0.04)' }}>
+        <Paper sx={{ p: 2, borderRadius: 1.5, mb: 2.5, border: '1px solid', borderColor: 'divider', boxShadow: '0 6px 20px rgba(31,10,59,0.04)' }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
             <Button variant="text" onClick={() => navigate(`/myProject/${id}`)} sx={{ minWidth: 0, p: 0.5 }}><ArrowBackOutlined /></Button>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography variant="h5" fontWeight="bold" noWrap>{overview.title}</Typography>
-              <Typography variant="caption" color="text.secondary">{t('manage.title', 'Project Management')} • {t(`projects.categoryOptions.${overview.category}`, overview.category)}</Typography>
+              <Typography variant="caption" color="text.secondary">{t('manage.title', 'Project Management')} â€¢ {t(`projects.categoryOptions.${overview.category}`, overview.category)}</Typography>
             </Box>
             <Chip label={t(`projects.statusOptions.${overview.status}`, overview.status)} color={statusColors[overview.status] || 'default'} size="small" />
           </Stack>
@@ -133,7 +133,7 @@ export default function ManageProject() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         sx={{ mt: 8 }}
       >
-        <Alert severity={toast.severity} variant="filled" onClose={() => setToast((prev) => ({ ...prev, open: false }))} sx={{ borderRadius: 2, alignItems: 'center' }}>
+        <Alert severity={toast.severity} variant="filled" onClose={() => setToast((prev) => ({ ...prev, open: false }))} sx={{ borderRadius: 1.5, alignItems: 'center' }}>
           {toast.msg}
         </Alert>
       </Snackbar>

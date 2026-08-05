@@ -75,6 +75,7 @@ export default function SignInView() {
       const token = data?.token
       dispatch(setAuthData({ token, user: data?.user }))
       localStorage.setItem('profit_connect_token', token)
+      if (data?.refreshToken) localStorage.setItem('profit_connect_refresh_token', data.refreshToken)
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
       const userLang = data?.user?.settings?.language
       if (userLang && ['en', 'ar'].includes(userLang)) {

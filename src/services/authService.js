@@ -22,6 +22,16 @@ export async function getMe() {
   return data
 }
 
+export async function refreshAccessToken(refreshToken) {
+  const { data } = await axios.post(`${API_BASE}/auth/refresh`, { refreshToken })
+  return data
+}
+
+export async function logoutRequest(refreshToken) {
+  const { data } = await axios.post(`${API_BASE}/auth/logout`, { refreshToken })
+  return data
+}
+
 export async function getReputationScore() {
   const token = localStorage.getItem('profit_connect_token')
   if (!token) return null

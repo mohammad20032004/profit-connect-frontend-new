@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import {
   Box, Paper, Typography, Stack, Grid, Chip, alpha, Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material'
@@ -80,7 +80,7 @@ export default function SettingsTab({ id, overview, onChanged }) {
 
       <Grid container spacing={2.5}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper sx={{ p: 2.5, borderRadius: 3, height: '100%' }}>
+          <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
             <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 2 }}>
               <CalendarMonthOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
               <Typography variant="subtitle2" fontWeight={700}>{t('manage.schedule', 'Schedule & Dates')}</Typography>
@@ -102,7 +102,7 @@ export default function SettingsTab({ id, overview, onChanged }) {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper sx={{ p: 2.5, borderRadius: 3, height: '100%' }}>
+          <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
             <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 2 }}>
               <SpeedOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
               <Typography variant="subtitle2" fontWeight={700}>{t('manage.progress', 'Progress')}</Typography>
@@ -115,7 +115,7 @@ export default function SettingsTab({ id, overview, onChanged }) {
                 </Stack>
                 <Slider value={Number(form.progress) || 0} onChange={(e, v) => setForm((prev) => ({ ...prev, progress: v }))} valueLabelDisplay="auto" />
               </Stack>
-              <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: alpha(COLORS.navy, 0.05), border: '1px dashed', borderColor: 'divider' }}>
+              <Box sx={{ p: 1.5, borderRadius: 1.5, bgcolor: alpha(COLORS.navy, 0.05), border: '1px dashed', borderColor: 'divider' }}>
                 <Typography variant="caption" color="text.secondary">
                   {t('manage.autoProgress', 'Progress is auto-calculated as the average of milestones when milestones exist.')}
                 </Typography>
@@ -125,7 +125,7 @@ export default function SettingsTab({ id, overview, onChanged }) {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <Paper sx={{ p: 2.5, borderRadius: 3 }}>
+          <Paper sx={{ p: 2.5, borderRadius: 1.5 }}>
             <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 2 }}>
               <PaymentsOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
               <Typography variant="subtitle2" fontWeight={700}>{t('manage.paymentsConfig', 'Payments Configuration')}</Typography>
@@ -160,11 +160,11 @@ export default function SettingsTab({ id, overview, onChanged }) {
             <Typography variant="body2">{t('manage.confirmSaveBody', 'These settings affect the project timeline, progress and payments configuration.')}</Typography>
             {form.startDate && form.endDate && (
               <Typography variant="caption" color="text.secondary">
-                {t('manage.dateRange', 'Project Period')}: {formatDate(form.startDate, lang)} — {formatDate(form.endDate, lang)}
+                {t('manage.dateRange', 'Project Period')}: {formatDate(form.startDate, lang)} â€” {formatDate(form.endDate, lang)}
               </Typography>
             )}
             <Typography variant="caption" color="text.secondary">
-              {t('manage.status', 'Status')}: {form.status} • {t('manage.progress', 'Progress')}: {form.progress}%
+              {t('manage.status', 'Status')}: {form.status} â€¢ {t('manage.progress', 'Progress')}: {form.progress}%
             </Typography>
           </Stack>
         </DialogContent>
