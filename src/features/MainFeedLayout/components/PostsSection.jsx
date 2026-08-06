@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Box,
   Paper,
@@ -12,6 +12,7 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  ListItemText,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -39,6 +40,7 @@ import {
   FlagOutlined,
   TranslateOutlined,
 } from '@mui/icons-material'
+import { SiWhatsapp, SiTelegram, SiFacebook, SiX, SiGmail } from 'react-icons/si'
 import {
   getPosts,
   updatePost,
@@ -89,6 +91,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const [showTranslated, setShowTranslated] = useState(false)
   const [translating, setTranslating] = useState(false)
   const [menuAnchor, setMenuAnchor] = useState(null)
+  const [shareAnchor, setShareAnchor] = useState(null)
   const [editOpen, setEditOpen] = useState(false)
   const [editForm, setEditForm] = useState({ content: '', visibility: 'public' })
   const [editLoading, setEditLoading] = useState(false)
@@ -126,6 +129,35 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
 
   const handleOpenMenu = (e) => setMenuAnchor(e.currentTarget)
   const handleCloseMenu = () => setMenuAnchor(null)
+
+  const shareUrl = `${window.location.origin}/posts/${post._id}`
+  const shareText = (post?.content || '').replace(/<[^>]*>/g, '').trim().slice(0, 120) || t('dashboard.share.postTitle', 'Check out this post')
+  const shareActions = [
+    { key: 'whatsapp', label: 'WhatsApp', icon: <SiWhatsapp />, color: '#25D366', url: `https://wa.me/?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}` },
+    { key: 'telegram', label: 'Telegram', icon: <SiTelegram />, color: '#26A5E4', url: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}` },
+    { key: 'facebook', label: 'Facebook', icon: <SiFacebook />, color: '#1877F2', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}` },
+    { key: 'x', label: 'X', icon: <SiX />, color: '#14171A', url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}` },
+    { key: 'email', label: 'Email', icon: <SiGmail />, color: '#EA4335', url: `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(`${shareText}\n${shareUrl}`)}` },
+  ]
+
+  const handleOpenShare = (e) => setShareAnchor(e.currentTarget)
+  const handleCloseShare = () => setShareAnchor(null)
+
+  const handleShareAction = (item) => {
+    handleCloseShare()
+    if (item.key === 'copy') {
+      navigator.clipboard.writeText(shareUrl)
+        .then(() => alert(t('dashboard.action.linkCopied', 'Link copied to clipboard')))
+        .catch(() => {})
+    } else if (item.url.startsWith('mailto:')) {
+      const link = document.createElement('a')
+      link.href = item.url
+      link.click()
+      link.remove()
+    } else {
+      window.open(item.url, '_blank', 'noopener,noreferrer')
+    }
+  }
 
   const handleLike = async () => {
     const prevLiked = liked
@@ -397,7 +429,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth variant="text" startIcon={<RepeatOutlined />} onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`); alert(t('dashboard.action.linkCopied', 'Link copied to clipboard')) }} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+          <Button fullWidth variant="text" startIcon={<RepeatOutlined />} onClick={handleOpenShare} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
             {t('dashboard.action.share')}
           </Button>
         </Box>
@@ -407,6 +439,48 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
           </Button>
         </Box>
       </Stack>
+
+      <Menu
+        anchorEl={shareAnchor}
+        open={Boolean(shareAnchor)}
+        onClose={handleCloseShare}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        slotProps={{ paper: { sx: { minWidth: 280, borderRadius: 2, mt: 0.5, p: 0.5 } } }}
+      >
+        <Box sx={{ px: 2, pt: 1.5, pb: 0.5 }}>
+          <Typography variant="subtitle2" fontWeight={700}>{t('dashboard.share.title', 'Share post')}</Typography>
+        </Box>
+        <Box sx={{ px: 1, pt: 1, pb: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.5 }}>
+          {shareActions.map((item) => (
+            <Box
+              key={item.key}
+              component={motion.div}
+              whileTap={{ scale: 0.92 }}
+              onClick={() => handleShareAction(item)}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 0.75,
+                py: 1.5,
+                borderRadius: 2,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                '&:hover': { bgcolor: 'action.hover' },
+              }}
+            >
+              <Box sx={{ color: item.color, fontSize: 26, lineHeight: 0, display: 'flex' }}>{item.icon}</Box>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem' }}>{item.label}</Typography>
+            </Box>
+          ))}
+        </Box>
+        <Divider sx={{ mx: 2 }} />
+        <MenuItem onClick={() => handleShareAction({ key: 'copy' })} sx={{ py: 1.25 }}>
+          <ListItemIcon><ContentCopyOutlined fontSize="small" /></ListItemIcon>
+          <ListItemText primary={t('dashboard.action.copyLink', 'Copy link')} />
+        </MenuItem>
+      </Menu>
 
       {showComments && comments.length > 0 && (
         <>

@@ -9,6 +9,8 @@ import SignUpView from "../features/auth/sign-up/view"
 import ProfileView from "../features/profile/view"
 import SavedPostsView from "../features/profile/savedPosts/view"
 import ProfileUserIdView from "../features/profile/[userId]/view"
+import GalleryView from "../features/gallery/view"
+import PortfolioItemView from "../features/gallery/item/view"
 import UserProfileUserIdView from "../features/user-profile/[userId]/view"
 import AboutView from "../features/about/view"
 import AlertsView from "../features/alerts/view"
@@ -60,6 +62,9 @@ const router = createBrowserRouter([
       { path: "/sign-up", element: <SignUpView /> },
       { path: "/profile", element: <ProfileView /> },
       { path: "/profile/savedPosts", element: <SavedPostsView /> },
+      { path: "/gallery", element: <GalleryView /> },
+      { path: "/gallery/:userId", element: <GalleryView /> },
+      { path: "/portfolio/item/:itemId", element: <PortfolioItemView /> },
       { path: "/profile/:userId", element: <ProfileUserIdView /> },
       { path: "/user-profile/:userId", element: <UserProfileUserIdView /> },
       { path: "/about", element: <AboutView /> },

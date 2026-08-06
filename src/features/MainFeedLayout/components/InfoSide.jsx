@@ -6,8 +6,8 @@ import {
   PersonOutlineOutlined,
   PostAddOutlined,
   BookmarkBorderOutlined,
+  PhotoLibraryOutlined,
 } from '@mui/icons-material'
-import { SkillIcon } from '@/ui'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -19,7 +19,6 @@ export default function InfoSide({ variant = 'default' }) {
   const { t } = useTranslation()
   const avatarSrc = profile?.avatar
   const Rscore = profile?.rScore || 0
-  const skills = user?.professional?.skills || []
 
   const surfaceSx = variant === 'plain'
     ? { width: '100%' }
@@ -90,8 +89,6 @@ export default function InfoSide({ variant = 'default' }) {
         />
       </Box>
 
-      <Divider sx={{ mx: 2 }} />
-
       {/* Stats Section */}
       <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} sx={{ py: 1.5, px: 1 }}>
         <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: 1 }, transition: 'all 0.2s' }}>
@@ -117,37 +114,15 @@ export default function InfoSide({ variant = 'default' }) {
         </Box>
       </Stack>
 
-      {/* Skills Section */}
-      {skills.length > 0 && (
-        <>
-          <Divider sx={{ mx: 2 }} />
-          <Box sx={{ px: 2, py: 1.75 }} role="list" aria-label={t('profile.skills', 'Skills')}>
-            <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.75 }}>
-              {skills.slice(0, 8).map((skill) => (
-                <Chip
-                  key={skill}
-                  label={skill}
-                  size="small"
-                  role="listitem"
-                  icon={<SkillIcon name={skill} size={12} />}
-                  sx={{ height: 26, fontSize: '0.72rem', fontWeight: 500, borderRadius: 1.5, bgcolor: 'action.hover', '&:hover': { bgcolor: 'action.selected' } }}
-                />
-              ))}
-              {skills.length > 8 && (
-                <Chip
-                  component={Link}
-                  to="/profile"
-                  label={t('profile.more', 'More')}
-                  size="small"
-                  sx={{ height: 26, fontSize: '0.72rem', fontWeight: 600, borderRadius: 1.5, bgcolor: 'primary.main', color: 'primary.contrastText', cursor: 'pointer', '&:hover': { bgcolor: 'primary.dark' } }}
-                />
-              )}
-            </Stack>
-          </Box>
-        </>
-      )}
 
-      <Divider sx={{ mx: 2 }} />
+      {/* Gallery Link */}
+      <Box component={Link} to="/gallery" sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 2.5, py: 1.5, textDecoration: 'none', color: 'text.primary', transition: 'all 0.2s', '&:hover': { bgcolor: 'action.hover', '& .savedIcon': { color: 'primary.main' } } }}>
+        <PhotoLibraryOutlined className="savedIcon" sx={{ color: 'text.secondary', fontSize: 18, transition: 'color 0.2s' }} />
+        <Typography variant="body2" fontWeight={600} sx={{ fontSize: '0.85rem' }}>
+          {t('profile.gallery', 'Gallery')}
+        </Typography>
+      </Box>
+
 
       {/* Saved Posts Link */}
       <Box component={Link} to="/profile/savedPosts" sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 2.5, py: 1.5, textDecoration: 'none', color: 'text.primary', transition: 'all 0.2s', '&:hover': { bgcolor: 'action.hover', '& .savedIcon': { color: 'primary.main' } } }}>

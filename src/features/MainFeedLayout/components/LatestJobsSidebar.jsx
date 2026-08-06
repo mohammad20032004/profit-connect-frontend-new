@@ -47,7 +47,6 @@ export default function LatestJobsSidebar({ variant = 'default' }) {
       <Box sx={{ px: 2, pt: 2, pb: 1 }}>
         <Typography variant="subtitle2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '0.85rem' }}>{t('sidebar.latestJobs')}</Typography>
       </Box>
-      <Divider sx={{ mx: 2 }} />
       {loading ? (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <CircularProgress size={24} sx={{ color: alpha(theme.palette.primary.main, 0.5) }} />
@@ -111,17 +110,13 @@ export default function LatestJobsSidebar({ variant = 'default' }) {
                   )}
                 </Stack>
               </Box>
-              <Box sx={{ jobArrow: { opacity: 0, transform: 'translateX(-4px)', transition: 'all 0.2s' }, display: 'flex', alignItems: 'center', pt: 0.5 }}>
-                <ArrowForwardRounded className="jobArrow" sx={{ fontSize: 16, color: 'text.disabled' }} />
-              </Box>
+              
             </Box>
           ))}
           {displayJobs.length > 0 && (
             <Box sx={{ px: 2, pt: 0.5, pb: 1 }}>
-              <Divider sx={{ mb: 1 }} />
               <Box component={Link} to="/jobs" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, py: 0.75, color: 'primary.main', fontWeight: 600, fontSize: '0.75rem', textDecoration: 'none', borderRadius: 1, transition: 'all 0.2s', '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) } }}>
                 {t('sidebar.viewAll')}
-                <ArrowForwardRounded sx={{ fontSize: 14, transition: 'transform 0.2s', '&:hover': { transform: 'translateX(2px)' } }} />
               </Box>
             </Box>
           )}

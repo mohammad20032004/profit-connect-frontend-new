@@ -9,6 +9,13 @@ export async function getPosts(page = 1, limit = 10) {
   return data
 }
 
+export async function getUserPosts(userId, page = 1, limit = 100) {
+  const { data } = await axios.get(`${API_BASE}/posts`, {
+    params: { userId, page, limit },
+  })
+  return data
+}
+
 export async function createPost(formData) {
   const { data } = await axios.post(`${API_BASE}/posts`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

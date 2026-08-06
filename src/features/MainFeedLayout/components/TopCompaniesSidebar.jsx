@@ -55,7 +55,6 @@ export default function TopCompaniesSidebar({ variant = 'default' }) {
         </Typography>
       </Box>
 
-      <Divider sx={{ mx: 2 }} />
 
       {/* Content */}
       {loading ? (
@@ -149,7 +148,6 @@ export default function TopCompaniesSidebar({ variant = 'default' }) {
 
           {companies.length > 3 && (
             <Box sx={{ px: 2, pt: 0.5, pb: 1 }}>
-              <Divider sx={{ mb: 1 }} />
               <Box
                 component={Link}
                 to="/companies"
@@ -169,7 +167,6 @@ export default function TopCompaniesSidebar({ variant = 'default' }) {
                 }}
               >
                 {t('sidebar.viewAll')}
-                <ArrowForwardRounded sx={{ fontSize: 14, transition: 'transform 0.2s', '&:hover': { transform: 'translateX(2px)' } }} />
               </Box>
             </Box>
           )}
