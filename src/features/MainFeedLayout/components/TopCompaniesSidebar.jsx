@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { Box, Typography, Paper, Avatar, CircularProgress, Stack, Rating, alpha, Divider } from '@mui/material'
+import { useState, useEffect } from 'react'
+import { Box, Typography, Avatar, CircularProgress, Stack, alpha, Divider } from '@mui/material'
 import { ErrorOutlined, StarRounded, ChevronRightRounded, ArrowForwardRounded } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 
-export default function TopCompaniesSidebar() {
+export default function TopCompaniesSidebar({ variant = 'default' }) {
   const theme = useTheme()
   const { t } = useTranslation()
   const [companies, setCompanies] = useState([])
@@ -35,15 +35,16 @@ export default function TopCompaniesSidebar() {
   const displayCompanies = companies.slice(0, 3)
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        borderRadius: 2,
-        overflow: 'hidden',
-        border: '1px solid',
-        borderColor: 'divider',
-        bgcolor: 'background.paper',
-      }}
+    <Box
+      sx={variant === 'plain'
+        ? { width: '100%' }
+        : {
+            borderRadius: 2,
+            overflow: 'hidden',
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+          }}
       role="complementary"
       aria-label={t('sidebar.topCompanies')}
     >
@@ -174,6 +175,6 @@ export default function TopCompaniesSidebar() {
           )}
         </Stack>
       )}
-    </Paper>
+    </Box>
   )
 }

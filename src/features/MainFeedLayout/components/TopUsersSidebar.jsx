@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Box, Typography, Paper, Avatar, CircularProgress, Stack, alpha, Divider, Chip } from '@mui/material'
+import { Box, Typography, Avatar, CircularProgress, Stack, alpha, Divider, Chip } from '@mui/material'
 import { ErrorOutlined, WorkspacePremiumRounded, ArrowForwardRounded, EmojiEventsRounded } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import { getTopUsers, resolveMediaPath } from '@/services/profile'
 
-export default function TopUsersSidebar() {
+export default function TopUsersSidebar({ variant = 'default' }) {
   const theme = useTheme()
   const { t } = useTranslation()
   const [users, setUsers] = useState([])
@@ -32,17 +32,18 @@ export default function TopUsersSidebar() {
   const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32']
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        borderRadius: 2,
-        overflow: 'hidden',
-        border: '1px solid',
-        borderColor: 'divider',
-        bgcolor: 'background.paper',
-        minWidth: 280,
-        maxWidth: 320,
-      }}
+    <Box
+      sx={variant === 'plain'
+        ? { width: '100%' }
+        : {
+            borderRadius: 2,
+            overflow: 'hidden',
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            minWidth: 280,
+            maxWidth: 320,
+          }}
       role="complementary"
       aria-label={t('sidebar.topUsers')}
     >
@@ -202,6 +203,6 @@ export default function TopUsersSidebar() {
           )}
         </Stack>
       )}
-    </Paper>
+    </Box>
   )
 }

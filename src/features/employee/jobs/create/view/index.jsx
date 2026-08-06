@@ -6,6 +6,7 @@ import {
   Fade, Divider, Chip, IconButton, MenuItem, alpha,
 } from '@mui/material'
 import Button from '@/ui/Button'
+import { RangeSlider } from '@/ui'
 import {
   ArrowBackOutlined, AddOutlined, DeleteOutlineOutlined,
 } from '@mui/icons-material'
@@ -163,13 +164,15 @@ export default function CreateJob() {
                 </Grid>
 
                 <Grid container spacing={2}>
-                  <Grid size={{ xs: 6 }}>
-                    <TextField label={t('jobs.salaryMin')} value={form.salaryMin} onChange={set('salaryMin')}
-                      fullWidth size="small" type="number" sx={fieldSx} />
-                  </Grid>
-                  <Grid size={{ xs: 6 }}>
-                    <TextField label={t('jobs.salaryMax')} value={form.salaryMax} onChange={set('salaryMax')}
-                      fullWidth size="small" type="number" sx={fieldSx} />
+                  <Grid size={{ xs: 12 }}>
+                    <RangeSlider
+                      label={t('jobs.salary', 'Salary')}
+                      valueMin={form.salaryMin}
+                      valueMax={form.salaryMax}
+                      onChange={(min, max) => setForm((p) => ({ ...p, salaryMin: min, salaryMax: max }))}
+                      currency={form.currency}
+                      max={200000}
+                    />
                   </Grid>
                 </Grid>
 

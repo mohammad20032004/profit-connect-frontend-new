@@ -22,7 +22,6 @@ import PeopleIcon from '@mui/icons-material/People'
 import WorkIcon from '@mui/icons-material/Work'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import AppsIcon from '@mui/icons-material/Apps'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import PersonIcon from '@mui/icons-material/Person'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -32,7 +31,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Logo from './common/Logo'
-import LanguageSwitcher from './LanguageSwitcher'
 import { clearUserProfile } from '../redux/slices/userSlice'
 import { logoutRequest } from '../services/authService'
 
@@ -53,7 +51,6 @@ const Header = () => {
     { label: t('nav.network'), icon: <PeopleIcon />, hasBadge: false, link: '/network' },
     { label: t('nav.projects'), icon: <WorkIcon />, hasBadge: false, link: '/projects' },
     { label: t('nav.jobs'), icon: <BusinessCenterIcon />, hasBadge: false, link: '/jobs' },
-    { label: t('nav.alerts'), icon: <NotificationsIcon />, hasBadge: unreadCount > 0, badgeCount: unreadCount, link: '/alerts' },
   ]
 
   const hiddenRoutes = ['/sign-in', '/sign-up', '/landing', '/settings']
@@ -115,7 +112,7 @@ const Header = () => {
             <Logo size={32} />
             <Box
               sx={(theme) => ({
-                display: { xs: 'none', sm: 'flex' },
+                display: { xs: 'none', md: 'flex' },
                 alignItems: 'center',
                 position: 'relative',
                 borderRadius: 999,
@@ -127,9 +124,9 @@ const Header = () => {
                 '&:hover': {
                   backgroundColor: theme.palette.background.paper,
                 },
-                mr: 2,
-                ml: { xs: 0, sm: 3 },
-                width: { sm: 250, md: 330, lg: 380 },
+                mr: 1.5,
+                ml: { md: 1.5 },
+                width: { md: 220, lg: 320, xl: 380 },
                 transition: 'all 0.3s',
               })}
             >
@@ -165,7 +162,7 @@ const Header = () => {
             </Box>
           </Box>
 
-          <Stack direction="row" spacing={{ xs: 1.25, md: 2.5 }} sx={{ alignItems: 'center', height: '72px' }}>
+          <Stack direction="row" spacing={{ xs: 1, md: 1.5 }} sx={{ alignItems: 'center', height: '72px', flexShrink: 0 }}>
             {navItems.map((item) => {
               const isActive = pathname === item.link || (item.link !== '/' && pathname.startsWith(item.link + '/'))
               return (
@@ -181,7 +178,7 @@ const Header = () => {
                       position: 'relative',
                       color: isActive ? 'text.primary' : 'text.secondary',
                       '&:hover': { color: 'text.primary' },
-                      width: { md: '72px', xs: '42px' },
+                      width: { xs: '40px', md: '60px', lg: '72px' },
                       textDecoration: 'none',
                       transition: 'all 0.2s ease',
                       gap: 0.3,
@@ -197,7 +194,33 @@ const Header = () => {
                 </Link>
               )
             })}
+          </Stack>
 
+          {/* Right: Notifications + Profile */}
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minWidth: 0, height: '100%', gap: 1.5 }}>
+            <Box
+              component={Link}
+              to="/alerts"
+              aria-label={t('nav.alerts')}
+              title={t('nav.alerts')}
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                '&:hover': { bgcolor: 'action.selected', color: 'text.primary' },
+              }}
+            >
+              <Badge color="error" variant={unreadCount > 9 ? 'standard' : 'dot'} badgeContent={unreadCount} invisible={unreadCount === 0} max={99}>
+                <NotificationsIcon sx={{ fontSize: 22 }} />
+              </Badge>
+            </Box>
             <Box
               onClick={handleOpenMenu}
               role="button"
@@ -225,8 +248,7 @@ const Header = () => {
                 <ArrowDropDownIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
               </Box>
             </Box>
-
-          </Stack>
+          </Box>
         </Toolbar>
       </Container>
 

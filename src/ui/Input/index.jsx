@@ -16,6 +16,8 @@ import {
   MenuItem,
   Slider as MuiSlider,
   Typography,
+  Box,
+  Stack,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import Visibility from '@mui/icons-material/Visibility'
@@ -247,6 +249,73 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, marks, valueLab
   )
 }
 
+function RangeSlider({
+  label,
+  valueMin,
+  valueMax,
+  onChange,
+  min = 0,
+  max = 100000,
+  step = 500,
+  currency = '',
+  formatValue = (v) => v.toLocaleString(),
+  sx,
+  ...props
+}) {
+  const numMin = Number(valueMin) || 0
+  const numMax = Number(valueMax) || 0
+  const safeMax = Math.max(max, numMin, numMax)
+
+  const current = [
+    Math.min(numMin, safeMax),
+    numMax > 0 ? Math.min(numMax, safeMax) : safeMax,
+  ]
+
+  const handleChange = (_, newValue) => {
+    const [lo, hi] = newValue
+    onChange(lo <= min ? '' : String(lo), hi >= safeMax ? '' : String(hi))
+  }
+
+  const hasValue = Boolean(valueMin || valueMax)
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      {label && (
+        <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <Typography variant="body2" sx={{ fontWeight: 600, color: '#5C5580' }}>{label}</Typography>
+          {hasValue && (
+            <Typography variant="caption" sx={{ fontWeight: 700, color: '#3D1C6E', whiteSpace: 'nowrap' }}>
+              {formatValue(current[0])}{current[1] >= safeMax ? '+' : ` - ${formatValue(current[1])}`}{currency ? ` ${currency}` : ''}
+            </Typography>
+          )}
+        </Stack>
+      )}
+      <MuiSlider
+        value={current}
+        onChange={handleChange}
+        min={min}
+        max={safeMax}
+        step={step}
+        valueLabelDisplay="auto"
+        getAriaLabel={(index) => (index === 0 ? 'Minimum value' : 'Maximum value')}
+        getAriaValueText={(v) => formatValue(v)}
+        valueLabelFormat={(v) => formatValue(v)}
+        sx={{
+          color: '#3D1C6E',
+          mt: 1,
+          '& .MuiSlider-track': { border: 'none' },
+          '& .MuiSlider-thumb': {
+            boxShadow: '0 2px 8px rgba(61, 28, 110, 0.3)',
+            '&:hover, &.Mui-focusVisible': { boxShadow: '0 4px 16px rgba(61, 28, 110, 0.4)' },
+          },
+          ...sx,
+        }}
+        {...props}
+      />
+    </Box>
+  )
+}
+
 function FileUpload({ label, value, onChange, accept, multiple, sx, ...props }) {
   return (
     <TextField
@@ -277,5 +346,6 @@ export {
   RadioGroupField,
   Switch,
   Slider,
+  RangeSlider,
   FileUpload,
 }

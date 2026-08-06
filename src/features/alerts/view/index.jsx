@@ -12,6 +12,7 @@ import {
   StarBorderOutlined, InfoOutlined, DoneAllOutlined, CancelOutlined,
   GppMaybeOutlined, RocketLaunchOutlined, BadgeOutlined,
   PaymentsOutlined, AccountBalanceWalletOutlined, RestoreOutlined, VerifiedOutlined,
+  PersonAddAlt1Outlined, PeopleAltOutlined,
 } from '@mui/icons-material'
 import { getNotifications, markNotificationRead } from '@/services/notificationService'
 import { setNotifications, markRead } from '@/redux/slices/notificationSlice'
@@ -115,10 +116,40 @@ function getNotificationDisplay(n, t) {
     withdrawal_rejected: {
       icon: <CancelOutlined />,
       color: 'error',
-      title: t('notif.withdrawalRejected', 'طھظ… ط±ظپط¶ ط§ظ„ط³ط­ط¨'),
-      msg: t('notif.withdrawalRejectedMsg', 'طھظ… ط±ظپط¶ ط·ظ„ط¨ ط³ط­ط¨ {{amount}} {{currency}}.', { amount: n.amount ?? 'â€”', currency: n.currency || '' }),
+      title: t('notif.withdrawalRejected', 'تم رفض السحب'),
+      msg: t('notif.withdrawalRejectedMsg', 'تم رفض طلب سحب {{amount}} {{currency}}.', { amount: n.amount ?? '—', currency: n.currency || '' }),
       actionUrl: '/profile',
-      actionLabel: t('profile.wallet', 'ط§ظ„ظ…ط­ظپط¸ط©'),
+      actionLabel: t('profile.wallet', 'المحفظة'),
+    },
+    connection_request: {
+      icon: <PersonAddAlt1Outlined />,
+      color: 'info',
+      title: t('notif.connectionRequest', 'طلب اتصال جديد'),
+      msg: t('notif.connectionRequestMsg', '{{name}} أرسل لك طلب اتصال', { name: n.senderName || 'Someone' }),
+      actionUrl: '/network',
+      actionLabel: t('network.viewRequests', 'عرض الطلبات'),
+    },
+    connection_accepted: {
+      icon: <CheckCircleOutlineOutlined />,
+      color: 'success',
+      title: t('notif.connectionAccepted', 'تم قبول طلب الاتصال'),
+      msg: t('notif.connectionAcceptedMsg', '{{name}} قبل طلب الاتصال الخاص بك', { name: n.senderName || 'Someone' }),
+      actionUrl: '/network',
+      actionLabel: t('network.viewConnections', 'عرض الشبكة'),
+    },
+    connection_rejected: {
+      icon: <CancelOutlined />,
+      color: 'warning',
+      title: t('notif.connectionRejected', 'تم رفض طلب الاتصال'),
+      msg: t('notif.connectionRejectedMsg', '{{name}} رفض طلب الاتصال الخاص بك', { name: n.senderName || 'Someone' }),
+    },
+    follow: {
+      icon: <PeopleAltOutlined />,
+      color: 'info',
+      title: t('notif.follow', 'متابع جديد'),
+      msg: n.message || t('notif.followMsg', '{{name}} بدأ بمتابعتك', { name: n.senderName || 'Someone' }),
+      actionUrl: '/network',
+      actionLabel: t('network.viewFollowers', 'عرض المتابعين'),
     },
   }
   return map[n.type] || {

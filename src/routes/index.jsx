@@ -24,6 +24,7 @@ import CreateProject from "../features/projects/create/view"
 import MyProjectDetail from "../features/myProject/[id]/view"
 import ManageProject from "../features/myProject/[id]/manage/view"
 import PaymentsView from "../features/payments/view"
+import NetworkView from "../features/network/view"
 
 import EmployerWelcome from "../features/employer/welcome/view"
 import EmployerDashboard from "../features/employer/dashboard/view"
@@ -69,7 +70,7 @@ const router = createBrowserRouter([
       { path: "/posts/:postId", element: <PostPage /> },
       { path: "/companies", element: <CompaniesList /> },
       { path: "/companies/:id", element: <CompanyDetail /> },
-      { path: "/network", element: <div>Network</div> },
+      { path: "/network", element: <NetworkView /> },
       { path: "/projects", element: <ProjectsList /> },
       { path: "/projects/create", element: <CreateProject /> },
       { path: "/projects/:id", element: <ProjectDetail /> },

@@ -14,27 +14,53 @@ import {
   BuildOutlined,
   StarRounded,
   BadgeOutlined,
+  PersonAddOutlined,
+  HourglassTopOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  LinkOffOutlined,
+  PersonOffOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { getUserById, resolveMediaPath } from '@/services/profile'
+import {
+  getConnectionStatus, sendConnectionRequest, acceptConnectionRequest, rejectConnectionRequest,
+  cancelConnectionRequest, removeConnection, toggleFollowUser,
+} from '@/services/networkService'
 
 export default function UserProfileUserIdView() {
   const { userId } = useParams()
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const isRtl = i18n.language === 'ar'
+  const currentUserId = useSelector((state) => state.user.user?._id)
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [connStatus, setConnStatus] = useState('none')
+  const [connectionId, setConnectionId] = useState('')
+  const [following, setFollowing] = useState(false)
+  const [busy, setBusy] = useState('')
+
+  const isSelf = currentUserId && currentUserId === userId
 
   const fetchUser = async () => {
     setLoading(true)
     setError('')
     try {
       const res = await getUserById(userId)
-      if (res?.success) setUser(res.data)
-      else setError(res?.message || t('common.error'))
+      if (res?.success) {
+        setUser(res.data)
+        const prof = res.data.profile || {}
+        const isFollower = Array.isArray(prof.followers)
+          ? prof.followers.some((f) => (typeof f === 'string' ? f : f?._id || f?.user?._id) === currentUserId)
+          : false
+        setFollowing(!!res.data.isFollowing || !!res.data.profile?.isFollowing || isFollower)
+      } else {
+        setError(res?.message || t('common.error'))
+      }
     } catch (err) {
       setError(err?.response?.data?.message || err.message || t('common.error'))
     } finally {
@@ -42,7 +68,83 @@ export default function UserProfileUserIdView() {
     }
   }
 
+  const fetchStatus = async () => {
+    if (isSelf || !currentUserId) return
+    try {
+      const res = await getConnectionStatus(userId)
+      if (res?.success) {
+        setConnStatus(res.data.status || 'none')
+        setConnectionId(res.data.connectionId || '')
+      }
+    } catch { /* ignore */ }
+  }
+
   useEffect(() => { fetchUser() }, [userId])
+  useEffect(() => { fetchStatus() }, [userId, isSelf, currentUserId])
+
+  const handleToggleFollow = async () => {
+    if (isSelf) return
+    setBusy('follow')
+    try {
+      const res = await toggleFollowUser(userId)
+      if (res && 'following' in res) setFollowing(res.following)
+    } catch { /* ignore */ } finally {
+      setBusy('')
+    }
+  }
+
+  const handleSendConnect = async () => {
+    setBusy('connect')
+    try {
+      const res = await sendConnectionRequest(userId)
+      if (res?.success) {
+        setConnStatus('pending_sent')
+        fetchStatus()
+      }
+    } catch { /* ignore */ } finally {
+      setBusy('')
+    }
+  }
+
+  const handleCancelConnect = async () => {
+    setBusy('connect')
+    try {
+      const res = await cancelConnectionRequest(userId)
+      if (res?.success) setConnStatus('none')
+    } catch { /* ignore */ } finally {
+      setBusy('')
+    }
+  }
+
+  const handleAcceptConnect = async () => {
+    setBusy('connect')
+    try {
+      const res = await acceptConnectionRequest(connectionId)
+      if (res?.success) setConnStatus('connected')
+    } catch { /* ignore */ } finally {
+      setBusy('')
+    }
+  }
+
+  const handleRejectConnect = async () => {
+    setBusy('connect')
+    try {
+      const res = await rejectConnectionRequest(connectionId)
+      if (res?.success) setConnStatus('none')
+    } catch { /* ignore */ } finally {
+      setBusy('')
+    }
+  }
+
+  const handleRemoveConnect = async () => {
+    setBusy('connect')
+    try {
+      const res = await removeConnection(userId)
+      if (res?.success) setConnStatus('none')
+    } catch { /* ignore */ } finally {
+      setBusy('')
+    }
+  }
 
   const profile = user?.profile || {}
   const professional = user?.professional || {}
@@ -152,6 +254,85 @@ export default function UserProfileUserIdView() {
                   <Typography variant="caption" color="text.secondary">{t('profile.following')}</Typography>
                 </Box>
               </Stack>
+
+              {!isSelf && (
+                <Stack direction="row" spacing={1} sx={{ width: '100%', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
+                  {connStatus === 'none' && (
+                    <Button
+                      variant="contained"
+                      size="small"
+                      startIcon={<PersonAddOutlined sx={{ fontSize: 16 }} />}
+                      onClick={handleSendConnect}
+                      disabled={busy === 'connect'}
+                      sx={{ flex: 1, minWidth: 130 }}
+                    >
+                      {t('network.connect', 'Connect')}
+                    </Button>
+                  )}
+                  {connStatus === 'pending_sent' && (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<HourglassTopOutlined sx={{ fontSize: 16 }} />}
+                      onClick={handleCancelConnect}
+                      disabled={busy === 'connect'}
+                      sx={{ flex: 1, minWidth: 130 }}
+                    >
+                      {t('network.pending', 'Pending')}
+                    </Button>
+                  )}
+                  {connStatus === 'pending_received' && (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        startIcon={<CheckOutlined sx={{ fontSize: 16 }} />}
+                        onClick={handleAcceptConnect}
+                        disabled={busy === 'connect'}
+                        sx={{ flex: 1, minWidth: 110 }}
+                      >
+                        {t('network.accept', 'Accept')}
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        startIcon={<CloseOutlined sx={{ fontSize: 16 }} />}
+                        onClick={handleRejectConnect}
+                        disabled={busy === 'connect'}
+                        sx={{ flex: 1, minWidth: 110 }}
+                      >
+                        {t('network.reject', 'Reject')}
+                      </Button>
+                    </>
+                  )}
+                  {connStatus === 'connected' && (
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      startIcon={<LinkOffOutlined sx={{ fontSize: 16 }} />}
+                      onClick={handleRemoveConnect}
+                      disabled={busy === 'connect'}
+                      sx={{ flex: 1, minWidth: 130 }}
+                    >
+                      {t('network.connectedRemove', 'Remove')}
+                    </Button>
+                  )}
+                  <Button
+                    variant={following ? 'outlined' : 'contained'}
+                    color={following ? 'error' : 'primary'}
+                    size="small"
+                    startIcon={following ? <PersonOffOutlined sx={{ fontSize: 16 }} /> : <PersonAddOutlined sx={{ fontSize: 16 }} />}
+                    onClick={handleToggleFollow}
+                    disabled={busy === 'follow'}
+                    sx={{ flex: 1, minWidth: 130 }}
+                  >
+                    {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
+                  </Button>
+                </Stack>
+              )}
             </Stack>
           </Grid>
 

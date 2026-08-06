@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip, Typography, Stack, alpha, Divider, Paper } from '@mui/material'
+import { Avatar, Box, Chip, Typography, Stack, alpha, Divider } from '@mui/material'
 import WorkspacePremiumRounded from '@mui/icons-material/WorkspacePremiumRounded'
 import {
   LocationOnOutlined,
@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-export default function InfoSide() {
+export default function InfoSide({ variant = 'default' }) {
   const user = useSelector((state) => state.user.user)
   const profile = useSelector((state) => state.user.profile)
   const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
@@ -21,8 +21,12 @@ export default function InfoSide() {
   const Rscore = profile?.rScore || 0
   const skills = user?.professional?.skills || []
 
+  const surfaceSx = variant === 'plain'
+    ? { width: '100%' }
+    : { borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', minWidth: 280, maxWidth: 320, bgcolor: 'background.paper' }
+
   return (
-    <Paper elevation={0} sx={{ borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', minWidth: 280, maxWidth: 320 }} role="complementary" aria-label={t('profile.profileCard', 'Profile Card')}>
+    <Box sx={surfaceSx} role="complementary" aria-label={t('profile.profileCard', 'Profile Card')}>
       {/* Profile Header Section */}
       <Box sx={{ textAlign: 'center', pt: 3, pb: 2, px: 2.5 }}>
         <Avatar
@@ -152,6 +156,6 @@ export default function InfoSide() {
           {t('profile.savedPosts', 'Saved Posts')}
         </Typography>
       </Box>
-    </Paper>
+    </Box>
   )
 }

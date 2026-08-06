@@ -10,6 +10,7 @@ export {
   RadioGroupField,
   Switch,
   Slider,
+  RangeSlider,
   FileUpload,
 } from './Input'
 export { Card, CardStat } from './Card'

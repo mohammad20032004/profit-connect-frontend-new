@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Box, Typography, Paper, Avatar, CircularProgress, Stack, Chip, alpha, Divider } from '@mui/material'
+import { Box, Typography, Avatar, CircularProgress, Stack, Chip, alpha, Divider } from '@mui/material'
 import { ErrorOutlined, WorkOutlineOutlined, LocationOnOutlined, ArrowForwardRounded } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import { getLatestJobs } from '@/services/employeeService'
 
-export default function LatestJobsSidebar() {
+export default function LatestJobsSidebar({ variant = 'default' }) {
   const theme = useTheme()
   const { t } = useTranslation()
   const [jobs, setJobs] = useState([])
@@ -39,7 +39,11 @@ export default function LatestJobsSidebar() {
   }
 
   return (
-    <Paper elevation={0} sx={{ borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }} role="complementary" aria-label={t('sidebar.latestJobs')}>
+    <Box
+      sx={variant === 'plain' ? { width: '100%' } : { borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}
+      role="complementary"
+      aria-label={t('sidebar.latestJobs')}
+    >
       <Box sx={{ px: 2, pt: 2, pb: 1 }}>
         <Typography variant="subtitle2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '0.85rem' }}>{t('sidebar.latestJobs')}</Typography>
       </Box>
@@ -123,6 +127,6 @@ export default function LatestJobsSidebar() {
           )}
         </Stack>
       )}
-    </Paper>
+    </Box>
   )
 }
