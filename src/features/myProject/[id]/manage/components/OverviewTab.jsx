@@ -142,7 +142,7 @@ export default function OverviewTab({ overview }) {
       label: '',
       data: [completedMs, inProgressMs, notStartedMs],
       backgroundColor: [COLORS.success, COLORS.primary, '#C4BBD9'],
-      borderRadius: 5,
+      borderRadius: 1,
       barPercentage: 0.55,
     }],
   }

@@ -235,7 +235,7 @@ export default function MyProjectDetail() {
             </Paper>
 
             {project.description && (
-              <Paper sx={{ p: 2.5, borderRadius: 3, overflow: 'auto', height: '40vh' }}>
+              <Paper sx={{ p: 2.5, borderRadius: 1, overflow: 'auto', height: '40vh' }}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('projects.description', 'Description')}</Typography>
                 <Typography variant="body2" sx={{ lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{project.description}</Typography>
               </Paper>
@@ -253,7 +253,7 @@ export default function MyProjectDetail() {
           {proposalsLoading ? (
             <Box sx={{ textAlign: 'center', py: 6 }}><CircularProgress /></Box>
           ) : proposals.length === 0 ? (
-            <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3, bgcolor: 'transparent', boxShadow: 'none' }}>
+            <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1, bgcolor: 'transparent', boxShadow: 'none' }}>
               <WorkOutlineOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
               <Typography color="text.secondary">{t('projects.noProposals', 'No proposals yet')}</Typography>
             </Paper>

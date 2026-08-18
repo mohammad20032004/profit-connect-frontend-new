@@ -183,7 +183,7 @@ export default function EmployerWelcome() {
           </Box>
 
           {filledFields.length > 0 && (
-            <Paper sx={{ p: 3, borderRadius: 3, width: '100%', maxWidth: 520 }}>
+            <Paper sx={{ p: 3, borderRadius: 1, width: '100%', maxWidth: 520 }}>
               <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 2 }}>
                 {t('employer.welcome.companyFromRegistration')}
               </Typography>
@@ -207,7 +207,7 @@ export default function EmployerWelcome() {
             </Paper>
           )}
 
-          <Paper sx={{ p: 3, borderRadius: 3, width: '100%', maxWidth: 520, border: '1px dashed', borderColor: 'divider' }}>
+          <Paper sx={{ p: 3, borderRadius: 1, width: '100%', maxWidth: 520, border: '1px dashed', borderColor: 'divider' }}>
             <Stack spacing={2} sx={{ alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
                 {t('employer.welcome.createPageDesc')}

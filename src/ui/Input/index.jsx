@@ -33,7 +33,7 @@ function TextField({ label, error, helperText, sx, ...props }) {
       fullWidth
       sx={{
         '& .MuiOutlinedInput-root': {
-          borderRadius: 3,
+          borderRadius: 1,
           backgroundColor: '#fff',
           transition: 'all 0.2s ease',
           '& fieldset': { borderColor: 'rgba(31, 10, 59, 0.12)' },
@@ -83,7 +83,7 @@ function SearchInput({ placeholder = 'Search...', value, onChange, sx, ...props 
         </InputAdornment>
       }
       sx={{
-        borderRadius: 999,
+        borderRadius: 20,
         backgroundColor: '#fff',
         border: '1px solid rgba(31, 10, 59, 0.12)',
         '&:hover': { borderColor: 'rgba(61, 28, 110, 0.3)' },
@@ -121,7 +121,7 @@ function Select({ label, options = [], value, onChange, placeholder, error, help
         label={label}
         displayEmpty={!!placeholder}
         sx={{
-          borderRadius: 3,
+          borderRadius: 1,
           backgroundColor: '#fff',
           '& fieldset': { borderColor: 'rgba(31, 10, 59, 0.12)' },
           '&:hover fieldset': { borderColor: 'rgba(61, 28, 110, 0.3)' },

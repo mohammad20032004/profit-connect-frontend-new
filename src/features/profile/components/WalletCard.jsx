@@ -156,9 +156,9 @@ export default function WalletCard() {
   )
 
   return (
-    <Paper variant="outlined" sx={{ p: 2, borderRadius: 2.5, overflow: 'hidden', border: '1px solid', borderColor: alpha('#3D1C6E', 0.18), bgcolor: 'background.paper' }}>
+    <Paper variant="outlined" sx={{ p: 2, borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: alpha('#3D1C6E', 0.18), bgcolor: 'background.paper' }}>
       <Box sx={{
-        height: 4, borderRadius: 4, mb: 1.5,
+        height: 4, borderRadius: 1, mb: 1.5,
         background: 'linear-gradient(90deg, #3D1C6E 0%, #1F3670 60%, #16A34A 100%)',
       }} />
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>

@@ -296,7 +296,7 @@ export default function EmployerStats({ companyId }) {
       label: lang === 'ar' ? 'الوظائف' : 'Jobs',
       data: (stats.jobs?.byWorkLevel || []).map((j) => j.count),
       backgroundColor: [COLORS.primary, COLORS.warning, COLORS.success],
-      borderRadius: 4,
+      borderRadius: 1,
       barPercentage: 0.6,
     }],
   }
@@ -318,7 +318,7 @@ export default function EmployerStats({ companyId }) {
       data: dailyData.map((d) => d.newFollowers),
       backgroundColor: alpha(COLORS.primary, 0.6),
       hoverBackgroundColor: COLORS.primary,
-      borderRadius: 3,
+      borderRadius: 1,
       barPercentage: 0.7,
     }],
   }
@@ -330,7 +330,7 @@ export default function EmployerStats({ companyId }) {
       data: (stats.monthlyJobs || []).map((m) => m.jobsPosted),
       backgroundColor: alpha(COLORS.secondary, 0.7),
       hoverBackgroundColor: COLORS.secondary,
-      borderRadius: 3,
+      borderRadius: 1,
       barPercentage: 0.6,
     }],
   }
@@ -344,7 +344,7 @@ export default function EmployerStats({ companyId }) {
       label: lang === 'ar' ? 'التقييمات' : 'Ratings',
       data: ratingsValues,
       backgroundColor: [COLORS.success, '#4ADE80', COLORS.warning, '#FBBF24', COLORS.error],
-      borderRadius: 4,
+      borderRadius: 1,
       barPercentage: 0.5,
     }],
   }

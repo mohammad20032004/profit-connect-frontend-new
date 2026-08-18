@@ -142,7 +142,7 @@ export default function FeaturedCompanies() {
                 sx={{
                   textDecoration: 'none',
                   p: 3.5,
-                  borderRadius: 4,
+                  borderRadius: 1,
                   border: '1px solid',
                   borderColor: 'rgba(31, 13, 66, 0.06)',
                   bgcolor: '#ffffff',

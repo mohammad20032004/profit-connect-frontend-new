@@ -17,6 +17,16 @@ import {
 import { getNotifications, markNotificationRead } from '@/services/notificationService'
 import { setNotifications, markRead } from '@/redux/slices/notificationSlice'
 
+function getSenderName(n) {
+  if (n.senderName) return n.senderName
+  if (n.sender?.profile?.fullname) return n.sender.profile.fullname
+  if (n.sender?.profile?.firstName || n.sender?.profile?.lastName) {
+    return `${n.sender.profile.firstName || ''} ${n.sender.profile.lastName || ''}`.trim()
+  }
+  if (n.sender?.username) return n.sender.username
+  return 'Someone'
+}
+
 function getNotificationDisplay(n, t) {
   const map = {
     proposal_accepted: {
@@ -125,7 +135,7 @@ function getNotificationDisplay(n, t) {
       icon: <PersonAddAlt1Outlined />,
       color: 'info',
       title: t('notif.connectionRequest', 'طلب اتصال جديد'),
-      msg: t('notif.connectionRequestMsg', '{{name}} أرسل لك طلب اتصال', { name: n.senderName || 'Someone' }),
+      msg: t('notif.connectionRequestMsg', '{{name}} أرسل لك طلب اتصال', { name: getSenderName(n) }),
       actionUrl: '/network',
       actionLabel: t('network.viewRequests', 'عرض الطلبات'),
     },
@@ -133,7 +143,7 @@ function getNotificationDisplay(n, t) {
       icon: <CheckCircleOutlineOutlined />,
       color: 'success',
       title: t('notif.connectionAccepted', 'تم قبول طلب الاتصال'),
-      msg: t('notif.connectionAcceptedMsg', '{{name}} قبل طلب الاتصال الخاص بك', { name: n.senderName || 'Someone' }),
+      msg: t('notif.connectionAcceptedMsg', '{{name}} قبل طلب الاتصال الخاص بك', { name: getSenderName(n) }),
       actionUrl: '/network',
       actionLabel: t('network.viewConnections', 'عرض الشبكة'),
     },
@@ -141,13 +151,13 @@ function getNotificationDisplay(n, t) {
       icon: <CancelOutlined />,
       color: 'warning',
       title: t('notif.connectionRejected', 'تم رفض طلب الاتصال'),
-      msg: t('notif.connectionRejectedMsg', '{{name}} رفض طلب الاتصال الخاص بك', { name: n.senderName || 'Someone' }),
+      msg: t('notif.connectionRejectedMsg', '{{name}} رفض طلب الاتصال الخاص بك', { name: getSenderName(n) }),
     },
     follow: {
       icon: <PeopleAltOutlined />,
       color: 'info',
       title: t('notif.follow', 'متابع جديد'),
-      msg: n.message || t('notif.followMsg', '{{name}} بدأ بمتابعتك', { name: n.senderName || 'Someone' }),
+      msg: n.message || t('notif.followMsg', '{{name}} بدأ بمتابعتك', { name: getSenderName(n) }),
       actionUrl: '/network',
       actionLabel: t('network.viewFollowers', 'عرض المتابعين'),
     },
@@ -219,7 +229,7 @@ export default function AlertsView() {
         {loading ? (
           <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
         ) : items.length === 0 ? (
-          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3 }}>
+          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1 }}>
             <NotificationsOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
             <Typography color="text.secondary">{t('dashboard.noNotifications', 'No notifications yet')}</Typography>
           </Paper>

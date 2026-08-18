@@ -10,6 +10,18 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err?.response?.status === 401 && window.location.pathname !== '/sign-in') {
+      localStorage.removeItem('profit_connect_token')
+      localStorage.removeItem('profit_connect_refresh_token')
+      window.location.href = '/sign-in'
+    }
+    return Promise.reject(err)
+  },
+)
+
 export async function getJobs(params = {}) {
   const { data } = await api.get('/jobs', { params })
   return data

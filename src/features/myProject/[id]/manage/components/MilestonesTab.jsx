@@ -132,7 +132,7 @@ export default function MilestonesTab({ id, overview, onChanged }) {
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-30px' }}>
           <Box sx={{ position: 'relative', pl: { xs: 2.5, sm: 3.5 } }}>
             <Box sx={{
-              position: 'absolute', left: { xs: 7, sm: 9 }, top: 0, bottom: 0, width: 3, borderRadius: 999,
+              position: 'absolute', left: { xs: 7, sm: 9 }, top: 0, bottom: 0, width: 3, borderRadius: 20,
               background: 'linear-gradient(180deg, #E4DCF2, #C4BBD9)',
             }} />
             <Stack spacing={2}>

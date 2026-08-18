@@ -61,6 +61,9 @@ function setupAxiosInterceptor(dispatch) {
       if (alreadyOnSignIn || !refreshToken) {
         clearSession()
         dispatch(clearUserProfile())
+        if (!alreadyOnSignIn) {
+          window.location.href = '/sign-in'
+        }
         return Promise.reject(err)
       }
 
@@ -144,6 +147,8 @@ function AuthProvider({ children }) {
       } catch (err) {
         if (err?.response?.status === 401) {
           clearSession()
+          window.location.href = '/sign-in'
+          return
         }
       } finally {
         setLoading(false)

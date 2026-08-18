@@ -114,7 +114,7 @@ function Table({
   return (
     <Paper
       sx={{
-        borderRadius: 4,
+        borderRadius: 1,
         border: '1px solid rgba(31, 10, 59, 0.06)',
         boxShadow: '0 4px 12px rgba(31, 10, 59, 0.04)',
         overflow: 'hidden',
@@ -263,7 +263,7 @@ function StatusChip({ label, color = 'default' }) {
         color: c.text,
         fontWeight: 600,
         fontSize: '0.75rem',
-        borderRadius: 999,
+        borderRadius: 20,
       }}
     />
   )

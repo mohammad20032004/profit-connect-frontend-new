@@ -229,7 +229,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
               flex: 1,
               py: 1.25,
               px: 2,
-              borderRadius: 999,
+              borderRadius: 20,
               border: '1px solid',
               borderColor: 'divider',
               bgcolor: 'action.hover',

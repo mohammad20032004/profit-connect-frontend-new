@@ -54,7 +54,7 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 4, maxHeight: '80vh', overflow: 'hidden',
+          borderRadius: 1, maxHeight: '80vh', overflow: 'hidden',
           boxShadow: '0 32px 80px rgba(12,8,24,0.2)',
           animation: 'fadeUp 0.3s ease',
           '@keyframes fadeUp': { from: { opacity: 0, transform: 'translateY(12px)' }, to: { opacity: 1, transform: 'translateY(0)' } },

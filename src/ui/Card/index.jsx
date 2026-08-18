@@ -26,7 +26,7 @@ function Card({
   return (
     <MuiCard
       sx={{
-        borderRadius: 4,
+        borderRadius: 1,
         border: bordered ? '1px solid rgba(31, 10, 59, 0.06)' : 'none',
         boxShadow: '0 4px 12px rgba(31, 10, 59, 0.04)',
         transition: hoverable ? 'all 0.25s ease' : 'none',
@@ -98,7 +98,7 @@ function CardStat({ label, value, icon, trend, trendLabel }) {
           sx={{
             width: 48,
             height: 48,
-            borderRadius: 3,
+            borderRadius: 1,
             backgroundColor: 'rgba(61, 28, 110, 0.08)',
             display: 'flex',
             alignItems: 'center',

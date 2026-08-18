@@ -706,7 +706,7 @@ export default function EmployerSetup() {
                         <LinearProgress
                           variant="determinate"
                           value={(documents.length / MAX_DOCS) * 100}
-                          sx={{ flex: 1, borderRadius: 5, height: 4 }}
+                          sx={{ flex: 1, borderRadius: 1, height: 4 }}
                         />
                         <Typography variant="caption" color="text.secondary" fontWeight={600}>
                           {documents.length}/{MAX_DOCS}

@@ -77,7 +77,7 @@ export default function CreateProject() {
     <Container maxWidth="xl" sx={{ py: 3 }}>
       
 
-      <Paper sx={{ p: 3.5, borderRadius: 3 }}>
+      <Paper sx={{ p: 3.5, borderRadius: 1 }}>
         <Grid container spacing={2.5}>
           <ProjectBasicFields form={form} onChange={handleChange} t={t} />
           <ProjectDetailFields form={form} onChange={handleChange} t={t} onImprove={handleImprove} improving={improving} />

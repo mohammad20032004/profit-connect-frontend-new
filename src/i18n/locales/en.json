@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "network": "Network",
+    "companies": "Companies",
     "projects": "Projects",
     "jobs": "Jobs",
     "alerts": "Alerts"
@@ -43,8 +44,18 @@
   },
   "companies": {
     "title": "Companies",
+    "subtitle": "Discover top-rated companies and explore opportunities",
+    "heroTitle": "Top Rated Company",
+    "heroBadge": "#1 Rated",
+    "searchPlaceholder": "Search companies by name, industry, or location...",
+    "filterAll": "All Industries",
+    "sortBy": "Sort by",
+    "sortRating": "Highest Rated",
+    "sortFollowers": "Most Followed",
+    "sortNewest": "Newest",
     "create": "Create Company",
     "noCompanies": "No companies yet",
+    "noResults": "No companies match your search",
     "notFound": "Company not found",
     "followers_one": "{{count}} follower",
     "followers_other": "{{count}} followers",
@@ -73,7 +84,9 @@
     "retry": "Retry",
     "back": "Back to companies",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "viewProfile": "View Profile",
+    "verified": "Verified"
   },
   "profile": {
     "followers": "Followers",

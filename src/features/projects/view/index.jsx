@@ -274,7 +274,7 @@ export default function ProjectsList() {
                         bgcolor: isActive ? primaryMain : alpha(primaryMain, 0.04),
                         color: isActive ? '#fff' : 'text.secondary',
                         border: isActive ? 'none' : `1px solid ${alpha(primaryMain, 0.12)}`,
-                        borderRadius: 999,
+                        borderRadius: 20,
                         transition: 'all 0.2s ease',
                         '&:hover': {
                           bgcolor: isActive ? theme.palette.primary.dark : alpha(primaryMain, 0.1),
@@ -347,7 +347,7 @@ export default function ProjectsList() {
         {/* Error State */}
         {error && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
-            <Paper sx={{ p: 5, textAlign: 'center', borderRadius: 3, border: '1px solid', borderColor: alpha('#DC2626', 0.2) }}>
+            <Paper sx={{ p: 5, textAlign: 'center', borderRadius: 1, border: '1px solid', borderColor: alpha('#DC2626', 0.2) }}>
               <Box sx={{
                 width: 56, height: 56, borderRadius: '50%', bgcolor: alpha('#DC2626', 0.08),
                 display: 'flex', alignItems: 'center', justifyContent: 'center', mx: 'auto', mb: 2,
@@ -462,7 +462,7 @@ export default function ProjectsList() {
                                 height: 20, fontSize: '0.6rem', fontWeight: 700,
                                 bgcolor: isLight ? statusCfg.bg : statusCfg.darkBg,
                                 color: statusCfg.color,
-                                borderRadius: 999,
+                                borderRadius: 20,
                               }}
                             />
                           </Box>
@@ -487,7 +487,7 @@ export default function ProjectsList() {
                                   height: 22, fontSize: '0.65rem', fontWeight: 600,
                                   bgcolor: alpha(primaryMain, 0.06),
                                   color: isLight ? primaryMain : theme.palette.primary.light,
-                                  borderRadius: 999,
+                                  borderRadius: 20,
                                 }}
                               />
                             ))}
@@ -495,7 +495,7 @@ export default function ProjectsList() {
                               <Chip
                                 label={`+${p.skills.length - 3}`}
                                 size="small"
-                                sx={{ height: 22, fontSize: '0.65rem', borderRadius: 999, bgcolor: alpha(primaryMain, 0.04) }}
+                                sx={{ height: 22, fontSize: '0.65rem', borderRadius: 20, bgcolor: alpha(primaryMain, 0.04) }}
                               />
                             )}
                           </Stack>

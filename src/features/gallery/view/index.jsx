@@ -266,11 +266,7 @@ export default function GalleryView() {
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
-        <Button component={Link} to={isOwnGallery ? '/profile' : `/user-profile/${routeUserId}`} variant="text" startIcon={<ArrowBackOutlined />}>
-          {isOwnGallery ? t('profile.title', 'My Profile') : t('common.back', 'Back')}
-        </Button>
-      </Stack>
+      
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, mb: 3 }}>
         <Avatar src={owner?.avatar ? resolveMediaPath(owner.avatar) : undefined} sx={{ width: 56, height: 56, bgcolor: 'primary.light', fontSize: '1.4rem', fontWeight: 700 }}>

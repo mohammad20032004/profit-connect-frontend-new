@@ -210,7 +210,7 @@ export default function PaymentsView() {
   }
 
   const statItem = (label, value, color, icon) => (
-    <Box sx={{ flex: 1, minWidth: 140, textAlign: 'center', p: 1.5, borderRadius: 2.5, bgcolor: alpha(color, 0.06), border: '1px solid', borderColor: alpha(color, 0.2) }}>
+    <Box sx={{ flex: 1, minWidth: 140, textAlign: 'center', p: 1.5, borderRadius: 1, bgcolor: alpha(color, 0.06), border: '1px solid', borderColor: alpha(color, 0.2) }}>
       <Box sx={{ color, mb: 0.5 }}>{icon}</Box>
       <Typography variant="h6" fontWeight={800} sx={{ color, lineHeight: 1.15 }}>{formatCurrency(value)}</Typography>
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.62rem', fontWeight: 700 }}>{label}</Typography>
@@ -226,7 +226,7 @@ export default function PaymentsView() {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: 6 }}>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1140, mx: 'auto' }}>
-        <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, mb: 2.5, border: '1px solid', borderColor: 'divider', boxShadow: '0 6px 20px rgba(31,10,59,0.04)' }}>
+        <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 1, mb: 2.5, border: '1px solid', borderColor: 'divider', boxShadow: '0 6px 20px rgba(31,10,59,0.04)' }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
             <Box sx={{
               width: 44, height: 44, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -267,7 +267,7 @@ export default function PaymentsView() {
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} sx={{ alignItems: 'flex-start' }}>
           {/* Sidebar filters */}
           <Paper variant="outlined" sx={{
-            p: 2, borderRadius: 2.5,
+            p: 2, borderRadius: 1,
             width: { xs: '100%', md: 260 }, flexShrink: 0,
             position: { md: 'sticky' }, top: { md: 24 }, zIndex: 2,
           }}>
@@ -337,7 +337,7 @@ export default function PaymentsView() {
             <Typography variant="caption" color="text.secondary">...</Typography>
           </Stack>
         ) : filtered.length === 0 ? (
-          <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 3, borderStyle: 'dashed' }}>
+          <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 1, borderStyle: 'dashed' }}>
             <PaymentsOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
             <Typography color="text.secondary">
               {payments.length === 0 ? t('payments.noPayments', 'No payments yet') : t('payments.noResults', 'No payments match your filters')}
@@ -352,7 +352,7 @@ export default function PaymentsView() {
               const isHeld = p.status === 'held'
               return (
                 <Paper key={p._id} variant="outlined" sx={{
-                  p: 2, borderRadius: 2.5,
+                  p: 2, borderRadius: 1,
                   borderColor: isHeld ? alpha(cfg.color, 0.4) : p.status === 'released' ? alpha(COLORS.success, 0.35) : 'divider',
                   transition: 'all 0.2s ease',
                   '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },

@@ -20,14 +20,14 @@ import {
   CloseOutlined,
   LinkOffOutlined,
   PersonOffOutlined,
+  PhotoLibraryOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { getUserById, resolveMediaPath } from '@/services/profile'
-import {
-  getConnectionStatus, sendConnectionRequest, acceptConnectionRequest, rejectConnectionRequest,
-  cancelConnectionRequest, removeConnection, toggleFollowUser,
+import { getConnectionStatus, sendConnectionRequest, acceptConnectionRequest, rejectConnectionRequest,
+  cancelConnectionRequest, removeConnection, toggleFollowUser, getMyFollowing,
 } from '@/services/networkService'
 
 export default function UserProfileUserIdView() {
@@ -57,7 +57,15 @@ export default function UserProfileUserIdView() {
         const isFollower = Array.isArray(prof.followers)
           ? prof.followers.some((f) => (typeof f === 'string' ? f : f?._id || f?.user?._id) === currentUserId)
           : false
-        setFollowing(!!res.data.isFollowing || !!res.data.profile?.isFollowing || isFollower)
+        let isFollowingUser = !!res.data.isFollowing || !!res.data.profile?.isFollowing || isFollower
+        if (!isFollowingUser && currentUserId) {
+          try {
+            const folRes = await getMyFollowing()
+            const followingList = folRes?.data || folRes || []
+            isFollowingUser = Array.isArray(followingList) && followingList.some((u) => (u._id || u.user?._id) === userId)
+          } catch { /* ignore */ }
+        }
+        setFollowing(isFollowingUser)
       } else {
         setError(res?.message || t('common.error'))
       }
@@ -188,7 +196,7 @@ export default function UserProfileUserIdView() {
         <Typography variant="h5" fontWeight="bold" noWrap>{fullName}</Typography>
       </Stack>
 
-      <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 } }}>
+      <Paper sx={{ borderRadius: 1, p: { xs: 2, md: 3 } }}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 4, lg: 3.5 }}>
             <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
@@ -331,7 +339,27 @@ export default function UserProfileUserIdView() {
                   >
                     {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
                   </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<PhotoLibraryOutlined sx={{ fontSize: 16 }} />}
+                    onClick={() => navigate(`/gallery/${userId}`)}
+                    sx={{ flex: 1, minWidth: 130 }}
+                  >
+                    {t('profile.portfolio', 'Portfolio')}
+                  </Button>
                 </Stack>
+              )}
+              {isSelf && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<PhotoLibraryOutlined sx={{ fontSize: 16 }} />}
+                  onClick={() => navigate(`/gallery/${userId}`)}
+                  sx={{ width: '100%' }}
+                >
+                  {t('profile.portfolio', 'Portfolio')}
+                </Button>
               )}
             </Stack>
           </Grid>

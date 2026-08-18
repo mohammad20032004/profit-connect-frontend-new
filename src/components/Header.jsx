@@ -49,6 +49,7 @@ const Header = () => {
   const navItems = [
     { label: t('nav.home'), icon: <HomeIcon />, hasBadge: false, link: '/' },
     { label: t('nav.network'), icon: <PeopleIcon />, hasBadge: false, link: '/network' },
+    { label: t('nav.companies'), icon: <BusinessIcon />, hasBadge: false, link: '/companies' },
     { label: t('nav.projects'), icon: <WorkIcon />, hasBadge: false, link: '/projects' },
     { label: t('nav.jobs'), icon: <BusinessCenterIcon />, hasBadge: false, link: '/jobs' },
   ]
@@ -115,7 +116,7 @@ const Header = () => {
                 display: { xs: 'none', md: 'flex' },
                 alignItems: 'center',
                 position: 'relative',
-                borderRadius: 999,
+                borderRadius: 20,
                 backgroundColor: alpha(theme.palette.background.paper, 0.82),
                 border: '1px solid',
                 borderColor: 'divider',
@@ -263,7 +264,7 @@ const Header = () => {
           sx: {
             mt: 1.5,
             minWidth: 280,
-            borderRadius: 3,
+            borderRadius: 1,
             border: '1px solid',
             borderColor: 'divider',
             overflow: 'visible',

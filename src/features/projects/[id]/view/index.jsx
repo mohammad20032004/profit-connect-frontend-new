@@ -255,7 +255,7 @@ export default function ProjectDetail() {
             )}
 
             {!isClient && proposalSent && (
-              <Paper sx={{ p: 3, borderRadius: 3, textAlign: 'center', border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
+              <Paper sx={{ p: 3, borderRadius: 1, textAlign: 'center', border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
                 <CheckCircleOutlined sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
                 <Typography variant="body2" fontWeight="bold" color="success.main">{t('projects.proposalSent', 'Your proposal has been submitted!')}</Typography>
               </Paper>
@@ -275,7 +275,7 @@ export default function ProjectDetail() {
             )}
 
             {project.assignedTo && (
-              <Paper sx={{ p: 2.5, borderRadius: 3, border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
+              <Paper sx={{ p: 2.5, borderRadius: 1, border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, color: 'success.main' }}>{t('projects.freelancer', 'Freelancer')}</Typography>
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Avatar src={project.assignedTo.profile?.avatar} sx={{ width: 44, height: 44 }}>{project.assignedTo.profile?.firstName?.charAt(0)}</Avatar>

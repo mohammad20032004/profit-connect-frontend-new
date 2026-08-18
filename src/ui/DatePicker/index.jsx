@@ -103,7 +103,7 @@ function DatePicker({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          borderRadius: 999,
+          borderRadius: 20,
           cursor: isDisabled(d) ? 'not-allowed' : 'pointer',
           backgroundColor: isSelected ? '#3D1C6E' : isToday ? 'rgba(61, 28, 110, 0.08)' : 'transparent',
           color: isSelected ? '#fff' : isDisabled(d) ? '#D4CFE0' : '#1F0A3B',
@@ -137,7 +137,7 @@ function DatePicker({
         }}
         sx={{
           '& .MuiOutlinedInput-root': {
-            borderRadius: 3,
+            borderRadius: 1,
             backgroundColor: '#fff',
             cursor: 'pointer',
             '& fieldset': { borderColor: 'rgba(31, 10, 59, 0.12)' },
@@ -158,7 +158,7 @@ function DatePicker({
         PaperProps={{
           sx: {
             mt: 1,
-            borderRadius: 3,
+            borderRadius: 1,
             border: '1px solid rgba(31, 10, 59, 0.08)',
             boxShadow: '0 18px 40px rgba(31, 10, 59, 0.08)',
             overflow: 'visible',

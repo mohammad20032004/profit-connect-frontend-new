@@ -132,7 +132,7 @@ function HeroSection() {
                     flex: 1,
                     px: 2.5,
                     py: 2.2,
-                    borderRadius: 5,
+                    borderRadius: 1,
                     bgcolor: 'rgba(255,255,255,0.78)',
                     border: `1px solid ${palette.line}`,
                     boxShadow: '0 16px 40px rgba(36, 16, 66, 0.06)',
@@ -162,7 +162,7 @@ function HeroSection() {
               sx={{
                 position: 'absolute',
                 inset: { xs: '8% 0 0 0', lg: '3% 0 6% 2%' },
-                borderRadius: 8,
+                borderRadius: 1,
                 background: 'linear-gradient(160deg, rgba(12,24,40,1) 0%, rgba(26,8,53,0.96) 52%, rgba(61,28,110,0.92) 100%)',
                 boxShadow: '0 40px 80px rgba(36, 16, 66, 0.22)',
                 overflow: 'hidden',
@@ -182,7 +182,7 @@ function HeroSection() {
               sx={{
                 position: 'relative',
                 width: { xs: '94%', lg: '86%' },
-                borderRadius: 7,
+                borderRadius: 1,
                 p: 2.2,
                 bgcolor: 'rgba(255,255,255,0.9)',
                 backdropFilter: 'blur(18px)',
@@ -198,7 +198,7 @@ function HeroSection() {
 
               <Box
                 sx={{
-                  borderRadius: 6,
+                  borderRadius: 1,
                   bgcolor: '#f7f8fc',
                   border: `1px solid ${palette.line}`,
                   p: 2.4,
@@ -229,7 +229,7 @@ function HeroSection() {
                     gap: 1.5,
                   }}
                 >
-                  <Card elevation={0} sx={{ gridColumn: { xs: 'span 12', sm: 'span 7' }, p: 2.2, borderRadius: 5, bgcolor: '#ffffff' }}>
+                  <Card elevation={0} sx={{ gridColumn: { xs: 'span 12', sm: 'span 7' }, p: 2.2, borderRadius: 1, bgcolor: '#ffffff' }}>
                     <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
                         <Typography sx={{ color: '#6d6882', fontSize: '0.85rem' }}>{t('landing.visibilityLabel', 'Profile visibility')}</Typography>
@@ -237,18 +237,18 @@ function HeroSection() {
                       </Box>
                       <AutoGraphRoundedIcon sx={{ fontSize: 34, color: palette.berry }} />
                     </Stack>
-                    <Box sx={{ mt: 2, height: 10, borderRadius: 999, bgcolor: '#eef1f8', overflow: 'hidden' }}>
-                      <Box sx={{ width: '87%', height: '100%', borderRadius: 999, background: 'linear-gradient(90deg, #1f0d42, #3d1c6e)' }} />
+                    <Box sx={{ mt: 2, height: 10, borderRadius: 20, bgcolor: '#eef1f8', overflow: 'hidden' }}>
+                      <Box sx={{ width: '87%', height: '100%', borderRadius: 20, background: 'linear-gradient(90deg, #1f0d42, #3d1c6e)' }} />
                     </Box>
                   </Card>
 
-                  <Card elevation={0} sx={{ gridColumn: { xs: 'span 12', sm: 'span 5' }, p: 2.2, borderRadius: 5, bgcolor: '#ffffff' }}>
+                  <Card elevation={0} sx={{ gridColumn: { xs: 'span 12', sm: 'span 5' }, p: 2.2, borderRadius: 1, bgcolor: '#ffffff' }}>
                     <Typography sx={{ color: '#6d6882', fontSize: '0.85rem', mb: 0.5 }}>{t('landing.opportunityLabel', 'Opportunity score')}</Typography>
                     <Typography sx={{ color: palette.deep, fontSize: '2rem', fontWeight: 900 }}>+32%</Typography>
                     <Typography sx={{ color: '#6d6882', fontSize: '0.88rem' }}>{t('landing.opportunityDesc', 'more relevant matches this week')}</Typography>
                   </Card>
 
-                  <Card elevation={0} sx={{ gridColumn: 'span 12', p: 2.2, borderRadius: 5, bgcolor: '#ffffff' }}>
+                  <Card elevation={0} sx={{ gridColumn: 'span 12', p: 2.2, borderRadius: 1, bgcolor: '#ffffff' }}>
                     <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1.4 }}>
                       <Typography sx={{ color: palette.deep, fontWeight: 800 }}>{t('landing.momentumTitle', 'Momentum highlights')}</Typography>
                       <Chip label="Live" size="small" sx={{ bgcolor: 'rgba(61, 28, 110, 0.12)', color: palette.berry }} />
@@ -277,7 +277,7 @@ function HeroSection() {
                 top: { xs: -6, lg: 40 },
                 width: { xs: 118, md: 165 },
                 p: 2,
-                borderRadius: 5,
+                borderRadius: 1,
                 bgcolor: 'rgba(255,255,255,0.75)',
                 border: `1px solid ${palette.line}`,
                 backdropFilter: 'blur(16px)',
@@ -375,7 +375,7 @@ function FloatButtons() {
           bgcolor: 'rgba(255,255,255,0.18)',
           backdropFilter: 'blur(18px)',
           border: `1px solid ${palette.line}`,
-          borderRadius: 9999,
+          borderRadius: 20,
           p: 1,
           boxShadow: '0 16px 40px rgba(52,17,63,0.16)',
         }}
@@ -482,7 +482,7 @@ function FeaturesSection() {
                 flexDirection: 'column',
                 minHeight: 380,
                 p: { xs: 4, md: 4.5 },
-                borderRadius: 6,
+                borderRadius: 1,
                 border: '1px solid rgba(36, 0, 70, 0.08)',
                 background: 'linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)',
                 transition: 'all 0.3s ease-in-out',
@@ -550,7 +550,7 @@ function TrustSection() {
           elevation={0}
           sx={{
             p: { xs: 3, md: 5 },
-            borderRadius: 8,
+            borderRadius: 1,
             background: 'linear-gradient(135deg, #0c1828 0%, #1a0835 54%, #2d1055 160%)',
             color: '#ffffff',
             overflow: 'hidden',
@@ -586,7 +586,7 @@ function TrustSection() {
                   sx={{
                     p: 2.5,
                     minHeight: 190,
-                    borderRadius: 6,
+                    borderRadius: 1,
                     bgcolor: 'rgba(255,255,255,0.12)',
                     border: '1px solid rgba(255,255,255,0.14)',
                     backdropFilter: 'blur(12px)',

@@ -70,7 +70,7 @@ function Button({
           WebkitTextFillColor: '#fff',
           cursor: 'not-allowed',
         },
-        borderRadius: 999,
+        borderRadius: 20,
         textTransform: 'none',
         fontWeight: 600,
         fontSize: size === 'small' ? '0.8rem' : size === 'large' ? '1rem' : '0.9rem',

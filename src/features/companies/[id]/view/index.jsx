@@ -207,7 +207,7 @@ export default function CompanyDetail() {
 
       <Stack direction="row" spacing={1.5} sx={{ flex: 1, minHeight: 0 }}>
         {/* Left card */}
-        <Paper sx={{ width: 280, flexShrink: 0, borderRadius: 3, overflow: 'auto', p: 2 }}>
+        <Paper sx={{ width: 280, flexShrink: 0, borderRadius: 1, overflow: 'auto', p: 2 }}>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             <Avatar src={company.logo} sx={{ width: 56, height: 56, bgcolor: 'primary.main', fontSize: 22 }}>
               {company.name?.charAt(0)}
@@ -291,14 +291,14 @@ export default function CompanyDetail() {
           {/* Content grid - horizontal sections */}
           <Stack direction="row" spacing={1.5} sx={{ flex: 1, minHeight: 0 }}>
             {/* About */}
-            <Paper sx={{ flex: 1, borderRadius: 3, p: 2, overflow: 'auto' }}>
+            <Paper sx={{ flex: 1, borderRadius: 1, p: 2, overflow: 'auto' }}>
               <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('companies.about')}</Typography>
               {company.description && <Typography variant="body2" sx={{ lineHeight: 1.7 }}>{company.description}</Typography>}
             </Paper>
 
             {/* Jobs */}
             {openJobs.length > 0 && (
-              <Paper sx={{ flex: 1, borderRadius: 3, p: 2, overflow: 'auto' }}>
+              <Paper sx={{ flex: 1, borderRadius: 1, p: 2, overflow: 'auto' }}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('companies.openJobs', 'Open Jobs')} ({company.jobsCount})</Typography>
                 <Stack spacing={1}>
                   {openJobs.map((job) => (
@@ -318,7 +318,7 @@ export default function CompanyDetail() {
             )}
 
             {/* Ratings */}
-            <Paper sx={{ flex: 1, borderRadius: 3, p: 2, overflow: 'auto' }}>
+            <Paper sx={{ flex: 1, borderRadius: 1, p: 2, overflow: 'auto' }}>
               <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('companies.ratings', 'Ratings')} ({company.ratings?.length || 0})</Typography>
               {currentUserRating && (
                 <Box sx={{ mb: 1, p: 1.5, bgcolor: 'action.hover', borderRadius: 2 }}>

@@ -14,6 +14,16 @@ import {
 import { getRecentNotifications } from '@/services/notificationService'
 import { addNotifications } from '@/redux/slices/notificationSlice'
 
+function getSenderName(n) {
+  if (n.senderName) return n.senderName
+  if (n.sender?.profile?.fullname) return n.sender.profile.fullname
+  if (n.sender?.profile?.firstName || n.sender?.profile?.lastName) {
+    return `${n.sender.profile.firstName || ''} ${n.sender.profile.lastName || ''}`.trim()
+  }
+  if (n.sender?.username) return n.sender.username
+  return 'Someone'
+}
+
 const TYPE_CONFIG = {
   proposal_accepted: {
     severity: 'success',
@@ -173,7 +183,7 @@ const TYPE_CONFIG = {
     titleFallback: 'New Connection Request',
     msgKey: 'notif.connectionRequestMsg',
     msgFallback: '{{name}} sent you a connection request',
-    interpolate: (n) => ({ name: n.senderName || 'Someone' }),
+    interpolate: (n) => ({ name: getSenderName(n) }),
     actionUrl: '/network',
     actionLabelKey: 'network.viewRequests',
     actionLabelFallback: 'View Requests',
@@ -186,7 +196,7 @@ const TYPE_CONFIG = {
     titleFallback: 'Connection Accepted',
     msgKey: 'notif.connectionAcceptedMsg',
     msgFallback: '{{name}} accepted your connection request',
-    interpolate: (n) => ({ name: n.senderName || 'Someone' }),
+    interpolate: (n) => ({ name: getSenderName(n) }),
     actionUrl: '/network',
     actionLabelKey: 'network.viewConnections',
     actionLabelFallback: 'View Network',
@@ -199,7 +209,7 @@ const TYPE_CONFIG = {
     titleFallback: 'Connection Request Declined',
     msgKey: 'notif.connectionRejectedMsg',
     msgFallback: '{{name}} declined your connection request',
-    interpolate: (n) => ({ name: n.senderName || 'Someone' }),
+    interpolate: (n) => ({ name: getSenderName(n) }),
   },
   follow: {
     severity: 'info',
@@ -209,7 +219,7 @@ const TYPE_CONFIG = {
     titleFallback: 'New Follower',
     msgKey: 'notif.followMsg',
     msgFallback: '{{name}} started following you',
-    interpolate: (n) => ({ name: n.senderName || 'Someone' }),
+    interpolate: (n) => ({ name: getSenderName(n) }),
     actionUrl: '/network',
     actionLabelKey: 'network.viewFollowers',
     actionLabelFallback: 'View Followers',
@@ -319,7 +329,7 @@ export default function NotificationProvider({ children }) {
             alignItems: 'stretch',
             p: 0,
             overflow: 'hidden',
-            borderRadius: 2.5,
+            borderRadius: 1,
             fontFamily: theme.typography.fontFamily,
             boxShadow: `0 8px 32px ${alpha(theme.palette[toast?.severity || 'info'].main, 0.35)}`,
             borderInlineStart: `4px solid ${severityColor[toast?.severity || 'info']}`,

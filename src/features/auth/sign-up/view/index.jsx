@@ -280,7 +280,7 @@ export default function SignUpView() {
                 </Stepper>
 
                 <Paper sx={{
-                  p: { xs: 2.5, sm: 3.5 }, borderRadius: 3, bgcolor: 'white',
+                  p: { xs: 2.5, sm: 3.5 }, borderRadius: 1, bgcolor: 'white',
                   border: '1px solid rgba(31, 13, 66, 0.06)',
                   boxShadow: '0 4px 24px rgba(12,8,24,0.06)',
                   transition: 'box-shadow 0.3s ease',

@@ -150,7 +150,7 @@ export const getTheme = (direction, mode = 'light') => {
       button: { fontWeight: 600, letterSpacing: '0.01em' },
       overline: { fontWeight: 600, fontSize: '0.625rem', letterSpacing: '0.08em', textTransform: 'uppercase' },
     },
-    shape: { borderRadius: 12 },
+    shape: { borderRadius: 8 },
     spacing: 8,
     customSpacing: {
       xs: 4,
@@ -207,7 +207,7 @@ export const getTheme = (direction, mode = 'light') => {
           root: {
             textTransform: 'none',
             fontWeight: 600,
-            borderRadius: 999,
+            borderRadius: 20,
             padding: '10px 24px',
             fontSize: '0.9rem',
             transition: 'all 0.2s ease',
@@ -249,7 +249,7 @@ export const getTheme = (direction, mode = 'light') => {
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: 16,
+            borderRadius: 8,
             border: `1px solid ${div}`,
             boxShadow: `0 4px 12px rgba(${shadowColor}, 0.04)`,
             transition: 'all 0.25s ease',
@@ -267,7 +267,7 @@ export const getTheme = (direction, mode = 'light') => {
         styleOverrides: {
           root: {
             '& .MuiOutlinedInput-root': {
-              borderRadius: 12,
+              borderRadius: 6,
               backgroundColor: isLight ? '#FFFFFF' : alpha('#FFFFFF', 0.04),
               transition: 'all 0.2s ease',
               '& fieldset': { borderColor: div },
@@ -282,7 +282,7 @@ export const getTheme = (direction, mode = 'light') => {
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: 12,
+            borderRadius: 6,
             backgroundColor: isLight ? '#FFFFFF' : alpha('#FFFFFF', 0.04),
           },
         },
@@ -290,7 +290,7 @@ export const getTheme = (direction, mode = 'light') => {
       MuiChip: {
         styleOverrides: {
           root: {
-            borderRadius: 999,
+            borderRadius: 10,
             fontWeight: 500,
             fontSize: '0.8rem',
             '&:focus-visible': {
@@ -335,7 +335,7 @@ export const getTheme = (direction, mode = 'light') => {
             '&:focus-visible': {
               outline: `2px solid ${p.main}`,
               outlineOffset: '-2px',
-              borderRadius: 8,
+              borderRadius: 6,
             },
           },
         },
@@ -349,7 +349,7 @@ export const getTheme = (direction, mode = 'light') => {
       MuiMenuItem: {
         styleOverrides: {
           root: {
-            borderRadius: 8,
+            borderRadius: 6,
             margin: '2px 6px',
             padding: '10px 12px',
             '&:hover': { backgroundColor: alpha(p.main, 0.04) },
@@ -364,7 +364,7 @@ export const getTheme = (direction, mode = 'light') => {
       MuiMenu: {
         styleOverrides: {
           paper: {
-            borderRadius: 14,
+            borderRadius: 8,
             border: `1px solid ${div}`,
             boxShadow: `0 18px 40px rgba(${shadowColor}, 0.08)`,
             overflow: 'visible',
@@ -375,7 +375,7 @@ export const getTheme = (direction, mode = 'light') => {
         styleOverrides: {
           tooltip: {
             backgroundColor: s.dark,
-            borderRadius: 8,
+            borderRadius: 6,
             padding: '6px 12px',
             fontSize: '0.75rem',
           },
@@ -388,7 +388,7 @@ export const getTheme = (direction, mode = 'light') => {
         },
       },
       MuiSkeleton: {
-        styleOverrides: { root: { borderRadius: 8 } },
+        styleOverrides: { root: { borderRadius: 4 } },
       },
       MuiSwitch: {
         styleOverrides: {

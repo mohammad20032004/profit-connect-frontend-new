@@ -44,7 +44,7 @@ export default function MyProposalsCard() {
   }, [])
 
   return (
-    <Paper variant="outlined" sx={{ p: 1.75, borderRadius: 2.5, border: '1px solid', borderColor: alpha(COLORS.primary, 0.18), bgcolor: 'background.paper', width: '100%', textAlign: 'left' }}>
+    <Paper variant="outlined" sx={{ p: 1.75, borderRadius: 1, border: '1px solid', borderColor: alpha(COLORS.primary, 0.18), bgcolor: 'background.paper', width: '100%', textAlign: 'left' }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <Box sx={{

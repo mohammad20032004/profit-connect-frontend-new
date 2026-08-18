@@ -543,7 +543,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
         <AnimatedBox delay={0.1}>
           <Box component="form" onSubmit={handleCommentSubmit} sx={{ px: { xs: 2, sm: 3 }, pb: 2 }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <TextField fullWidth size="small" placeholder={t('dashboard.action.writeComment')} value={commentText} onChange={(e) => setCommentText(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 999, bgcolor: 'action.hover' } }} />
+              <TextField fullWidth size="small" placeholder={t('dashboard.action.writeComment')} value={commentText} onChange={(e) => setCommentText(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 20, bgcolor: 'action.hover' } }} />
               <Box component={motion.div} whileTap={{ scale: 0.85 }} transition={{ duration: 0.12 }}>
                 <IconButton type="submit" disabled={!commentText.trim() || commentLoading} sx={{ color: 'primary.main' }}>
                   <SendOutlined />
@@ -754,7 +754,7 @@ export default function PostsSection() {
               variant="extended"
               onClick={() => setCreatePostOpen(true)}
               sx={{
-                borderRadius: 999,
+                borderRadius: 20,
                 fontWeight: 700,
                 fontSize: '0.9rem',
                 textTransform: 'none',

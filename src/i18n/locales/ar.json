@@ -2,6 +2,7 @@
   "nav": {
     "home": "الرئيسية",
     "network": "الشبكة",
+    "companies": "الشركات",
     "projects": "المشاريع",
     "jobs": "الوظائف",
     "alerts": "التنبيهات"
@@ -43,8 +44,18 @@
   },
   "companies": {
     "title": "الشركات",
+    "subtitle": "اكتشف الشركات الأعلى تقييماً واستكشف الفرص",
+    "heroTitle": "الشركة الأعلى تقييماً",
+    "heroBadge": "#1 الأعلى تقييماً",
+    "searchPlaceholder": "ابحث عن الشركات بالاسم أو المجال أو الموقع...",
+    "filterAll": "جميع المجالات",
+    "sortBy": "ترتيب حسب",
+    "sortRating": "الأعلى تقييماً",
+    "sortFollowers": "الأكثر متابعة",
+    "sortNewest": "الأحدث",
     "create": "إنشاء شركة",
     "noCompanies": "لا توجد شركات بعد",
+    "noResults": "لا توجد شركات مطابقة لبحثك",
     "notFound": "الشركة غير موجودة",
     "followers_one": "{{count}} متابع",
     "followers_other": "{{count}} متابعين",
@@ -74,7 +85,9 @@
     "retry": "إعادة المحاولة",
     "back": "العودة إلى الشركات",
     "edit": "تعديل",
-    "delete": "حذف"
+    "delete": "حذف",
+    "viewProfile": "عرض الملف",
+    "verified": "موثقة"
   },
   "profile": {
     "followers": "المتابعون",
