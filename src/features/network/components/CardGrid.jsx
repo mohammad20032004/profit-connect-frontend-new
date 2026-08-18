@@ -16,7 +16,14 @@ const fadeUpKeyframes = {
   },
 }
 
-export default function CardGrid({ children, sx, grid = true }) {
+const fbGridSx = {
+  display: 'grid',
+  gap: 1.5,
+  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 240px))',
+  justifyItems: 'stretch',
+}
+
+export default function CardGrid({ children, sx, grid = true, wrap = false }) {
   const enabled = useSelector((s) => s.user.user?.settings?.animationEnabled !== false)
 
   const items = enabled
@@ -32,10 +39,16 @@ export default function CardGrid({ children, sx, grid = true }) {
       })
     : children
 
+  const container = wrap
+    ? fbGridSx
+    : grid
+      ? listGridSx
+      : { display: 'flex', flexDirection: 'column', gap: 1.5 }
+
   return (
     <Box
       sx={{
-        ...(grid ? listGridSx : { display: 'flex', flexDirection: 'column', gap: 1.5 }),
+        ...container,
         ...sx,
         ...fadeUpKeyframes,
       }}

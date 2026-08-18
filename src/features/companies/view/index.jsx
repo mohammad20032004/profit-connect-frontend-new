@@ -446,7 +446,7 @@ export default function CompaniesList() {
   const restCompanies = filteredCompanies.length > 1 ? filteredCompanies.slice(1) : []
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 } }}>
+    <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
       <MotionBox variants={staggerContainer} initial="hidden" animate="visible">
         {/* Header */}
         <MotionBox variants={fadeUp} sx={{ mb: 4 }}>
@@ -537,13 +537,23 @@ export default function CompaniesList() {
         {loading && !error && (
           <Box>
             <HeroSkeleton />
-            <Stack direction="row" spacing={2.5} sx={{ mt: 3 }}>
+            <Box
+              sx={{
+                mt: 3,
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: 'repeat(2, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                  xl: 'repeat(4, 1fr)',
+                },
+                gap: 2.5,
+              }}
+            >
               {[0, 1, 2, 3].map((i) => (
-                <Box key={i} sx={{ flex: 1, display: { xs: 'none', lg: 'block' } }}>
-                  <CardSkeleton />
-                </Box>
+                <CardSkeleton key={i} />
               ))}
-            </Stack>
+            </Box>
           </Box>
         )}
 
@@ -563,22 +573,15 @@ export default function CompaniesList() {
         {/* Content */}
         {!loading && !error && filteredCompanies.length > 0 && (
           <>
-            {/* Hero: Top Rated Company */}
-            {topCompany && (
-              <Box sx={{ mb: 3 }}>
-                <HeroCompanyCard company={topCompany} t={t} navigate={navigate} />
-              </Box>
-            )}
-
-            {/* Rest: Grid */}
-            {restCompanies.length > 0 && (
+            {/* Desktop xl+: Unified grid with hero spanning 2 cols */}
+            <Box sx={{ display: { xs: 'none', xl: 'block' } }}>
               <MotionBox variants={staggerFast} initial="hidden" animate="visible">
-                <Stack direction="row" alignItems="center" sx={{ mb: 2 }}>
+                <Stack direction="row" alignItems="center" sx={{ mb: 2.5 }}>
                   <Typography variant="h6" fontWeight={700}>
                     {t('companies.title')}
                   </Typography>
                   <Chip
-                    label={restCompanies.length}
+                    label={filteredCompanies.length}
                     size="small"
                     sx={{ ml: 1, fontWeight: 600, bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'primary.main' }}
                   />
@@ -586,26 +589,74 @@ export default function CompaniesList() {
                 <Box
                   sx={{
                     display: 'grid',
-                    gridTemplateColumns: {
-                      xs: '1fr',
-                      sm: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    },
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gridAutoRows: 'auto',
                     gap: 2.5,
                   }}
                 >
-                  {restCompanies.map((company, i) => (
-                    <CompanyCard
-                      key={company._id || company.id}
-                      company={company}
-                      t={t}
-                      navigate={navigate}
-                      index={i}
-                    />
+                  {filteredCompanies.map((company, i) => (
+                    i === 0 ? (
+                      <Box key={company._id || company.id} sx={{ gridColumn: 'span 2', gridRow: 'span 1' }}>
+                        <HeroCompanyCard company={company} t={t} navigate={navigate} />
+                      </Box>
+                    ) : (
+                      <CompanyCard
+                        key={company._id || company.id}
+                        company={company}
+                        t={t}
+                        navigate={navigate}
+                        index={i}
+                      />
+                    )
                   ))}
                 </Box>
               </MotionBox>
-            )}
+            </Box>
+
+            {/* Below xl: Original hero + grid layout */}
+            <Box sx={{ display: { xs: 'block', xl: 'none' } }}>
+              {topCompany && (
+                <Box sx={{ mb: 3 }}>
+                  <HeroCompanyCard company={topCompany} t={t} navigate={navigate} />
+                </Box>
+              )}
+
+              {restCompanies.length > 0 && (
+                <MotionBox variants={staggerFast} initial="hidden" animate="visible">
+                  <Stack direction="row" alignItems="center" sx={{ mb: 2 }}>
+                    <Typography variant="h6" fontWeight={700}>
+                      {t('companies.title')}
+                    </Typography>
+                    <Chip
+                      label={restCompanies.length}
+                      size="small"
+                      sx={{ ml: 1, fontWeight: 600, bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'primary.main' }}
+                    />
+                  </Stack>
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: {
+                        xs: '1fr',
+                        sm: 'repeat(2, 1fr)',
+                        lg: 'repeat(3, 1fr)',
+                      },
+                      gap: 2.5,
+                    }}
+                  >
+                    {restCompanies.map((company, i) => (
+                      <CompanyCard
+                        key={company._id || company.id}
+                        company={company}
+                        t={t}
+                        navigate={navigate}
+                        index={i}
+                      />
+                    ))}
+                  </Box>
+                </MotionBox>
+              )}
+            </Box>
           </>
         )}
       </MotionBox>

@@ -9,6 +9,7 @@ import {
   IconButton,
   Divider,
   CircularProgress,
+  Skeleton,
   TextField,
   Menu,
   MenuItem,
@@ -603,13 +604,33 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
 
 function PostSkeleton() {
   return (
-    <Paper sx={{ p: 3 }}>
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-        <CircularProgress size={48} />
-        <Box sx={{ flex: 1 }}>
-          <CircularProgress size={16} sx={{ display: 'block', mb: 1 }} />
-          <CircularProgress size={12} />
+    <Paper sx={{ p: 0, overflow: 'hidden' }}>
+      <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
+          <Skeleton variant="circular" width={44} height={44} />
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Skeleton variant="text" width="40%" height={20} sx={{ mb: 0.5 }} />
+            <Skeleton variant="text" width="25%" height={14} />
+            <Skeleton variant="text" width="15%" height={14} sx={{ mt: 0.5 }} />
+          </Box>
+        </Stack>
+
+        <Box sx={{ mt: 2 }}>
+          <Skeleton variant="text" width="100%" height={16} />
+          <Skeleton variant="text" width="90%" height={16} />
+          <Skeleton variant="text" width="70%" height={16} />
         </Box>
+
+        <Skeleton variant="rectangular" width="100%" height={200} sx={{ mt: 2, borderRadius: 2 }} />
+      </Box>
+
+      <Divider sx={{ mx: 3 }} />
+
+      <Stack direction="row" spacing={2} sx={{ px: { xs: 2, sm: 3 }, py: 1.5, justifyContent: 'space-around' }}>
+        <Skeleton variant="text" width={60} height={20} />
+        <Skeleton variant="text" width={80} height={20} />
+        <Skeleton variant="text" width={70} height={20} />
+        <Skeleton variant="text" width={55} height={20} />
       </Stack>
     </Paper>
   )
@@ -724,8 +745,8 @@ export default function PostsSection() {
                 ))}
               </Stack>
               {hasMore && (
-                <Box ref={sentinelRef} sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
-                  <CircularProgress size={24} />
+                <Box ref={sentinelRef} sx={{ py: 2 }}>
+                  <PostSkeleton />
                 </Box>
               )}
               {!hasMore && posts.length > 0 && (
