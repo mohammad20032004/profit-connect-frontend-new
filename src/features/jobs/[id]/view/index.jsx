@@ -10,7 +10,7 @@ import {
   LocationOnOutlined, AccessTimeOutlined,
   AttachMoneyOutlined, CheckCircleOutlineOutlined, CloseOutlined,
   ArrowBackOutlined, UploadFileOutlined, SendOutlined,
-  StarOutlineOutlined, PeopleOutlined,
+  StarOutlineOutlined, PeopleOutlined, BusinessOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -24,7 +24,7 @@ const TYPE_COLORS = {
   'Contract': { bg: '#FFF3E0', color: '#E65100' },
 }
 
-const LEVEL_LABELS = { Entry: lang => lang === 'ar' ? 'مبتدئ' : 'Entry', Mid: lang => lang === 'ar' ? 'متوسط' : 'Mid', Senior: lang => lang === 'ar' ? '高级' : 'Senior', Lead: lang => lang === 'ar' ? 'قائد فريق' : 'Lead' }
+const LEVEL_LABELS = { Entry: lang => lang === 'ar' ? 'مبتدئ' : 'Entry', Mid: lang => lang === 'ar' ? 'متوسط' : 'Mid', Senior: lang => lang === 'ar' ? 'متقدم' : 'Senior', Lead: lang => lang === 'ar' ? 'قائد فريق' : 'Lead' }
 const PLACE_LABELS = { Remote: lang => lang === 'ar' ? 'عن بُعد' : 'Remote', Onsite: lang => lang === 'ar' ? 'في المكتب' : 'On-site', Hybrid: lang => lang === 'ar' ? 'مختلط' : 'Hybrid' }
 
 function formatSalary(salary) {
@@ -59,7 +59,6 @@ export default function JobDetailView() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  // Apply Modal
   const [applyOpen, setApplyOpen] = useState(false)
   const [coverLetter, setCoverLetter] = useState('')
   const [resumeFile, setResumeFile] = useState(null)
@@ -127,272 +126,251 @@ export default function JobDetailView() {
 
   const tc = TYPE_COLORS[job.type] || { bg: '#F5F5F5', color: '#616161' }
   const salary = formatSalary(job.salary)
+  const postedByName = [job.postedBy?.profile?.firstName, job.postedBy?.profile?.lastName].filter(Boolean).join(' ')
 
   return (
     <Box sx={{ minHeight: 'calc(100vh - 88px)', bgcolor: 'background.default' }}>
       <Container maxWidth="lg" sx={{ py: 3, px: { xs: 2, sm: 3 } }}>
 
-        {/* Back Button */}
-        <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-          <Button
-            startIcon={<ArrowBackOutlined />}
-            onClick={() => navigate('/jobs')}
-            sx={{ mb: 2, color: 'text.secondary', textTransform: 'none', fontSize: '0.85rem' }}
-          >
-            {t('projects.back')}
-          </Button>
-        </motion.div>
 
-        <Grid container spacing={3}>
-          {/* Main Content */}
-          <Grid size={{ xs: 12, lg: 8 }}>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <Paper sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <Paper sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+            <Grid container>
 
-                {/* Company + Title */}
-                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2 }}>
-                  <Avatar
-                    src={job.company?.logo}
-                    alt={job.company?.name}
-                    sx={{
-                      width: 48, height: 48, flexShrink: 0,
-                      bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
-                      fontSize: '1rem', fontWeight: 700,
-                      border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
-                    }}
-                  >
-                    {job.company?.name?.charAt(0)?.toUpperCase()}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="h6" fontWeight={800} sx={{ lineHeight: 1.3 }}>
-                      {job.title}
-                    </Typography>
-                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', mt: 0.25 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-                        {job.company?.name}
-                      </Typography>
-                      {job.company?.isVerified && (
-                        <CheckCircleOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />
-                      )}
-                    </Stack>
-                  </Box>
-                </Stack>
+              {/* ── Left: Main Content (scrollable) ── */}
+              <Grid size={{ xs: 12, md: 7 }} sx={{ borderColor: 'divider' }}>
+                <Box sx={{ p: { xs: 2.5, md: 3 }, overflow: 'auto', maxHeight: { md: 'calc(100vh - 140px)' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}>
 
-                {/* Tags */}
-                <Stack direction="row" spacing={0.75} sx={{ mb: 2.5, flexWrap: 'wrap', gap: 0.75 }}>
-                  {job.type && (
-                    <Chip label={job.type} size="small"
-                      sx={{ height: 24, fontSize: '0.7rem', fontWeight: 600, bgcolor: tc.bg, color: tc.color }} />
-                  )}
-                  {job.workLevel && (
-                    <Chip label={LEVEL_LABELS[job.workLevel]?.(lang) || job.workLevel} size="small" variant="outlined"
-                      sx={{ height: 24, fontSize: '0.7rem', fontWeight: 600 }} />
-                  )}
-                  {job.workPlace && (
-                    <Chip label={PLACE_LABELS[job.workPlace]?.(lang) || job.workPlace} size="small" variant="outlined"
-                      sx={{ height: 24, fontSize: '0.7rem', fontWeight: 600 }} />
-                  )}
-                  {job.status && (
-                    <Chip label={job.status === 'Open' ? t('jobs.statusOpen') : t('jobs.statusClosed')} size="small"
-                      sx={{
-                        height: 24, fontSize: '0.7rem', fontWeight: 600,
-                        bgcolor: job.status === 'Open' ? alpha('#16A34A', 0.1) : alpha('#DC2626', 0.1),
-                        color: job.status === 'Open' ? '#16A34A' : '#DC2626',
-                      }} />
-                  )}
-                </Stack>
-
-                {/* Quick Info */}
-                <Stack direction="row" spacing={2} sx={{ mb: 3, flexWrap: 'wrap', gap: 1.5 }}>
-                  {job.location && (
-                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                      <LocationOnOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary" fontSize="0.85rem">{job.location}</Typography>
-                    </Stack>
-                  )}
-                  {salary && (
-                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                      <AttachMoneyOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary" fontSize="0.85rem">{salary}</Typography>
-                    </Stack>
-                  )}
-                  <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                    <AccessTimeOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
-                    <Typography variant="body2" color="text.secondary" fontSize="0.85rem">
-                      {timeAgo(job.createdAt, lang)}
-                    </Typography>
-                  </Stack>
-                </Stack>
-
-                <Divider sx={{ mb: 3 }} />
-
-                {/* Description */}
-                <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
-                  {t('jobs.description')}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.8, mb: 3, whiteSpace: 'pre-line' }}>
-                  {job.description}
-                </Typography>
-
-                {/* Requirements */}
-                {job.requirements?.length > 0 && (
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5 }}>
-                      {t('jobs.requirements')}
-                    </Typography>
-                    <Stack spacing={1}>
-                      {job.requirements.map((req, i) => (
-                        <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-                          <CheckCircleOutlineOutlined sx={{ fontSize: 16, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
-                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.875rem' }}>
-                            {req}
-                          </Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-
-                {/* Responsibilities */}
-                {job.responsibilities?.length > 0 && (
-                  <Box>
-                    <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5 }}>
-                      {t('jobs.responsibilities')}
-                    </Typography>
-                    <Stack spacing={1}>
-                      {job.responsibilities.map((resp, i) => (
-                        <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-                          <CheckCircleOutlineOutlined sx={{ fontSize: 16, color: 'success.main', mt: 0.25, flexShrink: 0 }} />
-                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.875rem' }}>
-                            {resp}
-                          </Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-              </Paper>
-            </motion.div>
-          </Grid>
-
-          {/* Sidebar */}
-          <Grid size={{ xs: 12, lg: 4 }}>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}>
-              <Stack spacing={2}>
-                {/* Apply Card */}
-                <Paper sx={{ p: 2.5, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button
-                      variant="primary"
-                      fullWidth
-                      size="large"
-                      startIcon={<SendOutlined />}
-                      onClick={() => user ? setApplyOpen(true) : navigate('/sign-in')}
-                      disabled={job.status !== 'Open'}
-                      sx={{
-                        py: 1.5, fontWeight: 700, fontSize: '0.95rem',
-                        bgcolor: '#3D1C6E', '&:hover': { bgcolor: '#2E1555' },
-                        color: '#fff', textTransform: 'none', borderRadius: 1.5,
-                      }}
-                    >
-                      {job.status === 'Open' ? (lang === 'ar' ? 'تقدم للوظيفة' : 'Apply Now') : (lang === 'ar' ? 'الوظيفة مغلقة' : 'Job Closed')}
-                    </Button>
-                  </motion.div>
-                  {job.status === 'Open' && (
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 1, fontSize: '0.7rem' }}>
-                      {lang === 'ar' ? 'سيتم إرسال سيرتك الذاتية مباشرة للشركة' : 'Your resume will be sent directly to the company'}
-                    </Typography>
-                  )}
-                </Paper>
-
-                {/* Company Card */}
-                <Paper
-                  onClick={() => navigate(`/companies/${job.company?._id || job.company?.id}`)}
-                  sx={{
-                    p: 2.5, borderRadius: 2, border: '1px solid', borderColor: 'divider',
-                    cursor: 'pointer', transition: 'all 0.2s ease',
-                    '&:hover': { borderColor: 'primary.main', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' },
-                  }}
-                >
-                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.5 }}>
+                  {/* Title + Company */}
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', mb: 2 }}>
                     <Avatar
                       src={job.company?.logo}
+                      alt={job.company?.name}
                       sx={{
-                        width: 44, height: 44,
+                        width: 48, height: 48, flexShrink: 0,
                         bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
-                        fontSize: '0.9rem', fontWeight: 700,
+                        fontSize: '1.1rem', fontWeight: 700,
+                        border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
                       }}
                     >
                       {job.company?.name?.charAt(0)?.toUpperCase()}
                     </Avatar>
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="subtitle2" fontWeight={700} noWrap>{job.company?.name}</Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-                        {job.company?.industry || job.company?.companySize}
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Typography variant="h6" fontWeight={800} sx={{ lineHeight: 1.3, mb: 0.25 }}>
+                        {job.title}
                       </Typography>
+                      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 0.5 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                          {job.company?.name}
+                        </Typography>
+                        {job.company?.isVerified && (
+                          <CheckCircleOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />
+                        )}
+                      </Stack>
                     </Box>
                   </Stack>
 
-                  <Divider sx={{ mb: 1.5 }} />
-
-                  <Stack spacing={1}>
-                    {job.company?.averageRating > 0 && (
-                      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                        <StarOutlineOutlined sx={{ fontSize: 14, color: 'warning.main' }} />
-                        <Typography variant="body2" fontSize="0.8rem" fontWeight={600}>
-                          {job.company.averageRating.toFixed(1)}
-                        </Typography>
-                      </Stack>
+                  {/* Tags */}
+                  <Stack direction="row" spacing={0.75} sx={{ mb: 2.5, flexWrap: 'wrap', gap: 0.75 }}>
+                    {job.type && (
+                      <Chip label={job.type} size="small"
+                        sx={{ height: 24, fontSize: '0.7rem', fontWeight: 600, bgcolor: tc.bg, color: tc.color }} />
                     )}
-                    {job.company?.followersCount > 0 && (
-                      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                        <PeopleOutlined sx={{ fontSize: 14, color: 'text.secondary' }} />
-                        <Typography variant="body2" fontSize="0.8rem" color="text.secondary">
-                          {job.company.followersCount} {lang === 'ar' ? 'متابع' : 'followers'}
-                        </Typography>
-                      </Stack>
+                    {job.workLevel && (
+                      <Chip label={LEVEL_LABELS[job.workLevel]?.(lang) || job.workLevel} size="small" variant="outlined"
+                        sx={{ height: 24, fontSize: '0.7rem', fontWeight: 600 }} />
                     )}
-                    {job.company?.location && (
-                      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                        <LocationOnOutlined sx={{ fontSize: 14, color: 'text.secondary' }} />
-                        <Typography variant="body2" fontSize="0.8rem" color="text.secondary">
-                          {[job.company.location?.city, job.company.location?.country].filter(Boolean).join(', ')}
-                        </Typography>
-                      </Stack>
+                    {job.workPlace && (
+                      <Chip label={PLACE_LABELS[job.workPlace]?.(lang) || job.workPlace} size="small" variant="outlined"
+                        sx={{ height: 24, fontSize: '0.7rem', fontWeight: 600 }} />
+                    )}
+                    {job.status && (
+                      <Chip label={job.status === 'Open' ? t('jobs.statusOpen') : t('jobs.statusClosed')} size="small"
+                        sx={{
+                          height: 24, fontSize: '0.7rem', fontWeight: 600,
+                          bgcolor: job.status === 'Open' ? alpha('#16A34A', 0.1) : alpha('#DC2626', 0.1),
+                          color: job.status === 'Open' ? '#16A34A' : '#DC2626',
+                        }} />
                     )}
                   </Stack>
-                </Paper>
 
-                {/* Posted By */}
-                {job.postedBy && (
-                  <Paper sx={{ p: 2.5, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 1 }}>
-                      {t('jobs.postedBy')}
-                    </Typography>
+                  <Divider sx={{ mb: 2.5 }} />
+
+                  {/* Description */}
+                  <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.25 }}>
+                    {t('jobs.description')}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.8, mb: 3, whiteSpace: 'pre-line' }}>
+                    {job.description}
+                  </Typography>
+
+                  {/* Requirements */}
+                  {job.requirements?.length > 0 && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.25 }}>
+                        {t('jobs.requirements')}
+                      </Typography>
+                      <Stack spacing={0.75}>
+                        {job.requirements.map((req, i) => (
+                          <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+                            <CheckCircleOutlineOutlined sx={{ fontSize: 15, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
+                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.85rem' }}>
+                              {req}
+                            </Typography>
+                          </Stack>
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+
+                  {/* Responsibilities */}
+                  {job.responsibilities?.length > 0 && (
+                    <Box>
+                      <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.25 }}>
+                        {t('jobs.responsibilities')}
+                      </Typography>
+                      <Stack spacing={0.75}>
+                        {job.responsibilities.map((resp, i) => (
+                          <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+                            <CheckCircleOutlineOutlined sx={{ fontSize: 15, color: 'success.main', mt: 0.25, flexShrink: 0 }} />
+                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.85rem' }}>
+                              {resp}
+                            </Typography>
+                          </Stack>
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+                </Box>
+              </Grid>
+
+              {/* ── Right: Sidebar Info (sticky) ── */}
+              <Grid size={{ xs: 12, md: 5 }}>
+                <Box sx={{
+                  p: { xs: 2.5, md: 3 },
+                  position: { md: 'sticky' },
+                  top: { md: 80 },
+                  maxHeight: { md: 'calc(100vh - 140px)' },
+                  overflow: 'auto',
+                  '&::-webkit-scrollbar': { width: 4 },
+                  '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 },
+                }}>
+
+                  {/* Quick Info */}
+                  <Stack spacing={1.25} sx={{ mb: 2.5 }}>
+                    {job.location && (
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <LocationOnOutlined sx={{ fontSize: 18, color: 'text.secondary' }} />
+                        <Typography variant="body2" color="text.secondary" fontSize="0.85rem">{job.location}</Typography>
+                      </Stack>
+                    )}
+                    {salary && (
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <AttachMoneyOutlined sx={{ fontSize: 18, color: 'text.secondary' }} />
+                        <Typography variant="body2" color="text.secondary" fontSize="0.85rem">{salary}</Typography>
+                      </Stack>
+                    )}
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                      <AccessTimeOutlined sx={{ fontSize: 18, color: 'text.secondary' }} />
+                      <Typography variant="body2" color="text.secondary" fontSize="0.85rem">
+                        {timeAgo(job.createdAt, lang)}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+
+                  <Divider sx={{ mb: 2.5 }} />
+
+                  {/* Apply Button */}
+                  <Button
+                    variant="primary"
+                    fullWidth
+                    size="large"
+                    startIcon={<SendOutlined />}
+                    onClick={() => user ? setApplyOpen(true) : navigate('/sign-in')}
+                    disabled={job.status !== 'Open'}
+                    sx={{ py: 1.4, fontWeight: 700, fontSize: '0.95rem', textTransform: 'none', borderRadius: 1.5, mb: 0.75 }}
+                  >
+                    {job.status === 'Open' ? (lang === 'ar' ? 'تقدم للوظيفة' : 'Apply Now') : (lang === 'ar' ? 'الوظيفة مغلقة' : 'Job Closed')}
+                  </Button>
+                  {job.status === 'Open' && (
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mb: 2.5, fontSize: '0.7rem' }}>
+                      {lang === 'ar' ? 'سيتم إرسال سيرتك الذاتية مباشرة للشركة' : 'Your resume will be sent directly to the company'}
+                    </Typography>
+                  )}
+
+                  <Divider sx={{ mb: 2.5 }} />
+
+                  {/* Company Info */}
+                  <Box
+                    onClick={() => navigate(`/companies/${job.company?._id || job.company?.id}`)}
+                    sx={{ cursor: 'pointer', mb: 2.5, p: 1.5, borderRadius: 1, transition: 'all 0.2s ease', '&:hover': { bgcolor: alpha('#3D1C6E', 0.04) } }}
+                  >
+                    <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                       <Avatar
-                        src={job.postedBy?.profile?.avatar}
-                        sx={{ width: 32, height: 32, bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E', fontSize: '0.75rem', fontWeight: 700 }}
+                        src={job.company?.logo}
+                        sx={{ width: 40, height: 40, flexShrink: 0, bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E', fontSize: '0.85rem', fontWeight: 700 }}
                       >
-                        {job.postedBy?.profile?.firstName?.charAt(0)}
+                        {job.company?.name?.charAt(0)?.toUpperCase()}
                       </Avatar>
-                      <Box>
-                        <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
-                          {[job.postedBy?.profile?.firstName, job.postedBy?.profile?.lastName].filter(Boolean).join(' ')}
-                        </Typography>
-                        {job.postedBy?.profile?.headline && (
-                          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-                            {job.postedBy.profile.headline}
-                          </Typography>
-                        )}
+                      <Box sx={{ minWidth: 0, flex: 1 }}>
+                        <Typography variant="subtitle2" fontWeight={700} noWrap>{job.company?.name}</Typography>
+                        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.75, mt: 0.25 }}>
+                          {job.company?.industry && (
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
+                              <BusinessOutlined sx={{ fontSize: 12 }} />
+                              {job.company.industry}
+                            </Typography>
+                          )}
+                          {job.company?.averageRating > 0 && (
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
+                              <StarOutlineOutlined sx={{ fontSize: 12, color: 'warning.main' }} />
+                              {job.company.averageRating.toFixed(1)}
+                            </Typography>
+                          )}
+                          {job.company?.followersCount > 0 && (
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
+                              <PeopleOutlined sx={{ fontSize: 12 }} />
+                              {job.company.followersCount}
+                            </Typography>
+                          )}
+                        </Stack>
                       </Box>
                     </Stack>
-                  </Paper>
-                )}
-              </Stack>
-            </motion.div>
-          </Grid>
-        </Grid>
+                  </Box>
+
+                  {/* Posted By */}
+                  {postedByName && (
+                    <>
+                      <Divider sx={{ mb: 2 }} />
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <Avatar
+                          src={job.postedBy?.profile?.avatar}
+                          sx={{ width: 32, height: 32, bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E', fontSize: '0.75rem', fontWeight: 700 }}
+                        >
+                          {job.postedBy?.profile?.firstName?.charAt(0)}
+                        </Avatar>
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, display: 'block' }}>
+                            {t('jobs.postedBy')}
+                          </Typography>
+                          <Typography variant="body2" fontWeight={600} fontSize="0.8rem" noWrap>
+                            {postedByName}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                      {job.postedBy?.profile?.headline && (
+                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem', mt: 0.5, display: 'block' }}>
+                          {job.postedBy.profile.headline}
+                        </Typography>
+                      )}
+                    </>
+                  )}
+                </Box>
+              </Grid>
+
+            </Grid>
+          </Paper>
+        </motion.div>
       </Container>
 
       {/* Apply Dialog */}
@@ -418,8 +396,7 @@ export default function JobDetailView() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                   {lang === 'ar' ? 'حظاً موفقاً' : 'Good luck!'}
                 </Typography>
-                <Button variant="primary" onClick={handleCloseApply}
-                  sx={{ bgcolor: '#3D1C6E', '&:hover': { bgcolor: '#2E1555' } }}>
+                <Button variant="primary" onClick={handleCloseApply}>
                   {lang === 'ar' ? 'إغلاق' : 'Close'}
                 </Button>
               </Box>
@@ -435,7 +412,6 @@ export default function JobDetailView() {
                 </DialogTitle>
                 <DialogContent sx={{ pt: 1 }}>
                   <Stack spacing={2.5} sx={{ mt: 1 }}>
-                    {/* Resume Upload */}
                     <Box>
                       <Typography variant="body2" fontWeight={600} sx={{ mb: 0.75, fontSize: '0.85rem' }}>
                         {lang === 'ar' ? 'السيرة الذاتية *' : 'Resume *'}
@@ -472,7 +448,6 @@ export default function JobDetailView() {
                       </Paper>
                     </Box>
 
-                    {/* Cover Letter */}
                     <Box>
                       <Typography variant="body2" fontWeight={600} sx={{ mb: 0.75, fontSize: '0.85rem' }}>
                         {lang === 'ar' ? 'رسالة التقديم (اختياري)' : 'Cover Letter (optional)'}
@@ -503,7 +478,7 @@ export default function JobDetailView() {
                       onClick={handleApply}
                       disabled={applying}
                       startIcon={applying ? <CircularProgress size={16} /> : <SendOutlined />}
-                      sx={{ bgcolor: '#3D1C6E', '&:hover': { bgcolor: '#2E1555' }, textTransform: 'none' }}
+                      sx={{ textTransform: 'none' }}
                     >
                       {applying ? (lang === 'ar' ? 'جاري الإرسال...' : 'Sending...') : (lang === 'ar' ? 'إرسال الطلب' : 'Submit Application')}
                     </Button>

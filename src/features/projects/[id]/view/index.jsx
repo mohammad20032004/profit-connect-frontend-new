@@ -64,10 +64,9 @@ export default function ProjectDetail() {
     try {
       const r = await getProposals(id)
       if (r?.success) {
-        console.log('Proposals:', JSON.stringify(r.data, null, 2))
         setProposals(r.data)
       }
-    } catch (err) { console.error('Failed to fetch proposals:', err) } finally { setProposalsLoading(false) }
+    } catch (err) { /* ignore */ } finally { setProposalsLoading(false) }
   }
 
   const isClient = currentUserId === project?.client?._id
@@ -147,162 +146,225 @@ export default function ProjectDetail() {
   if (loading) return <Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><CircularProgress /></Container>
   if (!project) return (<Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button variant="text" onClick={() => navigate('/projects')} sx={{ mt: 2 }}>{t('projects.back', 'Back to Projects')}</Button></Container>)
 
-  return (
-    <Container maxWidth="lg" sx={{ py: 3 }}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
-        <Button variant="text" onClick={() => navigate(-1)} sx={{ minWidth: 0, p: 0.5 }}><ArrowBackOutlined /></Button>
-        <Typography variant="h5" fontWeight="bold" sx={{ flex: 1 }} noWrap>{project.title}</Typography>
-        <Chip label={t(`projects.statusOptions.${project.status}`, project.status)} color={statusColors[project.status] || 'default'} size="small" />
-      </Stack>
+  const budgetText = project.budget ? `${project.budget.currency || 'SAR'} ${project.budget.min.toLocaleString()}${project.budget.max ? ` - ${project.budget.max.toLocaleString()}` : ''}` : '-'
+  const deadlineText = project.deadline ? new Date(project.deadline).toLocaleDateString() : '-'
 
-      <Grid container spacing={2.5}>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <Stack spacing={2.5}>
-            <Paper sx={{ p: 3, borderRadius: 3 }}>
-              <Stack spacing={2.5}>
-                <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
-                  <Avatar sx={{ width: 56, height: 56, bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'primary.main' }}>
+  return (
+    <Box sx={{ minHeight: 'calc(100vh - 88px)', bgcolor: 'background.default' }}>
+      <Container maxWidth="lg" sx={{ py: 3, px: { xs: 2, sm: 3 } }}>
+
+        {/* Back Button */}
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
+          <Button variant="text" onClick={() => navigate(-1)} sx={{ minWidth: 0, p: 0.5 }}><ArrowBackOutlined /></Button>
+          <Chip label={t(`projects.statusOptions.${project.status}`, project.status)} color={statusColors[project.status] || 'default'} size="small" sx={{ ml: 'auto' }} />
+        </Stack>
+
+        {/* Single Horizontal Card */}
+        <Paper sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+          <Grid container>
+
+            {/* ── Left: Main Content (scrollable) ── */}
+            <Grid size={{ xs: 12, md: 7 }} sx={{ borderColor: 'divider' }}>
+              <Box sx={{ p: { xs: 2.5, md: 3 }, overflow: 'auto', maxHeight: { md: 'calc(100vh - 140px)' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}>
+
+                {/* Title + Category */}
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', mb: 2 }}>
+                  <Avatar sx={{
+                    width: 48, height: 48, flexShrink: 0,
+                    bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'primary.main',
+                    fontSize: '1.1rem', fontWeight: 700,
+                    border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+                  }}>
                     {categoryIcons[project.category] || <AssignmentOutlined />}
                   </Avatar>
-                  <Box>
-                    <Typography variant="h6" fontWeight="bold">{project.title}</Typography>
-                    <Typography variant="body2" color="text.secondary">{t(`projects.categoryOptions.${project.category}`, project.category)}</Typography>
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Typography variant="h6" fontWeight={800} sx={{ lineHeight: 1.3, mb: 0.25 }}>
+                      {project.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                      {t(`projects.categoryOptions.${project.category}`, project.category)}
+                    </Typography>
                   </Box>
                 </Stack>
 
-                <Stack direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
+                {/* Skills */}
+                {project.skills?.length > 0 && (
+                  <Stack direction="row" spacing={0.75} sx={{ mb: 2.5, flexWrap: 'wrap', gap: 0.75 }}>
+                    {project.skills.map((s) => (
+                      <Chip key={s} label={s} size="small" variant="outlined"
+                        sx={{ height: 24, fontSize: '0.7rem', fontWeight: 600 }} />
+                    ))}
+                  </Stack>
+                )}
+
+                <Divider sx={{ mb: 2.5 }} />
+
+                {/* Stats Row */}
+                <Stack direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />} sx={{ mb: 3 }}>
                   <Box sx={{ textAlign: 'center', flex: 1 }}>
-                    <AttachMoneyOutlined sx={{ fontSize: 22, color: 'primary.main' }} />
-                    <Typography variant="h6" fontWeight="bold">
-                      {project.budget ? `${project.budget.currency || 'SAR'} ${project.budget.min.toLocaleString()}${project.budget.max ? ` - ${project.budget.max.toLocaleString()}` : ''}` : '-'}
+                    <AttachMoneyOutlined sx={{ fontSize: 20, color: 'primary.main' }} />
+                    <Typography variant="body1" fontWeight="bold" sx={{ fontSize: '0.95rem' }}>
+                      {budgetText}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">{t('projects.budget', 'Budget')}</Typography>
                   </Box>
                   <Box sx={{ textAlign: 'center', flex: 1 }}>
-                    <CalendarMonthOutlined sx={{ fontSize: 22, color: 'primary.main' }} />
-                    <Typography variant="h6" fontWeight="bold">{project.deadline ? new Date(project.deadline).toLocaleDateString() : '-'}</Typography>
+                    <CalendarMonthOutlined sx={{ fontSize: 20, color: 'primary.main' }} />
+                    <Typography variant="body1" fontWeight="bold" sx={{ fontSize: '0.95rem' }}>{deadlineText}</Typography>
                     <Typography variant="caption" color="text.secondary">{t('projects.deadline', 'Deadline')}</Typography>
                   </Box>
                   <Box sx={{ textAlign: 'center', flex: 1 }}>
-                    <PersonOutlined sx={{ fontSize: 22, color: 'primary.main' }} />
-                    <Typography variant="h6" fontWeight="bold">{project.proposalsCount || 0}</Typography>
+                    <PersonOutlined sx={{ fontSize: 20, color: 'primary.main' }} />
+                    <Typography variant="body1" fontWeight="bold" sx={{ fontSize: '0.95rem' }}>{project.proposalsCount || 0}</Typography>
                     <Typography variant="caption" color="text.secondary">{t('projects.proposals', 'Proposals')}</Typography>
                   </Box>
                 </Stack>
 
-                {project.skills?.length > 0 && (
-                  <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
-                    {project.skills.map((s) => (<Chip key={s} label={s} size="small" variant="outlined" sx={{ fontSize: '0.78rem' }} />))}
-                  </Stack>
+                {/* Description */}
+                {project.description && (
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.25 }}>
+                      {t('projects.description', 'Description')}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
+                      {project.description}
+                    </Typography>
+                  </Box>
                 )}
-              </Stack>
-            </Paper>
+              </Box>
+            </Grid>
 
-            {project.description && (
-              <Paper sx={{ p: 3, borderRadius: 3 }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('projects.description', 'Description')}</Typography>
-                <Typography variant="body2" sx={{ lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{project.description}</Typography>
-              </Paper>
-            )}
+            {/* ── Right: Sidebar (sticky) ── */}
+            <Grid size={{ xs: 12, md: 5 }}>
+              <Box sx={{
+                p: { xs: 2.5, md: 3 },
+                position: { md: 'sticky' },
+                top: { md: 80 },
+                maxHeight: { md: 'calc(100vh - 140px)' },
+                overflow: 'auto',
+                '&::-webkit-scrollbar': { width: 4 },
+                '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 },
+              }}>
 
-
-          </Stack>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Stack spacing={2.5}>
-            {isClient && project?.status !== 'Completed' && project?.status !== 'Cancelled' && (
-              <Button variant="contained" onClick={handleOpenProposals} startIcon={<PersonOutlined />} fullWidth>
-                {t('projects.viewProposals', 'View Proposals')} {proposals.length > 0 && `(${proposals.length})`}
-              </Button>
-            )}
-
-            {!isClient && isOpen && !proposalSent && (
-              <Paper sx={{ p: 2.5, borderRadius: 3 }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 2 }}>{t('projects.submitProposal', 'Submit Proposal')}</Typography>
-                <Stack spacing={2}>
-                  <TextField
-                    label={t('projects.bidAmount', 'Bid Amount')}
-                    type="number"
-                    size="small"
-                    fullWidth
-                    value={proposalForm.bidAmount}
-                    onChange={(e) => setProposalForm(p => ({ ...p, bidAmount: e.target.value }))}
-                  />
-                  <TextField
-                    label={t('projects.deliveryTime', 'Delivery Time')}
-                    placeholder={t('projects.deliveryTimePlaceholder', 'e.g. 2 weeks')}
-                    size="small"
-                    fullWidth
-                    value={proposalForm.deliveryTime}
-                    onChange={(e) => setProposalForm(p => ({ ...p, deliveryTime: e.target.value }))}
-                  />
-                  <TextField
-                    label={t('projects.coverLetter', 'Cover Letter')}
-                    placeholder={t('projects.coverLetterPlaceholder', 'Describe your experience and approach...')}
-                    multiline
-                    rows={4}
-                    size="small"
-                    fullWidth
-                    value={proposalForm.coverLetter}
-                    onChange={(e) => setProposalForm(p => ({ ...p, coverLetter: e.target.value }))}
-                  />
-                  <Button variant="contained" onClick={handleSubmitProposal} disabled={submitting} fullWidth>
-                    {submitting ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.submitProposal', 'Submit Proposal')}
+                {/* Client Actions */}
+                {isClient && project?.status !== 'Completed' && project?.status !== 'Cancelled' && (
+                  <Button variant="contained" onClick={handleOpenProposals} startIcon={<PersonOutlined />} fullWidth sx={{ mb: 2.5 }}>
+                    {t('projects.viewProposals', 'View Proposals')} {proposals.length > 0 && `(${proposals.length})`}
                   </Button>
-                </Stack>
-              </Paper>
-            )}
+                )}
 
-            {!isClient && proposalSent && (
-              <Paper sx={{ p: 3, borderRadius: 1, textAlign: 'center', border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
-                <CheckCircleOutlined sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
-                <Typography variant="body2" fontWeight="bold" color="success.main">{t('projects.proposalSent', 'Your proposal has been submitted!')}</Typography>
-              </Paper>
-            )}
-
-            {project.client && (
-              <Paper sx={{ p: 2.5, borderRadius: 3 }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5 }}>{t('projects.client', 'Client')}</Typography>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Avatar src={project.client.profile?.avatar} sx={{ width: 44, height: 44 }}>{project.client.profile?.firstName?.charAt(0)}</Avatar>
-                  <Box>
-                    <Typography variant="body2" fontWeight="bold">{project.client.profile?.firstName} {project.client.profile?.lastName}</Typography>
-                    {project.client.profile?.headline && <Typography variant="caption" color="text.secondary">{project.client.profile.headline}</Typography>}
+                {/* Freelancer: Submit Proposal Form */}
+                {!isClient && isOpen && !proposalSent && (
+                  <Box sx={{ mb: 2.5 }}>
+                    <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5 }}>{t('projects.submitProposal', 'Submit Proposal')}</Typography>
+                    <Stack spacing={1.5}>
+                      <TextField
+                        label={t('projects.bidAmount', 'Bid Amount')}
+                        type="number"
+                        size="small"
+                        fullWidth
+                        value={proposalForm.bidAmount}
+                        onChange={(e) => setProposalForm(p => ({ ...p, bidAmount: e.target.value }))}
+                      />
+                      <TextField
+                        label={t('projects.deliveryTime', 'Delivery Time')}
+                        placeholder={t('projects.deliveryTimePlaceholder', 'e.g. 2 weeks')}
+                        size="small"
+                        fullWidth
+                        value={proposalForm.deliveryTime}
+                        onChange={(e) => setProposalForm(p => ({ ...p, deliveryTime: e.target.value }))}
+                      />
+                      <TextField
+                        label={t('projects.coverLetter', 'Cover Letter')}
+                        placeholder={t('projects.coverLetterPlaceholder', 'Describe your experience and approach...')}
+                        multiline
+                        rows={3}
+                        size="small"
+                        fullWidth
+                        value={proposalForm.coverLetter}
+                        onChange={(e) => setProposalForm(p => ({ ...p, coverLetter: e.target.value }))}
+                      />
+                      <Button variant="contained" onClick={handleSubmitProposal} disabled={submitting} fullWidth>
+                        {submitting ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('projects.submitProposal', 'Submit Proposal')}
+                      </Button>
+                    </Stack>
+                    <Divider sx={{ mt: 2.5 }} />
                   </Box>
-                </Stack>
-              </Paper>
-            )}
+                )}
 
-            {project.assignedTo && (
-              <Paper sx={{ p: 2.5, borderRadius: 1, border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, color: 'success.main' }}>{t('projects.freelancer', 'Freelancer')}</Typography>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Avatar src={project.assignedTo.profile?.avatar} sx={{ width: 44, height: 44 }}>{project.assignedTo.profile?.firstName?.charAt(0)}</Avatar>
-                  <Box>
-                    <Typography variant="body2" fontWeight="bold">{project.assignedTo.profile?.firstName} {project.assignedTo.profile?.lastName}</Typography>
+                {/* Freelancer: Success */}
+                {!isClient && proposalSent && (
+                  <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 1.5, textAlign: 'center', border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`, mb: 2.5 }}>
+                    <CheckCircleOutlined sx={{ fontSize: 36, color: 'success.main', mb: 0.5 }} />
+                    <Typography variant="body2" fontWeight="bold" color="success.main">{t('projects.proposalSent', 'Your proposal has been submitted!')}</Typography>
+                    <Divider sx={{ mt: 2 }} />
+                  </Paper>
+                )}
+
+                {/* Client Info */}
+                {project.client && (
+                  <Box sx={{ mb: 2.5 }}>
+                    <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 1 }}>
+                      {t('projects.client', 'Client')}
+                    </Typography>
+                    <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+                      <Avatar src={project.client.profile?.avatar} sx={{ width: 36, height: 36, bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'primary.main', fontSize: '0.8rem', fontWeight: 700 }}>
+                        {project.client.profile?.firstName?.charAt(0)}
+                      </Avatar>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography variant="body2" fontWeight={600} fontSize="0.85rem" noWrap>
+                          {project.client.profile?.firstName} {project.client.profile?.lastName}
+                        </Typography>
+                        {project.client.profile?.headline && (
+                          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                            {project.client.profile.headline}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Stack>
                   </Box>
-                </Stack>
-              </Paper>
-            )}
+                )}
 
-            {isClient && isInProgress && (
-              <Button variant="contained" color="success" onClick={handleComplete} startIcon={<CheckCircleOutlined />} fullWidth>
-                {t('projects.markComplete', 'Mark as Completed')}
-              </Button>
-            )}
+                {/* Assigned Freelancer */}
+                {project.assignedTo && (
+                  <Box sx={{ mb: 2.5 }}>
+                    <Divider sx={{ mb: 2 }} />
+                    <Typography variant="caption" color="success.main" sx={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 1 }}>
+                      {t('projects.freelancer', 'Freelancer')}
+                    </Typography>
+                    <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+                      <Avatar src={project.assignedTo.profile?.avatar} sx={{ width: 36, height: 36, bgcolor: alpha(theme.palette.success.main, 0.08), color: 'success.main', fontSize: '0.8rem', fontWeight: 700 }}>
+                        {project.assignedTo.profile?.firstName?.charAt(0)}
+                      </Avatar>
+                      <Box>
+                        <Typography variant="body2" fontWeight={600} fontSize="0.85rem" noWrap>
+                          {project.assignedTo.profile?.firstName} {project.assignedTo.profile?.lastName}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                )}
 
-            {isClient && (
-              <Button variant="outlined" color="error" onClick={() => setDeleteOpen(true)} startIcon={<DeleteOutlined />} fullWidth>
-                {t('projects.delete', 'Delete Project')}
-              </Button>
-            )}
+                {/* Client Actions */}
+                {isClient && isInProgress && (
+                  <Button variant="contained" color="success" onClick={handleComplete} startIcon={<CheckCircleOutlined />} fullWidth sx={{ mb: 1.5 }}>
+                    {t('projects.markComplete', 'Mark as Completed')}
+                  </Button>
+                )}
 
+                {isClient && (
+                  <Button variant="outlined" color="error" onClick={() => setDeleteOpen(true)} startIcon={<DeleteOutlined />} fullWidth>
+                    {t('projects.delete', 'Delete Project')}
+                  </Button>
+                )}
+              </Box>
+            </Grid>
 
-          </Stack>
-        </Grid>
-      </Grid>
+          </Grid>
+        </Paper>
+      </Container>
 
+      {/* Proposals Dialog */}
       <Dialog open={proposalsOpen} onClose={() => setProposalsOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
           {t('projects.userProposals', 'User Proposals')}
@@ -381,6 +443,7 @@ export default function ProjectDetail() {
         </DialogActions>
       </Dialog>
 
+      {/* Delete Dialog */}
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
         <DialogTitle>{t('projects.deleteConfirmTitle', 'Delete this project?')}</DialogTitle>
         <DialogContent><Typography variant="body2">{t('projects.deleteConfirmBody', 'This action cannot be undone.')}</Typography></DialogContent>
@@ -392,6 +455,7 @@ export default function ProjectDetail() {
         </DialogActions>
       </Dialog>
 
+      {/* Toast */}
       <Snackbar
         open={!!toastMsg}
         autoHideDuration={4000}
@@ -403,6 +467,6 @@ export default function ProjectDetail() {
           {toastMsg}
         </Alert>
       </Snackbar>
-    </Container>
+    </Box>
   )
 }
