@@ -5,7 +5,7 @@ import {
 } from '@mui/material'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ArrowBackOutlined, DashboardOutlined, FlagOutlined, GroupOutlined,
+  ArrowBackOutlined, SummarizeOutlined, FlagOutlined, GroupOutlined,
   PaymentsOutlined, SettingsOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
@@ -55,7 +55,7 @@ export default function ManageProject() {
   }, [fetchOverview])
 
   const TAB_ITEMS = [
-    { label: t('manage.tabOverview', 'Overview'), icon: <DashboardOutlined sx={{ fontSize: 18 }} /> },
+    { label: t('manage.tabOverview', 'Overview'), icon: <SummarizeOutlined sx={{ fontSize: 18 }} /> },
     { label: t('manage.tabMilestones', 'Timeline'), icon: <FlagOutlined sx={{ fontSize: 18 }} /> },
     { label: t('manage.tabTeam', 'Team'), icon: <GroupOutlined sx={{ fontSize: 18 }} /> },
     { label: t('manage.tabPayments', 'Payments'), icon: <PaymentsOutlined sx={{ fontSize: 18 }} /> },

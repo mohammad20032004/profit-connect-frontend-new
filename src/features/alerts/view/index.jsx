@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles'
 import {
   NotificationsOutlined, CheckCircleOutlineOutlined, WorkOutlineOutlined,
   StarBorderOutlined, InfoOutlined, DoneAllOutlined, CancelOutlined,
-  GppMaybeOutlined, RocketLaunchOutlined, BadgeOutlined,
+  WarningOutlined, RocketLaunchOutlined, BadgeOutlined,
   PaymentsOutlined, AccountBalanceWalletOutlined, RestoreOutlined, VerifiedOutlined,
   PersonAddAlt1Outlined, PeopleAltOutlined,
 } from '@mui/icons-material'
@@ -60,7 +60,7 @@ function getNotificationDisplay(n, t) {
         : t('notif.ratingMsg', 'ظ‚ط§ظ… ط¹ظ…ظٹظ„ ط¨طھظ‚ظٹظٹظ…ظƒ ظپظٹ ظ…ط´ط±ظˆط¹ {name}', { name: n.projectName }),
     },
     ai_detected: {
-      icon: <GppMaybeOutlined />,
+      icon: <WarningOutlined />,
       color: 'warning',
       title: t('notif.aiDetected', 'طھظ†ط¨ظٹظ‡: ظƒط´ظپ ظ…ط­طھظˆظ‰ ط°ظƒط§ط، ط§طµط·ظ†ط§ط¹ظٹ'),
       msg: t('notif.aiDetectedMsg', 'طھظ… ط±طµط¯ ط£ظ† ظ…ظ†ط´ظˆط±ظƒ ظٹط­طھظˆظٹ ط¹ظ„ظ‰ ظ…ط­طھظˆظ‰ ظ…ظˆظ„ظ‘ط¯ ط¨ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ ط¨ظ†ط³ط¨ط© {probability}% ظ…ظ…ط§ ظ‚ط¯ ظٹط¤ط«ط± ط³ظ„ط¨ط§ظ‹ ط¹ظ„ظ‰ ظ†ظ‚ط§ط· R-Score ط§ظ„ط®ط§طµط© ط¨ظƒ', { probability: n.aiProbability ?? 'â€”' }),

@@ -4,7 +4,7 @@ import Button from '@/ui/Button'
 import {
   ArrowBackOutlined,
   AddPhotoAlternateOutlined,
-  CollectionsBookmarkOutlined,
+  CollectionsOutlined,
   ErrorOutlined,
   FolderOpenOutlined,
   LockOutlined,
@@ -274,7 +274,7 @@ export default function GalleryView() {
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, mb: 3 }}>
         <Avatar src={owner?.avatar ? resolveMediaPath(owner.avatar) : undefined} sx={{ width: 56, height: 56, bgcolor: 'primary.light', fontSize: '1.4rem', fontWeight: 700 }}>
-          {owner?.name?.charAt(0)?.toUpperCase() || <CollectionsBookmarkOutlined />}
+          {owner?.name?.charAt(0)?.toUpperCase() || <CollectionsOutlined />}
         </Avatar>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography variant="h5" fontWeight="bold" noWrap>{title}</Typography>
@@ -285,7 +285,7 @@ export default function GalleryView() {
             <Stack direction="row" spacing={0.75} sx={{ mt: 0.5, flexWrap: 'wrap' }}>
               <Chip size="small" label={t('portfolio.itemsCount', { count: items.length })} sx={{ height: 24, fontSize: '0.72rem' }} />
               {collections.length > 0 && (
-                <Chip size="small" icon={<CollectionsBookmarkOutlined sx={{ fontSize: 13 }} />} label={t('portfolio.collectionsCount', { count: collections.length })} sx={{ height: 24, fontSize: '0.72rem' }} />
+                <Chip size="small" icon={<CollectionsOutlined sx={{ fontSize: 13 }} />} label={t('portfolio.collectionsCount', { count: collections.length })} sx={{ height: 24, fontSize: '0.72rem' }} />
               )}
             </Stack>
           )}
@@ -295,7 +295,7 @@ export default function GalleryView() {
             <Button variant="primary" startIcon={<AddPhotoAlternateOutlined />} onClick={handleAddItem}>
               {t('portfolio.addItem')}
             </Button>
-            <Button variant="secondary" startIcon={<CollectionsBookmarkOutlined />} onClick={() => { setCollectionFormData(null); setCollectionFormOpen(true) }}>
+            <Button variant="secondary" startIcon={<CollectionsOutlined />} onClick={() => { setCollectionFormData(null); setCollectionFormOpen(true) }}>
               {t('portfolio.newCollection')}
             </Button>
           </Stack>
@@ -341,7 +341,7 @@ export default function GalleryView() {
         </Box>
       ) : items.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 8 }}>
-          <CollectionsBookmarkOutlined sx={{ fontSize: 44, color: 'text.disabled', opacity: 0.6, mb: 1 }} />
+          <CollectionsOutlined sx={{ fontSize: 44, color: 'text.disabled', opacity: 0.6, mb: 1 }} />
           <Typography variant="h6" color="text.secondary">
             {isOwnGallery ? t('portfolio.noItems') : t('portfolio.noItemsOther')}
           </Typography>

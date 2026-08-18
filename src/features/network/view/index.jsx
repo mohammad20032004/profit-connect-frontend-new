@@ -1,17 +1,20 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Box, Paper, Typography, Stack, alpha, CircularProgress, Avatar, IconButton, Tooltip,
+  Box, Paper, Typography, Stack, alpha, CircularProgress, Skeleton,
   Tabs, Tab, TextField as MuiTextField, useMediaQuery, Divider, Chip,
 } from '@mui/material'
 import {
-  GroupOutlined, PersonAddOutlined, PersonAddAlt1Outlined, HourglassTopOutlined,
-  SearchOutlined, PeopleAltOutlined, PersonOffOutlined, CheckOutlined, CloseOutlined,
-  PersonSearchOutlined, PersonRemoveOutlined, RefreshOutlined, StarBorderOutlined,
-  WorkOutlineOutlined, EmojiEventsOutlined, ChevronRightOutlined, ChevronLeftOutlined, ClearOutlined,
+  GroupOutlined, PersonAddOutlined, PersonAddAlt1Outlined,
+  SearchOutlined, PeopleAltOutlined, PersonSearchOutlined, RefreshOutlined,
+  EmojiEventsOutlined, ChevronRightOutlined, ChevronLeftOutlined, ClearOutlined,
+  StarBorderOutlined, InboxOutlined, SentimentDissatisfiedOutlined,
 } from '@mui/icons-material'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { motion, AnimatePresence } from 'framer-motion'
+import { IconButton } from '@mui/material'
 import Button from '@/ui/Button'
 import {
   getConnections, getIncomingRequests, getSentRequests,
@@ -19,263 +22,49 @@ import {
   cancelConnectionRequest, removeConnection, searchUsers, getMyFollowers, getMyFollowing,
   toggleFollowUser, getDiscoverUsers, getTopUsers,
 } from '@/services/networkService'
-import { resolveMediaPath } from '@/services/profile'
+import { COLORS } from '../components/shared'
+import CardGrid from '../components/CardGrid'
+import UserCard from '../components/UserCard'
+import TopUserCard from '../components/TopUserCard'
+import EmptyState from '../components/EmptyState'
 
-const COLORS = {
-  primary: '#3D1C6E',
-  navy: '#1F3670',
-  success: '#16A34A',
-  warning: '#D97706',
-  error: '#DC2626',
-  purple: '#7C3AED',
-}
-
-const listGridSx = {
-  display: 'grid',
-  gap: 1.5,
-  alignItems: 'stretch',
-  gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))', xl: 'repeat(3, minmax(0, 1fr))' },
-}
-
-function fullName(user) {
-  if (!user) return ''
-  if (typeof user === 'string') return user
-  const prof = user.profile || {}
-  return [prof.firstName, prof.lastName].filter(Boolean).join(' ') || user.username || user.name || prof.fullname || ''
-}
-
-function UserCard({ user, status, following, onConnect, onAccept, onReject, onCancel, onRemove, onToggleFollow, busyId, t, navigate }) {
-  const avatarSrc = resolveMediaPath(user?.profile?.avatar)
-  const name = fullName(user)
-  const headline = user?.profile?.headline || user?.headline || ''
-  const followersCount = user?.profile?.followersCount
-  const rScore = user?.profile?.rScore
-  const years = user?.professional?.yearsOfExperience
-  const skills = user?.professional?.skills || []
-  const role = user?.role
-  const roleLabel = role ? t(`network.roles.${role}`, role) : ''
-
-  return (
-    <Paper variant="outlined" sx={{
-      p: 1.75, borderRadius: 2, display: 'flex', gap: 1.5, alignItems: 'center',
-      transition: 'all 0.2s ease',
-      '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(COLORS.primary, 0.25) },
-    }}>
-      <Avatar
-        src={avatarSrc}
-        sx={{ width: 48, height: 48, flexShrink: 0, bgcolor: alpha(COLORS.primary, 0.1), color: COLORS.primary, fontWeight: 700 }}
-      >
-        {name?.charAt(0)?.toUpperCase()}
-      </Avatar>
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography variant="subtitle2" fontWeight={700} noWrap sx={{ cursor: 'pointer', '&:hover': { color: COLORS.primary } }}
-          onClick={() => navigate(`/user-profile/${user._id}`)}>
-          {name}
-        </Typography>
-        {headline && (
-          <Typography variant="caption" color="text.secondary" noWrap>{headline}</Typography>
-        )}
-        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 0.5, mt: 0.4 }}>
-          {roleLabel && (
-            <Chip label={roleLabel} size="small" color="primary" variant="outlined" sx={{ height: 18, fontSize: '0.6rem', fontWeight: 700, borderRadius: 1 }} />
-          )}
-          {followersCount != null && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
-              <PeopleAltOutlined sx={{ fontSize: 13 }} />
-              {followersCount}
-            </Typography>
-          )}
-          {rScore != null && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
-              <StarBorderOutlined sx={{ fontSize: 13, color: COLORS.warning }} />
-              {rScore}
-            </Typography>
-          )}
-          {years != null && years > 0 && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
-              <WorkOutlineOutlined sx={{ fontSize: 13 }} />
-              {t('network.yearsExp', '{{count}}y', { count: years })}
-            </Typography>
-          )}
-          {skills.slice(0, 3).map((s) => (
-            <Chip key={s} label={s} size="small" sx={{ height: 18, fontSize: '0.62rem', borderRadius: 1 }} />
-          ))}
-        </Stack>
-      </Box>
-      <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', flexShrink: 0 }}>
-        {onToggleFollow && (
-          <Button
-            size="small"
-            variant={following ? 'outlined' : 'contained'}
-            color={following ? 'error' : 'primary'}
-            startIcon={following ? <PersonOffOutlined sx={{ fontSize: 15 }} /> : <PersonAddAlt1Outlined sx={{ fontSize: 15 }} />}
-            onClick={() => onToggleFollow(user)}
-            disabled={busyId === user._id}
-            sx={{ minWidth: 0, px: 1.25, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1.5 }}
-          >
-            {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
-          </Button>
-        )}
-
-        {onConnect && (
-          <Button
-            size="small"
-            variant={status === 'none' ? 'contained' : 'outlined'}
-            disabled={busyId === user._id}
-            startIcon={status === 'none' ? <PersonAddOutlined sx={{ fontSize: 15 }} /> : <HourglassTopOutlined sx={{ fontSize: 15 }} />}
-            onClick={() => onConnect(user)}
-            sx={{ minWidth: 0, px: 1.25, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1.5 }}
-          >
-            {status === 'connected'
-              ? t('network.connected', 'Connected')
-              : status === 'pending_sent'
-                ? t('network.pending', 'Pending')
-                : t('network.connect', 'Connect')}
-          </Button>
-        )}
-
-        {onAccept && (
-          <>
-            <Tooltip title={t('network.accept', 'Accept')}>
-              <span>
-                <IconButton size="small" color="success" onClick={() => onAccept(user)} disabled={busyId === user._id}>
-                  <CheckOutlined sx={{ fontSize: 18 }} />
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title={t('network.reject', 'Reject')}>
-              <span>
-                <IconButton size="small" color="error" onClick={() => onReject(user)} disabled={busyId === user._id}>
-                  <CloseOutlined sx={{ fontSize: 18 }} />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </>
-        )}
-
-        {onCancel && (
-          <Button
-            size="small"
-            variant="outlined"
-            color="error"
-            onClick={() => onCancel(user)}
-            disabled={busyId === user._id}
-            sx={{ minWidth: 0, px: 1.25, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1.5 }}
-          >
-            {t('network.cancel', 'Cancel')}
-          </Button>
-        )}
-
-        {onRemove && (
-          <Tooltip title={t('network.remove', 'Remove connection')}>
-            <span>
-              <IconButton size="small" color="error" onClick={() => onRemove(user)} disabled={busyId === user._id}>
-                {busyId === user._id ? <CircularProgress size={16} /> : <PersonRemoveOutlined sx={{ fontSize: 18 }} />}
-              </IconButton>
-            </span>
-          </Tooltip>
-        )}
+function TabSkeleton({ variant = 'grid' }) {
+  if (variant === 'list') {
+    return (
+      <Stack spacing={1.5}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Paper key={i} sx={{ p: 2, borderRadius: 2 }}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+              <Skeleton variant="circular" width={44} height={44} />
+              <Box sx={{ flex: 1 }}>
+                <Skeleton variant="text" width="45%" height={20} />
+                <Skeleton variant="text" width="65%" height={14} sx={{ mt: 0.25 }} />
+              </Box>
+              <Skeleton variant="rounded" width={80} height={30} sx={{ borderRadius: 99 }} />
+            </Stack>
+          </Paper>
+        ))}
       </Stack>
-    </Paper>
-  )
-}
-
-function TopUserCard({ user, rank, following, onToggleFollow, busyId, t, navigate, isRTL }) {
-  const avatarSrc = resolveMediaPath(user?.profile?.avatar)
-  const name = fullName(user)
-  const headline = user?.profile?.headline || ''
-  const rScore = user?.profile?.rScore
-  const followersCount = user?.profile?.followersCount
-  const skills = (user?.professional?.skills || []).slice(0, 3)
-  const roleLabel = user?.role ? t(`network.roles.${user.role}`, user.role) : ''
-  const medalColor = rank === 1 ? '#D4AF37' : rank === 2 ? '#A9A9A9' : rank === 3 ? '#CD7F32' : null
-  const corner = isRTL ? { left: 10 } : { right: 10 }
-
+    )
+  }
   return (
-    <Paper variant="outlined" sx={{
-      width: 200, flex: '0 0 auto', p: 2, borderRadius: 2, textAlign: 'center',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.75,
-      position: 'relative', transition: 'all 0.2s ease',
-      '&:hover': {
-        boxShadow: '0 8px 24px rgba(31,10,59,0.1)', borderColor: alpha(COLORS.primary, 0.25), transform: 'translateY(-2px)',
-      },
-    }}>
-      {rank <= 3 ? (
-        <EmojiEventsOutlined sx={{ fontSize: 22, color: medalColor, position: 'absolute', top: 10, ...corner }} />
-      ) : (
-        <Typography variant="caption" fontWeight={800} sx={{ position: 'absolute', top: 8, ...(isRTL ? { left: 12 } : { right: 12 }), color: 'text.disabled' }}>
-          #{rank}
-        </Typography>
-      )}
-
-      <Avatar
-        src={avatarSrc}
-        sx={{ width: 72, height: 72, mt: 1, bgcolor: alpha(COLORS.primary, 0.1), color: COLORS.primary, fontWeight: 700, fontSize: '1.4rem' }}
-      >
-        {name?.charAt(0)?.toUpperCase()}
-      </Avatar>
-
-      <Typography variant="subtitle2" fontWeight={800} noWrap sx={{ maxWidth: '100%', cursor: 'pointer', '&:hover': { color: COLORS.primary } }}
-        onClick={() => navigate(`/user-profile/${user._id}`)}>
-        {name}
-      </Typography>
-
-      {roleLabel && (
-        <Chip label={roleLabel} size="small" color="primary" variant="outlined" sx={{ height: 20, fontSize: '0.62rem', fontWeight: 700, borderRadius: 1 }} />
-      )}
-
-      {headline && (
-        <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.3, height: 34, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-          {headline}
-        </Typography>
-      )}
-
-      <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'center' }}>
-        {rScore != null && (
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
-            <StarBorderOutlined sx={{ fontSize: 14, color: COLORS.warning }} />
-            {rScore}
-          </Typography>
-        )}
-        {followersCount != null && (
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3 }}>
-            <PeopleAltOutlined sx={{ fontSize: 14 }} />
-            {followersCount}
-          </Typography>
-        )}
-      </Stack>
-
-      {skills.length > 0 && (
-        <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', justifyContent: 'center', gap: 0.5 }}>
-          {skills.map((s) => (
-            <Chip key={s} label={s} size="small" sx={{ height: 18, fontSize: '0.6rem', borderRadius: 1 }} />
-          ))}
-        </Stack>
-      )}
-
-      <Button
-        fullWidth
-        size="small"
-        variant={following ? 'outlined' : 'contained'}
-        color={following ? 'error' : 'primary'}
-        startIcon={following ? <PersonOffOutlined sx={{ fontSize: 15 }} /> : <PersonAddAlt1Outlined sx={{ fontSize: 15 }} />}
-        onClick={() => onToggleFollow(user)}
-        disabled={busyId === user._id}
-        sx={{ mt: 'auto', pt: 0.75, pb: 0.75, textTransform: 'none', fontSize: '0.75rem', borderRadius: 1.5 }}
-      >
-        {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
-      </Button>
-    </Paper>
-  )
-}
-
-function EmptyState({ icon, text, action }) {
-  return (
-    <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 2.5, borderStyle: 'dashed' }}>
-      {icon}
-      <Typography color="text.secondary" sx={{ mb: action ? 1.5 : 0 }}>{text}</Typography>
-      {action}
-    </Paper>
+    <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' } }}>
+      {Array.from({ length: 4 }).map((_, i) => (
+        <Paper key={i} sx={{ p: 2.5, borderRadius: 2 }}>
+          <Stack spacing={1.5}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+              <Skeleton variant="circular" width={48} height={48} />
+              <Box sx={{ flex: 1 }}>
+                <Skeleton variant="text" width="55%" height={20} />
+                <Skeleton variant="text" width="70%" height={14} sx={{ mt: 0.25 }} />
+              </Box>
+            </Stack>
+            <Skeleton variant="rounded" width={100} height={28} sx={{ borderRadius: 99 }} />
+            <Skeleton variant="rounded" width={120} height={28} sx={{ borderRadius: 99 }} />
+          </Stack>
+        </Paper>
+      ))}
+    </Box>
   )
 }
 
@@ -283,20 +72,25 @@ export default function NetworkView() {
   const { t, i18n } = useTranslation()
   const theme = useTheme()
   const navigate = useNavigate()
+  const animationsEnabled = useSelector((s) => s.user.user?.settings?.animationEnabled !== false)
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const isRTL = i18n.language === 'ar'
 
   const [tab, setTab] = useState(0)
 
+  // --- Per-tab data & loading states ---
   const [connections, setConnections] = useState([])
+  const [connectionsLoading, setConnectionsLoading] = useState(true)
+
   const [incoming, setIncoming] = useState([])
   const [sent, setSent] = useState([])
-  const [followers, setFollowers] = useState([])
-  const [following, setFollowing] = useState([])
+  const [requestsLoading, setRequestsLoading] = useState(false)
 
-  const [loading, setLoading] = useState(true)
-  const [busyId, setBusyId] = useState(null)
-  const [error, setError] = useState('')
+  const [followers, setFollowers] = useState([])
+  const [followersLoading, setFollowersLoading] = useState(false)
+
+  const [following, setFollowing] = useState([])
+  const [followingLoading, setFollowingLoading] = useState(false)
 
   const [discover, setDiscover] = useState([])
   const [discoverLoading, setDiscoverLoading] = useState(false)
@@ -305,53 +99,69 @@ export default function NetworkView() {
   const [topLoading, setTopLoading] = useState(false)
   const topScrollerRef = useRef(null)
 
+  const [busyId, setBusyId] = useState(null)
+  const [error, setError] = useState('')
+
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [searchLoading, setSearchLoading] = useState(false)
 
+  // --- Fetch functions per tab ---
   const fetchConnections = useCallback(async () => {
+    setConnectionsLoading(true)
+    setError('')
     try {
       const res = await getConnections()
       if (res?.success) setConnections(res.data || [])
-    } catch { /* ignore */ }
-  }, [])
+    } catch (err) {
+      setError(err?.response?.data?.message || t('common.error'))
+    } finally {
+      setConnectionsLoading(false)
+    }
+  }, [t])
 
   const fetchRequests = useCallback(async () => {
+    setRequestsLoading(true)
+    setError('')
     try {
       const [inc, sentRes] = await Promise.all([getIncomingRequests(), getSentRequests()])
       if (inc?.success) setIncoming(inc.data || [])
       if (sentRes?.success) setSent(sentRes.data || [])
-    } catch { /* ignore */ }
-  }, [])
+    } catch (err) {
+      setError(err?.response?.data?.message || t('common.error'))
+    } finally {
+      setRequestsLoading(false)
+    }
+  }, [t])
 
   const fetchFollowers = useCallback(async () => {
+    setFollowersLoading(true)
+    setError('')
     try {
       const [fol, fw] = await Promise.all([getMyFollowers(), getMyFollowing()])
       if (fol?.success) {
         const followingIds = new Set((fw?.success ? (fw.data || []) : []).map((u) => u._id))
         setFollowers((fol.data || []).map((u) => ({ ...u, isFollowing: u.isFollowing ?? followingIds.has(u._id) })))
       }
-    } catch { /* ignore */ }
-  }, [])
+    } catch (err) {
+      setError(err?.response?.data?.message || t('common.error'))
+    } finally {
+      setFollowersLoading(false)
+    }
+  }, [t])
 
   const fetchFollowing = useCallback(async () => {
+    setFollowingLoading(true)
+    setError('')
     try {
       const res = await getMyFollowing()
       if (res?.success) setFollowing((res.data || []).map((u) => ({ ...u, isFollowing: true })))
-    } catch { /* ignore */ }
-  }, [])
-
-  const refreshAll = useCallback(async () => {
-    setLoading(true)
-    setError('')
-    try {
-      await Promise.all([fetchConnections(), fetchRequests(), fetchFollowers(), fetchFollowing()])
+    } catch (err) {
+      setError(err?.response?.data?.message || t('common.error'))
     } finally {
-      setLoading(false)
+      setFollowingLoading(false)
     }
-  }, [fetchConnections, fetchRequests, fetchFollowers, fetchFollowing])
-
-  useEffect(() => { refreshAll() }, [refreshAll])
+  }, [t])
 
   const fetchDiscover = useCallback(async () => {
     setDiscoverLoading(true)
@@ -367,38 +177,32 @@ export default function NetworkView() {
     }
   }, [t])
 
-  useEffect(() => {
-    if (tab === 2 && discover.length === 0 && !discoverLoading) fetchDiscover()
-  }, [tab, discover.length, discoverLoading, fetchDiscover])
-
   const fetchTopUsers = useCallback(async () => {
     setTopLoading(true)
     try {
-      const [res, followingRes] = await Promise.all([
-        getTopUsers(10),
-        getMyFollowing(),
-      ])
+      const [res, followingRes] = await Promise.all([getTopUsers(10), getMyFollowing()])
       if (res?.success) {
-        const followingIds = new Set(
-          (followingRes?.success ? (followingRes.data || []) : []).map((u) => u._id)
-        )
-        setTopUsers((res.data || []).map((u) => ({
-          ...u,
-          isFollowing: followingIds.has(u._id),
-        })))
+        const followingIds = new Set((followingRes?.success ? (followingRes.data || []) : []).map((u) => u._id))
+        setTopUsers((res.data || []).map((u) => ({ ...u, isFollowing: followingIds.has(u._id) })))
       }
     } catch { /* ignore */ } finally {
       setTopLoading(false)
     }
   }, [])
 
-  useEffect(() => { fetchTopUsers() }, [fetchTopUsers])
+  // --- Lazy fetch: only fetch when tab is activated ---
+  useEffect(() => {
+    switch (tab) {
+      case 0: fetchConnections(); break
+      case 1: fetchRequests(); break
+      case 2: fetchDiscover(); fetchTopUsers(); break
+      case 3: fetchFollowers(); break
+      case 4: fetchFollowing(); break
+      default: break
+    }
+  }, [tab, fetchConnections, fetchRequests, fetchFollowers, fetchFollowing, fetchDiscover, fetchTopUsers])
 
-  const scrollTopSlider = useCallback((factor) => {
-    const el = topScrollerRef.current
-    if (el) el.scrollBy({ left: factor * 260, behavior: 'smooth' })
-  }, [])
-
+  // --- Handlers ---
   const updateStatusFor = (list, setter, id, newStatus) => {
     setter((prev) => prev.map((u) => (u._id === id ? { ...u, connectionStatus: newStatus } : u)))
   }
@@ -524,6 +328,7 @@ export default function NetworkView() {
     }
   }
 
+  // --- Search ---
   useEffect(() => {
     const q = searchQuery.trim()
     if (!q) {
@@ -547,263 +352,364 @@ export default function NetworkView() {
     return () => clearTimeout(timer)
   }, [searchQuery, t])
 
+  // --- Tab config ---
   const tabs = [
-    { label: t('network.myNetwork', 'My Network'), icon: <GroupOutlined /> },
-    { label: `${t('network.requests', 'Requests')}${incoming.length ? ` (${incoming.length})` : ''}`, icon: <PersonAddOutlined /> },
-    { label: t('network.discover', 'Discover'), icon: <PersonSearchOutlined /> },
-    { label: t('network.followersTab', 'Followers'), icon: <PeopleAltOutlined /> },
-    { label: t('network.followingTab', 'Following'), icon: <PersonAddAlt1Outlined /> },
+    {
+      key: 'network',
+      label: t('network.myNetwork', 'My Network'),
+      shortLabel: t('network.myNetworkShort', 'Network'),
+      icon: GroupOutlined,
+      loading: connectionsLoading,
+      count: connections.length,
+    },
+    {
+      key: 'requests',
+      label: t('network.requests', 'Requests'),
+      shortLabel: t('network.requestsShort', 'Requests'),
+      icon: PersonAddOutlined,
+      loading: requestsLoading,
+      count: incoming.length,
+    },
+    {
+      key: 'discover',
+      label: t('network.discover', 'Discover'),
+      shortLabel: t('network.discoverShort', 'Discover'),
+      icon: PersonSearchOutlined,
+      loading: discoverLoading || topLoading,
+    },
+    {
+      key: 'followers',
+      label: t('network.followersTab', 'Followers'),
+      shortLabel: t('network.followersShort', 'Followers'),
+      icon: PeopleAltOutlined,
+      loading: followersLoading,
+      count: followers.length,
+    },
+    {
+      key: 'following',
+      label: t('network.followingTab', 'Following'),
+      shortLabel: t('network.followingShort', 'Following'),
+      icon: PersonAddAlt1Outlined,
+      loading: followingLoading,
+      count: following.length,
+    },
   ]
 
-  const renderTabContent = () => {
-    if (tab === 0) {
-      return (
-        <Stack spacing={1.5}>
-          <Typography variant="subtitle1" fontWeight={800}>{t('network.connectionsTitle', 'Your connections')}</Typography>
-          {connections.length === 0 ? (
-            <EmptyState
-              icon={<GroupOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
-              text={t('network.noConnections', 'No connections yet. Discover people to connect with.')}
-              action={<Button variant="contained" onClick={() => setTab(2)}>{t('network.discover', 'Discover')}</Button>}
-            />
-            ) : (
-              <Box sx={listGridSx}>
-                {connections.map((u) => (
-                  <UserCard key={u._id} user={u} status="connected" busyId={busyId} t={t} navigate={navigate}
-                    onRemove={(user) => handleRemove(user._id)} />
-                ))}
-              </Box>
-            )}
-          </Stack>
-        )
-      }
+  // --- Scroll helpers ---
+  const scrollTopSlider = useCallback((factor) => {
+    const el = topScrollerRef.current
+    if (el) el.scrollBy({ left: factor * 260, behavior: 'smooth' })
+  }, [])
 
-    if (tab === 1) {
+  // --- Tab content renderers ---
+  const renderConnections = () => {
+    if (connectionsLoading) return <TabSkeleton variant="grid" />
+    if (connections.length === 0) {
       return (
-        <Stack spacing={2.5}>
-          <Box>
-            <Typography variant="subtitle1" fontWeight={800} sx={{ mb: 1.5 }}>{t('network.incomingTitle', 'Pending requests you received')}</Typography>
-            {incoming.length === 0 ? (
-              <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2.5, borderStyle: 'dashed' }}>
-                <Typography color="text.secondary">{t('network.noIncoming', 'No pending requests')}</Typography>
-              </Paper>
-            ) : (
-              <Stack spacing={1.5}>
-                {incoming.map((r) => (
-                  <UserCard key={r._id} user={r.requester} busyId={busyId} t={t} navigate={navigate}
-                    onAccept={() => handleAccept(r)} onReject={() => handleReject(r)} />
-                ))}
-              </Stack>
-            )}
-          </Box>
-          <Divider />
-          <Box>
-            <Typography variant="subtitle1" fontWeight={800} sx={{ mb: 1.5 }}>{t('network.sentTitle', 'Requests you sent')}</Typography>
-            {sent.length === 0 ? (
-              <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2.5, borderStyle: 'dashed' }}>
-                <Typography color="text.secondary">{t('network.noSent', 'No sent requests')}</Typography>
-              </Paper>
-            ) : (
-              <Stack spacing={1.5}>
-                {sent.map((r) => {
-                  const target = r.recipient?._id ? r.recipient : r.recipient
-                  return (
-                    <UserCard key={r._id} user={target} busyId={busyId} t={t} navigate={navigate}
-                      onCancel={() => handleCancel(target?._id)} />
-                  )
-                })}
-              </Stack>
-            )}
-          </Box>
-        </Stack>
+        <EmptyState
+          icon={<GroupOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
+          text={t('network.noConnections', 'No connections yet. Discover people to connect with.')}
+          action={<Button variant="contained" onClick={() => setTab(2)}>{t('network.discover', 'Discover')}</Button>}
+        />
       )
     }
+    return (
+      <Stack spacing={1.5}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Typography variant="subtitle1" fontWeight={800}>{t('network.connectionsTitle', 'Your connections')}</Typography>
+          <Chip label={connections.length} size="small" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700, bgcolor: alpha(COLORS.primary, 0.08), color: COLORS.primary }} />
+        </Stack>
+        <CardGrid>
+          {connections.map((u) => (
+            <UserCard key={u._id} user={u} status="connected" busyId={busyId} t={t} navigate={navigate}
+              onRemove={(user) => handleRemove(user._id)} />
+          ))}
+        </CardGrid>
+      </Stack>
+    )
+  }
 
-    if (tab === 2) {
-      const searching = searchQuery.trim().length > 0
-      return (
-        <Stack spacing={2.5}>
-          {/* Live search */}
-          <Paper variant="outlined" sx={{ p: 2 , bgcolor: "transparent", boxShadow: "none", border: "none"}}>
-            <MuiTextField
-              fullWidth
-              size="small"
-              placeholder={t('network.searchPlaceholder', 'Search by name, headline or username...')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5 } }}
-              slotProps={{
-                input: {
-                  startAdornment: <SearchOutlined sx={{ fontSize: 18, color: 'text.secondary', mr: 1 }} />,
-                  endAdornment: searchQuery ? (
-                    <IconButton size="small" onClick={() => setSearchQuery('')}>
-                      <ClearOutlined sx={{ fontSize: 18 }} />
-                    </IconButton>
-                  ) : null,
-                },
-              }}
-            />
-          </Paper>
+  const renderRequests = () => {
+    if (requestsLoading) return <TabSkeleton variant="list" />
+    return (
+      <Stack spacing={2.5}>
+        <Box>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
+            <Typography variant="subtitle1" fontWeight={800}>{t('network.incomingTitle', 'Pending requests you received')}</Typography>
+            {incoming.length > 0 && (
+              <Chip label={incoming.length} size="small" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700, bgcolor: alpha(COLORS.success, 0.08), color: COLORS.success }} />
+            )}
+          </Stack>
+          {incoming.length === 0 ? (
+            <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2, borderStyle: 'dashed' }}>
+              <InboxOutlined sx={{ fontSize: 36, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
+              <Typography variant="body2" color="text.secondary">{t('network.noIncoming', 'No pending requests')}</Typography>
+            </Paper>
+          ) : (
+            <CardGrid grid={false}>
+              {incoming.map((r) => (
+                <UserCard key={r._id} user={r.requester} busyId={busyId} t={t} navigate={navigate}
+                  onAccept={() => handleAccept(r)} onReject={() => handleReject(r)} />
+              ))}
+            </CardGrid>
+          )}
+        </Box>
+        <Divider />
+        <Box>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
+            <Typography variant="subtitle1" fontWeight={800}>{t('network.sentTitle', 'Requests you sent')}</Typography>
+            {sent.length > 0 && (
+              <Chip label={sent.length} size="small" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700, bgcolor: alpha(COLORS.warning, 0.08), color: COLORS.warning }} />
+            )}
+          </Stack>
+          {sent.length === 0 ? (
+            <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2, borderStyle: 'dashed' }}>
+              <SentimentDissatisfiedOutlined sx={{ fontSize: 36, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
+              <Typography variant="body2" color="text.secondary">{t('network.noSent', 'No sent requests')}</Typography>
+            </Paper>
+          ) : (
+            <CardGrid grid={false}>
+              {sent.map((r) => {
+                const target = r.recipient?._id ? r.recipient : r.recipient
+                return (
+                  <UserCard key={r._id} user={target} busyId={busyId} t={t} navigate={navigate}
+                    onCancel={() => handleCancel(target?._id)} />
+                )
+              })}
+            </CardGrid>
+          )}
+        </Box>
+      </Stack>
+    )
+  }
 
-          {searching ? (
-            <Stack spacing={1.5}>
-              {searchLoading ? (
-                <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 6 }}>
+  const renderDiscover = () => {
+    const searching = searchQuery.trim().length > 0
+    return (
+      <Stack spacing={2.5}>
+        <Paper variant="outlined" sx={{ p: 2, bgcolor: 'transparent', boxShadow: 'none', border: 'none' }}>
+          <MuiTextField
+            fullWidth
+            size="small"
+            placeholder={t('network.searchPlaceholder', 'Search by name, headline or username...')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1 } }}
+            slotProps={{
+              input: {
+                startAdornment: <SearchOutlined sx={{ fontSize: 18, color: 'text.secondary', mr: 1 }} />,
+                endAdornment: searchQuery ? (
+                  <IconButton size="small" onClick={() => setSearchQuery('')}>
+                    <ClearOutlined sx={{ fontSize: 18 }} />
+                  </IconButton>
+                ) : null,
+              },
+            }}
+          />
+        </Paper>
+
+        {searching ? (
+          <Stack spacing={1.5}>
+            {searchLoading ? (
+              <TabSkeleton variant="grid" />
+            ) : searchResults.length === 0 ? (
+              <EmptyState
+                icon={<PersonSearchOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
+                text={t('network.noSearchResults', 'No people found for your search.')}
+              />
+            ) : (
+              <>
+                <Typography variant="subtitle1" fontWeight={800}>{t('network.searchResults', 'Search results')}</Typography>
+                <CardGrid>
+                  {searchResults.map((u) => (
+                    <UserCard key={u._id} user={u} status={u.connectionStatus || 'none'} following={u.isFollowing}
+                      busyId={busyId} t={t} navigate={navigate}
+                      onConnect={() => handleConnect(u)} onToggleFollow={() => handleToggleFollow(u)} />
+                  ))}
+                </CardGrid>
+              </>
+            )}
+          </Stack>
+        ) : (
+          <>
+            {/* Top Users Slider */}
+            <Box>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0 }}>
+                  <EmojiEventsOutlined sx={{ fontSize: 24, color: COLORS.warning, flexShrink: 0 }} />
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="subtitle1" fontWeight={800}>{t('network.topUsersTitle', 'Most active on the platform')}</Typography>
+                    <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block' }}>
+                      {t('network.topUsersSubtitle', 'Top rated members, ranked by reputation score')}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Stack>
+
+              {topLoading ? (
+                <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 5 }}>
                   <CircularProgress size={24} />
                 </Stack>
-              ) : searchResults.length === 0 ? (
-                <EmptyState
-                  icon={<PersonSearchOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
-                  text={t('network.noSearchResults', 'No people found for your search.')}
-                />
-              ) : (
-                <>
-                  <Typography variant="subtitle1" fontWeight={800}>{t('network.searchResults', 'Search results')}</Typography>
-                  <Box sx={listGridSx}>
-                    {searchResults.map((u) => (
-                      <UserCard key={u._id} user={u} status={u.connectionStatus || 'none'} following={u.isFollowing}
-                        busyId={busyId} t={t} navigate={navigate}
-                        onConnect={() => handleConnect(u)} onToggleFollow={() => handleToggleFollow(u)} />
-                    ))}
-                  </Box>
-                </>
-              )}
-            </Stack>
-          ) : (
-            <>
-              {/* Most active users slider */}
-              <Box>
-                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0 }}>
-                    <EmojiEventsOutlined sx={{ fontSize: 24, color: COLORS.warning, flexShrink: 0 }} />
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="subtitle1" fontWeight={800}>{t('network.topUsersTitle', 'Most active on the platform')}</Typography>
-                      <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block' }}>
-                        {t('network.topUsersSubtitle', 'Top rated members, ranked by reputation score')}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                  {topUsers.length > 0 && (
-                    <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
-                      <IconButton size="small" onClick={() => scrollTopSlider(isRTL ? 1 : -1)} disabled={topLoading}
-                        sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
-                        <ChevronRightOutlined sx={{ transform: isRTL ? 'scaleX(-1)' : 'none', fontSize: 18 }} />
-                      </IconButton>
-                      <IconButton size="small" onClick={() => scrollTopSlider(isRTL ? -1 : 1)} disabled={topLoading}
-                        sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
-                        <ChevronLeftOutlined sx={{ transform: isRTL ? 'scaleX(-1)' : 'none', fontSize: 18 }} />
-                      </IconButton>
-                    </Stack>
-                  )}
-                </Stack>
-
-                {topLoading ? (
-                  <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 5 }}>
-                    <CircularProgress size={24} />
-                  </Stack>
-                ) : topUsers.length > 0 ? (
-                  <Box ref={topScrollerRef} sx={{ display: 'flex', gap: 1.5, overflowX: 'auto', pb: 1, scrollbarWidth: 'thin' }}>
+              ) : topUsers.length > 0 ? (
+                <Box sx={{ position: 'relative', mx: { xs: 0, md: 3 } }}>
+                  <Box
+                    ref={topScrollerRef}
+                    sx={{
+                      display: 'flex', gap: 1.5, overflowX: 'auto', pb: 1, pt: 0.5,
+                      scrollbarWidth: 'none', scrollBehavior: 'smooth',
+                      WebkitOverflowScrolling: 'touch',
+                      '&::-webkit-scrollbar': { display: 'none', width: 0, height: 0 },
+                      '@keyframes cardFadeUp': {
+                        from: { opacity: 0, transform: 'translateY(16px)' },
+                        to: { opacity: 1, transform: 'translateY(0)' },
+                      },
+                    }}
+                  >
                     {topUsers.map((u, i) => (
                       <TopUserCard key={u._id} user={u} rank={i + 1} following={u.isFollowing} busyId={busyId} t={t} navigate={navigate} isRTL={isRTL}
+                        sx={animationsEnabled ? { animation: 'cardFadeUp 0.4s ease backwards', animationDelay: `${0.05 + i * 0.08}s` } : undefined}
                         onToggleFollow={() => handleToggleFollow(u)} />
                     ))}
                   </Box>
-                ) : null}
-              </Box>
-
-              <Divider />
-
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                  <StarBorderOutlined sx={{ fontSize: 20, color: COLORS.warning }} />
-                  <Typography variant="subtitle1" fontWeight={800}>{t('network.suggestedTitle', 'Suggested for you')}</Typography>
-                </Stack>
-                <Button size="small" variant="outlined" startIcon={<RefreshOutlined sx={{ fontSize: 15 }} />}
-                  onClick={fetchDiscover} disabled={discoverLoading} sx={{ fontSize: '0.72rem', textTransform: 'none', borderRadius: 1.5 }}>
-                  {t('network.moreSuggestions', 'More suggestions')}
-                </Button>
-              </Stack>
-
-              {discoverLoading ? (
-                <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 6 }}>
-                  <CircularProgress size={24} />
-                </Stack>
-              ) : discover.length === 0 ? (
-                <EmptyState
-                  icon={<PersonSearchOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
-                  text={t('network.noSuggestions', 'No suggestions right now — try the search above.')}
-                />
-              ) : (
-                <Box sx={listGridSx}>
-                  {discover.map((u) => (
-                    <UserCard key={u._id} user={u} following={u.isFollowing} busyId={busyId} t={t} navigate={navigate}
-                      onToggleFollow={() => handleToggleFollow(u)} />
-                  ))}
+                  <IconButton size="small" onClick={() => scrollTopSlider(isRTL ? 1 : -1)}
+                    sx={{
+                      position: 'absolute', top: '50%', insetInlineStart: { xs: -12, md: -20 },
+                      transform: 'translateY(-50%)', zIndex: 2, bgcolor: 'background.paper',
+                      border: '1px solid', borderColor: 'divider', borderRadius: 1,
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)', color: 'text.secondary',
+                      transition: 'all 0.2s ease',
+                      '&:hover': { bgcolor: alpha(COLORS.primary, 0.08), borderColor: alpha(COLORS.primary, 0.35), color: COLORS.primary },
+                    }}>
+                    <ChevronLeftOutlined sx={{ transform: isRTL ? 'scaleX(-1)' : 'none', fontSize: 20 }} />
+                  </IconButton>
+                  <IconButton size="small" onClick={() => scrollTopSlider(isRTL ? -1 : 1)}
+                    sx={{
+                      position: 'absolute', top: '50%', insetInlineEnd: { xs: -12, md: -20 },
+                      transform: 'translateY(-50%)', zIndex: 2, bgcolor: 'background.paper',
+                      border: '1px solid', borderColor: 'divider', borderRadius: 1,
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)', color: 'text.secondary',
+                      transition: 'all 0.2s ease',
+                      '&:hover': { bgcolor: alpha(COLORS.primary, 0.08), borderColor: alpha(COLORS.primary, 0.35), color: COLORS.primary },
+                    }}>
+                    <ChevronRightOutlined sx={{ transform: isRTL ? 'scaleX(-1)' : 'none', fontSize: 20 }} />
+                  </IconButton>
                 </Box>
-              )}
-            </>
-          )}
-        </Stack>
-      )
-    }
-
-    if (tab === 3) {
-      return (
-        <Stack spacing={1.5}>
-          <Typography variant="subtitle1" fontWeight={800}>{t('network.followersTitle', 'People following you')}</Typography>
-          {followers.length === 0 ? (
-            <EmptyState
-              icon={<PeopleAltOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
-              text={t('network.noFollowers', 'No followers yet')}
-            />
-          ) : (
-            <Box sx={listGridSx}>
-              {followers.map((u) => (
-                <UserCard key={u._id} user={u} following={u.isFollowing} busyId={busyId} t={t} navigate={navigate}
-                  onToggleFollow={() => handleToggleFollow(u)} />
-              ))}
+              ) : null}
             </Box>
-          )}
-        </Stack>
-      )
-    }
 
-    return (
-      <Stack spacing={1.5}>
-        <Typography variant="subtitle1" fontWeight={800}>{t('network.followingTitle', 'People you follow')}</Typography>
-        {following.length === 0 ? (
-          <EmptyState
-            icon={<PersonAddAlt1Outlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
-            text={t('network.noFollowing', 'You are not following anyone yet')}
-          />
-        ) : (
-          <Box sx={listGridSx}>
-            {following.map((u) => (
-              <UserCard key={u._id} user={u} following={u.isFollowing} busyId={busyId} t={t} navigate={navigate}
-                onToggleFollow={() => handleToggleFollow(u)} />
-            ))}
-          </Box>
+            <Divider />
+
+            {/* Suggested Users */}
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <StarBorderOutlined sx={{ fontSize: 20, color: COLORS.warning }} />
+                <Typography variant="subtitle1" fontWeight={800}>{t('network.suggestedTitle', 'Suggested for you')}</Typography>
+              </Stack>
+              <Button size="small" variant="outlined" startIcon={<RefreshOutlined sx={{ fontSize: 15 }} />}
+                onClick={fetchDiscover} disabled={discoverLoading} sx={{ fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}>
+                {t('network.moreSuggestions', 'More suggestions')}
+              </Button>
+            </Stack>
+
+            {discoverLoading ? (
+              <TabSkeleton variant="grid" />
+            ) : discover.length === 0 ? (
+              <EmptyState
+                icon={<PersonSearchOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
+                text={t('network.noSuggestions', 'No suggestions right now — try the search above.')}
+              />
+            ) : (
+              <CardGrid>
+                {discover.map((u) => (
+                  <UserCard key={u._id} user={u} following={u.isFollowing} busyId={busyId} t={t} navigate={navigate}
+                    onToggleFollow={() => handleToggleFollow(u)} />
+                ))}
+              </CardGrid>
+            )}
+          </>
         )}
       </Stack>
     )
+  }
+
+  const renderFollowers = () => {
+    if (followersLoading) return <TabSkeleton variant="grid" />
+    if (followers.length === 0) {
+      return (
+        <EmptyState
+          icon={<PeopleAltOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
+          text={t('network.noFollowers', 'No followers yet')}
+        />
+      )
+    }
+    return (
+      <Stack spacing={1.5}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Typography variant="subtitle1" fontWeight={800}>{t('network.followersTitle', 'People following you')}</Typography>
+          <Chip label={followers.length} size="small" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700, bgcolor: alpha(COLORS.primary, 0.08), color: COLORS.primary }} />
+        </Stack>
+        <CardGrid>
+          {followers.map((u) => (
+            <UserCard key={u._id} user={u} following={u.isFollowing} busyId={busyId} t={t} navigate={navigate}
+              onToggleFollow={() => handleToggleFollow(u)} />
+          ))}
+        </CardGrid>
+      </Stack>
+    )
+  }
+
+  const renderFollowing = () => {
+    if (followingLoading) return <TabSkeleton variant="grid" />
+    if (following.length === 0) {
+      return (
+        <EmptyState
+          icon={<PersonAddAlt1Outlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />}
+          text={t('network.noFollowing', 'You are not following anyone yet')}
+        />
+      )
+    }
+    return (
+      <Stack spacing={1.5}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Typography variant="subtitle1" fontWeight={800}>{t('network.followingTitle', 'People you follow')}</Typography>
+          <Chip label={following.length} size="small" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700, bgcolor: alpha(COLORS.success, 0.08), color: COLORS.success }} />
+        </Stack>
+        <CardGrid>
+          {following.map((u) => (
+            <UserCard key={u._id} user={u} following={u.isFollowing} busyId={busyId} t={t} navigate={navigate}
+              onToggleFollow={() => handleToggleFollow(u)} />
+          ))}
+        </CardGrid>
+      </Stack>
+    )
+  }
+
+  const renderTabContent = () => {
+    switch (tab) {
+      case 0: return renderConnections()
+      case 1: return renderRequests()
+      case 2: return renderDiscover()
+      case 3: return renderFollowers()
+      case 4: return renderFollowing()
+      default: return null
+    }
   }
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: 6 }}>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1500, mx: 'auto' }}>
         {error && (
-          <Typography variant="body2" color="error.main" sx={{ p: 1.5, borderRadius: 1, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
+          <Typography variant="body2" color="error.main" sx={{ p: 1.5, borderRadius: 0.5, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
             {error}
           </Typography>
         )}
 
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} sx={{ alignItems: 'flex-start' }}>
-          {/* Vertical tabs sidebar */}
+          {/* Vertical Tabs Sidebar */}
           <Paper variant="outlined" sx={{
             width: { xs: '100%', md: 240, lg: 270 }, flexShrink: 0,
             position: { md: 'sticky' }, top: { md: 88 }, alignSelf: 'flex-start', zIndex: 2,
-            p: { xs: 1, md: 1.25 },
-            borderRadius: 1.5,
+            p: { xs: 1, md: 1.25 }, borderRadius: 1,
           }}>
             <Tabs
               orientation={isMobile ? 'horizontal' : 'vertical'}
@@ -811,23 +717,83 @@ export default function NetworkView() {
               scrollButtons="auto"
               value={tab}
               onChange={(_, v) => setTab(v)}
+              TabIndicatorProps={!isMobile ? {
+                sx: { left: 0, width: 3, borderRadius: '0 3px 3px 0', bgcolor: COLORS.primary },
+              } : undefined}
               sx={{
-                '& .MuiTab-root': { textTransform: 'none', fontWeight: 700, minHeight: 48, justifyContent: { md: 'flex-start' }, alignItems: 'center', gap: 1 },
-                '& .MuiTabs-indicator': { backgroundColor: COLORS.primary },
+                '& .MuiTab-root': {
+                  textTransform: 'none', fontWeight: 700, minHeight: 48,
+                  justifyContent: { md: 'flex-start' }, alignItems: 'center', gap: 1,
+                  borderRadius: 1, mx: { md: 0.5 }, px: { md: 1.5 },
+                  transition: 'all 0.2s ease',
+                  color: 'text.secondary',
+                  '&:hover': { bgcolor: alpha(COLORS.primary, 0.04), color: COLORS.primary },
+                  '&.Mui-selected': {
+                    color: COLORS.primary,
+                    bgcolor: alpha(COLORS.primary, 0.06),
+                  },
+                },
+                '& .MuiTabs-indicator': {
+                  backgroundColor: COLORS.primary,
+                  borderRadius: '0 3px 3px 0',
+                  width: 3,
+                },
               }}
             >
-              {tabs.map((tb, i) => (
-                <Tab key={i} label={tb.label} icon={tb.icon} iconPosition="start" />
-              ))}
+              {tabs.map((tb, i) => {
+                const Icon = tb.icon
+                const isActive = tab === i
+                return (
+                  <Tab
+                    key={tb.key}
+                    label={
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', width: '100%' }}>
+                        <Icon sx={{ fontSize: 20 }} />
+                        <Box sx={{ flex: 1, textAlign: 'start' }}>
+                          <Typography variant="body2" fontWeight={700} sx={{ fontSize: '0.85rem', display: { xs: 'none', sm: 'block' } }}>
+                            {tb.label}
+                          </Typography>
+                          <Typography variant="body2" fontWeight={700} sx={{ fontSize: '0.85rem', display: { sm: 'none' } }}>
+                            {tb.shortLabel}
+                          </Typography>
+                        </Box>
+                        {tb.count > 0 && (
+                          <Chip
+                            label={tb.count}
+                            size="small"
+                            sx={{
+                              height: 20, minWidth: 20, fontSize: '0.65rem', fontWeight: 700,
+                              bgcolor: isActive ? alpha(COLORS.primary, 0.15) : alpha(COLORS.primary, 0.06),
+                              color: isActive ? COLORS.primary : 'text.secondary',
+                              '& .MuiChip-label': { px: 0.75 },
+                            }}
+                          />
+                        )}
+                        {tb.loading && (
+                          <CircularProgress size={14} sx={{ color: COLORS.primary }} />
+                        )}
+                      </Stack>
+                    }
+                  />
+                )
+              })}
             </Tabs>
           </Paper>
 
           {/* Content */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            {loading ? (
-              <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 10 }}>
-                <CircularProgress size={28} />
-              </Stack>
+            {animationsEnabled ? (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -14 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                >
+                  {renderTabContent()}
+                </motion.div>
+              </AnimatePresence>
             ) : (
               renderTabContent()
             )}

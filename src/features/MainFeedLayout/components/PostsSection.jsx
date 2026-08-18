@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useInView } from 'react-intersection-observer'
 import {
   Box,
   Paper,
@@ -652,13 +653,25 @@ export default function PostsSection() {
     else if (el.scrollTop > 0) setShowCreateFAB(false)
   }
 
-  const handleLoadMore = () => {
+  const hasMore = pagination ? page < pagination.pages : false
+
+  const handleLoadMore = useCallback(() => {
+    if (loading || !hasMore) return
     const nextPage = page + 1
     setPage(nextPage)
     fetchPosts(nextPage)
-  }
+  }, [loading, hasMore, page, fetchPosts])
 
-  const hasMore = pagination ? page < pagination.pages : false
+  const { ref: sentinelRef, inView } = useInView({
+    threshold: 0,
+    rootMargin: '200px',
+  })
+
+  useEffect(() => {
+    if (inView && hasMore && !loading) {
+      handleLoadMore()
+    }
+  }, [inView, hasMore, loading, handleLoadMore])
 
   const dispatch = useDispatch()
   const currentUser = useSelector((state) => state.user.user)
@@ -711,10 +724,15 @@ export default function PostsSection() {
                 ))}
               </Stack>
               {hasMore && (
-                <Box sx={{ textAlign: 'center', mt: 1 }}>
-                  <Button variant="outlined" onClick={handleLoadMore} disabled={loading} sx={{ px: 4 }}>
-                    {loading ? <CircularProgress size={20} /> : t('dashboard.loadMore')}
-                  </Button>
+                <Box ref={sentinelRef} sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                  <CircularProgress size={24} />
+                </Box>
+              )}
+              {!hasMore && posts.length > 0 && (
+                <Box sx={{ textAlign: 'center', py: 2 }}>
+                  <Typography variant="caption" color="text.disabled">
+                    {t('dashboard.endOfFeed', 'You\'ve reached the end')}
+                  </Typography>
                 </Box>
               )}
             </>

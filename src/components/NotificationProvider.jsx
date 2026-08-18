@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  Snackbar, Alert, Typography, Box, Stack, IconButton, useTheme, alpha,
+  Snackbar, Alert, Typography, Box, Stack, IconButton, Button, useTheme, alpha,
 } from '@mui/material'
 import { CloseOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
@@ -310,57 +310,38 @@ export default function NotificationProvider({ children }) {
           severity={toast?.severity || 'info'}
           variant="filled"
           icon={false}
-          action={
-            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-              {toast?.actionUrl && (
-                <IconButton
-                  size="small"
-                  onClick={() => { window.location.href = toast.actionUrl; setToast(null) }}
-                  sx={{
-                    color: '#fff', bgcolor: alpha('#fff', 0.15),
-                    fontSize: '0.7rem', fontWeight: 700, px: 1, borderRadius: 1,
-                    '&:hover': { bgcolor: alpha('#fff', 0.25) },
-                  }}
-                >
-                  <RocketLaunchOutlined sx={{ fontSize: 14, mr: 0.5 }} />
-                  {toast.actionLabel}
-                </IconButton>
-              )}
-              <IconButton size="small" onClick={handleClose} sx={{ color: 'inherit', opacity: 0.8, width: 35, height: 35, mx: 1.5 }}>
-                <CloseOutlined sx={{ fontSize: 16 }} />
-              </IconButton>
-            </Stack>
-          }
+          
+          
           sx={{
             width: '100%',
-            minWidth: 320,
-            maxWidth: 450,
-            alignItems: 'flex-start',
-            borderRadius: 2,
-            boxShadow: `0 8px 32px ${alpha(theme.palette[toast?.severity || 'info'].main, 0.35)}`,
-            borderLeft: isRtl ? 'none' : `4px solid ${severityColor[toast?.severity || 'info']}`,
-            borderRight: isRtl ? `4px solid ${severityColor[toast?.severity || 'info']}` : 'none',
+            minWidth: 340,
+            maxWidth: 460,
+            alignItems: 'stretch',
             p: 0,
             overflow: 'hidden',
-            '& .MuiAlert-icon': { display: 'none' },
-            '& .MuiAlert-action': { pt: 0.5 },
+            borderRadius: 2.5,
+            fontFamily: theme.typography.fontFamily,
+            boxShadow: `0 8px 32px ${alpha(theme.palette[toast?.severity || 'info'].main, 0.35)}`,
+            borderInlineStart: `4px solid ${severityColor[toast?.severity || 'info']}`,
+            '& .MuiAlert-message': { flex: 1, minWidth: 0, p: 0 },
+            '& .MuiAlert-action': { p: 0, my: 0, alignItems: 'stretch' },
           }}
         >
-          <Stack direction="row" spacing={1.5} sx={{ p: 1.5, width: '100%' }}>
+          <Stack direction="row" spacing={1.5} sx={{ p: 1.75, width: '100%', alignItems: 'flex-start' }}>
             <Box sx={{
-              width: 36, height: 36, borderRadius: '10px', flexShrink: 0,
+              width: 40, height: 40, borderRadius: '12px', flexShrink: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              bgcolor: alpha('#fff', 0.2),
               color: '#fff',
+              mx: 1.5
             }}>
-              {toast?.icon || <InfoOutlined sx={{ fontSize: 20 }} />}
+              {toast?.icon || <InfoOutlined sx={{ fontSize: 21 }} />}
             </Box>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography variant="body2" fontWeight={700} sx={{ lineHeight: 1.3, color: '#fff' }}>
+            <Box sx={{ flex: 1, minWidth: 0, alignSelf: 'center' }}>
+              <Typography variant="subtitle2" fontWeight={800} sx={{ lineHeight: 1.35, color: '#fff', fontFamily: 'inherit' }}>
                 {toast?.title}
               </Typography>
               {toast?.msg && (
-                <Typography variant="caption" sx={{ lineHeight: 1.4, color: alpha('#fff', 0.88), display: 'block', mt: 0.25 }}>
+                <Typography variant="body2" sx={{ lineHeight: 1.6, color: alpha('#fff', 0.9), display: 'block', mt: 0.5, fontFamily: 'inherit' }}>
                   {toast?.msg}
                 </Typography>
               )}

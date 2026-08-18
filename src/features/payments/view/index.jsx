@@ -6,7 +6,7 @@ import {
   ToggleButton, ToggleButtonGroup, useMediaQuery, Divider,
 } from '@mui/material'
 import {
-  PaymentsOutlined, VerifiedOutlined, HourglassTopOutlined, SavingsOutlined,
+  PaymentsOutlined, VerifiedOutlined, HourglassTopOutlined, AccountBalanceWalletOutlined,
   SearchOutlined, ClearAllOutlined, ReceiptLongOutlined, ArrowUpward, ArrowDownward,
   AttachMoneyOutlined, CalendarMonthOutlined, PersonOutlined, InfoOutlined,
   ArrowForwardOutlined, ArrowBackOutlined, SwapHorizOutlined,
@@ -259,7 +259,7 @@ export default function PaymentsView() {
         </Paper>
 
         <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1.5, mb: 2.5 }}>
-          {statItem(t('payments.total', 'Total payments'), totals.total, COLORS.navy, <SavingsOutlined sx={{ fontSize: 18 }} />)}
+          {statItem(t('payments.total', 'Total payments'), totals.total, COLORS.navy, <AccountBalanceWalletOutlined sx={{ fontSize: 18 }} />)}
           {statItem(t('payments.inEscrow', 'In escrow'), totals.held, COLORS.warning, <HourglassTopOutlined sx={{ fontSize: 18 }} />)}
           {statItem(t('payments.released', 'Released'), totals.released, COLORS.success, <VerifiedOutlined sx={{ fontSize: 18 }} />)}
         </Stack>

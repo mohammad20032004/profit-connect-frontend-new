@@ -7,7 +7,7 @@ import {
 import Button from '@/ui/Button'
 import {
   ArrowBackOutlined, AttachMoneyOutlined, AccessTimeOutlined, PersonOutlined,
-  CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined,
+  CodeOutlined, DesignServicesOutlined, AssignmentOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, RequestQuoteOutlined, VerifiedOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
@@ -162,7 +162,7 @@ export default function ProjectDetail() {
               <Stack spacing={2.5}>
                 <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
                   <Avatar sx={{ width: 56, height: 56, bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'primary.main' }}>
-                    {categoryIcons[project.category] || <WorkOutlineOutlined />}
+                    {categoryIcons[project.category] || <AssignmentOutlined />}
                   </Avatar>
                   <Box>
                     <Typography variant="h6" fontWeight="bold">{project.title}</Typography>
@@ -332,7 +332,7 @@ export default function ProjectDetail() {
                           <Typography variant="body2" fontWeight="bold">{name}</Typography>
                           {idx === 0 && (
                             <Tooltip title={t('projects.lowestBid', 'Lowest bid')}>
-                              <StarBorderOutlined sx={{ fontSize: 16, color: '#16A34A' }} />
+                              <RequestQuoteOutlined sx={{ fontSize: 16, color: '#16A34A' }} />
                             </Tooltip>
                           )}
                         </Stack>

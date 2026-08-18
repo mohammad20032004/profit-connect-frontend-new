@@ -9,7 +9,7 @@ import {
   SearchOutlined, LocationOnOutlined, WorkOutlineOutlined,
   AttachMoneyOutlined, FilterListOutlined, CloseOutlined,
   ExpandMoreOutlined, ExpandLessOutlined,
-  HomeOutlined, SchoolOutlined, PublicOutlined,
+  BusinessOutlined, SignalCellularAltOutlined, PublicOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -257,7 +257,7 @@ export default function JobsView() {
       {/* Work Place */}
       <FilterSection
         title={lang === 'ar' ? 'مكان العمل' : 'Work Place'}
-        icon={<HomeOutlined sx={{ fontSize: 15 }} />}
+        icon={<BusinessOutlined sx={{ fontSize: 15 }} />}
         count={places.length}
       >
         <FilterChips options={PLACE_OPTIONS} selected={places} onChange={(v) => toggleFilter(places, setPlaces, v)} />
@@ -268,7 +268,7 @@ export default function JobsView() {
       {/* Experience Level */}
       <FilterSection
         title={lang === 'ar' ? 'مستوى الخبرة' : 'Experience Level'}
-        icon={<SchoolOutlined sx={{ fontSize: 15 }} />}
+        icon={<SignalCellularAltOutlined sx={{ fontSize: 15 }} />}
         count={levels.length}
       >
         <FilterChips options={LEVEL_OPTIONS} selected={levels} onChange={(v) => toggleFilter(levels, setLevels, v)} />
