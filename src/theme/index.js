@@ -107,10 +107,10 @@ const darkPalette = {
     disabled: '#6B6390',
   },
   divider: alpha('#F0EAF8', 0.1),
-  success: { main: '#4ADE80', light: '#052E16', dark: '#22C55E' },
-  error: { main: '#F87171', light: '#450A0A', dark: '#EF4444' },
-  warning: { main: '#FBBF24', light: '#451A03', dark: '#F59E0B' },
-  info: { main: '#60A5FA', light: '#0C1929', dark: '#3B82F6' },
+  success: { main: '#4ADE80', light: '#14532D', dark: '#22C55E' },
+  error: { main: '#F87171', light: '#7F1D1D', dark: '#EF4444' },
+  warning: { main: '#FBBF24', light: '#78350F', dark: '#F59E0B' },
+  info: { main: '#60A5FA', light: '#1E3A5F', dark: '#3B82F6' },
   grey: {
     50: '#181230', 100: '#2A1F48', 200: '#4A3A78', 300: '#6B6390',
     400: '#857DA5', 500: '#A8A0BF', 600: '#B8B0D0', 700: '#C8C0E0',
@@ -134,7 +134,7 @@ export const getTheme = (direction, mode = 'light') => {
     palette: { mode, ...palette },
     typography: {
       fontFamily: direction === 'ar'
-        ? '"Cairo", sans-serif'
+        ? '"Almarai", "Cairo", sans-serif'
         : '"Inter", "Roboto", sans-serif',
       h1: { fontWeight: 800, fontSize: '2.5rem', lineHeight: 1.15, letterSpacing: '-0.025em' },
       h2: { fontWeight: 700, fontSize: '2rem', lineHeight: 1.2, letterSpacing: '-0.02em' },
@@ -146,9 +146,9 @@ export const getTheme = (direction, mode = 'light') => {
       subtitle2: { fontWeight: 600, fontSize: '0.875rem', color: txt.primary, lineHeight: 1.4 },
       body1: { fontSize: '0.9375rem', lineHeight: 1.6, color: txt.primary },
       body2: { fontSize: '0.8125rem', lineHeight: 1.5, color: txt.secondary },
-      caption: { fontSize: '0.6875rem', fontWeight: 500, color: txt.secondary, lineHeight: 1.4 },
+      caption: { fontSize: '0.75rem', fontWeight: 500, color: txt.secondary, lineHeight: 1.4 },
       button: { fontWeight: 600, letterSpacing: '0.01em' },
-      overline: { fontWeight: 600, fontSize: '0.625rem', letterSpacing: '0.08em', textTransform: 'uppercase' },
+      overline: { fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.08em', textTransform: 'uppercase' },
     },
     shape: { borderRadius: 8 },
     spacing: 8,

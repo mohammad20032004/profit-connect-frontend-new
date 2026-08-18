@@ -40,7 +40,7 @@ function Card({
       }}
       {...props}
     >
-      {media && <CardMedia component="img" height={mediaHeight} image={media} alt="" />}
+      {media && <CardMedia component="img" height={mediaHeight} image={media} alt={title || ''} />}
 
       {(title || subtitle || action) && (
         <MuiCardHeader
@@ -69,7 +69,7 @@ function Card({
 
 function CardStat({ label, value, icon, trend, trendLabel }) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} aria-label={`${value} ${label}`}>
       <Box>
         <Typography variant="body2" sx={{ color: '#5C5580', mb: 0.5 }}>
           {label}

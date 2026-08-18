@@ -42,6 +42,8 @@ function Button({
       fullWidth={fullWidth}
       startIcon={computedStartIcon}
       endIcon={computedEndIcon}
+      aria-busy={loading || undefined}
+      aria-disabled={disabled || loading || undefined}
       sx={{
         ...(variant === 'primary' && {
           background: 'linear-gradient(135deg, #3D1C6E, #1F3670)',

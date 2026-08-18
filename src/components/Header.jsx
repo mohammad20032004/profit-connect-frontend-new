@@ -102,6 +102,8 @@ const Header = () => {
     <AppBar
       position="sticky"
       elevation={0}
+      role="banner"
+      aria-label={t('header.mainNavigation', 'Main navigation')}
       sx={{ color: 'text.primary' }}
     >
       <Container maxWidth="xl">
@@ -147,7 +149,7 @@ const Header = () => {
               </Box>
               <InputBase
                 placeholder={t('header.search')}
-                inputProps={{ 'aria-label': 'search' }}
+                inputProps={{ 'aria-label': t('header.search') }}
                 sx={{
                   color: 'inherit',
                   width: '100%',
@@ -167,32 +169,34 @@ const Header = () => {
             {navItems.map((item) => {
               const isActive = pathname === item.link || (item.link !== '/' && pathname.startsWith(item.link + '/'))
               return (
-                <Link to={item.link} key={item.link} style={{ textDecoration: 'none', height: '100%' }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      height: '100%',
-                      position: 'relative',
-                      color: isActive ? 'text.primary' : 'text.secondary',
-                      '&:hover': { color: 'text.primary' },
-                      width: { xs: '40px', md: '60px', lg: '72px' },
-                      textDecoration: 'none',
-                      transition: 'all 0.2s ease',
-                      gap: 0.3,
-                    }}
-                  >
-                    <Badge color="error" variant={item.badgeCount > 9 ? 'standard' : 'dot'} badgeContent={item.badgeCount} invisible={!item.hasBadge} max={99}>
-                      {React.cloneElement(item.icon, { sx: { fontSize: 26 } })}
-                    </Badge>
-                    <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px', fontWeight: isActive ? 700 : 500, lineHeight: 1.2 }}>
-                      {item.label}
-                    </Typography>
-                  </Box>
-                </Link>
+                <Box
+                  key={item.link}
+                  component={Link}
+                  to={item.link}
+                  aria-current={isActive ? 'page' : undefined}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    height: '100%',
+                    position: 'relative',
+                    color: isActive ? 'text.primary' : 'text.secondary',
+                    '&:hover': { color: 'text.primary' },
+                    width: { xs: '40px', md: '60px', lg: '72px' },
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                    gap: 0.3,
+                  }}
+                >
+                  <Badge color="error" variant={item.badgeCount > 9 ? 'standard' : 'dot'} badgeContent={item.badgeCount} invisible={!item.hasBadge} max={99}>
+                    {React.cloneElement(item.icon, { sx: { fontSize: 26 } })}
+                  </Badge>
+                  <Typography variant="caption" sx={{ display: { xs: 'none', md: 'block' }, fontSize: '12px', fontWeight: isActive ? 700 : 500, lineHeight: 1.2 }}>
+                    {item.label}
+                  </Typography>
+                </Box>
               )
             })}
           </Stack>
@@ -224,16 +228,19 @@ const Header = () => {
             </Box>
             <Box
               onClick={handleOpenMenu}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOpenMenu(e); } }}
               role="button"
               tabIndex="0"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderLeft: '1px solid',
+                borderInlineStart: '1px solid',
                 borderColor: 'divider',
-                pl: { xs: 1.5, md: 2.5 },
+                paddingInlineStart: { xs: 1.5, md: 2.5 },
                 height: '100%',
                 cursor: 'pointer',
                 gap: 0.3,
@@ -259,15 +266,17 @@ const Header = () => {
         onClose={handleCloseMenu}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            mt: 1.5,
-            minWidth: 280,
-            borderRadius: 1,
-            border: '1px solid',
-            borderColor: 'divider',
-            overflow: 'visible',
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              mt: 1.5,
+              minWidth: 280,
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'divider',
+              overflow: 'visible',
+            },
           },
         }}
       >

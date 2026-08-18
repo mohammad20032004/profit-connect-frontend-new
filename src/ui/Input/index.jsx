@@ -59,7 +59,12 @@ function PasswordField({ label, ...props }) {
         input: {
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={() => setShow(!show)} edge="end" size="small">
+              <IconButton
+                onClick={() => setShow(!show)}
+                edge="end"
+                size="small"
+                aria-label={show ? 'Hide password' : 'Show password'}
+              >
                 {show ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
               </IconButton>
             </InputAdornment>
@@ -77,6 +82,8 @@ function SearchInput({ placeholder = 'Search...', value, onChange, sx, ...props 
       value={value}
       onChange={onChange}
       placeholder={placeholder}
+      role="searchbox"
+      aria-label={placeholder}
       startAdornment={
         <InputAdornment position="start">
           <SearchIcon sx={{ color: '#8F86AD', fontSize: 20 }} />
@@ -172,6 +179,7 @@ function RadioBtn({ label, value, checked, onChange, sx, ...props }) {
       checked={checked}
       onChange={onChange}
       value={value}
+      aria-label={label || value}
       sx={{
         color: 'rgba(31, 10, 59, 0.3)',
         '&.Mui-checked': { color: '#3D1C6E' },
@@ -207,6 +215,7 @@ function Switch({ label, checked, onChange, sx, ...props }) {
         <MuiSwitch
           checked={checked}
           onChange={onChange}
+          aria-label={label || undefined}
           sx={{
             '& .MuiSwitch-track': { borderRadius: 999 },
             '& .MuiSwitch-thumb': { boxShadow: '0 2px 4px rgba(31, 10, 59, 0.12)' },

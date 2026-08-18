@@ -79,7 +79,7 @@ function ListSkeleton() {
 
 function StatBox({ value, label }) {
   return (
-    <Box sx={{ textAlign: 'center', px: 2.5, py: 1.25, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 1.5, minWidth: 92 }}>
+    <Box sx={{ textAlign: 'center', px: 2.5, py: 1.25, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 1.5, minWidth: 92 }} aria-label={`${value} ${label}`}>
       <Typography variant="h6" fontWeight={800}>{value ?? 0}</Typography>
       <Typography variant="caption" color="text.secondary">{label}</Typography>
     </Box>
@@ -911,6 +911,7 @@ export default function NetworkView() {
             placeholder={t('network.searchPlaceholder', 'ابحث بالاسم أو المسمى أو اسم المستخدم...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            inputProps={{ role: 'searchbox', 'aria-label': t('network.searchPlaceholder', 'ابحث بالاسم أو المسمى أو اسم المستخدم...') }}
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1 } }}
             slotProps={{
               input: {
@@ -967,9 +968,10 @@ export default function NetworkView() {
                     ref={topScrollerRef}
                     sx={{
                       display: 'flex', gap: 1.5, overflowX: 'auto', pb: 1, pt: 0.5,
-                      scrollbarWidth: 'none', scrollBehavior: 'smooth',
+                      scrollbarWidth: 'thin', scrollBehavior: 'smooth',
                       WebkitOverflowScrolling: 'touch',
-                      '&::-webkit-scrollbar': { display: 'none', width: 0, height: 0 },
+                      '&::-webkit-scrollbar': { height: 4 },
+                      '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 },
                       '@keyframes cardFadeUp': {
                         from: { opacity: 0, transform: 'translateY(16px)' },
                         to: { opacity: 1, transform: 'translateY(0)' },
@@ -982,7 +984,7 @@ export default function NetworkView() {
                         onToggleFollow={() => handleToggleFollow(u)} />
                     ))}
                   </Box>
-                  <IconButton size="small" onClick={() => scrollTopSlider(isRTL ? 1 : -1)}
+                  <IconButton size="small" aria-label="Scroll left" onClick={() => scrollTopSlider(isRTL ? 1 : -1)}
                     sx={{
                       position: 'absolute', top: '50%', insetInlineStart: { xs: -12, md: -20 },
                       transform: 'translateY(-50%)', zIndex: 2, bgcolor: 'background.paper',
@@ -993,7 +995,7 @@ export default function NetworkView() {
                     }}>
                     <ChevronLeftOutlined sx={{ transform: isRTL ? 'scaleX(-1)' : 'none', fontSize: 20 }} />
                   </IconButton>
-                  <IconButton size="small" onClick={() => scrollTopSlider(isRTL ? -1 : 1)}
+                  <IconButton size="small" aria-label="Scroll right" onClick={() => scrollTopSlider(isRTL ? -1 : 1)}
                     sx={{
                       position: 'absolute', top: '50%', insetInlineEnd: { xs: -12, md: -20 },
                       transform: 'translateY(-50%)', zIndex: 2, bgcolor: 'background.paper',
@@ -1098,6 +1100,10 @@ export default function NetworkView() {
         const active = tab === i
         return (
           <Box key={tb.key} onClick={() => handleTabChange(i)}
+            role="tab"
+            aria-selected={active}
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTabChange(i); } }}
             sx={{
               flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: 0.75,
               px: 1.25, py: 0.75, borderRadius: 99, cursor: 'pointer', userSelect: 'none',
@@ -1122,14 +1128,14 @@ export default function NetworkView() {
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <Box sx={{  maxWidth: 1500, mx: 'auto' }}>
         {error && (
-          <Typography variant="body2" color="error.main" sx={{ p: 1.5, borderRadius: 0.5, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
+          <Typography variant="body2" color="error.main" role="alert" sx={{ p: 1.5, borderRadius: 0.5, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
             {error}
           </Typography>
         )}
 
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} sx={{ alignItems: 'flex-start' }}>
           {isMobile ? (
-            <Box sx={{ width: 300 }}>
+            <Box sx={{ width: '100%' }}>
               {renderMobileTabs()}
             </Box>
           ) : (
@@ -1138,7 +1144,7 @@ export default function NetworkView() {
                 width: followingExpanded ? 300 : 260,
                 flexShrink: 0,
                 position: 'sticky',
-                top:40,
+                top: 40,
                 height: 'calc(100vh - 88px)',
                 alignSelf: 'flex-start',
                 zIndex: 2,

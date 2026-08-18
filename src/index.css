@@ -64,6 +64,8 @@
 body {
   background-color: var(--bg-default);
   color: var(--text-primary);
+  line-height: 1.5;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -99,7 +101,7 @@ a {
 
 .post-content ul, .comment-content ul,
 .post-content ol, .comment-content ol {
-  padding-left: 24px;
+  padding-inline-start: 24px;
   margin: 8px 0;
 }
 
@@ -146,7 +148,7 @@ a {
 
 
 .ProseMirror ul, .ProseMirror ol {
-  padding-left: 24px;
+  padding-inline-start: 24px;
   margin: 8px 0;
 }
 
@@ -163,13 +165,15 @@ a {
   outline: none;
 }
 
-/* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
-  .ProseMirror p.is-editor-empty:first-child::before {
-    color: #A89FC8;
-  }
+.ProseMirror-focused:where(:focus-visible) {
+  outline: none;
+}
 
-  .ProseMirror-focused p.is-editor-empty:first-child::before {
-    color: #A89FC8;
-  }
+/* Dark mode via class (managed by ThemeProvider, not media query) */
+.dark-mode .ProseMirror p.is-editor-empty:first-child::before {
+  color: #A89FC8;
+}
+
+.dark-mode .ProseMirror-focused p.is-editor-empty:first-child::before {
+  color: #A89FC8;
 }

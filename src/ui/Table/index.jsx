@@ -13,6 +13,7 @@ import {
   Typography,
   Box,
   Chip,
+  CircularProgress,
 } from '@mui/material'
 
 function Table({
@@ -121,8 +122,8 @@ function Table({
         ...sx,
       }}
     >
-      <TableContainer>
-        <MuiTable>
+      <TableContainer sx={{ overflowX: 'auto' }}>
+        <MuiTable aria-label="Data table">
           <TableHead>
             <TableRow>
               {selectable && (
@@ -131,6 +132,7 @@ function Table({
                     checked={paginatedRows.length > 0 && selectedItems.length === paginatedRows.length}
                     indeterminate={selectedItems.length > 0 && selectedItems.length < paginatedRows.length}
                     onChange={handleSelectAll}
+                    inputProps={{ 'aria-label': 'Select all rows' }}
                     sx={{ color: 'rgba(31, 10, 59, 0.2)', '&.Mui-checked': { color: '#3D1C6E' } }}
                   />
                 </TableCell>
@@ -172,9 +174,12 @@ function Table({
             {paginatedRows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length + (selectable ? 1 : 0)} align="center" sx={{ py: 6 }}>
-                  <Typography sx={{ color: '#8F86AD', fontSize: '0.9rem' }}>
-                    {loading ? 'Loading...' : emptyMessage}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                    {loading && <CircularProgress size={20} />}
+                    <Typography sx={{ color: '#8F86AD', fontSize: '0.9rem' }}>
+                      {loading ? 'Loading...' : emptyMessage}
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
             ) : (
@@ -187,6 +192,9 @@ function Table({
                     hover
                     selected={isSelected}
                     onClick={selectable ? () => handleSelect(globalIndex) : undefined}
+                    onKeyDown={selectable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(globalIndex); } } : undefined}
+                    tabIndex={selectable ? 0 : undefined}
+                    role={selectable ? 'row' : undefined}
                     sx={{
                       cursor: selectable ? 'pointer' : 'default',
                       '&:last-child td': { borderBottom: 'none' },
@@ -198,6 +206,7 @@ function Table({
                       <TableCell padding="checkbox">
                         <Checkbox
                           checked={isSelected}
+                          inputProps={{ 'aria-label': `Select row ${rowIndex + 1}` }}
                           sx={{ color: 'rgba(31, 10, 59, 0.2)', '&.Mui-checked': { color: '#3D1C6E' } }}
                         />
                       </TableCell>
