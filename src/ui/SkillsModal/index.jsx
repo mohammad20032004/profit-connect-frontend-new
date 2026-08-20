@@ -3,6 +3,8 @@ import { Dialog, DialogTitle, DialogContent, TextField, Box, Chip, Typography, S
 import { SearchOutlined, CloseOutlined } from '@mui/icons-material'
 import SkillIcon from '../SkillIcon'
 
+const CATEGORIES = ['All', 'Frontend', 'JavaScript', 'Backend', 'Python', 'Java', '.NET', 'Go', 'Rust', 'PHP', 'Ruby', 'Mobile', 'Database', 'DevOps', 'Design', 'Tools', 'Testing', 'Data & AI', 'Architecture', 'Blockchain', 'Security', 'Management', 'Languages', 'Other']
+
 const SKILL_DB = [
   { cat: 'Frontend', skills: ['React', 'Vue.js', 'Angular', 'Next.js', 'Nuxt.js', 'Svelte', 'Solid.js', 'Remix', 'Gatsby', 'Astro', 'HTML', 'CSS', 'SCSS', 'Tailwind CSS', 'Bootstrap', 'Material UI', 'Chakra UI', 'Styled Components', 'Sass', 'PostCSS', 'CSS Modules', 'CSS-in-JS', 'Emotion'] },
   { cat: 'JavaScript', skills: ['JavaScript', 'TypeScript', 'React Query', 'Zustand', 'Redux', 'MobX', 'Recoil', 'Jotai', 'Valtio', 'Webpack', 'Vite', 'Rollup', 'Parcel', 'ESBuild', 'Swc', 'Turbopack', 'Babel', 'Gulp', 'Grunt', 'ESLint', 'Prettier', 'npm', 'Yarn', 'pnpm', 'Lerna', 'Nx', 'Turborepo'] },
@@ -40,15 +42,24 @@ function shuffle(arr) {
 
 export default function SkillsModal({ open, onClose, selected, onToggle }) {
   const [search, setSearch] = useState('')
+  const [activeCategory, setActiveCategory] = useState('All')
 
   const allSkills = useMemo(() => {
     const flat = SKILL_DB.flatMap((g) => g.skills)
     return shuffle(flat)
   }, [open])
 
-  const filtered = search.trim()
-    ? allSkills.filter((s) => s.toLowerCase().includes(search.toLowerCase()))
-    : allSkills
+  const categoryMap = useMemo(() => {
+    const map = {}
+    SKILL_DB.forEach((g) => { g.skills.forEach((s) => { map[s] = g.cat }) })
+    return map
+  }, [])
+
+  const filtered = allSkills.filter((s) => {
+    const matchesSearch = !search.trim() || s.toLowerCase().includes(search.toLowerCase())
+    const matchesCategory = activeCategory === 'All' || categoryMap[s] === activeCategory
+    return matchesSearch && matchesCategory
+  })
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth
@@ -66,7 +77,7 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
           <Typography variant="h6" fontWeight="bold" sx={{ color: '#1F0A3B', fontSize: '1.1rem' }}>
             Select Skills ({selected.length} selected)
           </Typography>
-          <IconButton onClick={onClose} size="small" sx={{ color: '#5C5580', '&:hover': { bgcolor: 'rgba(61,28,110,0.06)' } }}>
+          <IconButton onClick={onClose} size="medium" sx={{ color: '#5C5580', '&:hover': { bgcolor: 'rgba(61,28,110,0.06)' }, minWidth: 44, minHeight: 44 }}>
             <CloseOutlined fontSize="small" />
           </IconButton>
         </Stack>
@@ -88,6 +99,19 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
             },
           }}
         />
+        <Box sx={{ display: 'flex', gap: 0.6, overflowX: 'auto', pb: 0.5, '&::-webkit-scrollbar': { height: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: '#D1C8E8', borderRadius: 2 } }}>
+          {CATEGORIES.map((cat) => (
+            <Chip
+              key={cat}
+              label={cat}
+              size="small"
+              variant={activeCategory === cat ? 'filled' : 'outlined'}
+              color={activeCategory === cat ? 'primary' : 'default'}
+              onClick={() => setActiveCategory(cat)}
+              sx={{ minHeight: 36, flexShrink: 0, fontWeight: activeCategory === cat ? 600 : 400, transition: 'all 0.15s ease', '&:hover': { transform: 'scale(1.04)' } }}
+            />
+          ))}
+        </Box>
       </DialogTitle>
       <DialogContent sx={{ px: 3, py: 2.5, overflowY: 'auto' }}>
         {filtered.length === 0 ? (

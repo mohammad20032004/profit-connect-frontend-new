@@ -45,6 +45,7 @@ const Header = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
   const unreadCount = useSelector((state) => state.notifications?.unreadCount || 0)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const navItems = [
     { label: t('nav.home'), icon: <HomeIcon />, hasBadge: false, link: '/' },
@@ -127,8 +128,8 @@ const Header = () => {
                 '&:hover': {
                   backgroundColor: theme.palette.background.paper,
                 },
-                mr: 1.5,
-                ml: { md: 1.5 },
+                mril: 1.5,
+                mlil: { md: 1.5 },
                 width: { md: 220, lg: 320, xl: 380 },
                 transition: 'all 0.3s',
               })}
@@ -150,12 +151,20 @@ const Header = () => {
               <InputBase
                 placeholder={t('header.search')}
                 inputProps={{ 'aria-label': t('header.search') }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    navigate(`/jobs?search=${encodeURIComponent(searchQuery.trim())}`)
+                    setSearchQuery('')
+                  }
+                }}
                 sx={{
                   color: 'inherit',
                   width: '100%',
                   '& .MuiInputBase-input': {
                     p: (theme) => theme.spacing(1.35, 1.5, 1.35, 0),
-                    pl: (theme) => `calc(1em + ${theme.spacing(4.4)})`,
+                    paddingInlineStart: (theme) => `calc(1em + ${theme.spacing(4.4)})`,
                     transition: (theme) => theme.transitions.create('width'),
                     width: '100%',
                     fontSize: '0.95rem',

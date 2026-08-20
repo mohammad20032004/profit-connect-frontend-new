@@ -23,7 +23,7 @@ const TYPE_LABELS = {
 const LEVEL_LABELS = {
   'Entry': { en: 'Entry', ar: 'مبتدئ' },
   'Mid': { en: 'Mid', ar: 'متوسط' },
-  'Senior': { en: 'Senior', ar: 'Senior' },
+  'Senior': { en: 'Senior', ar: 'متقدم' },
   'Lead': { en: 'Lead', ar: 'قائد فريق' },
 }
 

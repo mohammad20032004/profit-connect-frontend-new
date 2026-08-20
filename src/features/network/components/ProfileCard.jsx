@@ -18,7 +18,7 @@ export default function ProfileCard({
   const openProfile = () => navigate(`/user-profile/${user._id}`)
   const defaultImg = getDefaultAvatar(user?.role, user?.profile?.gender)
 
-  const btnSx = { borderRadius: 0.75, py: 0.5, fontSize: '0.72rem' }
+  const btnSx = { borderRadius: 0.75, py: 1, minHeight: 36, fontSize: '0.72rem' }
 
   const actionRows = []
   if (variant === 'request') {
@@ -103,11 +103,9 @@ export default function ProfileCard({
 
   return (
     <Paper variant="outlined" sx={{
-      flex: { xs: '0 0 100%', sm: '0 0 240px' },
-      maxWidth: { xs: '100%', sm: 250 },
-      minWidth: { xs: 0, sm: 200 },
+      width: '100%',
       borderRadius: 1.5, overflow: 'hidden', display: 'flex', flexDirection: 'column',
-      transition: 'all 0.2s ease', height: '100%', alignSelf: 'flex-start',
+      transition: 'all 0.2s ease', height: '100%', alignSelf: 'stretch',
       '&:hover': {
         boxShadow: '0 8px 24px rgba(31,10,59,0.12)', borderColor: alpha(COLORS.primary, 0.3), transform: 'translateY(-2px)',
       },

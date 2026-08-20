@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import {
   Container, Box, Typography, Stack, Chip, Stepper, Step, StepLabel, Paper, CircularProgress, IconButton,
+  Link as MuiLink,
 } from '@mui/material'
 import Button from '@/ui/Button'
-import { ThemeProvider, createTheme, keyframes } from '@mui/material/styles'
+import { keyframes } from '@mui/material/styles'
 import { signup } from '@/services/authService'
 import { setAuthData } from '@/redux/slices/userSlice'
 import Logo from '@/components/common/Logo'
@@ -33,22 +34,6 @@ const STEPS_BY_ROLE = {
     { key: 'photo', en: 'Photo', ar: 'الصورة' },
   ],
 }
-
-const lightTheme = createTheme({
-  direction: 'ltr',
-  palette: {
-    mode: 'light',
-    primary: { main: '#3D1C6E', light: '#5C3594', dark: '#2D1055' },
-    secondary: { main: '#1F3670' },
-    background: { default: '#F6F4FA', paper: '#FFFFFF' },
-    text: { primary: '#1F0A3B', secondary: '#5C5580' },
-    divider: 'rgba(31, 10, 59, 0.08)',
-    success: { main: '#16A34A' },
-    error: { main: '#DC2626' },
-  },
-  shape: { borderRadius: 12 },
-  typography: { fontFamily: '"Cairo", "Inter", "Roboto", sans-serif' },
-})
 
 const float1 = keyframes`0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.05)}66%{transform:translate(-20px,20px) scale(0.95)}`
 const float2 = keyframes`0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-25px,25px) scale(1.08)}66%{transform:translate(20px,-15px) scale(0.92)}`
@@ -165,8 +150,7 @@ export default function SignUpView() {
     : { animation: 'slideInLeft 0.35s ease both' }
 
   return (
-    <ThemeProvider theme={lightTheme}>
-      <Box sx={{
+    <Box sx={{
         minHeight: '100vh', bgcolor: '#F6F4FA', position: 'relative', overflow: 'hidden',
         '@keyframes fadeUp': { from: { opacity: 0, transform: 'translateY(16px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
         '@keyframes slideInRight': { from: { opacity: 0, transform: 'translateX(24px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
@@ -179,9 +163,9 @@ export default function SignUpView() {
           <Box sx={{ position: 'absolute', width: 250, height: 250, borderRadius: '50%', background: 'radial-gradient(circle, #5C359410 0%, transparent 70%)', top: '40%', right: '15%', animation: `${float1} 15s ease-in-out infinite reverse` }} />
         </Box>
 
-        <IconButton onClick={toggleLang}
+        <IconButton onClick={toggleLang} aria-label={lang === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
           sx={{
-            position: 'fixed', top: 16, right: 16, zIndex: 10, bgcolor: 'white',
+            position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10, bgcolor: 'white',
             boxShadow: '0 2px 12px rgba(0,0,0,0.08)', borderRadius: 2, px: 1.5, py: 0.5,
             transition: 'all 0.3s ease',
             '&:hover': { bgcolor: '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' },
@@ -356,13 +340,12 @@ export default function SignUpView() {
 
                 <Typography variant="body2" sx={{ mt: 3, textAlign: 'center', color: '#5C5580', animation: 'fadeUp 0.5s ease 0.5s both' }}>
                   {lang === 'en' ? 'Already have an account?' : 'لديك حساب بالفعل؟'}{' '}
-                  <Link to="/sign-in" style={{ color: '#3D1C6E', fontWeight: 700, textDecoration: 'none' }}>{lang === 'en' ? 'Sign in' : 'تسجيل الدخول'}</Link>
+                  <MuiLink component={Link} to="/sign-in" sx={{ color: '#3D1C6E', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>{lang === 'en' ? 'Sign in' : 'تسجيل الدخول'}</MuiLink>
                 </Typography>
               </Box>
             </Box>
           </Box>
         </Container>
       </Box>
-    </ThemeProvider>
   )
 }

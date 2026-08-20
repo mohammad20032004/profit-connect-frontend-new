@@ -406,9 +406,9 @@ export default function JobDetailView() {
                   <Typography variant="h6" fontWeight={700}>
                     {lang === 'ar' ? 'تقديم على الوظيفة' : 'Apply for this job'}
                   </Typography>
-                  <IconButton onClick={handleCloseApply} size="small">
-                    <CloseOutlined sx={{ fontSize: 20 }} />
-                  </IconButton>
+                   <IconButton onClick={handleCloseApply} size="medium" sx={{ minWidth: 44, minHeight: 44 }}>
+                     <CloseOutlined sx={{ fontSize: 20 }} />
+                   </IconButton>
                 </DialogTitle>
                 <DialogContent sx={{ pt: 1 }}>
                   <Stack spacing={2.5} sx={{ mt: 1 }}>

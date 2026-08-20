@@ -5,6 +5,7 @@ import {
   ButtonGroup as MuiButtonGroup,
   CircularProgress,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 
 const customVariants = {
   primary: { variant: 'contained' },
@@ -44,32 +45,32 @@ function Button({
       endIcon={computedEndIcon}
       aria-busy={loading || undefined}
       aria-disabled={disabled || loading || undefined}
-      sx={{
+      sx={(theme) => ({
         ...(variant === 'primary' && {
-          background: 'linear-gradient(135deg, #3D1C6E, #1F3670)',
+          background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
           color: '#fff',
           '&:hover': {
-            background: 'linear-gradient(135deg, #2D1055, #13294B)',
+            background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
           },
-          '&:active': { background: '#13294B' },
+          '&:active': { background: theme.palette.secondary.dark },
         }),
         ...(variant === 'gradient' && {
-          background: 'linear-gradient(135deg, #6C3FB5, #3B5591)',
+          background: `linear-gradient(135deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
           color: '#fff',
           '&:hover': {
-            background: 'linear-gradient(135deg, #5C3594, #2E4782)',
+            background: `linear-gradient(135deg, ${theme.palette.secondary.dark}, ${theme.palette.primary.dark})`,
           },
         }),
         ...(variant === 'danger' && {
-          '&:hover': { backgroundColor: '#B91C1C' },
+          '&:hover': { backgroundColor: theme.palette.error.dark },
         }),
         '&.Mui-disabled': {
-          background: 'rgba(122, 122, 140, 0.35)',
-          color: '#fff',
+          background: alpha(theme.palette.action.disabled, 0.12),
+          color: theme.palette.action.disabled,
           opacity: 1,
           boxShadow: 'none',
           border: 'none',
-          WebkitTextFillColor: '#fff',
+          WebkitTextFillColor: theme.palette.action.disabled,
           cursor: 'not-allowed',
         },
         borderRadius: 20,
@@ -77,10 +78,11 @@ function Button({
         fontWeight: 600,
         fontSize: size === 'small' ? '0.8rem' : size === 'large' ? '1rem' : '0.9rem',
         padding: size === 'small' ? '6px 16px' : size === 'large' ? '12px 32px' : '10px 24px',
-        minWidth: fullWidth ? '100%' : undefined,
+        minHeight: size === 'small' ? 36 : size === 'large' ? 48 : 44,
+        minWidth: fullWidth ? '100%' : 44,
         transition: 'all 0.2s ease',
         ...sx,
-      }}
+      })}
     >
       {loading ? <CircularProgress size={20} sx={{ color: 'inherit' }} /> : children}
     </MuiButton>
@@ -92,12 +94,14 @@ function IconBtn({ children, size = 'medium', color = 'default', sx, ...props })
     <MuiIconButton
       {...props}
       size={size}
-      sx={{
-        color: color === 'default' ? '#5C5580' : `${color}.main`,
-        '&:hover': { backgroundColor: 'rgba(61, 28, 110, 0.08)' },
+      sx={(theme) => ({
+        color: color === 'default' ? theme.palette.text.secondary : theme.palette[color]?.main || color,
+        minWidth: 44,
+        minHeight: 44,
+        '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.08) },
         transition: 'all 0.2s ease',
         ...sx,
-      }}
+      })}
     >
       {children}
     </MuiIconButton>

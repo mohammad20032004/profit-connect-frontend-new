@@ -74,7 +74,7 @@ export default function StepCompanyDetails({ form, onChange, errors }) {
           <MenuItem value="">
             <em>{lang === 'ar' ? 'اختر السنة' : 'Select year'}</em>
           </MenuItem>
-          {Array.from({ length: 50 }, (_, i) => CURRENT_YEAR - i).map((year) => (
+          {Array.from({ length: 25 }, (_, i) => CURRENT_YEAR - i).map((year) => (
             <MenuItem key={year} value={year}>{year}</MenuItem>
           ))}
         </TextField>

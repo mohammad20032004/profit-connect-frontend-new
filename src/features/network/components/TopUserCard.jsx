@@ -86,7 +86,7 @@ export default function TopUserCard({ user, rank, following, onToggleFollow, bus
         startIcon={following ? <PersonOffOutlined sx={{ fontSize: 15 }} /> : <PersonAddAlt1Outlined sx={{ fontSize: 15 }} />}
         onClick={() => onToggleFollow(user)}
         disabled={busyId === user._id}
-        sx={{ mt: 'auto', pt: 0.75, pb: 0.75, textTransform: 'none', fontSize: '0.75rem', borderRadius: 1 }}
+        sx={{ mt: 'auto', pt: 0.75, pb: 0.75, minHeight: 36, textTransform: 'none', fontSize: '0.75rem', borderRadius: 1 }}
       >
         {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
       </Button>

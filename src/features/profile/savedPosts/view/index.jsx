@@ -35,12 +35,7 @@ export default function SavedPostsView() {
 
   return (
     <Container maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 3 }}>
-        <Button component={Link} to="/profile" variant="text" startIcon={<ArrowBackOutlined />}>
-          {t('profile.title', 'My Profile')}
-        </Button>
-      </Stack>
-
+     
       <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
         {t('profile.savedPosts', 'Saved Posts')}
       </Typography>

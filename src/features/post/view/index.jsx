@@ -20,6 +20,8 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Snackbar,
+  Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
@@ -48,6 +50,7 @@ export default function PostPage() {
   const [editLoading, setEditLoading] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -73,7 +76,7 @@ export default function PostPage() {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/posts/${postId}`)
-    alert(t('dashboard.action.linkCopied', 'Link copied to clipboard'))
+    setToastMsg(t('dashboard.action.linkCopied', 'Link copied to clipboard'))
     setMenuAnchor(null)
   }
 
@@ -184,7 +187,7 @@ export default function PostPage() {
                 {t('dashboard.deletePost', 'Delete post')}
               </MenuItem>
             ) : (
-              <MenuItem onClick={() => { setMenuAnchor(null); alert(t('post.reported', 'Reported')) }}>
+              <MenuItem onClick={() => { setMenuAnchor(null); setToastMsg(t('post.reported', 'Reported')) }}>
                 <ListItemIcon><FlagOutlined fontSize="small" /></ListItemIcon>
                 {t('post.report', 'Report')}
               </MenuItem>
@@ -239,6 +242,10 @@ export default function PostPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert severity="success" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+      </Snackbar>
     </Container>
   )
 }

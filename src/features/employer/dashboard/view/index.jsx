@@ -282,7 +282,7 @@ export default function EmployerDashboard() {
                 className="cover-camera"
                 whileHover={{ scale: 1.1 }}
                 sx={{
-                  position: 'absolute', top: 8, right: 8,
+                  position: 'absolute', top: 8, insetInlineEnd: 8,
                   width: 32, height: 32, borderRadius: 1,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   bgcolor: 'rgba(0,0,0,0.5)', color: 'white',
@@ -321,7 +321,7 @@ export default function EmployerDashboard() {
                       <Box
                         onClick={() => logoInputRef.current?.click()}
                         sx={{
-                          position: 'absolute', bottom: 0, right: -2,
+                           position: 'absolute', bottom: 0, insetInlineEnd: -2,
                           width: 26, height: 26, borderRadius: 1,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           bgcolor: 'primary.main', color: 'white',
@@ -414,7 +414,7 @@ export default function EmployerDashboard() {
                           variant="primary"
                           fullWidth
                           startIcon={<WorkOutlineOutlined />}
-                          onClick={() => navigate('/employee/jobs')}
+                          onClick={() => navigate('/employer/jobs')}
                           sx={{
                             justifyContent: 'flex-start',
                             bgcolor: '#3D1C6E',
@@ -706,7 +706,7 @@ export default function EmployerDashboard() {
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            style={{ position: 'fixed', top: 16, right: 16, zIndex: 1300 }}
+            style={{ position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 1300 }}
           >
             <Snackbar
               open={!!statusNotification}

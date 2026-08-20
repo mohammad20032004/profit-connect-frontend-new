@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Paper, Typography, Stack, CircularProgress, Avatar, Chip, Divider, alpha, Tooltip, Dialog, DialogTitle, DialogContent, Grid, useMediaQuery,
+  Box, Paper, Typography, Stack, CircularProgress, Avatar, Chip, Divider, alpha, Tooltip, Dialog, DialogTitle, DialogContent, Grid, useMediaQuery, Snackbar, Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
@@ -43,6 +43,7 @@ export default function MyProjectDetail() {
   const [editLoading, setEditLoading] = useState(false)
   const [editError, setEditError] = useState('')
   const [editForm, setEditForm] = useState({ title: '', category: '', description: '', skills: '', budgetMin: '', budgetMax: '', currency: 'SAR', deadline: '' })
+  const [toastMsg, setToastMsg] = useState('')
 
   const fetchProject = useCallback(async (showLoader = true) => {
     if (showLoader) setLoading(true)
@@ -140,7 +141,7 @@ export default function MyProjectDetail() {
         fetchProposals()
       }
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     }
   }
 
@@ -151,7 +152,7 @@ export default function MyProjectDetail() {
         setProposals(prev => prev.map(p => p._id === proposalId ? { ...p, status: 'Rejected' } : p))
       }
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     }
   }
 
@@ -160,7 +161,7 @@ export default function MyProjectDetail() {
       const res = await completeProject(id)
       if (res?.success) fetchProject(false)
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     }
   }
 
@@ -169,7 +170,7 @@ export default function MyProjectDetail() {
       await deleteProject(id)
       navigate('/projects')
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     }
   }
 
@@ -341,6 +342,10 @@ export default function MyProjectDetail() {
           </Stack>
         </DialogContent>
       </Dialog>
+
+      <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert severity="error" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+      </Snackbar>
     </Box>
   )
 }

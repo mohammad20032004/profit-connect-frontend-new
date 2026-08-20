@@ -216,7 +216,7 @@ export default function SettingsView() {
             orientation="vertical"
             value={tab}
             onChange={(_, v) => setTab(v)}
-            sx={{ borderRight: '1px solid', borderColor: 'divider', minWidth: 180, '& .MuiTab-root': { alignItems: 'flex-start', textTransform: 'none', fontSize: '0.9rem', py: 1.5 } }}
+            sx={{ borderInlineEnd: '1px solid', borderColor: 'divider', minWidth: 180, '& .MuiTab-root': { alignItems: 'flex-start', textTransform: 'none', fontSize: '0.9rem', py: 1.5 } }}
           >
             {tabs.map((t) => (
               <Tab key={t.label} icon={t.icon} iconPosition="start" label={t.label} />

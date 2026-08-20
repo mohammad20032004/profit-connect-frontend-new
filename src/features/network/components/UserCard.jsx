@@ -75,7 +75,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
             startIcon={following ? <PersonOffOutlined sx={{ fontSize: 15 }} /> : <PersonAddAlt1Outlined sx={{ fontSize: 15 }} />}
             onClick={() => onToggleFollow(user)}
             disabled={busyId === user._id}
-            sx={{ minWidth: 0, px: 1.25, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
+            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
           >
             {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
           </Button>
@@ -88,7 +88,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
             disabled={busyId === user._id}
             startIcon={status === 'none' ? <PersonAddOutlined sx={{ fontSize: 15 }} /> : <HourglassTopOutlined sx={{ fontSize: 15 }} />}
             onClick={() => onConnect(user)}
-            sx={{ minWidth: 0, px: 1.25, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
+            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
           >
             {status === 'connected'
               ? t('network.connected', 'Connected')
@@ -102,14 +102,14 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
           <>
             <Tooltip title={t('network.accept', 'Accept')}>
               <span>
-                <IconButton size="small" color="success" onClick={() => onAccept(user)} disabled={busyId === user._id}>
+                <IconButton size="medium" color="success" onClick={() => onAccept(user)} disabled={busyId === user._id}>
                   <CheckOutlined sx={{ fontSize: 18 }} />
                 </IconButton>
               </span>
             </Tooltip>
             <Tooltip title={t('network.reject', 'Reject')}>
               <span>
-                <IconButton size="small" color="error" onClick={() => onReject(user)} disabled={busyId === user._id}>
+                <IconButton size="medium" color="error" onClick={() => onReject(user)} disabled={busyId === user._id}>
                   <CloseOutlined sx={{ fontSize: 18 }} />
                 </IconButton>
               </span>
@@ -124,7 +124,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
             color="error"
             onClick={() => onCancel(user)}
             disabled={busyId === user._id}
-            sx={{ minWidth: 0, px: 1.25, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
+            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
           >
             {t('network.cancel', 'Cancel')}
           </Button>
@@ -133,7 +133,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
         {onRemove && (
           <Tooltip title={t('network.remove', 'Remove connection')}>
             <span>
-              <IconButton size="small" color="error" onClick={() => onRemove(user)} disabled={busyId === user._id}>
+              <IconButton size="medium" color="error" onClick={() => onRemove(user)} disabled={busyId === user._id}>
                 {busyId === user._id ? <CircularProgress size={16} /> : <PersonRemoveOutlined sx={{ fontSize: 18 }} />}
               </IconButton>
             </span>

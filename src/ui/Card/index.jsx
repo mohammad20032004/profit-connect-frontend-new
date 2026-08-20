@@ -8,6 +8,7 @@ import {
   Typography,
   Box,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 
 function Card({
   children,
@@ -25,19 +26,19 @@ function Card({
 }) {
   return (
     <MuiCard
-      sx={{
+      sx={(theme) => ({
         borderRadius: 1,
-        border: bordered ? '1px solid rgba(31, 10, 59, 0.06)' : 'none',
-        boxShadow: '0 4px 12px rgba(31, 10, 59, 0.04)',
+        border: bordered ? `1px solid ${theme.palette.divider}` : 'none',
+        boxShadow: `0 4px 12px ${alpha(theme.palette.common.black, 0.04)}`,
         transition: hoverable ? 'all 0.25s ease' : 'none',
         ...(hoverable && {
           '&:hover': {
-            boxShadow: '0 8px 24px rgba(31, 10, 59, 0.08)',
-            borderColor: 'rgba(61, 28, 110, 0.12)',
+            boxShadow: `0 8px 24px ${alpha(theme.palette.common.black, 0.08)}`,
+            borderColor: alpha(theme.palette.primary.main, 0.12),
           },
         }),
         ...sx,
-      }}
+      })}
       {...props}
     >
       {media && <CardMedia component="img" height={mediaHeight} image={media} alt={title || ''} />}
@@ -71,17 +72,17 @@ function CardStat({ label, value, icon, trend, trendLabel }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} aria-label={`${value} ${label}`}>
       <Box>
-        <Typography variant="body2" sx={{ color: '#5C5580', mb: 0.5 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
           {label}
         </Typography>
-        <Typography sx={{ fontWeight: 700, fontSize: '1.5rem', color: '#1F0A3B' }}>
+        <Typography sx={{ fontWeight: 700, fontSize: '1.5rem', color: 'text.primary' }}>
           {value}
         </Typography>
         {trend && (
           <Typography
             variant="caption"
             sx={{
-              color: trend > 0 ? '#16A34A' : '#DC2626',
+              color: trend > 0 ? 'success.main' : 'error.main',
               display: 'flex',
               alignItems: 'center',
               gap: 0.25,
@@ -95,16 +96,16 @@ function CardStat({ label, value, icon, trend, trendLabel }) {
       </Box>
       {icon && (
         <Box
-          sx={{
+          sx={(theme) => ({
             width: 48,
             height: 48,
             borderRadius: 1,
-            backgroundColor: 'rgba(61, 28, 110, 0.08)',
+            backgroundColor: alpha(theme.palette.primary.main, 0.08),
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#3D1C6E',
-          }}
+            color: 'primary.main',
+          })}
         >
           {icon}
         </Box>

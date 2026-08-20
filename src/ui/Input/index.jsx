@@ -19,6 +19,7 @@ import {
   Box,
   Stack,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import SearchIcon from '@mui/icons-material/Search'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -31,18 +32,18 @@ function TextField({ label, error, helperText, sx, ...props }) {
       helperText={helperText}
       variant="outlined"
       fullWidth
-      sx={{
+      sx={(theme) => ({
         '& .MuiOutlinedInput-root': {
           borderRadius: 1,
-          backgroundColor: '#fff',
+          backgroundColor: theme.palette.background.paper,
           transition: 'all 0.2s ease',
-          '& fieldset': { borderColor: 'rgba(31, 10, 59, 0.12)' },
-          '&:hover fieldset': { borderColor: 'rgba(61, 28, 110, 0.3)' },
-          '&.Mui-focused fieldset': { borderColor: '#3D1C6E', borderWidth: 2 },
+          '& fieldset': { borderColor: theme.palette.divider },
+          '&:hover fieldset': { borderColor: alpha(theme.palette.primary.main, 0.4) },
+          '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main, borderWidth: 2 },
         },
-        '& .MuiInputLabel-root.Mui-focused': { color: '#3D1C6E' },
+        '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' },
         ...sx,
-      }}
+      })}
       {...props}
     />
   )
@@ -86,18 +87,18 @@ function SearchInput({ placeholder = 'Search...', value, onChange, sx, ...props 
       aria-label={placeholder}
       startAdornment={
         <InputAdornment position="start">
-          <SearchIcon sx={{ color: '#8F86AD', fontSize: 20 }} />
+          <SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
         </InputAdornment>
       }
-      sx={{
+      sx={(theme) => ({
         borderRadius: 20,
-        backgroundColor: '#fff',
-        border: '1px solid rgba(31, 10, 59, 0.12)',
-        '&:hover': { borderColor: 'rgba(61, 28, 110, 0.3)' },
-        '&.Mui-focused': { borderColor: '#3D1C6E' },
+        backgroundColor: theme.palette.background.paper,
+        border: `1px solid ${theme.palette.divider}`,
+        '&:hover': { borderColor: alpha(theme.palette.primary.main, 0.4) },
+        '&.Mui-focused': { borderColor: 'primary.main' },
         fontSize: '0.9rem',
         ...sx,
-      }}
+      })}
       {...props}
     />
   )
@@ -127,13 +128,13 @@ function Select({ label, options = [], value, onChange, placeholder, error, help
         onChange={onChange}
         label={label}
         displayEmpty={!!placeholder}
-        sx={{
+        sx={(theme) => ({
           borderRadius: 1,
-          backgroundColor: '#fff',
-          '& fieldset': { borderColor: 'rgba(31, 10, 59, 0.12)' },
-          '&:hover fieldset': { borderColor: 'rgba(61, 28, 110, 0.3)' },
-          '&.Mui-focused fieldset': { borderColor: '#3D1C6E', borderWidth: 2 },
-        }}
+          backgroundColor: theme.palette.background.paper,
+          '& fieldset': { borderColor: theme.palette.divider },
+          '&:hover fieldset': { borderColor: alpha(theme.palette.primary.main, 0.4) },
+          '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main, borderWidth: 2 },
+        })}
         {...props}
       >
         {placeholder && (
@@ -159,16 +160,16 @@ function Checkbox({ label, checked, onChange, sx, ...props }) {
         <MuiCheckbox
           checked={checked}
           onChange={onChange}
-          sx={{
-            color: 'rgba(31, 10, 59, 0.3)',
-            '&.Mui-checked': { color: '#3D1C6E' },
+          sx={(theme) => ({
+            color: alpha(theme.palette.primary.main, 0.3),
+            '&.Mui-checked': { color: 'primary.main' },
             ...sx,
-          }}
+          })}
           {...props}
         />
       }
       label={label}
-      sx={{ '& .MuiTypography-root': { fontSize: '0.9rem', color: '#5C5580' } }}
+      sx={{ '& .MuiTypography-root': { fontSize: '0.9rem', color: 'text.secondary' } }}
     />
   )
 }
@@ -180,11 +181,11 @@ function RadioBtn({ label, value, checked, onChange, sx, ...props }) {
       onChange={onChange}
       value={value}
       aria-label={label || value}
-      sx={{
-        color: 'rgba(31, 10, 59, 0.3)',
-        '&.Mui-checked': { color: '#3D1C6E' },
+      sx={(theme) => ({
+        color: alpha(theme.palette.primary.main, 0.3),
+        '&.Mui-checked': { color: 'primary.main' },
         ...sx,
-      }}
+      })}
       {...props}
     />
   )
@@ -198,7 +199,7 @@ function RadioBtn({ label, value, checked, onChange, sx, ...props }) {
 function RadioGroupField({ label, name, value, onChange, options = [], row = true, sx, ...props }) {
   return (
     <FormControl sx={sx}>
-      {label && <Typography sx={{ mb: 0.5, fontWeight: 500, fontSize: '0.85rem', color: '#5C5580' }}>{label}</Typography>}
+      {label && <Typography sx={{ mb: 0.5, fontWeight: 500, fontSize: '0.85rem', color: 'text.secondary' }}>{label}</Typography>}
       <RadioGroup name={name} value={value} onChange={onChange} row={row} {...props}>
         {options.map((opt) => (
           <RadioBtn key={opt.value} label={opt.label} value={opt.value} />
@@ -216,15 +217,15 @@ function Switch({ label, checked, onChange, sx, ...props }) {
           checked={checked}
           onChange={onChange}
           aria-label={label || undefined}
-          sx={{
+          sx={(theme) => ({
             '& .MuiSwitch-track': { borderRadius: 999 },
-            '& .MuiSwitch-thumb': { boxShadow: '0 2px 4px rgba(31, 10, 59, 0.12)' },
+            '& .MuiSwitch-thumb': { boxShadow: `0 2px 4px ${alpha(theme.palette.common.black, 0.12)}` },
             '& .Mui-checked': {
-              color: '#3D1C6E',
-              '& + .MuiSwitch-track': { backgroundColor: '#3D1C6E' },
+              color: 'primary.main',
+              '& + .MuiSwitch-track': { backgroundColor: 'primary.main' },
             },
             ...sx,
-          }}
+          })}
           {...props}
         />
       }
@@ -244,15 +245,15 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, marks, valueLab
       step={step}
       marks={marks}
       valueLabelDisplay={valueLabelDisplay}
-      sx={{
-        color: '#3D1C6E',
+      sx={(theme) => ({
+        color: 'primary.main',
         '& .MuiSlider-track': { border: 'none' },
         '& .MuiSlider-thumb': {
-          boxShadow: '0 2px 8px rgba(61, 28, 110, 0.3)',
-          '&:hover, &.Mui-focusVisible': { boxShadow: '0 4px 16px rgba(61, 28, 110, 0.4)' },
+          boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.3)}`,
+          '&:hover, &.Mui-focusVisible': { boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.4)}` },
         },
         ...sx,
-      }}
+      })}
       {...props}
     />
   )
@@ -291,9 +292,9 @@ function RangeSlider({
     <Box sx={{ width: '100%' }}>
       {label && (
         <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <Typography variant="body2" sx={{ fontWeight: 600, color: '#5C5580' }}>{label}</Typography>
+          <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.secondary' }}>{label}</Typography>
           {hasValue && (
-            <Typography variant="caption" sx={{ fontWeight: 700, color: '#3D1C6E', whiteSpace: 'nowrap' }}>
+            <Typography variant="caption" sx={{ fontWeight: 700, color: 'primary.main', whiteSpace: 'nowrap' }}>
               {formatValue(current[0])}{current[1] >= safeMax ? '+' : ` - ${formatValue(current[1])}`}{currency ? ` ${currency}` : ''}
             </Typography>
           )}
@@ -309,16 +310,16 @@ function RangeSlider({
         getAriaLabel={(index) => (index === 0 ? 'Minimum value' : 'Maximum value')}
         getAriaValueText={(v) => formatValue(v)}
         valueLabelFormat={(v) => formatValue(v)}
-        sx={{
-          color: '#3D1C6E',
+        sx={(theme) => ({
+          color: 'primary.main',
           mt: 1,
           '& .MuiSlider-track': { border: 'none' },
           '& .MuiSlider-thumb': {
-            boxShadow: '0 2px 8px rgba(61, 28, 110, 0.3)',
-            '&:hover, &.Mui-focusVisible': { boxShadow: '0 4px 16px rgba(61, 28, 110, 0.4)' },
+            boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.3)}`,
+            '&:hover, &.Mui-focusVisible': { boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.4)}` },
           },
           ...sx,
-        }}
+        })}
         {...props}
       />
     </Box>

@@ -15,6 +15,7 @@ import {
   Chip,
   CircularProgress,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 
 function Table({
   columns = [],
@@ -114,13 +115,13 @@ function Table({
 
   return (
     <Paper
-      sx={{
+      sx={(theme) => ({
         borderRadius: 1,
-        border: '1px solid rgba(31, 10, 59, 0.06)',
-        boxShadow: '0 4px 12px rgba(31, 10, 59, 0.04)',
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow: `0 4px 12px ${alpha(theme.palette.common.black, 0.04)}`,
         overflow: 'hidden',
         ...sx,
-      }}
+      })}
     >
       <TableContainer sx={{ overflowX: 'auto' }}>
         <MuiTable aria-label="Data table">
@@ -133,21 +134,21 @@ function Table({
                     indeterminate={selectedItems.length > 0 && selectedItems.length < paginatedRows.length}
                     onChange={handleSelectAll}
                     inputProps={{ 'aria-label': 'Select all rows' }}
-                    sx={{ color: 'rgba(31, 10, 59, 0.2)', '&.Mui-checked': { color: '#3D1C6E' } }}
+                    sx={{ color: alpha('#000', 0.2), '&.Mui-checked': { color: 'primary.main' } }}
                   />
                 </TableCell>
               )}
               {columns.map((col) => (
                 <TableCell
                   key={col.key}
-                  align={col.align || 'left'}
+                  align={col.align || 'start'}
                   sx={{
                     fontWeight: 600,
                     fontSize: '0.8rem',
-                    color: '#8F86AD',
+                    color: 'text.secondary',
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
-                    borderBottom: '2px solid rgba(31, 10, 59, 0.06)',
+                    borderBottom: (theme) => `2px solid ${theme.palette.divider}`,
                     py: 2,
                   }}
                 >
@@ -157,8 +158,8 @@ function Table({
                       direction={sortBy === col.key ? sortDir : 'asc'}
                       onClick={() => handleSort(col.key)}
                       sx={{
-                        '&.Mui-active': { color: '#3D1C6E', fontWeight: 700 },
-                        '& .MuiTableSortLabel-icon': { color: '#3D1C6E !important' },
+                        '&.Mui-active': { color: 'primary.main', fontWeight: 700 },
+                        '& .MuiTableSortLabel-icon': { color: 'primary.main !important' },
                       }}
                     >
                       {col.label}
@@ -174,9 +175,9 @@ function Table({
             {paginatedRows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length + (selectable ? 1 : 0)} align="center" sx={{ py: 6 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }} role="status" aria-live="polite">
                     {loading && <CircularProgress size={20} />}
-                    <Typography sx={{ color: '#8F86AD', fontSize: '0.9rem' }}>
+                    <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
                       {loading ? 'Loading...' : emptyMessage}
                     </Typography>
                   </Box>
@@ -198,8 +199,8 @@ function Table({
                     sx={{
                       cursor: selectable ? 'pointer' : 'default',
                       '&:last-child td': { borderBottom: 'none' },
-                      '&.Mui-selected': { backgroundColor: 'rgba(61, 28, 110, 0.04)' },
-                      '&:hover': { backgroundColor: 'rgba(61, 28, 110, 0.02)' },
+                      '&.Mui-selected': { backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.04) },
+                      '&:hover': { backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.02) },
                     }}
                   >
                     {selectable && (
@@ -207,7 +208,7 @@ function Table({
                         <Checkbox
                           checked={isSelected}
                           inputProps={{ 'aria-label': `Select row ${rowIndex + 1}` }}
-                          sx={{ color: 'rgba(31, 10, 59, 0.2)', '&.Mui-checked': { color: '#3D1C6E' } }}
+                          sx={{ color: alpha('#000', 0.2), '&.Mui-checked': { color: 'primary.main' } }}
                         />
                       </TableCell>
                     )}
@@ -216,11 +217,11 @@ function Table({
                       return (
                         <TableCell
                           key={col.key}
-                          align={col.align || 'left'}
+                          align={col.align || 'start'}
                           sx={{
                             fontSize: '0.88rem',
-                            color: '#1F0A3B',
-                            borderBottom: '1px solid rgba(31, 10, 59, 0.04)',
+                            color: 'text.primary',
+                            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
                             py: 1.8,
                           }}
                         >
@@ -244,11 +245,11 @@ function Table({
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleRowsPerPageChange}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        sx={{
-          borderTop: '1px solid rgba(31, 10, 59, 0.06)',
+        sx={(theme) => ({
+          borderTop: `1px solid ${theme.palette.divider}`,
           '.MuiTablePagination-toolbar': { minHeight: 52 },
           '.MuiTablePagination-select': { borderRadius: 2 },
-        }}
+        })}
       />
     </Paper>
   )
@@ -256,11 +257,11 @@ function Table({
 
 function StatusChip({ label, color = 'default' }) {
   const colorMap = {
-    success: { bg: '#DCFCE7', text: '#16A34A' },
-    error: { bg: '#FEE2E2', text: '#DC2626' },
-    warning: { bg: '#FEF3C7', text: '#D97706' },
-    info: { bg: '#DBEAFE', text: '#3B82F6' },
-    default: { bg: '#F2F0F6', text: '#6B6390' },
+    success: { bg: 'success.light', text: 'success.dark' },
+    error: { bg: 'error.light', text: 'error.dark' },
+    warning: { bg: 'warning.light', text: 'warning.dark' },
+    info: { bg: 'info.light', text: 'info.dark' },
+    default: { bg: 'grey.100', text: 'text.secondary' },
   }
   const c = colorMap[color] || colorMap.default
   return (

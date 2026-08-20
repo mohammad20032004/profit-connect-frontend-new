@@ -159,7 +159,7 @@ export default function LocationMap({
           borderRadius: '4px !important',
           padding: '2px !important',
         },
-        '& .ol-zoom': { top: '8px !important', left: '8px !important' },
+        '& .ol-zoom': { top: '8px !important', insetInlineStart: '8px !important' },
         '& .ol-attribution': { display: 'none !important' },
       }}
     />

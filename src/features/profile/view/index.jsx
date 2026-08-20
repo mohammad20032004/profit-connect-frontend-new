@@ -129,7 +129,7 @@ export default function ProfileView() {
                 )}
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'center', mt: 0.5, flexWrap: 'wrap' }}>
                   {user?.role && (
-                    <Chip label={user.role} size="small" color="primary" variant="outlined" />
+                    <Chip label={t(`network.roles.${user.role}`, user.role)} size="small" color="primary" variant="outlined" />
                   )}
                   {profile?.gender && (
                     <Chip label={t(`profile.gender${profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1)}`)} size="small" variant="outlined" />

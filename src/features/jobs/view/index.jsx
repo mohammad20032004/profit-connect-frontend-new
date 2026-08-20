@@ -181,7 +181,7 @@ export default function JobsView() {
             size="small"
             onClick={() => onChange(opt)}
             sx={{
-              height: 28, fontSize: '0.7rem', fontWeight: on ? 700 : 500,
+              height: 28, minHeight: 36, fontSize: '0.7rem', fontWeight: on ? 700 : 500,
               bgcolor: on ? '#3D1C6E' : alpha('#3D1C6E', 0.06),
               color: on ? '#fff' : 'text.secondary',
               border: on ? 'none' : `1px solid ${alpha('#3D1C6E', 0.12)}`,
@@ -386,14 +386,14 @@ export default function JobsView() {
                   animate={{ x: 0 }}
                   exit={{ x: -320 }}
                   transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                  style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 300, background: '#fff', zIndex: 1201, overflowY: 'auto' }}
+                  style={{ position: 'fixed', top: 0, insetInlineStart: 0, bottom: 0, width: 300, background: '#fff', zIndex: 1201, overflowY: 'auto' }}
                 >
                   <Box sx={{ p: 2 }}>
                     <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                       <Typography variant="subtitle1" fontWeight={800} sx={{ color: '#3D1C6E' }}>
                         {lang === 'ar' ? 'الفلاتر' : 'Filters'}
                       </Typography>
-                      <IconButton size="small" onClick={() => setMobileFilterOpen(false)} sx={{ color: 'text.secondary' }}>
+                      <IconButton size="medium" onClick={() => setMobileFilterOpen(false)} sx={{ color: 'text.secondary', minWidth: 44, minHeight: 44 }}>
                         <CloseOutlined fontSize="small" />
                       </IconButton>
                     </Stack>
@@ -423,7 +423,7 @@ export default function JobsView() {
                 display: 'flex', alignItems: 'center', px: 2, py: 0.5, mb: 2.5,
                 border: '1px solid', borderColor: 'divider', borderRadius: 2,
               }}>
-                <SearchOutlined sx={{ color: 'text.secondary', mr: 1 }} />
+                <SearchOutlined sx={{ color: 'text.secondary', mril: 1 }} />
                 <InputBase
                   placeholder={lang === 'ar' ? 'ابحث عن وظيفة، شركة، أو موقع...' : 'Search job, company, or location...'}
                   value={search}
@@ -438,30 +438,30 @@ export default function JobsView() {
               <Stack direction="row" spacing={0.5} sx={{ mb: 2, flexWrap: 'wrap', gap: 0.5 }}>
                 {types.map((v) => (
                   <Chip key={`t-${v}`} label={v} size="small" onDelete={() => toggleFilter(types, setTypes, v)}
-                    sx={{ bgcolor: alpha('#3D1C6E', 0.08), fontWeight: 600, fontSize: '0.7rem' }} />
+                    sx={{ bgcolor: alpha('#3D1C6E', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 ))}
                 {places.map((v) => (
                   <Chip key={`p-${v}`} label={v} size="small" onDelete={() => toggleFilter(places, setPlaces, v)}
-                    sx={{ bgcolor: alpha('#1565C0', 0.08), fontWeight: 600, fontSize: '0.7rem' }} />
+                    sx={{ bgcolor: alpha('#1565C0', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 ))}
                 {levels.map((v) => (
                   <Chip key={`l-${v}`} label={v} size="small" onDelete={() => toggleFilter(levels, setLevels, v)}
-                    sx={{ bgcolor: alpha('#16A34A', 0.08), fontWeight: 600, fontSize: '0.7rem' }} />
+                    sx={{ bgcolor: alpha('#16A34A', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 ))}
                 {country && (
                   <Chip label={country} size="small" onDelete={() => setCountry('')}
-                    sx={{ bgcolor: alpha('#D97706', 0.08), fontWeight: 600, fontSize: '0.7rem' }} />
+                    sx={{ bgcolor: alpha('#D97706', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 )}
                 {minSalary && (
                   <Chip label={`Min: ${minSalary}`} size="small" onDelete={() => setMinSalary('')}
-                    sx={{ bgcolor: alpha('#7C3AED', 0.08), fontWeight: 600, fontSize: '0.7rem' }} />
+                    sx={{ bgcolor: alpha('#7C3AED', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 )}
                 {maxSalary && (
                   <Chip label={`Max: ${maxSalary}`} size="small" onDelete={() => setMaxSalary('')}
-                    sx={{ bgcolor: alpha('#7C3AED', 0.08), fontWeight: 600, fontSize: '0.7rem' }} />
+                    sx={{ bgcolor: alpha('#7C3AED', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 )}
                 <Chip label={lang === 'ar' ? 'مسح الكل' : 'Clear all'} size="small" onClick={clearFilters}
-                  sx={{ fontWeight: 600, fontSize: '0.7rem', cursor: 'pointer', '&:hover': { bgcolor: alpha('#DC2626', 0.08) } }} />
+                  sx={{ fontWeight: 600, fontSize: '0.7rem', minHeight: 36, cursor: 'pointer', '&:hover': { bgcolor: alpha('#DC2626', 0.08) } }} />
               </Stack>
             )}
 

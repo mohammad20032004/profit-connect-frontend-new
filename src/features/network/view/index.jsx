@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Box, Paper, Typography, Stack, alpha, CircularProgress, Skeleton,
+  Box, Paper, Typography, Stack, alpha, Skeleton,
   Divider, Chip, useMediaQuery, Avatar, TextField as MuiTextField,
 } from '@mui/material'
 import {
@@ -959,9 +959,22 @@ export default function NetworkView() {
               />
 
               {topLoading ? (
-                <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 5 }}>
-                  <CircularProgress size={24} />
-                </Stack>
+                <Box sx={{ display: 'flex', gap: 1.5, overflow: 'hidden', py: 0.5 }}>
+                  {[1, 2, 3].map(i => (
+                    <Paper key={i} sx={{ flex: '0 0 240px', borderRadius: 2, overflow: 'hidden' }}>
+                      <Skeleton variant="rectangular" height={140} />
+                      <Box sx={{ p: 1.5 }}>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <Skeleton variant="circular" width={40} height={40} />
+                          <Box sx={{ flex: 1 }}>
+                            <Skeleton variant="text" width="60%" height={16} />
+                            <Skeleton variant="text" width="40%" height={12} />
+                          </Box>
+                        </Stack>
+                      </Box>
+                    </Paper>
+                  ))}
+                </Box>
               ) : topUsers.length > 0 ? (
                 <Box sx={{ position: 'relative', mx: { xs: 0, md: 3 } }}>
                   <Box
@@ -1090,6 +1103,7 @@ export default function NetworkView() {
 
   const renderMobileTabs = () => (
     <Box
+      role="tablist"
       sx={{
         display: 'flex', gap: 0.75, overflowX: 'auto', pb: 1, mb: 2,
         scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' },

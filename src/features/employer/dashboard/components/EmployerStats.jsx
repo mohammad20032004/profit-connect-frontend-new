@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Box, Paper, Typography, Stack, Grid, CircularProgress, alpha } from '@mui/material'
+import { Box, Paper, Typography, Stack, Grid, CircularProgress, Tabs, Tab, alpha } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { PeopleOutlined, TrendingUpOutlined, WorkOutlineOutlined, StarOutlineOutlined } from '@mui/icons-material'
 import { motion, useInView } from 'framer-motion'
@@ -208,9 +208,10 @@ function doughnutOptions() {
 }
 
 export default function EmployerStats({ companyId }) {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const [state, setState] = useState({ stats: null, fetched: false })
+  const [chartTab, setChartTab] = useState(0)
   const mountedRef = useRef(true)
 
   useEffect(() => {
@@ -365,118 +366,138 @@ export default function EmployerStats({ companyId }) {
           <StatMini label={lang === 'ar' ? 'متوسط التقييم' : 'Avg Rating'} value={stats.ratings?.averageRating ?? '—'} color={COLORS.purple} index={3} />
         </Stack>
 
+        <Tabs
+          value={chartTab}
+          onChange={(_, v) => setChartTab(v)}
+          sx={{
+            mb: 2, minHeight: 40,
+            '& .MuiTab-root': { minHeight: 40, textTransform: 'none', fontSize: '0.85rem' },
+          }}
+        >
+          <Tab label={t('common.overview', 'Overview')} />
+          <Tab label={t('employer.stats.followers', 'Followers')} />
+          <Tab label={t('employer.stats.jobs', 'Jobs')} />
+          <Tab label={t('employer.stats.ratings', 'Ratings')} />
+        </Tabs>
+
         <Grid container spacing={1.5}>
-          {/* Followers Growth Line Chart */}
-          <ChartCard
-            title={lang === 'ar' ? 'نمو المتابعين' : 'Followers Growth'}
-            icon={<PeopleOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            span={8}
-            index={0}
-          >
-            <Box sx={{ height: 240 }}>
-              <Line data={followersData} options={followersLineOpts} />
-            </Box>
-          </ChartCard>
+          {chartTab === 0 && (
+            <ChartCard
+              title={lang === 'ar' ? 'مؤشرات الأداء' : 'Performance'}
+              icon={<TrendingUpOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+              span={12}
+              index={0}
+            >
+              <motion.div variants={staggerFast} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                <Stack spacing={1.25}>
+                  {[
+                    { label: lang === 'ar' ? 'عمر الشركة (أيام)' : 'Company Age (days)', value: stats.performance?.companyAgeDays ?? '—' },
+                    { label: lang === 'ar' ? 'وظائف / شهر' : 'Jobs / Month', value: stats.performance?.jobsPerMonth ?? '—' },
+                    { label: lang === 'ar' ? 'متقدمين / وظيفة' : 'Applicants / Job', value: stats.performance?.applicantsPerJob ?? '—' },
+                    { label: lang === 'ar' ? 'متابعين / يوم' : 'Followers / Day', value: stats.performance?.followersPerDay ?? '—' },
+                    { label: lang === 'ar' ? 'نمو المتابعين' : 'Follower Growth', value: `${stats.followers?.monthlyGrowthRate ?? 0}%` },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      variants={fadeUp}
+                      custom={i}
+                      whileHover={{ x: 4, backgroundColor: 'rgba(61,28,110,0.04)' }}
+                      transition={{ duration: 0.15 }}
+                      style={{ borderRadius: 4 }}
+                    >
+                      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', py: 0.5, px: 0.5 }}>
+                        <Typography variant="body2" fontSize="0.8rem" color="text.secondary">{item.label}</Typography>
+                        <Typography variant="body2" fontWeight={700} fontSize="0.85rem">{item.value}</Typography>
+                      </Stack>
+                    </motion.div>
+                  ))}
+                </Stack>
+              </motion.div>
+            </ChartCard>
+          )}
 
-          {/* Ratings Distribution */}
-          <ChartCard
-            title={lang === 'ar' ? 'توزيع التقييمات' : 'Ratings Distribution'}
-            icon={<StarOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            span={4}
-            index={1}
-          >
-            <Box sx={{ height: 240 }}>
-              <Bar data={ratingsData} options={{ ...opts, indexAxis: 'y' }} />
-            </Box>
-          </ChartCard>
+          {chartTab === 1 && (
+            <>
+              <ChartCard
+                title={lang === 'ar' ? 'نمو المتابعين' : 'Followers Growth'}
+                icon={<PeopleOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+                span={8}
+                index={0}
+              >
+                <Box sx={{ height: 240 }}>
+                  <Line data={followersData} options={followersLineOpts} />
+                </Box>
+              </ChartCard>
 
-          {/* Jobs by Type - Doughnut */}
-          <ChartCard
-            title={lang === 'ar' ? 'الوظائف حسب النوع' : 'Jobs by Type'}
-            icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            index={2}
-          >
-            <Box sx={{ height: 220, display: 'flex', justifyContent: 'center' }}>
-              <Doughnut data={jobsByTypeData} options={doughnutOptions()} />
-            </Box>
-          </ChartCard>
+              <ChartCard
+                title={lang === 'ar' ? 'المتابعين اليوميين (آخر 14 يوم)' : 'Daily Followers (Last 14 days)'}
+                icon={<PeopleOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+                span={4}
+                index={1}
+              >
+                <Box sx={{ height: 240 }}>
+                  <Bar data={dailyFollowersData} options={opts} />
+                </Box>
+              </ChartCard>
+            </>
+          )}
 
-          {/* Jobs by Workplace - Doughnut */}
-          <ChartCard
-            title={lang === 'ar' ? 'الوظائف حسب مكان العمل' : 'Jobs by Workplace'}
-            icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            index={3}
-          >
-            <Box sx={{ height: 220, display: 'flex', justifyContent: 'center' }}>
-              <Doughnut data={jobsByWorkPlaceData} options={doughnutOptions()} />
-            </Box>
-          </ChartCard>
+          {chartTab === 2 && (
+            <>
+              <ChartCard
+                title={lang === 'ar' ? 'الوظائف حسب النوع' : 'Jobs by Type'}
+                icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+                index={0}
+              >
+                <Box sx={{ height: 220, display: 'flex', justifyContent: 'center' }}>
+                  <Doughnut data={jobsByTypeData} options={doughnutOptions()} />
+                </Box>
+              </ChartCard>
 
-          {/* Jobs by Level - Bar */}
-          <ChartCard
-            title={lang === 'ar' ? 'الوظائف حسب المستوى' : 'Jobs by Level'}
-            icon={<TrendingUpOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            index={4}
-          >
-            <Box sx={{ height: 220 }}>
-              <Bar data={jobsByLevelData} options={opts} />
-            </Box>
-          </ChartCard>
+              <ChartCard
+                title={lang === 'ar' ? 'الوظائف حسب مكان العمل' : 'Jobs by Workplace'}
+                icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+                index={1}
+              >
+                <Box sx={{ height: 220, display: 'flex', justifyContent: 'center' }}>
+                  <Doughnut data={jobsByWorkPlaceData} options={doughnutOptions()} />
+                </Box>
+              </ChartCard>
 
-          {/* Daily Followers - Bar */}
-          <ChartCard
-            title={lang === 'ar' ? 'المتابعين اليوميين (آخر 14 يوم)' : 'Daily Followers (Last 14 days)'}
-            icon={<PeopleOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            index={5}
-          >
-            <Box sx={{ height: 220 }}>
-              <Bar data={dailyFollowersData} options={opts} />
-            </Box>
-          </ChartCard>
+              <ChartCard
+                title={lang === 'ar' ? 'الوظائف حسب المستوى' : 'Jobs by Level'}
+                icon={<TrendingUpOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+                index={2}
+              >
+                <Box sx={{ height: 220 }}>
+                  <Bar data={jobsByLevelData} options={opts} />
+                </Box>
+              </ChartCard>
 
-          {/* Monthly Jobs Posted */}
-          <ChartCard
-            title={lang === 'ar' ? 'الوظائف الشهرية' : 'Monthly Jobs Posted'}
-            icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            index={6}
-          >
-            <Box sx={{ height: 220 }}>
-              <Bar data={monthlyJobsData} options={opts} />
-            </Box>
-          </ChartCard>
+              <ChartCard
+                title={lang === 'ar' ? 'الوظائف الشهرية' : 'Monthly Jobs Posted'}
+                icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+                index={3}
+              >
+                <Box sx={{ height: 220 }}>
+                  <Bar data={monthlyJobsData} options={opts} />
+                </Box>
+              </ChartCard>
+            </>
+          )}
 
-          {/* Performance Metrics */}
-          <ChartCard
-            title={lang === 'ar' ? 'مؤشرات الأداء' : 'Performance'}
-            icon={<TrendingUpOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
-            index={7}
-          >
-            <motion.div variants={staggerFast} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-              <Stack spacing={1.25}>
-                {[
-                  { label: lang === 'ar' ? 'عمر الشركة (أيام)' : 'Company Age (days)', value: stats.performance?.companyAgeDays ?? '—' },
-                  { label: lang === 'ar' ? 'وظائف / شهر' : 'Jobs / Month', value: stats.performance?.jobsPerMonth ?? '—' },
-                  { label: lang === 'ar' ? 'متقدمين / وظيفة' : 'Applicants / Job', value: stats.performance?.applicantsPerJob ?? '—' },
-                  { label: lang === 'ar' ? 'متابعين / يوم' : 'Followers / Day', value: stats.performance?.followersPerDay ?? '—' },
-                  { label: lang === 'ar' ? 'نمو المتابعين' : 'Follower Growth', value: `${stats.followers?.monthlyGrowthRate ?? 0}%` },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    variants={fadeUp}
-                    custom={i}
-                    whileHover={{ x: 4, backgroundColor: 'rgba(61,28,110,0.04)' }}
-                    transition={{ duration: 0.15 }}
-                    style={{ borderRadius: 4 }}
-                  >
-                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', py: 0.5, px: 0.5 }}>
-                      <Typography variant="body2" fontSize="0.8rem" color="text.secondary">{item.label}</Typography>
-                      <Typography variant="body2" fontWeight={700} fontSize="0.85rem">{item.value}</Typography>
-                    </Stack>
-                  </motion.div>
-                ))}
-              </Stack>
-            </motion.div>
-          </ChartCard>
+          {chartTab === 3 && (
+            <ChartCard
+              title={lang === 'ar' ? 'توزيع التقييمات' : 'Ratings Distribution'}
+              icon={<StarOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
+              span={12}
+              index={0}
+            >
+              <Box sx={{ height: 280 }}>
+                <Bar data={ratingsData} options={{ ...opts, indexAxis: 'y' }} />
+              </Box>
+            </ChartCard>
+          )}
         </Grid>
       </Stack>
     </motion.div>

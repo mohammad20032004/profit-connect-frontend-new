@@ -74,7 +74,7 @@ function HeroSection() {
             alignItems: 'center',
           }}
         >
-          <Stack spacing={3.2} sx={{ alignItems: { xs: 'center', lg: 'flex-start' }, textAlign: { xs: 'center', lg: 'left' } }}>
+          <Stack spacing={3.2} sx={{ alignItems: { xs: 'center', lg: 'flex-start' }, textAlign: { xs: 'center', lg: 'start' } }}>
             <Chip
               icon={<VerifiedRoundedIcon sx={{ color: `${palette.berry} !important` }} />}
               label={t('landing.chip', 'Professional networking, redesigned for clarity and momentum')}
@@ -273,7 +273,7 @@ function HeroSection() {
             <Box
               sx={{
                 position: 'absolute',
-                right: { xs: 0, lg: -10 },
+                insetInlineEnd: { xs: 0, lg: -10 },
                 top: { xs: -6, lg: 40 },
                 width: { xs: 118, md: 165 },
                 p: 2,
@@ -281,7 +281,7 @@ function HeroSection() {
                 bgcolor: 'rgba(255,255,255,0.75)',
                 border: `1px solid ${palette.line}`,
                 backdropFilter: 'blur(16px)',
-                textAlign: 'left',
+                textAlign: 'start',
                 animation: `${floatCard} 5.2s ease-in-out infinite`,
                 display: { xs: 'none', md: 'block' },
               }}
@@ -309,7 +309,7 @@ function HeroSection() {
           bgcolor: palette.plum,
           borderRadius: '80px',
           top: { xs: '-10%', md: '-15%' },
-          right: { xs: '-20%', md: '-10%' },
+          insetInlineEnd: { xs: '-20%', md: '-10%' },
           transform: 'rotate(15deg)',
           opacity: 0.4,
           filter: 'blur(80px)',
@@ -325,7 +325,7 @@ function HeroSection() {
           bgcolor: palette.navy,
           borderRadius: '80px',
           bottom: { xs: '-10%', md: '-15%' },
-          left: { xs: '-20%', md: '-10%' },
+          insetInlineStart: { xs: '-20%', md: '-10%' },
           transform: 'rotate(15deg)',
           opacity: 0.42,
           filter: 'blur(82px)',
@@ -339,7 +339,7 @@ function HeroSection() {
           width: { xs: 180, md: 260 },
           height: { xs: 180, md: 260 },
           borderRadius: '50%',
-          right: { xs: '10%', md: '18%' },
+          insetInlineEnd: { xs: '10%', md: '18%' },
           bottom: { xs: '12%', md: '18%' },
           background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%)',
           animation: `${pulseGlow} 6s ease-in-out infinite`,
@@ -358,8 +358,7 @@ function FloatButtons() {
       spacing={1.5}
       sx={{
         position: 'fixed',
-        left: 0,
-        right: 0,
+        insetInline: 0,
         bottom: { xs: 24, md: 40 },
         zIndex: 1000,
         display: 'flex',

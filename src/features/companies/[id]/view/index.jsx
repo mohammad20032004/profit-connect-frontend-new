@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, IconButton, Divider,
-  Rating, TextField, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem,
+  Rating, TextField, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Snackbar, Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
@@ -46,6 +46,7 @@ export default function CompanyDetail() {
   const [editLoading, setEditLoading] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
 
   const INDUSTRIES = [
     { value: 'web-development', en: 'Web Development', ar: 'تطوير المواقع' },
@@ -107,20 +108,20 @@ export default function CompanyDetail() {
     if (!adminId.trim()) return
     setAdminLoading(true)
     try { await addAdmin(id, adminId.trim()); setAddAdminOpen(false); setAdminId(''); fetchCompany(false) }
-    catch (err) { alert(err?.response?.data?.message || t('common.error')) }
+    catch (err) { setToastMsg(err?.response?.data?.message || t('common.error')) }
     finally { setAdminLoading(false) }
   }
 
   const handleRatingSubmit = async () => {
     setRatingLoading(true)
     try { await upsertRating(id, { rating: ratingValue, review: ratingReview }); setRatingOpen(false); setRatingValue(5); setRatingReview(''); fetchCompany(false) }
-    catch (err) { alert(err?.response?.data?.message || t('common.error')) }
+    catch (err) { setToastMsg(err?.response?.data?.message || t('common.error')) }
     finally { setRatingLoading(false) }
   }
 
   const handleDeleteRating = async () => {
     try { await deleteMyRating(id); fetchCompany(false) }
-    catch (err) { alert(err?.response?.data?.message || t('common.error')) }
+    catch (err) { setToastMsg(err?.response?.data?.message || t('common.error')) }
   }
 
   const openEdit = () => {
@@ -159,7 +160,7 @@ export default function CompanyDetail() {
         fetchCompany(false)
       }
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     } finally {
       setEditLoading(false)
     }
@@ -171,7 +172,7 @@ export default function CompanyDetail() {
       await deleteCompany(id)
       navigate('/companies')
     } catch (err) {
-      alert(err?.response?.data?.message || t('common.error'))
+      setToastMsg(err?.response?.data?.message || t('common.error'))
     } finally {
       setDeleteLoading(false)
     }
@@ -440,6 +441,10 @@ export default function CompanyDetail() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert severity="error" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+      </Snackbar>
     </Container>
   )
 }

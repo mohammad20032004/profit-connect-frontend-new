@@ -22,6 +22,8 @@ import {
   FormControl,
   InputLabel,
   Fab,
+  Snackbar,
+  Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import RichTextEditor from '@/ui/RichTextEditor'
@@ -102,6 +104,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const [expanded, setExpanded] = useState(false)
   const [saved, setSaved] = useState(post?.saved || false)
   const [saveLoading, setSaveLoading] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
   const MAX_CHARS = 300
 
   useEffect(() => {
@@ -149,7 +152,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
     handleCloseShare()
     if (item.key === 'copy') {
       navigator.clipboard.writeText(shareUrl)
-        .then(() => alert(t('dashboard.action.linkCopied', 'Link copied to clipboard')))
+        .then(() => setToastMsg(t('dashboard.action.linkCopied', 'Link copied to clipboard')))
         .catch(() => {})
     } else if (item.url.startsWith('mailto:')) {
       const link = document.createElement('a')
@@ -318,7 +321,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
                     {t('dashboard.editPost', 'Edit post')}
                   </MenuItem>
                 )}
-                <MenuItem onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`); alert(t('dashboard.action.linkCopied', 'Link copied to clipboard')); handleCloseMenu() }}>
+                <MenuItem onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/posts/${post._id}`); setToastMsg(t('dashboard.action.linkCopied', 'Link copied to clipboard')); handleCloseMenu() }}>
                   <ListItemIcon><ContentCopyOutlined fontSize="small" /></ListItemIcon>
                   {t('dashboard.action.copyLink', 'Copy link')}
                 </MenuItem>
@@ -328,7 +331,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
                     {t('dashboard.deletePost', 'Delete post')}
                   </MenuItem>
                 ) : (
-                  <MenuItem onClick={() => { handleCloseMenu(); alert(t('post.reported', 'Reported')) }}>
+                  <MenuItem onClick={() => { handleCloseMenu(); setToastMsg(t('post.reported', 'Reported')) }}>
                     <ListItemIcon><FlagOutlined fontSize="small" /></ListItemIcon>
                     {t('post.report', 'Report')}
                   </MenuItem>
@@ -594,6 +597,10 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert severity="success" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+      </Snackbar>
     </Paper>
   )
 }

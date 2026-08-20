@@ -18,6 +18,8 @@ import {
   LinearProgress,
   Collapse,
   Chip,
+  Snackbar,
+  Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import RichTextEditor from '@/ui/RichTextEditor'
@@ -62,6 +64,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
   const [showEmoji, setShowEmoji] = useState(false)
   const [hashtags, setHashtags] = useState([])
   const [hashtagInput, setHashtagInput] = useState('')
+  const [toastMsg, setToastMsg] = useState('')
 
   const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
   const avatarSrc = profile?.avatar
@@ -111,11 +114,11 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
     const file = e.target.files?.[0]
     if (!file) return
     if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
-      alert(t('dashboard.post.invalidImage', 'Invalid image type. Use JPG, PNG, WebP or GIF.'))
+      setToastMsg(t('dashboard.post.invalidImage', 'Invalid image type. Use JPG, PNG, WebP or GIF.'))
       return
     }
     if (file.size > 20 * 1024 * 1024) {
-      alert(t('dashboard.post.imageTooLarge', 'Image too large. Maximum 20MB.'))
+      setToastMsg(t('dashboard.post.imageTooLarge', 'Image too large. Maximum 20MB.'))
       return
     }
     setImage(file)
@@ -128,7 +131,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
     const file = e.target.files?.[0]
     if (!file) return
     if (!['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'].includes(file.type)) {
-      alert(t('dashboard.post.invalidVideo', 'Invalid video type. Use MP4, WebM, MOV or AVI.'))
+      setToastMsg(t('dashboard.post.invalidVideo', 'Invalid video type. Use MP4, WebM, MOV or AVI.'))
       return
     }
     if (file.size > 200 * 1024 * 1024) {

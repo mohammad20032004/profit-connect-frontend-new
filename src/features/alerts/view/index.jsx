@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Box, Paper, Typography, Stack, CircularProgress, IconButton, alpha, Chip,
+  Box, Paper, Typography, Stack, IconButton, alpha, Chip, Skeleton,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import { useSelector, useDispatch } from 'react-redux'
@@ -182,12 +182,15 @@ function formatTime(dateStr, t) {
 }
 
 export default function AlertsView() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language
   const theme = useTheme()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { items, unreadCount } = useSelector((s) => s.notifications)
   const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(0)
+  const ITEMS_PER_PAGE = 7
 
   const fetchAll = useCallback(async () => {
     try {
@@ -207,6 +210,8 @@ export default function AlertsView() {
     } catch { /* ignore */ }
   }
 
+  const paginatedItems = items.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE)
+
   return (
     <Box sx={{ height: 'calc(100vh - 88px)', overflow: 'auto', bgcolor: 'background.default' }}>
       <Box sx={{ maxWidth: 750, mx: 'auto', p: { xs: 2, sm: 3 } }}>
@@ -220,79 +225,108 @@ export default function AlertsView() {
           </Stack>
           <Button size="small" variant="outlined" startIcon={<DoneAllOutlined />}
             sx={{ fontSize: '0.8rem' }}
-            onClick={() => items.filter(n => !n.read).forEach(n => handleMarkRead(n._id))}
+            onClick={() => Promise.all(items.filter(n => !n.read).map(n => handleMarkRead(n._id)))}
           >
             {t('dashboard.markAllRead', 'Mark all read')}
           </Button>
         </Stack>
 
         {loading ? (
-          <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
+          <Stack spacing={1}>
+            {[1, 2, 3, 4, 5].map(i => (
+              <Paper key={i} variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
+                  <Skeleton variant="circular" width={40} height={40} sx={{ flexShrink: 0 }} />
+                  <Box sx={{ flex: 1 }}>
+                    <Skeleton variant="text" width="45%" height={18} />
+                    <Skeleton variant="text" width="80%" height={14} sx={{ mt: 0.5 }} />
+                    <Skeleton variant="text" width="25%" height={12} sx={{ mt: 0.5 }} />
+                  </Box>
+                </Stack>
+              </Paper>
+            ))}
+          </Stack>
         ) : items.length === 0 ? (
-          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1 }}>
+          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1 }} role="status" aria-live="polite">
             <NotificationsOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
             <Typography color="text.secondary">{t('dashboard.noNotifications', 'No notifications yet')}</Typography>
           </Paper>
         ) : (
-          <Stack spacing={1}>
-            {items.map((n) => {
-              const display = getNotificationDisplay(n, t)
-              return (
-                <Paper key={n._id} variant="outlined" sx={{
-                  p: 2, borderRadius: 2,
-                  borderColor: n.read ? 'divider' : alpha(theme.palette[display.color].main, 0.25),
-                  bgcolor: n.read ? 'transparent' : alpha(theme.palette[display.color].main, 0.04),
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                 
-                }}
-                  onClick={() => { if (!n.read) handleMarkRead(n._id) }}
-                >
-                  <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-                    <Box sx={{
-                      width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      bgcolor: n.read ? alpha(theme.palette.action.disabled, 0.08) : alpha(theme.palette[display.color].main, 0.12),
-                      color: n.read ? 'text.disabled' : theme.palette[display.color].main,
-                      flexShrink: 0,
-                    }}>
-                      {display.icon}
-                    </Box>
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography variant="body2" fontWeight={n.read ? 400 : 700} sx={{ mb: 0.3 }}>
-                        {display.title}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5, fontSize: '0.82rem' }}>
-                        {display.msg}
-                      </Typography>
-                      <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
-                        {formatTime(n.createdAt, t)}
-                      </Typography>
-                      {display.actionUrl && (
-                        <Button
-                          size="small"
-                          variant="contained"
-                          startIcon={<RocketLaunchOutlined sx={{ fontSize: 14 }} />}
-                          onClick={(e) => { e.stopPropagation(); navigate(display.actionUrl) }}
-                          sx={{
-                            mt: 1, fontSize: '0.75rem', textTransform: 'none', fontWeight: 600,
-                            color: '#fff', bgcolor: 'primary.main',
-                            '&:hover': { bgcolor: 'primary.dark', color: '#fff' },
-                          }}
-                        >
-                          {display.actionLabel}
-                        </Button>
+          <>
+            <Stack spacing={1}>
+              {paginatedItems.map((n) => {
+                const display = getNotificationDisplay(n, t)
+                return (
+                  <Paper key={n._id} variant="outlined" sx={{
+                    p: 2, borderRadius: 2,
+                    borderColor: n.read ? 'divider' : alpha(theme.palette[display.color].main, 0.25),
+                    bgcolor: n.read ? 'transparent' : alpha(theme.palette[display.color].main, 0.04),
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  
+                  }}
+                    onClick={() => { if (!n.read) handleMarkRead(n._id) }}
+                  >
+                    <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
+                      <Box sx={{
+                        width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        bgcolor: n.read ? alpha(theme.palette.action.disabled, 0.08) : alpha(theme.palette[display.color].main, 0.12),
+                        color: n.read ? 'text.disabled' : theme.palette[display.color].main,
+                        flexShrink: 0,
+                      }}>
+                        {display.icon}
+                      </Box>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography variant="body2" fontWeight={n.read ? 400 : 700} sx={{ mb: 0.3 }}>
+                          {display.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5, fontSize: '0.82rem' }}>
+                          {display.msg}
+                        </Typography>
+                        <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
+                          {formatTime(n.createdAt, t)}
+                        </Typography>
+                        {display.actionUrl && (
+                          <Button
+                            size="small"
+                            variant="contained"
+                            startIcon={<RocketLaunchOutlined sx={{ fontSize: 14 }} />}
+                            onClick={(e) => { e.stopPropagation(); navigate(display.actionUrl) }}
+                            sx={{
+                              mt: 1, fontSize: '0.75rem', textTransform: 'none', fontWeight: 600,
+                              color: '#fff', bgcolor: 'primary.main',
+                              '&:hover': { bgcolor: 'primary.dark', color: '#fff' },
+                            }}
+                          >
+                            {display.actionLabel}
+                          </Button>
+                        )}
+                      </Box>
+                      {!n.read && (
+                        <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleMarkRead(n._id) }} sx={{ mt: -0.5, mr: -0.5 }}>
+                          <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
+                        </IconButton>
                       )}
-                    </Box>
-                    {!n.read && (
-                      <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleMarkRead(n._id) }} sx={{ mt: -0.5, mr: -0.5 }}>
-                        <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
-                      </IconButton>
-                    )}
-                  </Stack>
-                </Paper>
-              )
-            })}
-          </Stack>
+                    </Stack>
+                  </Paper>
+                )
+              })}
+            </Stack>
+            {page > 0 && (
+              <Box sx={{ textAlign: 'center', mt: 1 }}>
+                <Button size="small" variant="text" onClick={() => setPage(p => p - 1)}>
+                  {lang === 'ar' ? 'عرض أقل' : 'Show less'}
+                </Button>
+              </Box>
+            )}
+            {items.length > (page + 1) * ITEMS_PER_PAGE && (
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <Button size="small" variant="outlined" onClick={() => setPage(p => p + 1)}>
+                  {lang === 'ar' ? 'عرض المزيد' : 'Show more'}
+                </Button>
+              </Box>
+            )}
+          </>
         )}
       </Box>
     </Box>

@@ -527,7 +527,7 @@ export default function EmployerSetup() {
                           <MenuItem value="">
                             <em>{t('employer.setup.selectIndustry')}</em>
                           </MenuItem>
-                          {Array.from({ length: 50 }, (_, i) => CURRENT_YEAR - i).map((y) => (
+                          {Array.from({ length: 25 }, (_, i) => CURRENT_YEAR - i).map((y) => (
                             <MenuItem key={y} value={y}>{y}</MenuItem>
                           ))}
                         </TextField>

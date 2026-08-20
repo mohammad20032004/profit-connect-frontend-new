@@ -134,7 +134,7 @@ export const getTheme = (direction, mode = 'light') => {
     palette: { mode, ...palette },
     typography: {
       fontFamily: direction === 'ar'
-        ? '"Almarai", "Cairo", sans-serif'
+        ? '"Cairo", "Almarai", sans-serif'
         : '"Inter", "Roboto", sans-serif',
       h1: { fontWeight: 800, fontSize: '2.5rem', lineHeight: 1.15, letterSpacing: '-0.025em' },
       h2: { fontWeight: 700, fontSize: '2rem', lineHeight: 1.2, letterSpacing: '-0.02em' },

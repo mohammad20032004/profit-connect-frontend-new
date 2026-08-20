@@ -271,11 +271,11 @@ export default function EmployerApplications() {
                   animate={{ x: 0 }}
                   exit={{ x: -320 }}
                   transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                  style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 280, background: '#fff', zIndex: 1201, overflowY: 'auto', padding: 16 }}
+                  style={{ position: 'fixed', top: 0, insetInlineStart: 0, bottom: 0, width: 280, background: '#fff', zIndex: 1201, overflowY: 'auto', padding: 16 }}
                 >
                   <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="subtitle1" fontWeight={700}>{lang === 'ar' ? 'الوظائف' : 'Jobs'}</Typography>
-                    <IconButton size="small" onClick={() => setSidebarOpen(false)}>
+                    <IconButton size="medium" onClick={() => setSidebarOpen(false)} sx={{ minWidth: 44, minHeight: 44 }}>
                       <CloseOutlined fontSize="small" />
                     </IconButton>
                   </Stack>
@@ -512,7 +512,7 @@ export default function EmployerApplications() {
               <DialogTitle sx={{ pb: 1 }}>
                 <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                   {isMobile && (
-                    <IconButton size="small" onClick={() => setDetailApplicant(null)}>
+                    <IconButton size="medium" onClick={() => setDetailApplicant(null)} sx={{ minWidth: 44, minHeight: 44 }}>
                       <ArrowBackOutlined />
                     </IconButton>
                   )}

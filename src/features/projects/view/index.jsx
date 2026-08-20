@@ -247,7 +247,7 @@ export default function ProjectsList() {
                   '&:focus-within': { borderColor: primaryMain, boxShadow: `0 0 0 3px ${alpha(primaryMain, 0.08)}` },
                 }}
               >
-                <SearchOutlined sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} />
+                <SearchOutlined sx={{ color: 'text.secondary', mril: 1, fontSize: 20 }} />
                 <InputBase
                   placeholder={t('projects.searchPlaceholder', 'Search projects...')}
                   value={search}
@@ -270,7 +270,7 @@ export default function ProjectsList() {
                       size="small"
                       onClick={() => handleCategoryChange(cat)}
                       sx={{
-                        height: 30, fontSize: '0.72rem', fontWeight: isActive ? 700 : 500,
+                        height: 30, minHeight: 36, fontSize: '0.72rem', fontWeight: isActive ? 700 : 500,
                         bgcolor: isActive ? primaryMain : alpha(primaryMain, 0.04),
                         color: isActive ? '#fff' : 'text.secondary',
                         border: isActive ? 'none' : `1px solid ${alpha(primaryMain, 0.12)}`,

@@ -61,7 +61,7 @@ export default function InfoSide({ variant = 'default' }) {
         )}
 
         <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', justifyContent: 'center', mt: 1.25, flexWrap: 'wrap', gap: 0.5 }}>
-          {user?.role && <Chip label={user.role} size="small" color="primary" variant="outlined" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 600 }} />}
+          {user?.role && <Chip label={t(`network.roles.${user.role}`, user.role)} size="small" color="primary" variant="outlined" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 600 }} />}
           {profile?.location && (
             <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.25, fontSize: '0.7rem' }}>
               <LocationOnOutlined sx={{ fontSize: 12 }} />

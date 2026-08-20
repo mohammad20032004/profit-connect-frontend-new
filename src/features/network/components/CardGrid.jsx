@@ -18,8 +18,8 @@ const fadeUpKeyframes = {
 
 const fbGridSx = {
   display: 'grid',
-  gap: 1.5,
-  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 240px))',
+  gap: 2,
+  gridTemplateColumns: { xs: 'repeat(auto-fill, minmax(240px, 1fr))', md: 'repeat(auto-fill, minmax(260px, 1fr))' },
   justifyItems: 'stretch',
 }
 

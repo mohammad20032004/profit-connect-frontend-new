@@ -54,7 +54,7 @@ function DatePicker({
   const daysInPrevMonth = new Date(year, month, 0).getDate()
 
   const today = new Date()
-  const todayStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
+  const todayStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
 
   const formatDate = (d) => {
     const yy = d.getFullYear()
@@ -89,7 +89,7 @@ function DatePicker({
     calCells.push(<Box key={`empty-${i}`} sx={{ width: 36, height: 36 }} />)
   }
   for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${year}-${month}-${d}`
+    const dateStr = `${year}-${month + 1}-${d}`
     const isToday = dateStr === todayStr
     const isSelected = selected && selected.getDate() === d &&
       selected.getMonth() === month && selected.getFullYear() === year

@@ -174,7 +174,7 @@ export default function ItemFormDialog({ open, onClose, item, onSaved }) {
       )}
       <IconButton
         size="small"
-        sx={{ position: 'absolute', top: 2, insetInlineEnd: 2, bgcolor: 'rgba(0,0,0,0.55)', color: '#fff', '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' }, p: 0.25 }}
+        sx={{ position: 'absolute', top: 2, insetInlineEnd: 2, bgcolor: 'rgba(0,0,0,0.55)', color: '#fff', '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' }, p: 0.75, minWidth: 44, minHeight: 44 }}
         onClick={onRemove}
       >
         <CloseRounded sx={{ fontSize: 14 }} />
@@ -182,7 +182,7 @@ export default function ItemFormDialog({ open, onClose, item, onSaved }) {
       {onCover && (
         <IconButton
           size="small"
-          sx={{ position: 'absolute', bottom: 2, insetInlineEnd: 2, bgcolor: isCover ? 'primary.main' : 'rgba(0,0,0,0.55)', color: '#fff', '&:hover': { bgcolor: 'primary.dark' }, p: 0.25 }}
+          sx={{ position: 'absolute', bottom: 2, insetInlineEnd: 2, bgcolor: isCover ? 'primary.main' : 'rgba(0,0,0,0.55)', color: '#fff', '&:hover': { bgcolor: 'primary.dark' }, p: 0.75, minWidth: 44, minHeight: 44 }}
           onClick={onCover}
         >
           {isCover ? <StarRounded sx={{ fontSize: 14 }} /> : <StarBorderRounded sx={{ fontSize: 14 }} />}

@@ -333,6 +333,7 @@ function HeroCompanyCard({ company, t, navigate }) {
 
 function CompanyCard({ company, t, navigate, index }) {
   const theme = useTheme()
+  const isRtl = theme.direction === 'rtl'
   const industryColor = INDUSTRY_COLORS[company.industry] || theme.palette.primary.main
 
   return (
@@ -494,7 +495,7 @@ function CompanyCard({ company, t, navigate, index }) {
             }}
           >
             {t('companies.viewProfile')}
-            <ArrowForward sx={{ fontSize: 14 }} />
+            <ArrowForward sx={{ fontSize: 14, transform: isRtl ? 'scaleX(-1)' : 'none' }} />
           </Typography>
         </Stack>
       </Box>

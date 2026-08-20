@@ -5,29 +5,15 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Box, Chip, Typography, TextField, InputAdornment, IconButton, Stack, Container, CircularProgress,
+  Link as MuiLink,
 } from '@mui/material'
 import Button from '@/ui/Button'
-import { ThemeProvider, createTheme, keyframes } from '@mui/material/styles'
+import { keyframes } from '@mui/material/styles'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { login } from '@/services/authService'
 import { setAuthData } from '@/redux/slices/userSlice'
 import Logo from '@/components/common/Logo'
-
-const lightTheme = createTheme({
-  direction: 'ltr',
-  palette: {
-    mode: 'light',
-    primary: { main: '#3D1C6E', light: '#5C3594', dark: '#2D1055' },
-    secondary: { main: '#1F3670' },
-    background: { default: '#F6F4FA', paper: '#FFFFFF' },
-    text: { primary: '#1F0A3B', secondary: '#5C5580' },
-    divider: 'rgba(31, 10, 59, 0.08)',
-    error: { main: '#DC2626' },
-  },
-  shape: { borderRadius: 12 },
-  typography: { fontFamily: '"Cairo", "Inter", "Roboto", sans-serif' },
-})
 
 const float1 = keyframes`0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.05)}66%{transform:translate(-20px,20px) scale(0.95)}`
 const float2 = keyframes`0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-25px,25px) scale(1.08)}66%{transform:translate(20px,-15px) scale(0.92)}`
@@ -50,6 +36,7 @@ export default function SignInView() {
   const [error, setError] = useState('')
   const [lang, setLang] = useState('en')
   const [formData, setFormData] = useState({ email: '', password: '' })
+  const [fieldErrors, setFieldErrors] = useState({})
 
   useEffect(() => {
     document.documentElement.dir = 'ltr'
@@ -65,10 +52,16 @@ export default function SignInView() {
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
-    if (!formData.email.trim() || !formData.password) {
-      setError(lang === 'en' ? 'Please fill in all fields' : 'يرجى ملء جميع الحقول')
+    const errors = {}
+    if (!formData.email.trim()) errors.email = lang === 'en' ? 'Email is required' : 'البريد الإلكتروني مطلوب'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = lang === 'en' ? 'Invalid email format' : 'تنسيق البريد الإلكتروني غير صالح'
+    if (!formData.password) errors.password = lang === 'en' ? 'Password is required' : 'كلمة المرور مطلوبة'
+    else if (formData.password.length < 6) errors.password = lang === 'en' ? 'At least 6 characters' : '6 أحرف على الأقل'
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors)
       return
     }
+    setFieldErrors({})
     setLoading(true)
     try {
       const data = await login(formData)
@@ -93,8 +86,7 @@ export default function SignInView() {
   }
 
   return (
-    <ThemeProvider theme={lightTheme}>
-      <Box sx={{
+    <Box sx={{
         minHeight: '100vh', bgcolor: '#F6F4FA', position: 'relative', overflow: 'hidden',
         '@keyframes fadeUp': { from: { opacity: 0, transform: 'translateY(16px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
         '@keyframes pulse': { '0%,100%': { transform: 'scale(1)', opacity: 0.15 }, '50%': { transform: 'scale(1.08)', opacity: 0.25 } },
@@ -105,9 +97,9 @@ export default function SignInView() {
           <Box sx={{ position: 'absolute', width: 250, height: 250, borderRadius: '50%', background: 'radial-gradient(circle, #5C359410 0%, transparent 70%)', top: '40%', right: '15%', animation: `${float1} 15s ease-in-out infinite reverse` }} />
         </Box>
 
-        <IconButton onClick={toggleLang}
+        <IconButton onClick={toggleLang} aria-label={lang === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
           sx={{
-            position: 'fixed', top: 16, right: 16, zIndex: 10, bgcolor: 'white',
+            position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10, bgcolor: 'white',
             boxShadow: '0 2px 12px rgba(0,0,0,0.08)', borderRadius: 2, px: 1.5, py: 0.5,
             transition: 'all 0.3s ease',
             '&:hover': { bgcolor: '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' },
@@ -193,7 +185,8 @@ export default function SignInView() {
                     <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
                       <TextField fullWidth label={lang === 'en' ? 'Email Address' : 'البريد الإلكتروني'} type="email"
                         value={formData.email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        onChange={(e) => { setFormData(prev => ({ ...prev, email: e.target.value })); if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: '' })) }}
+                        error={!!fieldErrors.email} helperText={fieldErrors.email}
                         sx={fieldSx}
                       />
                     </Box>
@@ -201,7 +194,8 @@ export default function SignInView() {
                       <TextField fullWidth label={lang === 'en' ? 'Password' : 'كلمة المرور'}
                         type={showPassword ? 'text' : 'password'}
                         value={formData.password}
-                        onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                        onChange={(e) => { setFormData(prev => ({ ...prev, password: e.target.value })); if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: '' })) }}
+                        error={!!fieldErrors.password} helperText={fieldErrors.password}
                         sx={fieldSx}
                         slotProps={{
                           input: {
@@ -218,16 +212,16 @@ export default function SignInView() {
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', animation: 'fadeUp 0.4s ease 0.16s both' }}>
-                      <Link to="#" style={{ color: '#3D1C6E', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', transition: 'opacity 0.2s' }}
+                      <MuiLink component={Link} to="#" sx={{ color: '#3D1C6E', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', transition: 'opacity 0.2s', '&:hover': { textDecoration: 'underline' } }}
                         onMouseEnter={e => e.target.style.opacity = '0.7'}
                         onMouseLeave={e => e.target.style.opacity = '1'}
                       >
                         {lang === 'en' ? 'Forgot Password?' : 'نسيت كلمة المرور؟'}
-                      </Link>
+                      </MuiLink>
                     </Box>
 
                     {error && (
-                      <Typography color="error" variant="body2" sx={{ textAlign: 'center', bgcolor: '#FEE2E2', p: 1.5, borderRadius: 2, animation: 'fadeUp 0.3s ease' }}>
+                      <Typography color="error" variant="body2" role="alert" sx={{ textAlign: 'center', bgcolor: '#FEE2E2', p: 1.5, borderRadius: 2, animation: 'fadeUp 0.3s ease' }}>
                         {error}
                       </Typography>
                     )}
@@ -250,13 +244,12 @@ export default function SignInView() {
 
                 <Typography variant="body2" sx={{ mt: 3, textAlign: 'center', color: '#5C5580', animation: 'fadeUp 0.5s ease 0.5s both' }}>
                   {lang === 'en' ? "Don't have an account?" : 'ليس لديك حساب؟'}{' '}
-                  <Link to="/sign-up" style={{ color: '#3D1C6E', fontWeight: 700, textDecoration: 'none' }}>{lang === 'en' ? 'Sign up' : 'إنشاء حساب'}</Link>
+                  <MuiLink component={Link} to="/sign-up" sx={{ color: '#3D1C6E', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>{lang === 'en' ? 'Sign up' : 'إنشاء حساب'}</MuiLink>
                 </Typography>
               </Box>
             </Box>
           </Box>
         </Container>
       </Box>
-    </ThemeProvider>
   )
 }
