@@ -225,6 +225,9 @@ export default function UserProfileUserIdView() {
                 )}
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'center', mt: 0.5, flexWrap: 'wrap' }}>
                   <Chip label={roleLabel} size="small" color="primary" variant="outlined" />
+                  {profile?.gender && (
+                    <Chip label={t(`profile.gender${profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1)}`)} size="small" variant="outlined" />
+                  )}
                   {profile?.location && (
                     <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
                       <LocationOnOutlined sx={{ fontSize: 14 }} />

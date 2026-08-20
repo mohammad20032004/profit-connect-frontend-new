@@ -65,7 +65,7 @@ export default function SignUpView() {
   const [lang, setLang] = useState('en')
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phoneNumber: '',
-    password: '', role: 'JobSeeker',
+    password: '', role: 'JobSeeker', gender: '',
     industry: '', yearsOfExperience: '', skills: [],
     companyName: '', companyDescription: '', companyIndustry: '', companyLocation: '',
     website: '', companySize: '', foundedYear: '',
@@ -130,6 +130,7 @@ export default function SignUpView() {
       fd.append('password', form.password)
       fd.append('role', form.role)
       if (form.phoneNumber) fd.append('phoneNumber', form.phoneNumber)
+      if (form.gender) fd.append('gender', form.gender)
       if (form.industry) fd.append('industry', form.industry)
       if (form.yearsOfExperience) fd.append('yearsOfExperience', String(form.yearsOfExperience))
       form.skills.forEach((s) => fd.append('skills[]', s))

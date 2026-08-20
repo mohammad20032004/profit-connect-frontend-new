@@ -58,6 +58,7 @@ export default function SettingsView() {
   const [profileForm, setProfileForm] = useState(() => ({
     firstName: profile?.firstName || '',
     lastName: profile?.lastName || '',
+    gender: profile?.gender || '',
     headline: profile?.headline || '',
     bio: profile?.bio || '',
     location: profile?.location || '',
@@ -148,6 +149,7 @@ export default function SettingsView() {
       const payload = {
         firstName: profileForm.firstName,
         lastName: profileForm.lastName,
+        gender: profileForm.gender,
         headline: profileForm.headline,
         bio: profileForm.bio,
         location: profileForm.location,
@@ -372,6 +374,13 @@ export default function SettingsView() {
                         <TextField fullWidth size="small" label={t('settings.firstName')} value={profileForm.firstName} onChange={setProfileField('firstName')} />
                         <TextField fullWidth size="small" label={t('settings.lastName')} value={profileForm.lastName} onChange={setProfileField('lastName')} />
                       </Stack>
+                      <FormControl fullWidth size="small" sx={{ maxWidth: { sm: 240 } }}>
+                        <InputLabel>{t('settings.gender')}</InputLabel>
+                        <Select value={profileForm.gender} label={t('settings.gender')} onChange={setProfileField('gender')}>
+                          <MenuItem value="male">{t('settings.genderMale')}</MenuItem>
+                          <MenuItem value="female">{t('settings.genderFemale')}</MenuItem>
+                        </Select>
+                      </FormControl>
                       <TextField fullWidth size="small" label={t('settings.headline')} value={profileForm.headline} onChange={setProfileField('headline')} />
                       <TextField fullWidth size="small" multiline minRows={3} label={t('settings.bio')} value={profileForm.bio} onChange={setProfileField('bio')} />
                     </Stack>

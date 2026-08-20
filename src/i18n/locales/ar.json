@@ -87,7 +87,17 @@
     "edit": "تعديل",
     "delete": "حذف",
     "viewProfile": "عرض الملف",
-    "verified": "موثقة"
+    "verified": "موثقة",
+    "statsTotal": "إجمالي الشركات",
+    "statsIndustries": "المجالات",
+    "statsAvgRating": "متوسط التقييم",
+    "statsFollowers": "إجمالي المتابعين",
+    "activeFilters": "الفلاتر النشطة",
+    "clearAll": "مسح الكل",
+    "clearFilters": "مسح الفلاتر",
+    "search": "بحث",
+    "errorTitle": "حدث خطأ ما",
+    "emptyFilteredHint": "حاول تعديل بحثك أو الفلاتر للعثور على ما تبحث عنه"
   },
   "profile": {
     "followers": "المتابعون",
@@ -112,6 +122,8 @@
     "connections": "الاتصالات",
     "phone": "الهاتف",
     "email": "البريد الإلكتروني",
+    "genderMale": "ذكر",
+    "genderFemale": "أنثى",
     "noBio": "لم تُضف سيرة ذاتية بعد",
     "noSkills": "لا توجد مهارات",
     "reputationScore": "درجة السمعة",
@@ -243,6 +255,9 @@
     "skills": "المهارات (مفصولة بفاصلة)",
     "industry": "الصناعة",
     "experience": "سنوات الخبرة",
+    "gender": "الجنس",
+    "genderMale": "ذكر",
+    "genderFemale": "أنثى",
     "save": "حفظ الإعدادات",
     "saved": "تم حفظ الإعدادات بنجاح",
     "saveError": "فشل حفظ الإعدادات"

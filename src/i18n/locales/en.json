@@ -86,7 +86,17 @@
     "edit": "Edit",
     "delete": "Delete",
     "viewProfile": "View Profile",
-    "verified": "Verified"
+    "verified": "Verified",
+    "statsTotal": "Total Companies",
+    "statsIndustries": "Industries",
+    "statsAvgRating": "Avg Rating",
+    "statsFollowers": "Total Followers",
+    "activeFilters": "Active Filters",
+    "clearAll": "Clear All",
+    "clearFilters": "Clear Filters",
+    "search": "Search",
+    "errorTitle": "Something went wrong",
+    "emptyFilteredHint": "Try adjusting your search or filters to find what you're looking for"
   },
   "profile": {
     "followers": "Followers",
@@ -111,6 +121,8 @@
     "connections": "Connections",
     "phone": "Phone",
     "email": "Email",
+    "genderMale": "Male",
+    "genderFemale": "Female",
     "noBio": "No bio added yet",
     "noSkills": "No skills listed",
     "reputationScore": "Reputation Score",
@@ -242,6 +254,9 @@
     "skills": "Skills (comma separated)",
     "industry": "Industry",
     "experience": "Years of Experience",
+    "gender": "Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
     "save": "Save Settings",
     "saved": "Settings saved successfully",
     "saveError": "Failed to save settings"
