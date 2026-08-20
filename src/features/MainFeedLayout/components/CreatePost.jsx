@@ -3,7 +3,6 @@ import {
   Box,
   Paper,
   Typography,
-  Avatar,
   Stack,
   IconButton,
   Divider,
@@ -22,6 +21,7 @@ import {
 } from '@mui/material'
 import Button from '@/ui/Button'
 import RichTextEditor from '@/ui/RichTextEditor'
+import UserAvatar from '@/components/common/UserAvatar'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { createPost } from '@/services/postService'
@@ -65,7 +65,6 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
 
   const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
   const avatarSrc = profile?.avatar
-  const initials = fullName?.charAt(0)?.toUpperCase()
 
   // Strip HTML tags to count plain text characters
   const getPlainText = (html) => {
@@ -216,9 +215,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
     <>
       <Paper sx={{ p: { xs: 1.5, sm: 2 } }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-          <Avatar src={avatarSrc} sx={{ width: 40, height: 40 }}>
-            {initials}
-          </Avatar>
+          <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 40, height: 40 }} />
           <Box
             onClick={() => setOpen(true)}
             role="button"
@@ -341,9 +338,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
         <DialogContent sx={{ pt: 2, pb: 1, px: 2 }}>
           {/* User Info + Visibility */}
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2 }}>
-            <Avatar src={avatarSrc} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }}>
-              {initials}
-            </Avatar>
+            <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }} />
             <Box sx={{ flex: 1 }}>
               <Typography variant="subtitle2" fontWeight={700} sx={{ lineHeight: 1.2, fontSize: '0.9rem' }}>
                 {fullName}

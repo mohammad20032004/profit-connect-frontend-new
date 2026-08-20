@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip, Typography, Stack, alpha, Divider } from '@mui/material'
+import { Box, Chip, Typography, Stack, alpha, Divider } from '@mui/material'
 import WorkspacePremiumRounded from '@mui/icons-material/WorkspacePremiumRounded'
 import {
   LocationOnOutlined,
@@ -11,6 +11,7 @@ import {
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import UserAvatar from '@/components/common/UserAvatar'
 
 export default function InfoSide({ variant = 'default' }) {
   const user = useSelector((state) => state.user.user)
@@ -28,9 +29,11 @@ export default function InfoSide({ variant = 'default' }) {
     <Box sx={surfaceSx} role="complementary" aria-label={t('profile.profileCard', 'Profile Card')}>
       {/* Profile Header Section */}
       <Box sx={{ textAlign: 'center', pt: 3, pb: 2, px: 2.5 }}>
-        <Avatar
+        <UserAvatar
           src={avatarSrc}
-          alt={fullName}
+          name={fullName}
+          role={user?.role}
+          gender={profile?.gender}
           aria-label={t('profile.profilePicture', 'Profile Picture')}
           sx={(theme) => ({
             width: 88,
@@ -45,9 +48,7 @@ export default function InfoSide({ variant = 'default' }) {
             bgcolor: alpha(theme.palette.primary.main, 0.1),
             color: theme.palette.primary.main,
           })}
-        >
-          {fullName?.charAt(0)?.toUpperCase()}
-        </Avatar>
+        />
 
         <Typography variant="subtitle1" fontWeight={700} sx={{ lineHeight: 1.3, letterSpacing: '-0.01em' }}>
           {fullName}

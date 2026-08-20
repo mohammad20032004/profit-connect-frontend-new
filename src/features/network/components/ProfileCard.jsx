@@ -1,11 +1,11 @@
-import { Paper, Box, Typography, Stack, alpha, Chip, CircularProgress } from '@mui/material'
+import { Paper, Box, Typography, Stack, alpha, CircularProgress } from '@mui/material'
 import {
   PersonAddAlt1Outlined, PersonOffOutlined, PersonAddOutlined, HourglassTopOutlined,
-  PersonRemoveOutlined, PeopleAltOutlined, StarBorderOutlined, WorkOutlineOutlined,
+  PersonRemoveOutlined,
   CheckOutlined, CloseOutlined,
 } from '@mui/icons-material'
 import Button from '@/ui/Button'
-import { resolveMediaPath } from '@/services/profile'
+import { getDefaultAvatar } from '@/services/profile'
 import { COLORS, fullName } from './shared'
 
 export default function ProfileCard({
@@ -13,15 +13,10 @@ export default function ProfileCard({
   onAccept, onReject, onConnect, onToggleFollow, onRemove, following, status,
   sx,
 }) {
-  const avatarSrc = resolveMediaPath(user?.profile?.avatar)
   const name = fullName(user)
-  const headline = user?.profile?.headline || user?.headline || ''
-  const followersCount = user?.profile?.followersCount
-  const rScore = user?.profile?.rScore
-  const years = user?.professional?.yearsOfExperience
-  const roleLabel = user?.role ? t(`network.roles.${user.role}`, user.role) : ''
   const busy = busyId === user._id
   const openProfile = () => navigate(`/user-profile/${user._id}`)
+  const defaultImg = getDefaultAvatar(user?.role, user?.profile?.gender)
 
   const btnSx = { borderRadius: 0.75, py: 0.5, fontSize: '0.72rem' }
 
@@ -125,19 +120,21 @@ export default function ProfileCard({
           cursor: 'pointer', flexShrink: 0,
         }}
       >
-        {avatarSrc ? (
+        {user?.profile?.avatar ? (
           <Box
             component="img"
-            src={avatarSrc}
+            src={user.profile.avatar}
             alt={name}
+            onError={(e) => { e.target.src = defaultImg }}
             sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           />
         ) : (
-          <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Typography variant="h3" fontWeight={800} color={alpha(COLORS.primary, 0.35)}>
-              {name?.charAt(0)?.toUpperCase()}
-            </Typography>
-          </Box>
+          <Box
+            component="img"
+            src={defaultImg}
+            alt={name}
+            sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          />
         )}
       </Box>
 

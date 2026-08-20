@@ -4,7 +4,6 @@ import {
   Box,
   Paper,
   Typography,
-  Avatar,
   Stack,
   IconButton,
   Divider,
@@ -56,6 +55,7 @@ import {
 import { translateText } from '@/services/translateService'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import UserAvatar from '@/components/common/UserAvatar'
 import { useSelector, useDispatch } from 'react-redux'
 import CreatePost from './CreatePost'
 import AnimatedBox from '@/components/AnimatedBox'
@@ -276,9 +276,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
     <Paper sx={{ p: 0, overflow: 'hidden' }}>
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
-          <Avatar src={avatarSrc} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }}>
-            {fullName?.charAt(0)?.toUpperCase()}
-          </Avatar>
+          <UserAvatar src={avatarSrc} name={fullName} role={post?.user?.role} gender={profile?.gender} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }} />
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
               <Box sx={{ minWidth: 0 }}>
@@ -501,9 +499,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: idx * 0.04, ease: 'easeOut' }}
                     >
-                      <Avatar src={cAvatar} sx={{ width: 32, height: 32 }}>
-                        {cName?.charAt(0)?.toUpperCase()}
-                      </Avatar>
+                      <UserAvatar src={cAvatar} name={cName} role={comment.user?.role} gender={cProfile?.gender} sx={{ width: 32, height: 32 }} />
                       <Box sx={{ bgcolor: 'action.hover', borderRadius: 2, p: 1.5, flex: 1, position: 'relative' }}>
                         <Typography variant="subtitle2" fontWeight="bold">{cName}</Typography>
                         <Box

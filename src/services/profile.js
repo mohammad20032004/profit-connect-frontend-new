@@ -21,6 +21,12 @@ export async function getUserById(userId) {
   return data
 }
 
+export function getDefaultAvatar(role, gender) {
+  if (role === 'Employer') return '/avatars/default-employer.png'
+  if (gender === 'female') return '/avatars/default-female.png'
+  return '/avatars/default-male.png'
+}
+
 export function resolveMediaPath(path) {
   if (!path) return null
   if (path.startsWith('http://') || path.startsWith('https://')) return path

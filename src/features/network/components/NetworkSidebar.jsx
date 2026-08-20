@@ -1,6 +1,6 @@
-import { Box, Typography, Stack, alpha, Divider, CircularProgress, Chip, IconButton, Avatar, Tooltip, Skeleton } from '@mui/material'
+import { Box, Typography, Stack, alpha, Divider, CircularProgress, Chip, IconButton, Tooltip, Skeleton } from '@mui/material'
 import { KeyboardArrowUpOutlined } from '@mui/icons-material'
-import { resolveMediaPath } from '@/services/profile'
+import UserAvatar from '@/components/common/UserAvatar'
 import { COLORS, fullName } from './shared'
 
 function MenuItem({ icon: Icon, label, count, active, loading, onClick }) {
@@ -119,12 +119,13 @@ export default function NetworkSidebar({
                       '&:hover': { bgcolor: active ? alpha(COLORS.primary, 0.12) : alpha(COLORS.primary, 0.06) },
                     }}
                   >
-                    <Avatar
-                      src={resolveMediaPath(u?.profile?.avatar)}
+                    <UserAvatar
+                      src={u?.profile?.avatar}
+                      name={name}
+                      role={u?.role}
+                      gender={u?.profile?.gender}
                       sx={{ width: 36, height: 36, flexShrink: 0, bgcolor: alpha(COLORS.primary, 0.1), color: COLORS.primary, fontWeight: 700, fontSize: '0.9rem' }}
-                    >
-                      {name?.charAt(0)?.toUpperCase()}
-                    </Avatar>
+                    />
                     <Box sx={{ minWidth: 0 }}>
                       <Typography variant="body2" fontWeight={active ? 700 : 600} color={active ? COLORS.primary : 'text.primary'} noWrap>{name}</Typography>
                       {headline && (

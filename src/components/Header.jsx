@@ -5,7 +5,6 @@ import {
   Box,
   Typography,
   InputBase,
-  Avatar,
   Container,
   Stack,
   Badge,
@@ -31,6 +30,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Logo from './common/Logo'
+import UserAvatar from './common/UserAvatar'
 import { clearUserProfile } from '../redux/slices/userSlice'
 import { logoutRequest } from '../services/authService'
 
@@ -67,7 +67,7 @@ const Header = () => {
   )
 
   const subLabel = user?.email || user?.role || 'View profile'
-  const avatarSrc = profile?.avatar || undefined
+  const avatarSrc = profile?.avatar
 
   const shouldHideHeader = hiddenRoutes.some((route) => pathname.startsWith(route))
 
@@ -246,9 +246,7 @@ const Header = () => {
                 gap: 0.3,
               }}
             >
-              <Avatar alt={fullName} src={avatarSrc} sx={(theme) => ({ width: 32, height: 32, boxShadow: `0 10px 24px ${alpha(theme.palette.common.black, 0.12)}` })}>
-                {fullName?.charAt(0)?.toUpperCase()}
-              </Avatar>
+              <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={(theme) => ({ width: 32, height: 32, boxShadow: `0 10px 24px ${alpha(theme.palette.common.black, 0.12)}` })} />
               <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
                 <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '12px', lineHeight: 1.2 }}>
                   {t('header.me')}
@@ -282,9 +280,7 @@ const Header = () => {
       >
         <Box sx={{ px: 2, py: 1.8 }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-            <Avatar src={avatarSrc} sx={{ width: 44, height: 44 }}>
-              {fullName?.charAt(0)?.toUpperCase()}
-            </Avatar>
+            <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 44, height: 44 }} />
             <Box sx={{ minWidth: 0 }}>
               <Typography sx={{ fontWeight: 800, color: 'text.primary' }} noWrap>
                 {fullName}

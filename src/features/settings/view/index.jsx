@@ -12,7 +12,6 @@ import {
   Switch,
   FormControlLabel,
   Divider,
-  Avatar,
   Alert,
   Chip,
   Select,
@@ -30,6 +29,7 @@ import {
 } from '@mui/material'
 import Button from '@/ui/Button'
 import { SkillsModal } from '@/ui'
+import UserAvatar from '@/components/common/UserAvatar'
 import { SaveOutlined, LanguageOutlined, PaletteOutlined, NotificationsOutlined, LockOutlined, PersonOutlined, AddOutlined, HomeOutlined, PhotoCameraOutlined } from '@mui/icons-material'
 import { updateSettings } from '@/redux/slices/userSlice'
 import { updateSettings as updateSettingsApi, updateProfile as updateProfileApi, updateAvatar as updateAvatarApi } from '@/services/settingsService'
@@ -199,9 +199,7 @@ export default function SettingsView() {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper sx={{ p: { xs: 2.5, sm: 4 } }}>
         <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center', mb: 3 }}>
-          <Avatar src={avatarSrc} sx={{ width: 56, height: 56 }}>
-            {fullName?.charAt(0)?.toUpperCase()}
-          </Avatar>
+          <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 56, height: 56 }} />
           <Box>
             <Typography variant="h5" fontWeight="bold">{fullName}</Typography>
             <Typography variant="body2" color="text.secondary">{t('menu.accountSettings')}</Typography>
@@ -345,8 +343,11 @@ export default function SettingsView() {
                 {activeStep === 0 && (
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems={{ xs: 'center', sm: 'flex-start' }}>
                     <Box sx={{ textAlign: 'center', flexShrink: 0 }}>
-                      <Avatar
+                      <UserAvatar
                         src={avatarSrc}
+                        name={fullName}
+                        role={user?.role}
+                        gender={profile?.gender}
                         sx={{
                           width: 110,
                           height: 110,
@@ -354,9 +355,7 @@ export default function SettingsView() {
                           boxShadow: '0 8px 24px rgba(61,28,110,0.18)',
                           border: '3px solid #fff',
                         }}
-                      >
-                        {fullName?.[0]}
-                      </Avatar>
+                      />
                       <Button
                         component="label"
                         variant="outlined"

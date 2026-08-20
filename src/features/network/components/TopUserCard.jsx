@@ -1,11 +1,10 @@
-import { Paper, Typography, Stack, alpha, Avatar, Chip } from '@mui/material'
+import { Paper, Typography, Stack, alpha, Chip } from '@mui/material'
 import { EmojiEventsOutlined, StarBorderOutlined, PeopleAltOutlined, PersonOffOutlined, PersonAddAlt1Outlined } from '@mui/icons-material'
 import Button from '@/ui/Button'
-import { resolveMediaPath } from '@/services/profile'
+import UserAvatar from '@/components/common/UserAvatar'
 import { COLORS, fullName } from './shared'
 
 export default function TopUserCard({ user, rank, following, onToggleFollow, busyId, t, navigate, isRTL, sx }) {
-  const avatarSrc = resolveMediaPath(user?.profile?.avatar)
   const name = fullName(user)
   const headline = user?.profile?.headline || ''
   const rScore = user?.profile?.rScore
@@ -33,12 +32,13 @@ export default function TopUserCard({ user, rank, following, onToggleFollow, bus
         </Typography>
       )}
 
-      <Avatar
-        src={avatarSrc}
+      <UserAvatar
+        src={user?.profile?.avatar}
+        name={name}
+        role={user?.role}
+        gender={user?.profile?.gender}
         sx={{ width: 72, height: 72, mt: 1, bgcolor: alpha(COLORS.primary, 0.1), color: COLORS.primary, fontWeight: 700, fontSize: '1.4rem' }}
-      >
-        {name?.charAt(0)?.toUpperCase()}
-      </Avatar>
+      />
 
       <Typography variant="subtitle2" fontWeight={800} noWrap sx={{ maxWidth: '100%', cursor: 'pointer', '&:hover': { color: COLORS.primary } }}
         onClick={() => navigate(`/user-profile/${user._id}`)}>

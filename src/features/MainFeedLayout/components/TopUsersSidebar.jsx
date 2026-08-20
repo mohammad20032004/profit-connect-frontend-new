@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Box, Typography, Avatar, CircularProgress, Stack, alpha, Divider, Chip } from '@mui/material'
+import { Box, Typography, CircularProgress, Stack, alpha, Chip } from '@mui/material'
 import { ErrorOutlined, WorkspacePremiumRounded, ArrowForwardRounded, EmojiEventsRounded } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
-import { getTopUsers, resolveMediaPath } from '@/services/profile'
+import { getTopUsers } from '@/services/profile'
+import UserAvatar from '@/components/common/UserAvatar'
 
 export default function TopUsersSidebar({ variant = 'default' }) {
   const theme = useTheme()
@@ -78,7 +79,6 @@ export default function TopUsersSidebar({ variant = 'default' }) {
           {displayUsers.map((user, index) => {
             const profile = user.profile || {}
             const fullName = profile.fullname || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.username
-            const avatarSrc = resolveMediaPath(profile.avatar)
             const isTopThree = index < 3
             return (
               <Box
@@ -124,9 +124,11 @@ export default function TopUsersSidebar({ variant = 'default' }) {
                   </Typography>
                 )}
 
-                <Avatar
-                  src={avatarSrc}
-                  alt={fullName}
+                <UserAvatar
+                  src={profile.avatar}
+                  name={fullName}
+                  role={user.role}
+                  gender={profile.gender}
                   sx={{
                     width: 36,
                     height: 36,
@@ -136,9 +138,7 @@ export default function TopUsersSidebar({ variant = 'default' }) {
                     fontWeight: 700,
                     border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
                   }}
-                >
-                  {fullName?.charAt(0).toUpperCase()}
-                </Avatar>
+                />
 
                 <Box sx={{ minWidth: 0, flex: 1 }}>
                   <Typography

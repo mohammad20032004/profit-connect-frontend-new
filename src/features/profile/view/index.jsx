@@ -1,5 +1,6 @@
-import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid, IconButton } from '@mui/material'
+import { Box, Container, Paper, Typography, Chip, Stack, alpha, Grid, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
+import UserAvatar from '@/components/common/UserAvatar'
 import {
   LocationOnOutlined,
   WorkspacePremiumRounded,
@@ -59,8 +60,11 @@ export default function ProfileView() {
           <Grid size={{ xs: 12, md: 4, lg: 3 }}>
             <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
               <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Avatar
+                <UserAvatar
                   src={avatarSrc}
+                  name={fullName}
+                  role={user?.role}
+                  gender={profile?.gender}
                   sx={{
                     width: { xs: 100, md: 140 },
                     height: { xs: 100, md: 140 },
@@ -69,9 +73,7 @@ export default function ProfileView() {
                     boxShadow: 4,
                     bgcolor: 'primary.light',
                   }}
-                >
-                  {fullName?.charAt(0)?.toUpperCase()}
-                </Avatar>
+                />
 
                 <Stack spacing={1}>
                   {socialLinks?.linkedin && (

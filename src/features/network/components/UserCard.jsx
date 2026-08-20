@@ -1,14 +1,13 @@
-import { Paper, Box, Typography, Stack, alpha, CircularProgress, Avatar, IconButton, Tooltip, Chip } from '@mui/material'
+import { Paper, Box, Typography, Stack, alpha, CircularProgress, IconButton, Tooltip, Chip } from '@mui/material'
 import {
   PersonAddOutlined, PersonAddAlt1Outlined, HourglassTopOutlined, PeopleAltOutlined, PersonOffOutlined,
   CheckOutlined, CloseOutlined, PersonRemoveOutlined, StarBorderOutlined, WorkOutlineOutlined,
 } from '@mui/icons-material'
 import Button from '@/ui/Button'
-import { resolveMediaPath } from '@/services/profile'
+import UserAvatar from '@/components/common/UserAvatar'
 import { COLORS, fullName } from './shared'
 
 export default function UserCard({ user, status, following, onConnect, onAccept, onReject, onCancel, onRemove, onToggleFollow, busyId, t, navigate, sx }) {
-  const avatarSrc = resolveMediaPath(user?.profile?.avatar)
   const name = fullName(user)
   const headline = user?.profile?.headline || user?.headline || ''
   const followersCount = user?.profile?.followersCount
@@ -25,12 +24,13 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
       '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(COLORS.primary, 0.25), transform: 'translateY(-2px)' },
       ...(sx || {}),
     }}>
-      <Avatar
-        src={avatarSrc}
+      <UserAvatar
+        src={user?.profile?.avatar}
+        name={name}
+        role={user?.role}
+        gender={user?.profile?.gender}
         sx={{ width: 48, height: 48, flexShrink: 0, bgcolor: alpha(COLORS.primary, 0.1), color: COLORS.primary, fontWeight: 700 }}
-      >
-        {name?.charAt(0)?.toUpperCase()}
-      </Avatar>
+      />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Typography variant="subtitle2" fontWeight={700} noWrap sx={{ cursor: 'pointer', '&:hover': { color: COLORS.primary } }}
           onClick={() => navigate(`/user-profile/${user._id}`)}>
