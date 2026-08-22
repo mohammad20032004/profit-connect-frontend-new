@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Stack, TextField, Chip, Box, Typography } from '@mui/material'
 import { SkillsModal } from '@/ui'
+import { useTranslation } from 'react-i18next'
 
 const suggestedSkills = [
   'React', 'Node.js', 'Python', 'UI/UX Design', 'Graphic Design',
@@ -18,6 +19,7 @@ const fieldSx = {
 
 export default function StepProfessional({ form, onChange }) {
   const [modalOpen, setModalOpen] = useState(false)
+  const { t } = useTranslation()
   const skills = form.skills || []
 
   const toggleSkill = (skill) => {
@@ -30,13 +32,13 @@ export default function StepProfessional({ form, onChange }) {
   return (
     <Stack spacing={2.5}>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
-        <TextField label="Industry (optional)" value={form.industry} onChange={onChange('industry')} fullWidth placeholder="e.g. Technology, Healthcare, Finance" sx={fieldSx} />
+        <TextField label={t('auth.industryOptional')} value={form.industry} onChange={onChange('industry')} fullWidth placeholder={t('auth.industryPlaceholder')} sx={fieldSx} />
       </Box>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.08s both' }}>
-        <TextField label="Years of Experience (optional)" type="number" value={form.yearsOfExperience} onChange={onChange('yearsOfExperience')} fullWidth sx={fieldSx} />
+        <TextField label={t('auth.yearsExpOptional')} type="number" value={form.yearsOfExperience} onChange={onChange('yearsOfExperience')} fullWidth sx={fieldSx} />
       </Box>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.16s both' }}>
-        <Typography variant="body2" fontWeight={500} sx={{ mb: 1 }}>Skills (click to select)</Typography>
+        <Typography variant="body2" fontWeight={500} sx={{ mb: 1 }}>{t('auth.skillsLabel')}</Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
           {suggestedSkills.map((skill, i) => (
             <Box key={skill} sx={{ animation: 'fadeUp 0.3s ease', animationDelay: `${0.2 + i * 0.03}s`, animationFillMode: 'both' }}>
@@ -52,7 +54,7 @@ export default function StepProfessional({ form, onChange }) {
             </Box>
           ))}
           <Box sx={{ animation: 'fadeUp 0.3s ease', animationDelay: '0.55s', animationFillMode: 'both' }}>
-            <Chip label="More..." size="small" variant="outlined" color="secondary"
+            <Chip label={t('auth.moreSkills')} size="small" variant="outlined" color="secondary"
               onClick={() => setModalOpen(true)}
               sx={{
                 fontWeight: 700, transition: 'all 0.2s ease',
@@ -63,7 +65,7 @@ export default function StepProfessional({ form, onChange }) {
         </Box>
         {skills.length > suggestedSkills.length && (
           <Typography variant="caption" color="primary" sx={{ mt: 0.5, display: 'block', fontWeight: 600 }}>
-            +{skills.length - suggestedSkills.length} more skills selected
+            +{skills.length - suggestedSkills.length} {t('auth.moreSkills')}
           </Typography>
         )}
       </Box>

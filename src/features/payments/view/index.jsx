@@ -430,13 +430,16 @@ export default function PaymentsView() {
                       </Stack>
                     </Box>
                     {isHeld && isSent && (
-                      <Tooltip title={t('manage.releasePay', 'Release to Wallet')}>
-                        <span>
-                          <IconButton size="small" color="success" onClick={() => setReleaseTarget(p)} disabled={releasingId === p._id}>
-                            {releasingId === p._id ? <CircularProgress size={16} /> : <VerifiedOutlined sx={{ fontSize: 19 }} />}
-                          </IconButton>
-                        </span>
-                      </Tooltip>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={releasingId === p._id ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <VerifiedOutlined sx={{ fontSize: 16 }} />}
+                        onClick={() => setReleaseTarget(p)}
+                        disabled={releasingId === p._id}
+                        sx={{ borderRadius: 1.5, fontWeight: 700, textTransform: 'none', px: 2, minHeight: 40, whiteSpace: 'nowrap' }}
+                      >
+                        {t('manage.releasePay', 'تحرير')}
+                      </Button>
                     )}
                   </Stack>
                 </Paper>

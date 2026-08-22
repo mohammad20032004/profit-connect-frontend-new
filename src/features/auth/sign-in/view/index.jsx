@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Box, Chip, Typography, TextField, InputAdornment, IconButton, Stack, Container, CircularProgress,
-  Link as MuiLink,
+  Link as MuiLink, useTheme,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import { keyframes } from '@mui/material/styles'
@@ -19,32 +19,19 @@ const float1 = keyframes`0%,100%{transform:translate(0,0) scale(1)}33%{transform
 const float2 = keyframes`0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-25px,25px) scale(1.08)}66%{transform:translate(20px,-15px) scale(0.92)}`
 const shimmer = keyframes`0%{background-position:200% 0}100%{background-position:-200% 0}`
 
-const fieldSx = {
-  '& .MuiOutlinedInput-root': {
-    transition: 'all 0.25s ease',
-    '&:hover': { boxShadow: '0 2px 8px rgba(61,28,110,0.08)' },
-    '&.Mui-focused': { boxShadow: '0 2px 12px rgba(61,28,110,0.12)' },
-  },
-}
-
 export default function SignInView() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const theme = useTheme()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [lang, setLang] = useState('en')
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [fieldErrors, setFieldErrors] = useState({})
 
-  useEffect(() => {
-    document.documentElement.dir = 'ltr'
-  }, [])
-
   const toggleLang = () => {
-    const next = lang === 'en' ? 'ar' : 'en'
-    setLang(next)
+    const next = i18n.language === 'en' ? 'ar' : 'en'
     i18n.changeLanguage(next)
     document.documentElement.dir = next === 'ar' ? 'rtl' : 'ltr'
   }
@@ -53,10 +40,10 @@ export default function SignInView() {
     event.preventDefault()
     setError('')
     const errors = {}
-    if (!formData.email.trim()) errors.email = lang === 'en' ? 'Email is required' : 'البريد الإلكتروني مطلوب'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = lang === 'en' ? 'Invalid email format' : 'تنسيق البريد الإلكتروني غير صالح'
-    if (!formData.password) errors.password = lang === 'en' ? 'Password is required' : 'كلمة المرور مطلوبة'
-    else if (formData.password.length < 6) errors.password = lang === 'en' ? 'At least 6 characters' : '6 أحرف على الأقل'
+    if (!formData.email.trim()) errors.email = t('auth.required')
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = t('auth.invalidEmail')
+    if (!formData.password) errors.password = t('auth.required')
+    else if (formData.password.length < 6) errors.password = t('auth.minChars')
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors)
       return
@@ -77,8 +64,7 @@ export default function SignInView() {
       navigate('/')
     } catch (err) {
       const data = err?.response?.data
-      const fallback = lang === 'en' ? 'Something went wrong. Please try again.' : 'حدث خطأ. حاول مرة أخرى.'
-      const msg = data?.message || data?.error || data?.msg || err.message || fallback
+      const msg = data?.message || data?.error || data?.msg || err.message || t('auth.signIn')
       setError(msg)
     } finally {
       setLoading(false)
@@ -87,17 +73,16 @@ export default function SignInView() {
 
   return (
     <Box sx={{
-        minHeight: '100vh', bgcolor: '#F6F4FA', position: 'relative', overflow: 'hidden',
+        minHeight: '100vh', bgcolor: 'background.default', position: 'relative', overflow: 'hidden',
         '@keyframes fadeUp': { from: { opacity: 0, transform: 'translateY(16px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
-        '@keyframes pulse': { '0%,100%': { transform: 'scale(1)', opacity: 0.15 }, '50%': { transform: 'scale(1.08)', opacity: 0.25 } },
       }}>
         <Box sx={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <Box sx={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, #3D1C6E15 0%, transparent 70%)', top: -100, left: -100, animation: `${float1} 12s ease-in-out infinite` }} />
-          <Box sx={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, #1F367015 0%, transparent 70%)', bottom: -80, right: -80, animation: `${float2} 10s ease-in-out infinite` }} />
-          <Box sx={{ position: 'absolute', width: 250, height: 250, borderRadius: '50%', background: 'radial-gradient(circle, #5C359410 0%, transparent 70%)', top: '40%', right: '15%', animation: `${float1} 15s ease-in-out infinite reverse` }} />
+          <Box sx={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, ${theme.palette.primary.main}15 0%, transparent 70%)`, top: -100, insetInlineStart: -100, animation: `${float1} 12s ease-in-out infinite` }} />
+          <Box sx={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, ${theme.palette.secondary.main}15 0%, transparent 70%)`, bottom: -80, insetInlineEnd: -80, animation: `${float2} 10s ease-in-out infinite` }} />
+          <Box sx={{ position: 'absolute', width: 250, height: 250, borderRadius: '50%', background: `radial-gradient(circle, ${theme.palette.primary.light}10 0%, transparent 70%)`, top: '40%', insetInlineEnd: '15%', animation: `${float1} 15s ease-in-out infinite reverse` }} />
         </Box>
 
-        <IconButton onClick={toggleLang} aria-label={lang === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
+        <IconButton onClick={toggleLang} aria-label={i18n.language === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
           sx={{
             position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10, bgcolor: 'white',
             boxShadow: '0 2px 12px rgba(0,0,0,0.08)', borderRadius: 2, px: 1.5, py: 0.5,
@@ -106,7 +91,7 @@ export default function SignInView() {
             animation: 'fadeUp 0.5s ease 0.2s both',
           }}
         >
-          <Typography variant="caption" fontWeight="bold" sx={{ color: '#3D1C6E' }}>{lang === 'en' ? 'AR' : 'EN'}</Typography>
+          <Typography variant="caption" fontWeight="bold" sx={{ color: 'primary.main' }}>{i18n.language === 'en' ? 'AR' : 'EN'}</Typography>
         </IconButton>
 
         <Container maxWidth="xl" sx={{ minHeight: '100vh', py: { xs: 3, md: 2 }, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
@@ -116,20 +101,20 @@ export default function SignInView() {
             boxShadow: { xs: 'none', sm: '0 32px 80px rgba(12,8,24,0.18)' },
             borderRadius: { xs: 0, sm: 3 }, overflow: 'hidden',
             bgcolor: 'rgba(255,255,255,0.88)',
-            border: '1px solid rgba(31, 13, 66, 0.1)',
+            border: '1px solid', borderColor: 'divider',
             backdropFilter: 'blur(20px)',
             mx: { xs: 0, md: 4, lg: 8 },
             animation: 'fadeUp 0.6s ease both',
           }}>
             <Box sx={{
               flex: { md: 1.1 }, position: 'relative',
-              background: 'linear-gradient(160deg, rgba(12,24,40,0.95) 0%, rgba(26,8,53,0.92) 42%, rgba(61,28,110,0.75) 100%), url(/Images/login-photo.png)',
+              background: `linear-gradient(160deg, rgba(12,24,40,0.95) 0%, rgba(26,8,53,0.92) 42%, ${theme.palette.primary.main}bf 100%), url(/Images/login-photo.png)`,
               backgroundSize: 'cover', backgroundPosition: 'center',
               display: { xs: 'none', md: 'flex' }, flexDirection: 'column', justifyContent: 'space-between',
               color: 'white', p: { md: 3.5, lg: 4.5 },
             }}>
               <Box>
-                <Chip label={lang === 'en' ? '✦ Premium Career Experience' : '✦ تجربة مهنية متميزة'}
+                <Chip label={`✦ ${t('auth.welcomeChip')}`}
                   sx={{
                     mb: 4, bgcolor: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)',
                     backdropFilter: 'blur(12px)', fontWeight: 600, fontSize: '0.8rem', letterSpacing: 0.3,
@@ -138,10 +123,10 @@ export default function SignInView() {
                 />
                 <Box sx={{ maxWidth: 500, py: { md: 1, lg: 5 }, animation: 'fadeUp 0.5s ease 0.2s both' }}>
                   <Typography variant="h3" fontWeight="bold" sx={{ mb: 2, fontSize: { md: '2.2rem', lg: '3rem' }, lineHeight: 1.15, letterSpacing: '-0.02em' }}>
-                    {lang === 'en' ? 'Welcome back to a sharper way to grow your network.' : 'مرحباً بعودتك إلى طريقة أكثر ذكاءً لتنمية شبكتك.'}
+                    {t('auth.welcomeHeading')}
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 400, opacity: 0.9, fontSize: { md: '0.95rem', lg: '1.05rem' }, maxWidth: 440, lineHeight: 1.7 }}>
-                    {lang === 'en' ? 'Access tailored opportunities, trusted connections, and a profile experience designed to make your next move feel effortless.' : 'استفد من الفرص المصممة خصيصاً، والاتصالات الموثوقة، وتجربة ملف شخصي تجعل خطوتك التالية سهلة.'}
+                    {t('auth.welcomeSub')}
                   </Typography>
                 </Box>
               </Box>
@@ -154,13 +139,13 @@ export default function SignInView() {
                   ✦
                 </Box>
                 <Box>
-                  <Typography sx={{ fontSize: '0.82rem', opacity: 0.7, fontWeight: 400 }}>{lang === 'en' ? 'Trusted by ambitious professionals' : 'موثوق من المحترفين الطموحين'}</Typography>
-                  <Typography sx={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.01em' }}>24k+ {lang === 'en' ? 'active members' : 'عضو نشط'}</Typography>
+                  <Typography sx={{ fontSize: '0.82rem', opacity: 0.7, fontWeight: 400 }}>{t('auth.trustedBy')}</Typography>
+                  <Typography sx={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.01em' }}>24k+ {t('auth.activeMembers')}</Typography>
                 </Box>
               </Box>
 
               <Box sx={{
-                position: 'absolute', bottom: 0, left: 0, right: 0, height: 2,
+                position: 'absolute', bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, height: 2,
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
                 backgroundSize: '200% 100%', animation: `${shimmer} 3s linear infinite`,
               }} />
@@ -173,35 +158,33 @@ export default function SignInView() {
             }}>
               <Box sx={{ width: '100%', maxWidth: '520px', px: { xs: 0.5, sm: 2 }, py: 1, mx: 'auto', animation: 'fadeUp 0.5s ease 0.3s both' }}>
 
-                <Typography variant="h4" fontWeight="bold" sx={{ mt: 2.5, color: '#1F0A3B', fontSize: { xs: '1.8rem', sm: '2.2rem' }, lineHeight: 1.15, letterSpacing: '-0.02em' }}>
-                  {lang === 'en' ? 'Sign in to continue' : 'تسجيل الدخول للمتابعة'}
+                <Typography variant="h4" fontWeight="bold" sx={{ mt: 2.5, color: 'text.primary', fontSize: { xs: '1.8rem', sm: '2.2rem' }, lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+                  {t('auth.signInTitle')}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#5C5580', mt: 0.5, mb: 2.5 }}>
-                  {lang === 'en' ? 'Welcome back! Enter your credentials to access your account' : 'مرحباً بعودتك! أدخل بياناتك للوصول إلى حسابك'}
+                <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb: 2.5 }}>
+                  {t('auth.signInSub')}
                 </Typography>
 
                 <form noValidate onSubmit={handleSubmit}>
                   <Stack spacing={2.5}>
                     <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
-                      <TextField fullWidth label={lang === 'en' ? 'Email Address' : 'البريد الإلكتروني'} type="email"
+                      <TextField fullWidth label={t('auth.email')} type="email"
                         value={formData.email}
                         onChange={(e) => { setFormData(prev => ({ ...prev, email: e.target.value })); if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: '' })) }}
                         error={!!fieldErrors.email} helperText={fieldErrors.email}
-                        sx={fieldSx}
                       />
                     </Box>
                     <Box sx={{ animation: 'fadeUp 0.4s ease 0.08s both' }}>
-                      <TextField fullWidth label={lang === 'en' ? 'Password' : 'كلمة المرور'}
+                      <TextField fullWidth label={t('auth.password')}
                         type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={(e) => { setFormData(prev => ({ ...prev, password: e.target.value })); if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: '' })) }}
                         error={!!fieldErrors.password} helperText={fieldErrors.password}
-                        sx={fieldSx}
                         slotProps={{
                           input: {
                             endAdornment: (
                               <InputAdornment position="end">
-                                <IconButton onClick={() => setShowPassword(s => !s)} edge="end" sx={{ color: '#5C5580' }}>
+                                <IconButton onClick={() => setShowPassword(s => !s)} edge="end" aria-label={showPassword ? 'Hide password' : 'Show password'}>
                                   {showPassword ? <VisibilityOff /> : <Visibility />}
                                 </IconButton>
                               </InputAdornment>
@@ -212,11 +195,11 @@ export default function SignInView() {
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', animation: 'fadeUp 0.4s ease 0.16s both' }}>
-                      <MuiLink component={Link} to="#" sx={{ color: '#3D1C6E', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', transition: 'opacity 0.2s', '&:hover': { textDecoration: 'underline' } }}
+                      <MuiLink component={Link} to="#" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', transition: 'opacity 0.2s', '&:hover': { textDecoration: 'underline' } }}
                         onMouseEnter={e => e.target.style.opacity = '0.7'}
                         onMouseLeave={e => e.target.style.opacity = '1'}
                       >
-                        {lang === 'en' ? 'Forgot Password?' : 'نسيت كلمة المرور؟'}
+                        {t('auth.forgotPassword')}
                       </MuiLink>
                     </Box>
 
@@ -229,22 +212,22 @@ export default function SignInView() {
                     <Box sx={{ animation: 'fadeUp 0.4s ease 0.24s both' }}>
                       <Button fullWidth variant="contained" type="submit" disabled={loading}
                         sx={{
-                          py: 1.55, fontSize: '1rem', fontWeight: 600, bgcolor: '#3D1C6E',
+                          py: 1.55, fontSize: '1rem', fontWeight: 600,
                           transition: 'all 0.25s ease',
-                          '&:hover': { bgcolor: '#2D1055', transform: 'translateY(-1px) scale(1.02)', boxShadow: '0 6px 20px rgba(61,28,110,0.3)' },
+                          '&:hover': { transform: 'translateY(-1px) scale(1.02)', boxShadow: '0 6px 20px rgba(61,28,110,0.3)' },
                           '&:active': { transform: 'scale(0.98)' },
-                          '&:disabled': { bgcolor: '#B5AECB' },
+                          '&:disabled': { opacity: 0.6 },
                         }}
                       >
-                        {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : (lang === 'en' ? 'Sign In' : 'تسجيل الدخول')}
+                        {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : t('auth.signIn')}
                       </Button>
                     </Box>
                   </Stack>
                 </form>
 
-                <Typography variant="body2" sx={{ mt: 3, textAlign: 'center', color: '#5C5580', animation: 'fadeUp 0.5s ease 0.5s both' }}>
-                  {lang === 'en' ? "Don't have an account?" : 'ليس لديك حساب؟'}{' '}
-                  <MuiLink component={Link} to="/sign-up" sx={{ color: '#3D1C6E', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>{lang === 'en' ? 'Sign up' : 'إنشاء حساب'}</MuiLink>
+                <Typography variant="body2" sx={{ mt: 3, textAlign: 'center', color: 'text.secondary', animation: 'fadeUp 0.5s ease 0.5s both' }}>
+                  {t('auth.noAccount')}{' '}
+                  <MuiLink component={Link} to="/sign-up" sx={{ color: 'primary.main', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>{t('auth.signUp')}</MuiLink>
                 </Typography>
               </Box>
             </Box>

@@ -5,6 +5,12 @@ import { useTranslation } from 'react-i18next'
 
 const roles = ['JobSeeker', 'Employer', 'FreelanceClient']
 
+const ROLE_LABELS = {
+  JobSeeker: 'auth.roleJobSeeker',
+  Employer: 'auth.roleEmployer',
+  FreelanceClient: 'auth.roleFreelance',
+}
+
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
     transition: 'all 0.25s ease',
@@ -13,21 +19,14 @@ const fieldSx = {
   },
 }
 
-const ROLE_LABELS = {
-  JobSeeker: { en: 'Job Seeker', ar: 'باحث عن عمل' },
-  Employer: { en: 'Employer', ar: 'صاحب عمل' },
-  FreelanceClient: { en: 'Freelance Client', ar: 'عميل حر' },
-}
-
 export default function StepAccount({ form, onChange, errors }) {
   const [showPassword, setShowPassword] = useState(false)
-  const { i18n } = useTranslation()
-  const lang = i18n.language === 'ar' ? 'ar' : 'en'
+  const { t } = useTranslation()
 
   return (
     <Stack spacing={2.5}>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
-        <TextField label="Password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={onChange('password')} required fullWidth error={!!errors.password} helperText={errors.password || 'At least 6 characters'} sx={fieldSx}
+        <TextField label={t('auth.password')} type={showPassword ? 'text' : 'password'} value={form.password} onChange={onChange('password')} required fullWidth error={!!errors.password} helperText={errors.password || t('auth.passwordHelper')} sx={fieldSx}
           slotProps={{
             input: {
               endAdornment: (
@@ -42,9 +41,9 @@ export default function StepAccount({ form, onChange, errors }) {
         />
       </Box>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.1s both' }}>
-        <TextField label={lang === 'ar' ? 'نوع الحساب' : 'Account Type'} value={form.role} onChange={onChange('role')} select fullWidth sx={fieldSx}>
+        <TextField label={t('auth.accountType')} value={form.role} onChange={onChange('role')} select fullWidth sx={fieldSx}>
           {roles.map((r) => (
-            <MenuItem key={r} value={r}>{ROLE_LABELS[r][lang]}</MenuItem>
+            <MenuItem key={r} value={r}>{t(ROLE_LABELS[r])}</MenuItem>
           ))}
         </TextField>
       </Box>

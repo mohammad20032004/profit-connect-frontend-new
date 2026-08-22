@@ -22,20 +22,20 @@ const COMPANY_SIZES = [
 const CURRENT_YEAR = new Date().getFullYear()
 
 export default function StepCompanyDetails({ form, onChange, errors }) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
 
   return (
     <Stack spacing={2.5}>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
-        <Typography variant="body2" sx={{ color: '#5C5580', mb: 0.5 }}>
-          {lang === 'ar' ? 'تفاصيل إضافية عن الشركة (اختياري)' : 'Additional company details (optional)'}
+        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+          {t('auth.companyDetailsSubtitle')}
         </Typography>
       </Box>
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.05s both' }}>
         <TextField
-          label={lang === 'ar' ? 'الموقع الإلكتروني' : 'Website'}
+          label={t('auth.website')}
           value={form.website || ''}
           onChange={onChange('website')}
           fullWidth
@@ -46,7 +46,7 @@ export default function StepCompanyDetails({ form, onChange, errors }) {
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.1s both' }}>
         <TextField
-          label={lang === 'ar' ? 'حجم الشركة' : 'Company Size'}
+          label={t('auth.companySize')}
           value={form.companySize || ''}
           onChange={onChange('companySize')}
           select
@@ -54,7 +54,7 @@ export default function StepCompanyDetails({ form, onChange, errors }) {
           sx={fieldSx}
         >
           <MenuItem value="">
-            <em>{lang === 'ar' ? 'اختر الحجم' : 'Select size'}</em>
+            <em>{t('auth.selectSize')}</em>
           </MenuItem>
           {COMPANY_SIZES.map((size) => (
             <MenuItem key={size.value} value={size.value}>{size[lang]}</MenuItem>
@@ -64,7 +64,7 @@ export default function StepCompanyDetails({ form, onChange, errors }) {
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.15s both' }}>
         <TextField
-          label={lang === 'ar' ? 'سنة التأسيس' : 'Founded Year'}
+          label={t('auth.foundedYear')}
           value={form.foundedYear || ''}
           onChange={onChange('foundedYear')}
           select
@@ -72,7 +72,7 @@ export default function StepCompanyDetails({ form, onChange, errors }) {
           sx={fieldSx}
         >
           <MenuItem value="">
-            <em>{lang === 'ar' ? 'اختر السنة' : 'Select year'}</em>
+            <em>{t('auth.selectYear')}</em>
           </MenuItem>
           {Array.from({ length: 25 }, (_, i) => CURRENT_YEAR - i).map((year) => (
             <MenuItem key={year} value={year}>{year}</MenuItem>

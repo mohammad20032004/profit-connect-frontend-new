@@ -31,20 +31,20 @@ const INDUSTRIES = [
 ]
 
 export default function StepCompanyInfo({ form, onChange, errors }) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
 
   return (
     <Stack spacing={2.5}>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
-        <Typography variant="body2" sx={{ color: '#5C5580', mb: 0.5 }}>
-          {lang === 'ar' ? 'أخبرنا عن شركتك' : 'Tell us about your company'}
+        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+          {t('auth.companySubtitle')}
         </Typography>
       </Box>
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.05s both' }}>
         <TextField
-          label={lang === 'ar' ? 'اسم الشركة *' : 'Company Name *'}
+          label={`${t('auth.companyName')} *`}
           value={form.companyName || ''}
           onChange={onChange('companyName')}
           required
@@ -57,7 +57,7 @@ export default function StepCompanyInfo({ form, onChange, errors }) {
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.1s both' }}>
         <TextField
-          label={lang === 'ar' ? 'وصف نشاط الشركة' : 'Company Description'}
+          label={t('auth.companyDesc')}
           value={form.companyDescription || ''}
           onChange={onChange('companyDescription')}
           fullWidth
@@ -69,7 +69,7 @@ export default function StepCompanyInfo({ form, onChange, errors }) {
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.15s both' }}>
         <TextField
-          label={lang === 'ar' ? 'مجال الشركة' : 'Industry'}
+          label={t('auth.companyIndustry')}
           value={form.companyIndustry || ''}
           onChange={onChange('companyIndustry')}
           select
@@ -77,7 +77,7 @@ export default function StepCompanyInfo({ form, onChange, errors }) {
           sx={fieldSx}
         >
           <MenuItem value="">
-            <em>{lang === 'ar' ? 'اختر المجال' : 'Select industry'}</em>
+            <em>{t('auth.selectIndustry')}</em>
           </MenuItem>
           {INDUSTRIES.map((ind) => (
             <MenuItem key={ind.value} value={ind.value}>{ind[lang]}</MenuItem>
@@ -87,7 +87,7 @@ export default function StepCompanyInfo({ form, onChange, errors }) {
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.2s both' }}>
         <TextField
-          label={lang === 'ar' ? 'مقر الشركة' : 'Company Location'}
+          label={t('auth.companyLocation')}
           value={form.companyLocation || ''}
           onChange={onChange('companyLocation')}
           fullWidth

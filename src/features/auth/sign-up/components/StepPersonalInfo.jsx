@@ -1,4 +1,5 @@
 import { Stack, TextField, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
@@ -9,19 +10,27 @@ const fieldSx = {
 }
 
 export default function StepPersonalInfo({ form, onChange, errors }) {
+  const { t } = useTranslation()
+
+  const fields = [
+    { key: 'firstName', label: t('auth.firstName'), type: 'text' },
+    { key: 'lastName', label: t('auth.lastName'), type: 'text' },
+    { key: 'email', label: t('auth.email'), type: 'email' },
+  ]
+
   return (
     <Stack spacing={2.5}>
-      {['firstName', 'lastName', 'email'].map((field, i) => (
-        <Box key={field} sx={{ animation: 'fadeUp 0.4s ease', animationDelay: `${i * 0.08}s`, animationFillMode: 'both' }}>
+      {fields.map((f, i) => (
+        <Box key={f.key} sx={{ animation: 'fadeUp 0.4s ease', animationDelay: `${i * 0.08}s`, animationFillMode: 'both' }}>
           <TextField
-            label={field === 'firstName' ? 'First Name' : field === 'lastName' ? 'Last Name' : 'Email Address'}
-            type={field === 'email' ? 'email' : 'text'}
-            value={form[field]}
-            onChange={onChange(field)}
+            label={f.label}
+            type={f.type}
+            value={form[f.key]}
+            onChange={onChange(f.key)}
             required
             fullWidth
-            error={!!errors[field]}
-            helperText={errors[field]}
+            error={!!errors[f.key]}
+            helperText={errors[f.key]}
             sx={fieldSx}
           />
         </Box>
@@ -29,21 +38,21 @@ export default function StepPersonalInfo({ form, onChange, errors }) {
 
       <Box sx={{ animation: 'fadeUp 0.4s ease', animationDelay: '0.24s', animationFillMode: 'both' }}>
         <FormControl fullWidth sx={fieldSx}>
-          <InputLabel>Gender</InputLabel>
+          <InputLabel>{t('auth.gender')}</InputLabel>
           <Select
             value={form.gender || ''}
-            label="Gender"
+            label={t('auth.gender')}
             onChange={onChange('gender')}
           >
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
+            <MenuItem value="male">{t('auth.male')}</MenuItem>
+            <MenuItem value="female">{t('auth.female')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
 
       <Box sx={{ animation: 'fadeUp 0.4s ease', animationDelay: '0.32s', animationFillMode: 'both' }}>
         <TextField
-          label="Phone Number (optional)"
+          label={t('auth.phoneOptional')}
           type="text"
           value={form.phoneNumber}
           onChange={onChange('phoneNumber')}
