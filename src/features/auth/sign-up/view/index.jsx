@@ -40,6 +40,7 @@ const shimmer = keyframes`0%{background-position:200% 0}100%{background-position
 export default function SignUpView() {
   const { t, i18n } = useTranslation()
   const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [activeStep, setActiveStep] = useState(0)
@@ -157,10 +158,12 @@ export default function SignUpView() {
 
         <IconButton onClick={toggleLang} aria-label={i18n.language === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
           sx={{
-            position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10, bgcolor: 'white',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.08)', borderRadius: 2, px: 1.5, py: 0.5,
+            position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10,
+            bgcolor: isDark ? 'background.paper' : 'white',
+            boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.4)' : '0 2px 12px rgba(0,0,0,0.08)',
+            borderRadius: 2, px: 1.5, py: 0.5,
             transition: 'all 0.3s ease',
-            '&:hover': { bgcolor: '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' },
+            '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.5)' : '0 4px 16px rgba(0,0,0,0.12)' },
             animation: 'fadeUp 0.5s ease 0.2s both',
           }}
         >
@@ -173,7 +176,7 @@ export default function SignUpView() {
             height: { xs: 'auto', md: '90vh' }, minHeight: { md: '680px' }, width: '100%', maxWidth: '1320px',
             boxShadow: { xs: 'none', sm: '0 32px 80px rgba(12,8,24,0.18)' },
             borderRadius: { xs: 0, sm: 3 }, overflow: 'hidden',
-            bgcolor: 'rgba(255,255,255,0.88)',
+            bgcolor: isDark ? 'rgba(20,15,38,0.85)' : 'rgba(255,255,255,0.88)',
             border: '1px solid', borderColor: 'divider',
             backdropFilter: 'blur(20px)',
             mx: { xs: 0, md: 4, lg: 8 },
@@ -226,7 +229,7 @@ export default function SignUpView() {
 
             <Box sx={{
               flex: { md: 1 }, width: { xs: '100%', md: 'auto' }, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'linear-gradient(180deg, #ffffff 0%, #f8f6fc 100%)',
+              background: isDark ? 'linear-gradient(180deg, #181230 0%, #0d0919 100%)' : 'linear-gradient(180deg, #ffffff 0%, #f8f6fc 100%)',
               p: { xs: 2.5, sm: 4, md: 2 }, overflowY: 'auto',
             }}>
               <Box sx={{ width: '100%', maxWidth: '520px', px: { xs: 0.5, sm: 2 }, py: 1, mx: 'auto', animation: 'fadeUp 0.5s ease 0.3s both' }}>
@@ -257,7 +260,7 @@ export default function SignUpView() {
                 </Stepper>
 
                 <Paper sx={{
-                  p: { xs: 2.5, sm: 3.5 }, borderRadius: 1, bgcolor: 'white',
+                  p: { xs: 2.5, sm: 3.5 }, borderRadius: 1, bgcolor: isDark ? 'background.paper' : 'white',
                   border: '1px solid', borderColor: 'divider',
                   boxShadow: '0 4px 24px rgba(12,8,24,0.06)',
                   transition: 'box-shadow 0.3s ease',
@@ -273,7 +276,7 @@ export default function SignUpView() {
                   </Box>
 
                   {errors.submit && (
-                    <Typography color="error" variant="body2" sx={{ mt: 2, textAlign: 'center', bgcolor: '#FEE2E2', p: 1.5, borderRadius: 2, animation: 'fadeUp 0.3s ease' }}>
+                      <Typography color="error" variant="body2" sx={{ mt: 2, textAlign: 'center', bgcolor: isDark ? 'rgba(248,113,113,0.12)' : '#FEE2E2', p: 1.5, borderRadius: 2, animation: 'fadeUp 0.3s ease' }}>
                       {errors.submit}
                     </Typography>
                   )}

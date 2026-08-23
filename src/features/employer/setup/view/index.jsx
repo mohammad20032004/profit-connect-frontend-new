@@ -757,7 +757,6 @@ export default function EmployerSetup() {
                 variant="text"
                 disabled={step === 0}
                 onClick={() => handleStep('backward')}
-                startIcon={<ArrowBackOutlined />}
                 sx={{ color: 'text.secondary', fontWeight: 600, '&:disabled': { opacity: 0.3 } }}
               >
                 {t('employer.setup.back')}
@@ -766,7 +765,6 @@ export default function EmployerSetup() {
                 <Button
                   variant="contained"
                   onClick={() => handleStep('forward')}
-                  endIcon={<ArrowForwardOutlined />}
                   disabled={!stepValidation[step]}
                   sx={{
                     px: 4, fontWeight: 600, borderRadius: 1,
