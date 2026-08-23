@@ -1,19 +1,44 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, IconButton, Divider,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, IconButton,
   Rating, TextField, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Snackbar, Alert,
+  alpha, LinearProgress,
 } from '@mui/material'
 import Button from '@/ui/Button'
+import UserAvatar from '@/components/common/UserAvatar'
+import LocationMap from '@/components/LocationMap'
+import { resolveMediaPath } from '@/services/profile'
 import {
   ArrowBackOutlined, LocationOnOutlined,
   LanguageOutlined, EmailOutlined, LinkedIn, Twitter, FavoriteBorderOutlined, FavoriteOutlined,
-  VerifiedOutlined, CalendarMonthOutlined, GroupsOutlined,
+  VerifiedOutlined, CalendarMonthOutlined,
   StarBorderOutlined, AdminPanelSettingsOutlined, EditOutlined, DeleteOutlineOutlined,
+  StarRounded, PeopleAltOutlined, PaymentsOutlined, ContactSupportOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getCompanyById, toggleFollow, addAdmin, upsertRating, deleteMyRating, updateCompany, deleteCompany } from '@/services/companyService'
+
+const INDUSTRY_COLORS = {
+  'web-development': '#6366F1',
+  'mobile-development': '#8B5CF6',
+  'frontend': '#EC4899',
+  'backend': '#14B8A6',
+  'fullstack': '#5C3594',
+  'devops': '#10B981',
+  'ai-ml': '#F43F5E',
+  'data-science': '#3B82F6',
+  'cybersecurity': '#EF4444',
+  'ui-ux': '#F59E0B',
+  'qa-testing': '#0891B2',
+  'game-dev': '#8B5CF6',
+  'blockchain': '#F97316',
+  'iot': '#0EA5E9',
+  'saas': '#7C3AED',
+  'ecommerce-tech': '#DB2777',
+  'other': '#6B7280',
+}
 
 export default function CompanyDetail() {
   const { id } = useParams()
@@ -185,7 +210,13 @@ export default function CompanyDetail() {
     </Container>
   )
 
-  if (loading) return <Container maxWidth={false} sx={{ mt: 4, textAlign: 'center' }}><CircularProgress /></Container>
+  if (loading) return (
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <LinearProgress sx={{ mb: 3, borderRadius: 2, height: 3, bgcolor: alpha('#3D1C6E', 0.08), '& .MuiLinearProgress-bar': { borderRadius: 2, background: 'linear-gradient(90deg, #3D1C6E, #1F3670)' } }} />
+      <Box sx={{ height: 180, borderRadius: 3, bgcolor: alpha('#3D1C6E', 0.06), animation: 'pulse 1.5s ease-in-out infinite' }} />
+      <Box sx={{ mt: -6, ml: 4, width: 96, height: 96, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.1), border: '4px solid #fff', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    </Container>
+  )
 
   if (!company) return (
     <Container maxWidth={false} sx={{ mt: 4, textAlign: 'center' }}>
@@ -196,166 +227,298 @@ export default function CompanyDetail() {
     </Container>
   )
 
-  const openJobs = company.recentJobs?.filter((j) => j.status === 'Open').slice(0, 5) || []
+  const industryColor = INDUSTRY_COLORS[company.industry] || '#3D1C6E'
+  const coverPhoto = company.coverPhoto ? resolveMediaPath(company.coverPhoto) : null
+  const logoSrc = company.logo ? resolveMediaPath(company.logo) : null
+  const ownerAvatar = company.owner?.profile?.avatar ? resolveMediaPath(company.owner.profile.avatar) : null
+  const openJobs = company.recentJobs?.filter((j) => j.status === 'Open').slice(0, 4) || []
+
+  const heroStats = [
+    { label: t('companies.followers', 'Followers'), value: followersCount?.toLocaleString() || '0', icon: <PeopleAltOutlined fontSize="small" /> },
+    { label: t('companies.rating', 'Rating'), value: company.averageRating?.toFixed(1) || '-', icon: <StarRounded fontSize="small" sx={{ color: '#F59E0B' }} /> },
+    { label: t('companies.founded', 'Founded'), value: company.foundedYear || '-', icon: <CalendarMonthOutlined fontSize="small" /> },
+  ]
+
+  const tagSx = { bgcolor: alpha('#3D1C6E', 0.1), color: '#3D1C6E', fontWeight: 700, borderRadius: 2, fontSize: '0.7rem' }
 
   return (
-    <Container maxWidth={false} sx={{ height: 'calc(100vh - 88px)', display: 'flex', flexDirection: 'column', py: 1.5 }}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
-        <IconButton onClick={() => navigate(-1)} size="small"><ArrowBackOutlined /></IconButton>
-        <Typography variant="h5" fontWeight="bold" noWrap sx={{ flex: 1 }}>{company.name}</Typography>
-        {company.isVerified && <VerifiedOutlined sx={{ color: 'primary.main', fontSize: 22 }} />}
+    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
+        <IconButton onClick={() => navigate(-1)} size="small" sx={{ bgcolor: 'background.paper', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}><ArrowBackOutlined /></IconButton>
+        <Typography variant="h5" fontWeight="bold" noWrap sx={{ flex: 1 }}>{t('companies.title', 'Companies')}</Typography>
       </Stack>
 
-      <Stack direction="row" spacing={1.5} sx={{ flex: 1, minHeight: 0 }}>
-        {/* Left card */}
-        <Paper sx={{ width: 280, flexShrink: 0, borderRadius: 1, overflow: 'auto', p: 2 }}>
-          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-            <Avatar src={company.logo} sx={{ width: 56, height: 56, bgcolor: 'primary.main', fontSize: 22 }}>
+      <Paper sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid', borderColor: 'divider', boxShadow: '0 4px 24px rgba(12,8,24,0.06)' }}>
+        {/* Cover Banner */}
+        <Box sx={{ position: 'relative', height: { xs: 150, md: 200 }, overflow: 'hidden' }}>
+          {coverPhoto ? (
+            <Box component="img" src={coverPhoto} alt="" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <Box sx={{ width: '100%', height: '100%', background: `linear-gradient(135deg, ${industryColor} 0%, ${alpha(industryColor, 0.65)} 60%, #1F3670 100%)` }} />
+          )}
+          <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.25), transparent)' }} />
+          {/* Decorative pattern */}
+          <Box sx={{
+            position: 'absolute', inset: 0, opacity: 0.12,
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M20 20h-2v-2h2v2zm0 0v-2h-2v2h2zm0 0v2h2v-2h-2zm0 0h2v2h-2v-2z\'/%3E%3C/g%3E%3C/svg%3E")',
+            pointerEvents: 'none',
+          }} />
+        </Box>
+
+        {/* Header Card */}
+        <Box sx={{ px: { xs: 2, md: 3 }, pb: 3, pt: 0 }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'center', sm: 'flex-end' }, mt: { xs: -7, sm: -6 } }}>
+            <Avatar
+              src={logoSrc}
+              sx={{
+                width: { xs: 96, sm: 112 }, height: { xs: 96, sm: 112 },
+                border: '4px solid', borderColor: 'background.paper',
+                bgcolor: industryColor, fontSize: '2.5rem', fontWeight: 800, color: '#fff',
+                boxShadow: `0 8px 24px ${alpha(industryColor, 0.3)}`, flexShrink: 0,
+              }}
+            >
               {company.name?.charAt(0)}
             </Avatar>
-            <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Typography fontWeight="bold" noWrap>{company.name}</Typography>
-              <Typography variant="caption" color="text.secondary" noWrap>{company.industry || ''}</Typography>
+            <Box sx={{ flex: 1, textAlign: { xs: 'center', sm: 'left' }, minWidth: 0, pb: { xs: 0, sm: 1 } }}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+                <Typography variant="h4" fontWeight={800} sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}>{company.name}</Typography>
+                {company.isVerified && (
+                  <VerifiedOutlined sx={{ color: 'secondary.main', fontSize: 26 }} />
+                )}
+              </Stack>
+              {company.industry && (
+                <Chip
+                  label={company.industry}
+                  size="small"
+                  sx={{ mt: 0.5, bgcolor: alpha(industryColor, 0.1), color: industryColor, fontWeight: 600, fontSize: '0.75rem', borderRadius: 1.5 }}
+                />
+              )}
             </Box>
+            <Stack direction="row" spacing={1} sx={{ justifyContent: { xs: 'center', sm: 'flex-end' }, pb: { xs: 0, sm: 1 }, flexWrap: 'wrap' }}>
+              <Button
+                variant={following ? 'outlined' : 'contained'}
+                startIcon={following ? <FavoriteOutlined /> : <FavoriteBorderOutlined />}
+                onClick={handleFollow}
+                color={following ? 'error' : 'primary'}
+                sx={{ borderRadius: 2, px: 2.5 }}
+              >
+                {following ? t('companies.unfollow') : t('companies.follow')} ({followersCount})
+              </Button>
+              <Button variant="outlined" startIcon={<StarBorderOutlined />} onClick={() => setRatingOpen(true)} sx={{ borderRadius: 2, px: 2.5 }}>
+                {currentUserRating ? t('companies.updateRating') : t('companies.rate')}
+              </Button>
+            </Stack>
           </Stack>
 
-          <Stack spacing={0.5} sx={{ mt: 1.5 }}>
-            {company.location && <Typography variant="caption" color="text.secondary"><LocationOnOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />{formatLocation(company.location)}</Typography>}
-            {company.companySize && <Typography variant="caption" color="text.secondary"><GroupsOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />{company.companySize}</Typography>}
-            {company.foundedYear && <Typography variant="caption" color="text.secondary"><CalendarMonthOutlined sx={{ fontSize: 13, mr: 0.3, verticalAlign: 'text-top' }} />Founded {company.foundedYear}</Typography>}
+          {/* Stats row */}
+          <Stack direction="row" spacing={{ xs: 2, md: 3 }} sx={{ flexWrap: 'wrap', gap: 1.5, mt: 2, justifyContent: { xs: 'center', sm: 'flex-start' }, alignItems: 'center' }} divider={<Box sx={{ width: 1, height: 18, bgcolor: 'divider' }} />}>
+            {heroStats.map((s) => (
+              <Stack key={s.label} direction="row" spacing={0.75} alignItems="center">
+                <Box sx={{ color: 'primary.main', display: 'flex' }}>{s.icon}</Box>
+                <Box>
+                  <Typography variant="subtitle1" fontWeight={800} lineHeight={1}>{s.value}</Typography>
+                  <Typography variant="caption" color="text.secondary">{s.label}</Typography>
+                </Box>
+              </Stack>
+            ))}
           </Stack>
 
-          <Button fullWidth variant={following ? 'outlined' : 'contained'} size="small" startIcon={following ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleFollow} color={following ? 'error' : 'primary'} sx={{ mt: 1.5 }}>
-            {following ? t('companies.unfollow') : t('companies.follow')} ({followersCount})
-          </Button>
-          <Button fullWidth variant="outlined" size="small" startIcon={<StarBorderOutlined />} onClick={() => setRatingOpen(true)} sx={{ mt: 0.5 }}>
-            {currentUserRating ? t('companies.updateRating') : t('companies.rate')}
-          </Button>
           {isOwner && (
-            <Button fullWidth variant="outlined" size="small" startIcon={<AdminPanelSettingsOutlined />} onClick={() => setAddAdminOpen(true)} sx={{ mt: 0.5 }}>
-              {t('companies.addAdmin')}
-            </Button>
-          )}
-          {isOwner && (
-            <Stack direction="row" spacing={0.5} sx={{ mt: 0.5 }}>
-              <Button fullWidth variant="outlined" size="small" startIcon={<EditOutlined />} onClick={openEdit} sx={{ flex: 1 }}>
+            <Stack direction="row" spacing={1} sx={{ mt: 2, justifyContent: { xs: 'center', sm: 'flex-start' }, flexWrap: 'wrap' }}>
+              <Button variant="outlined" size="small" startIcon={<AdminPanelSettingsOutlined />} onClick={() => setAddAdminOpen(true)}>
+                {t('companies.addAdmin')}
+              </Button>
+              <Button variant="outlined" size="small" startIcon={<EditOutlined />} onClick={openEdit}>
                 {t('companies.edit', 'Edit')}
               </Button>
-              <Button fullWidth variant="outlined" size="small" color="error" startIcon={<DeleteOutlineOutlined />} onClick={() => setDeleteOpen(true)} sx={{ flex: 1 }}>
+              <Button variant="outlined" size="small" color="error" startIcon={<DeleteOutlineOutlined />} onClick={() => setDeleteOpen(true)}>
                 {t('companies.delete', 'Delete')}
               </Button>
             </Stack>
           )}
+        </Box>
+      </Paper>
 
-          <Divider sx={{ my: 1.5 }} />
 
-          <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700 }}>{t('companies.links')}</Typography>
-          <Stack spacing={0.3} sx={{ mt: 0.5 }}>
-            {company.website && <Button variant="text" size="small" startIcon={<LanguageOutlined />} href={company.website} target="_blank" sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: 'primary.main', minHeight: 28 }}>{t('companies.website')}</Button>}
-            {company.contactEmail && <Button variant="text" size="small" startIcon={<EmailOutlined />} href={`mailto:${company.contactEmail}`} sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: 'primary.main', minHeight: 28, textOverflow: 'ellipsis', overflow: 'hidden' }}>{company.contactEmail}</Button>}
-            {company.socialLinks?.linkedin && <Button variant="text" size="small" startIcon={<LinkedIn />} href={company.socialLinks.linkedin} target="_blank" sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: '#0A66C2', minHeight: 28 }}>LinkedIn</Button>}
-            {company.socialLinks?.twitter && <Button variant="text" size="small" startIcon={<Twitter />} href={company.socialLinks.twitter} target="_blank" sx={{ justifyContent: 'flex-start', fontSize: '0.78rem', color: '#1DA1F2', minHeight: 28 }}>X (Twitter)</Button>}
-          </Stack>
-
-          {company.owner && (
-            <>
-              <Divider sx={{ my: 1.5 }} />
-              <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700 }}>{t('companies.companyOwner', 'Owner')}</Typography>
-              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 0.5 }}>
-                <Avatar src={company.owner.profile?.avatar} sx={{ width: 32, height: 32 }}>{company.owner.profile?.firstName?.charAt(0)}</Avatar>
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography variant="body2" fontWeight="bold" noWrap>{company.owner.profile?.firstName} {company.owner.profile?.lastName}</Typography>
-                  {company.owner.profile?.headline && <Typography variant="caption" color="text.secondary" noWrap>{company.owner.profile.headline}</Typography>}
-                </Box>
+      {/* Content */}
+      <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ mt: 3, alignItems: 'flex-start' }}>
+        {/* Main column */}
+        <Stack spacing={3} sx={{ flex: 1, minWidth: 0, order: { xs: 2, lg: 1 } }}>
+          {/* About */}
+          {company.description && (
+            <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
+                <Box sx={{ width: 4, height: 20, borderRadius: 2, bgcolor: industryColor }} />
+                <Typography variant="h6" fontWeight={700}>{t('companies.about', lang === 'ar' ? 'نبذة عن الشركة' : 'About')}</Typography>
               </Stack>
-            </>
-          )}
-        </Paper>
-
-        {/* Main content */}
-        <Stack spacing={1.5} sx={{ flex: 1, minWidth: 0 }}>
-          {/* Stats */}
-          <Paper sx={{ p: 1.5, borderRadius: 3 }}>
-            <Stack direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-              <Box sx={{ textAlign: 'center', flex: 1 }}><Typography variant="h6" fontWeight="bold">{followersCount}</Typography><Typography variant="caption" color="text.secondary">{t('companies.followers')}</Typography></Box>
-              <Box sx={{ textAlign: 'center', flex: 1 }}><Typography variant="h6" fontWeight="bold">{company.jobsCount ?? 0}</Typography><Typography variant="caption" color="text.secondary">{t('companies.openJobs', 'Open Jobs')}</Typography></Box>
-              <Box sx={{ textAlign: 'center', flex: 1 }}>
-                <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <Typography variant="h6" fontWeight="bold">{company.averageRating?.toFixed(1) || '-'}</Typography>
-                  <Rating value={company.averageRating || 0} readOnly precision={0.1} size="small" />
-                </Stack>
-                <Typography variant="caption" color="text.secondary">{t('companies.rating', 'Rating')} ({company.ratings?.length || 0})</Typography>
-              </Box>
-            </Stack>
-          </Paper>
-
-          {/* Content grid - horizontal sections */}
-          <Stack direction="row" spacing={1.5} sx={{ flex: 1, minHeight: 0 }}>
-            {/* About */}
-            <Paper sx={{ flex: 1, borderRadius: 1, p: 2, overflow: 'auto' }}>
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('companies.about')}</Typography>
-              {company.description && <Typography variant="body2" sx={{ lineHeight: 1.7 }}>{company.description}</Typography>}
+              <Typography variant="body1" sx={{ lineHeight: 1.8, color: 'text.secondary' }}>{company.description}</Typography>
             </Paper>
+          )}
 
-            {/* Jobs */}
-            {openJobs.length > 0 && (
-              <Paper sx={{ flex: 1, borderRadius: 1, p: 2, overflow: 'auto' }}>
-                <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('companies.openJobs', 'Open Jobs')} ({company.jobsCount})</Typography>
-                <Stack spacing={1}>
-                  {openJobs.map((job) => (
-                    <Box key={job._id} sx={{ p: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
-                      <Typography variant="body2" fontWeight="bold">{job.title}</Typography>
-                        <Stack direction="row" spacing={0.5} sx={{ mt: 0.3, flexWrap: 'wrap' }}>
-                        {job.location && <Typography variant="caption" color="text.secondary"><LocationOnOutlined sx={{ fontSize: 12, verticalAlign: 'text-top' }} />{job.location}</Typography>}
-                        {job.type && <Chip label={job.type} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.68rem' }} />}
-                        {job.workLevel && <Chip label={job.workLevel} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.68rem' }} />}
-                        {job.workPlace && <Chip label={job.workPlace} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.68rem' }} />}
-                      </Stack>
-                      {job.salary?.min && <Typography variant="caption" color="primary" sx={{ mt: 0.3, display: 'block', fontWeight: 600 }}>{job.salary.currency || 'SAR'} {job.salary.min.toLocaleString()}{job.salary.max ? ` - ${job.salary.max.toLocaleString()}` : ''}</Typography>}
-                    </Box>
-                  ))}
+          {/* Jobs */}
+          {openJobs.length > 0 && (
+            <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                <Box sx={{ width: 4, height: 20, borderRadius: 2, bgcolor: industryColor }} />
+                <Typography variant="h6" fontWeight={700}>{t('companies.openJobs', 'Open Jobs')}</Typography>
+                <Chip label={company.jobsCount} size="small" sx={{ ml: 0.5, bgcolor: alpha(industryColor, 0.1), color: industryColor, fontWeight: 700 }} />
+              </Stack>
+              <Stack spacing={1.5}>
+                {openJobs.map((job) => (
+                  <Box
+                    key={job._id}
+                    onClick={() => navigate(`/jobs/${job._id}`)}
+                    sx={{
+                      p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider',
+                      cursor: 'pointer', transition: 'all 0.25s ease',
+                      '&:hover': { borderColor: alpha(industryColor, 0.35), boxShadow: `0 4px 16px ${alpha(industryColor, 0.08)}`, transform: 'translateY(-2px)' },
+                    }}
+                  >
+                    <Typography variant="subtitle1" fontWeight={700} sx={{ fontSize: '1rem' }}>{job.title}</Typography>
+                    <Stack direction="row" spacing={1} sx={{ mt: 0.75, flexWrap: 'wrap', gap: 0.8 }}>
+                      {job.location && (
+                        <Chip icon={<LocationOnOutlined sx={{ fontSize: 13 }} />} label={job.location} size="small" sx={{ ...tagSx, height: 24 }} />
+                      )}
+                      {job.type && <Chip label={job.type} size="small" sx={tagSx} />}
+                      {job.workLevel && <Chip label={job.workLevel} size="small" sx={tagSx} />}
+                      {job.workPlace && <Chip label={job.workPlace} size="small" sx={tagSx} />}
+                    </Stack>
+                    {job.salary?.min && (
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 700 }}>
+                        <PaymentsOutlined fontSize="small" /> {job.salary.currency || 'SAR'} {job.salary.min.toLocaleString()}{job.salary.max ? ` - ${job.salary.max.toLocaleString()}` : ''}
+                      </Typography>
+                    )}
+                  </Box>
+                ))}
+              </Stack>
+            </Paper>
+          )}
+
+          {/* Ratings */}
+          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+            <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+              <Box sx={{ width: 4, height: 20, borderRadius: 2, bgcolor: industryColor }} />
+              <Typography variant="h6" fontWeight={700}>{t('companies.ratings', 'Ratings')}</Typography>
+              <Chip label={company.ratings?.length || 0} size="small" sx={{ ml: 0.5, bgcolor: alpha('#F59E0B', 0.12), color: '#F59E0B', fontWeight: 700 }} />
+            </Stack>
+
+            {currentUserRating && (
+              <Box sx={{ mb: 2, p: 2, bgcolor: alpha('#3D1C6E', 0.03), borderRadius: 2, border: '1px solid', borderColor: alpha('#3D1C6E', 0.08) }}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="body2" fontWeight={700} color="primary.main">{t('companies.yourRating', 'Your Rating')}</Typography>
+                  </Stack>
+                  <Button variant="text" size="small" color="error" onClick={handleDeleteRating} sx={{ fontSize: '0.75rem', minHeight: 0, p: 0.5 }}>{t('companies.deleteRating')}</Button>
                 </Stack>
-              </Paper>
+                <Rating value={currentUserRating.rating} readOnly size="small" sx={{ mt: 0.5 }} />
+                {currentUserRating.review && <Typography variant="body2" sx={{ mt: 0.5, color: 'text.secondary' }}>{currentUserRating.review}</Typography>}
+              </Box>
             )}
 
-            {/* Ratings */}
-            <Paper sx={{ flex: 1, borderRadius: 1, p: 2, overflow: 'auto' }}>
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('companies.ratings', 'Ratings')} ({company.ratings?.length || 0})</Typography>
-              {currentUserRating && (
-                <Box sx={{ mb: 1, p: 1.5, bgcolor: 'action.hover', borderRadius: 2 }}>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="caption" fontWeight="bold">{t('companies.yourRating')}</Typography>
-                    <Button variant="text" size="small" color="error" onClick={handleDeleteRating} sx={{ fontSize: '0.68rem', minHeight: 0, p: 0 }}>{t('companies.deleteRating')}</Button>
-                  </Stack>
-                  <Rating value={currentUserRating.rating} readOnly size="small" />
-                  {currentUserRating.review && <Typography variant="caption" sx={{ mt: 0.3, display: 'block' }}>{currentUserRating.review}</Typography>}
-                </Box>
-              )}
-              {company.ratings?.length === 0 ? (
-                <Typography variant="body2" color="text.secondary">{t('companies.noRatings')}</Typography>
-              ) : (
-                <Stack spacing={1}>
-                  {company.ratings.filter((r) => {
-                    const rid = r.user?._id || r.user?.id
-                    return !(rid && rid.toString() === currentUserId?.toString())
-                  }).concat(company.ratings.filter((r) => {
-                    const rid = r.user?._id || r.user?.id
-                    return rid && rid.toString() === currentUserId?.toString()
-                  })).map((r) => (
-                    <Box key={r._id} sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-                      <Avatar src={r.user?.profile?.avatar} sx={{ width: 28, height: 28 }}>{r.user?.profile?.firstName?.charAt(0)}</Avatar>
-                      <Box sx={{ flex: 1 }}>
-                        <Typography variant="caption" fontWeight="bold">{r.user?.profile?.firstName} {r.user?.profile?.lastName}</Typography>
-                        {r.user?.profile?.headline && <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{r.user.profile.headline}</Typography>}
-                        <Rating value={r.rating} readOnly size="small" />
-                        {r.review && <Typography variant="caption" sx={{ display: 'block' }}>{r.review}</Typography>}
-                      </Box>
+            {(!company.ratings || company.ratings.length === 0) ? (
+              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>{t('companies.noRatings')}</Typography>
+            ) : (
+              <Stack spacing={1.5}>
+                {company.ratings.filter((r) => {
+                  const rid = r.user?._id || r.user?.id
+                  return !(rid && rid.toString() === currentUserId?.toString())
+                }).concat(company.ratings.filter((r) => {
+                  const rid = r.user?._id || r.user?.id
+                  return rid && rid.toString() === currentUserId?.toString()
+                })).map((r) => (
+                  <Box key={r._id} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                    <UserAvatar
+                      src={r.user?.profile?.avatar}
+                      name={`${r.user?.profile?.firstName || ''} ${r.user?.profile?.lastName || ''}`.trim()}
+                      role={r.user?.role}
+                      gender={r.user?.profile?.gender}
+                      sx={{ width: 40, height: 40, flexShrink: 0 }}
+                    />
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="body2" fontWeight={700}>{r.user?.profile?.firstName} {r.user?.profile?.lastName}</Typography>
+                      {r.user?.profile?.headline && <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{r.user.profile.headline}</Typography>}
+                      <Rating value={r.rating} readOnly size="small" sx={{ my: 0.25 }} />
+                      {r.review && <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>{r.review}</Typography>}
                     </Box>
-                  ))}
-                </Stack>
-              )}
+                  </Box>
+                ))}
+              </Stack>
+            )}
+          </Paper>
+        </Stack>
+
+        {/* Sidebar */}
+        <Stack spacing={3} sx={{ width: { xs: '100%', lg: 320 }, flexShrink: 0, order: { xs: 1, lg: 2 } }}>
+          {/* Contact */}
+          {(company.website || company.contactEmail || company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
+            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 2 }}>
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                <ContactSupportOutlined sx={{ color: 'secondary.main' }} />
+                <Typography variant="h6" fontWeight={800}>{t('companies.contact', lang === 'ar' ? 'التواصل' : 'Contact')}</Typography>
+              </Stack>
+              <Stack spacing={1.5}>
+                {company.website && (
+                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><LanguageOutlined fontSize="small" /></Box>} href={company.website} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                    {company.website.replace(/^https?:\/\//, '')}
+                  </Button>
+                )}
+                {company.contactEmail && (
+                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><EmailOutlined fontSize="small" /></Box>} href={`mailto:${company.contactEmail}`} sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                    {company.contactEmail}
+                  </Button>
+                )}
+                {company.socialLinks?.linkedin && (
+                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: 'rgba(10,102,194,0.1)', display: 'flex', color: '#0A66C2' }}><LinkedIn fontSize="small" /></Box>} href={company.socialLinks.linkedin} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                    LinkedIn
+                  </Button>
+                )}
+                {company.socialLinks?.twitter && (
+                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: 'rgba(29,161,242,0.1)', display: 'flex', color: '#1DA1F2' }}><Twitter fontSize="small" /></Box>} href={company.socialLinks.twitter} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                    X (Twitter)
+                  </Button>
+                )}
+              </Stack>
             </Paper>
-          </Stack>
+          )}
+
+          {/* Owner */}
+          {company.owner && (
+            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 3 }}>
+              <Typography variant="h6" fontWeight={800} sx={{ mb: 2 }}>{t('companies.leadership', lang === 'ar' ? 'فريق القيادة' : 'Leadership')}</Typography>
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                <UserAvatar
+                  src={ownerAvatar}
+                  name={`${company.owner.profile?.firstName || ''} ${company.owner.profile?.lastName || ''}`.trim()}
+                  role={company.owner.role}
+                  gender={company.owner.profile?.gender}
+                  sx={{ width: 56, height: 56, flexShrink: 0 }}
+                />
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography fontWeight={800} noWrap>{company.owner.profile?.firstName} {company.owner.profile?.lastName}</Typography>
+                  {company.owner.profile?.headline && <Typography variant="body2" color="text.secondary" noWrap display="block">{company.owner.profile.headline}</Typography>}
+                </Box>
+              </Stack>
+            </Paper>
+          )}
+
+          {/* Location */}
+          {company.location && (
+            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 1 }}>
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                <LocationOnOutlined sx={{ color: 'secondary.main' }} />
+                <Typography variant="h6" fontWeight={800}>{t('companies.location', 'Location')}</Typography>
+              </Stack>
+              <Box sx={{ borderRadius: 3, overflow: 'hidden', mb: 2 }}>
+                <LocationMap location={company.location} readonly height={180} controls={false} />
+              </Box>
+              <Stack spacing={1}>
+                {company.location.city && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'المدينة: ' : 'City: '}</Box>{company.location.city}</Typography>}
+                {company.location.street && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'الشارع: ' : 'Street: '}</Box>{company.location.street}</Typography>}
+                {company.location.buildingNumber && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'المبنى: ' : 'Building: '}</Box>{company.location.buildingNumber}</Typography>}
+                {company.location.country && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'الدولة: ' : 'Country: '}</Box>{company.location.country}</Typography>}
+              </Stack>
+            </Paper>
+          )}
         </Stack>
       </Stack>
 
