@@ -32,6 +32,7 @@ const METHODS = [
   { value: 'American Express', color: '#2E77BC', bg: '#EDF6FF', short: 'AMEX' },
   { value: 'PayPal', color: '#003087', bg: '#EEF4FF', short: 'PayPal' },
   { value: 'Apple Pay', color: '#111111', bg: '#F4F4F4', short: 'Apple' },
+  { value: 'ShamCash', color: '#1B8C5A', bg: '#EEFBF3', short: 'ShamCash', logo: '/logo/shamcash.jpg' },
 ]
 
 const methodMeta = (value) => METHODS.find((m) => m.value === value) || METHODS[0]
@@ -403,8 +404,11 @@ export default function PaymentsView() {
                             minWidth: 16, px: 0.5, py: 0.2, borderRadius: 0.8,
                             color: mm.color, bgcolor: alpha(mm.color, 0.1),
                             fontSize: '0.6rem', fontWeight: 800, textAlign: 'center',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
-                            {mm.value === 'Apple Pay' ? 'AP' : mm.short}
+                            {mm.logo
+                              ? <Box component="img" src={mm.logo} alt={mm.short} sx={{ width: 16, height: 16, borderRadius: 0.3, objectFit: 'cover' }} />
+                              : mm.value === 'Apple Pay' ? 'AP' : mm.short}
                           </Box>
                           <Typography variant="caption" color="text.secondary">{t(`manage.method.${p.method}`, p.method)}</Typography>
                         </Stack>

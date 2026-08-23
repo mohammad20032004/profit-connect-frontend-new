@@ -142,8 +142,8 @@ export default function SignInView() {
                   ✦
                 </Box>
                 <Box>
-                  <Typography sx={{ fontSize: '0.82rem', opacity: 0.7, fontWeight: 400 }}>{t('auth.trustedBy')}</Typography>
-                  <Typography sx={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.01em' }}>24k+ {t('auth.activeMembers')}</Typography>
+                  <Typography sx={{ fontSize: '0.82rem', opacity: 0.7, fontWeight: 400, color: '#fff' }}>{t('auth.trustedBy')}</Typography>
+                  <Typography sx={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.01em', color: '#fff' }}>24k+ {t('auth.activeMembers')}</Typography>
                 </Box>
               </Box>
 
@@ -198,7 +198,7 @@ export default function SignInView() {
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', animation: 'fadeUp 0.4s ease 0.16s both' }}>
-                      <MuiLink component={Link} to="#" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', transition: 'opacity 0.2s', '&:hover': { textDecoration: 'underline' } }}
+                      <MuiLink component={Link} to="/forgot-password" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', transition: 'opacity 0.2s', '&:hover': { textDecoration: 'underline' } }}
                         onMouseEnter={e => e.target.style.opacity = '0.7'}
                         onMouseLeave={e => e.target.style.opacity = '1'}
                       >

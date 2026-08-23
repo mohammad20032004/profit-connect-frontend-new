@@ -55,7 +55,7 @@ const Header = () => {
     { label: t('nav.jobs'), icon: <BusinessCenterIcon />, hasBadge: false, link: '/jobs' },
   ]
 
-  const hiddenRoutes = ['/sign-in', '/sign-up', '/landing', '/settings']
+  const hiddenRoutes = ['/sign-in', '/sign-up', '/forgot-password', '/verify-email', '/landing', '/settings']
   const menuOpen = Boolean(anchorEl)
 
   const fullName = useMemo(

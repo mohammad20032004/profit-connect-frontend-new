@@ -6,6 +6,8 @@ import DashboardView from "../features/MainFeedLayout/view"
 import LandingView from "../features/landing/view"
 import SignInView from "../features/auth/sign-in/view"
 import SignUpView from "../features/auth/sign-up/view"
+import ForgotPasswordView from "../features/auth/forgot-password/view"
+import VerifyEmailView from "../features/auth/verify-email/view"
 import ProfileView from "../features/profile/view"
 import SavedPostsView from "../features/profile/savedPosts/view"
 import ProfileUserIdView from "../features/profile/[userId]/view"
@@ -60,6 +62,8 @@ const router = createBrowserRouter([
       { path: "/landing", element: <LandingView /> },
       { path: "/sign-in", element: <SignInView /> },
       { path: "/sign-up", element: <SignUpView /> },
+      { path: "/forgot-password", element: <ForgotPasswordView /> },
+      { path: "/verify-email", element: <VerifyEmailView /> },
       { path: "/profile", element: <ProfileView /> },
       { path: "/profile/savedPosts", element: <SavedPostsView /> },
       { path: "/gallery", element: <GalleryView /> },

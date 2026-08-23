@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useCallback } from 'react'
 import {
   Box, Paper, Typography, Stack, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions,
-  Chip, useMediaQuery, alpha, Avatar, CircularProgress,
+  Chip, useMediaQuery, alpha, Avatar, CircularProgress, Snackbar, Alert,
 } from '@mui/material'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -31,6 +31,7 @@ const METHODS = [
   { value: 'American Express', color: '#2E77BC', bg: '#EDF6FF', short: 'AMEX' },
   { value: 'PayPal', color: '#003087', bg: '#EEF4FF', short: 'PayPal' },
   { value: 'Apple Pay', color: '#111111', bg: '#F4F4F4', short: 'Apple' },
+  { value: 'ShamCash', color: '#1B8C5A', bg: '#EEFBF3', short: 'ShamCash', logo: '/logo/shamcash.jpg' },
 ]
 
 const CARD_METHODS = ['Visa', 'Mastercard', 'American Express']
@@ -80,7 +81,9 @@ function MethodCard({ m, selected, onSelect }) {
       }}
     >
       <Box sx={{ height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', color: m.color, fontWeight: 800, fontSize: '0.9rem', letterSpacing: 1 }}>
-        {m.value === 'Apple Pay' ? <Apple sx={{ fontSize: 24 }} /> : m.short}
+        {m.value === 'Apple Pay' ? <Apple sx={{ fontSize: 24 }} /> : m.logo
+          ? <Box component="img" src={m.logo} alt={m.short} sx={{ width: 24, height: 24, borderRadius: 0.5, objectFit: 'cover' }} />
+          : m.short}
       </Box>
       <Typography variant="caption" sx={{ display: 'block', mt: 0.5, fontWeight: selected ? 700 : 500, color: selected ? m.color : 'text.secondary' }}>
         {t(`manage.method.${m.value}`)}
@@ -131,11 +134,12 @@ export default function PaymentsTab({ id, overview, onChanged }) {
   const currency = overview.budget?.currency || 'SAR'
 
   const [open, setOpen] = useState(false)
-  const [form, setForm] = useState({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
+  const [form, setForm] = useState({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', cardNumber: '', cardExpiry: '', cardCvv: '', shamcashReceiver: '', shamcashPersonal: '', shamcashPhoto: null })
   const [saving, setSaving] = useState(false)
   const [releasingId, setReleasingId] = useState(null)
   const [releaseTarget, setReleaseTarget] = useState(null)
   const [error, setError] = useState('')
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'error' })
   const [accepted, setAccepted] = useState(null)
   const [loadingPayee, setLoadingPayee] = useState(true)
   const [payeeId, setPayeeId] = useState(null)
@@ -199,7 +203,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
 
   const openAdd = () => {
     setOpen(true)
-    setForm({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
+    setForm({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', cardNumber: '', cardExpiry: '', cardCvv: '', shamcashReceiver: '', shamcashPersonal: '', shamcashPhoto: null })
     setError('')
   }
 
@@ -217,6 +221,16 @@ export default function PaymentsTab({ id, overview, onChanged }) {
     if (isCard && !form.cardNumber) {
       setError(t('manage.requireCard', 'Card number is required'))
       return
+    }
+    if (form.method === 'ShamCash') {
+      if (!form.shamcashReceiver) {
+        setError(t('manage.requireShamcashReceiver', 'Receiver code is required'))
+        return
+      }
+      if (!form.shamcashPersonal) {
+        setError(t('manage.requireShamcashPersonal', 'Personal code is required'))
+        return
+      }
     }
     if (!selectedPayee) {
       setError(teamMembers.length === 0
@@ -244,10 +258,10 @@ export default function PaymentsTab({ id, overview, onChanged }) {
         onChanged()
         fetchInvoices()
       } else {
-        setError(res?.message || t('common.error'))
+        setSnackbar({ open: true, message: res?.message || t('common.error'), severity: 'error' })
       }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || t('common.error'))
+      setSnackbar({ open: true, message: err?.response?.data?.message || err.message || t('common.error'), severity: 'error' })
     } finally {
       setSaving(false)
     }
@@ -263,10 +277,10 @@ export default function PaymentsTab({ id, overview, onChanged }) {
         onChanged()
         fetchInvoices()
       } else {
-        setError(res?.message || t('common.error'))
+        setSnackbar({ open: true, message: res?.message || t('common.error'), severity: 'error' })
       }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || t('common.error'))
+      setSnackbar({ open: true, message: err?.response?.data?.message || err.message || t('common.error'), severity: 'error' })
     } finally {
       setReleasingId(null)
     }
@@ -286,12 +300,6 @@ export default function PaymentsTab({ id, overview, onChanged }) {
         <StatCard icon={<HourglassTopOutlined sx={{ fontSize: 20 }} />} label={t('manage.held', 'Held')} value={heldTotal} color={COLORS.warning} index={1} />
         <StatCard icon={<VerifiedOutlined sx={{ fontSize: 20 }} />} label={t('manage.released', 'Released')} value={releasedTotal} color={COLORS.success} index={2} />
       </Stack>
-
-      {error && (
-        <Typography variant="body2" color="error.main" sx={{ p: 1, borderRadius: 1.5, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600 }}>
-          {error}
-        </Typography>
-      )}
 
       {loading ? (
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', justifyContent: 'center', py: 6 }}>
@@ -494,8 +502,34 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                   inputProps={{ inputMode: 'numeric' }} dir="ltr" />
                 <Stack direction="row" spacing={1.5}>
                   <TextField label={t('manage.cardExpiry', 'Expiry')} value={form.cardExpiry} onChange={setCardExpiry} placeholder="MM/YY" dir="ltr" sx={{ flex: 1 }} />
-                  <TextField label={t('manage.cardCvv', 'CVV')} value={form.cardCvv} onChange={setCardCvv} placeholder="â€¢â€¢â€¢" type="password" dir="ltr" sx={{ flex: 1 }} />
+                  <TextField label={t('manage.cardCvv', 'CVV')} value={form.cardCvv} onChange={setCardCvv} placeholder="•••" type="password" dir="ltr" sx={{ flex: 1 }} />
                 </Stack>
+              </>
+            ) : form.method === 'ShamCash' ? (
+              <>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                  <Box component="img" src="/logo/shamcash.jpg" alt="ShamCash" sx={{ width: 32, height: 32, borderRadius: 1, objectFit: 'cover' }} />
+                  <Typography variant="body2" fontWeight={700} sx={{ color: '#1B8C5A' }}>ShamCash</Typography>
+                </Box>
+                <TextField label={t('manage.shamcashReceiver', 'Receiver Code')} value={form.shamcashReceiver} onChange={set('shamcashReceiver')}
+                  placeholder={t('manage.shamcashReceiverPlaceholder', 'Enter receiver code')} />
+                <TextField label={t('manage.shamcashPersonal', 'Personal Code')} value={form.shamcashPersonal} onChange={set('shamcashPersonal')}
+                  placeholder={t('manage.shamcashPersonalPlaceholder', 'Enter personal code')} type="password" />
+                <Box>
+                  <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>{t('manage.shamcashPhoto', 'Payment Screenshot')}</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Button variant="outlined" component="label" sx={{ minWidth: 140 }}>
+                      {t('manage.shamcashUpload', 'Upload Photo')}
+                      <input type="file" accept="image/*" hidden onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) setForm((prev) => ({ ...prev, shamcashPhoto: file }))
+                      }} />
+                    </Button>
+                    {form.shamcashPhoto && (
+                      <Typography variant="caption" color="text.secondary">{form.shamcashPhoto.name}</Typography>
+                    )}
+                  </Box>
+                </Box>
               </>
             ) : (
               <Paper variant="outlined" sx={{
@@ -515,7 +549,6 @@ export default function PaymentsTab({ id, overview, onChanged }) {
 
             <TextField label={t('manage.note', 'Note')} value={form.note} onChange={set('note')} multiline rows={2} />
           </Stack>
-          {error && <Typography color="error" variant="body2" sx={{ textAlign: 'center', mt: 1.5 }}>{error}</Typography>}
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 2, justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
           <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', color: 'text.secondary' }}>
@@ -561,7 +594,6 @@ export default function PaymentsTab({ id, overview, onChanged }) {
               </Box>
             </Stack>
           )}
-          {error && <Typography color="error" variant="body2" sx={{ textAlign: 'center', mt: 1.5 }}>{error}</Typography>}
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={() => setReleaseTarget(null)} disabled={saving || releasingId}>{t('projects.cancel', 'Cancel')}</Button>

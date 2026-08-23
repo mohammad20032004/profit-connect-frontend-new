@@ -41,7 +41,7 @@ export default function InfoSide({ variant = 'default' }) {
             mx: 'auto',
             mb: 1.5,
             border: '3px solid',
-            borderColor: alpha(theme.palette.primary.main, 0.25),
+            borderColor: '#00047d',
             boxShadow: `0 6px 20px ${alpha(theme.palette.common.black, 0.1)}`,
             fontSize: '1.75rem',
             fontWeight: 700,

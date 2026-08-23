@@ -47,3 +47,33 @@ export async function getProfile() {
   const { data } = await axios.get(`${API_BASE}/user/profile`)
   return data
 }
+
+export async function forgotPassword(email) {
+  const { data } = await axios.post(`${API_BASE}/auth/forgot-password`, { email })
+  return data
+}
+
+export async function verifyResetCode(email, code) {
+  const { data } = await axios.post(`${API_BASE}/auth/verify-reset-code`, { email, code })
+  return data
+}
+
+export async function resetPassword(resetToken, newPassword) {
+  const { data } = await axios.post(`${API_BASE}/auth/reset-password`, { resetToken, newPassword })
+  return data
+}
+
+export async function verifyEmail(email, code) {
+  const { data } = await axios.post(`${API_BASE}/auth/verify-email`, { email, code })
+  return data
+}
+
+export async function resendVerification(email) {
+  const { data } = await axios.post(`${API_BASE}/auth/resend-verification`, { email })
+  return data
+}
+
+export async function sendVerification(email) {
+  const { data } = await axios.post(`${API_BASE}/auth/send-verification`, { email })
+  return data
+}

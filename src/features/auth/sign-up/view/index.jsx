@@ -124,6 +124,10 @@ export default function SignUpView() {
       if (form.avatar) fd.append('avatar', form.avatar)
 
       const data = await signup(fd)
+      if (data?.requiresEmailVerification) {
+        navigate('/verify-email', { state: { email: form.email.trim() } })
+        return
+      }
       const token = data?.token
       dispatch(setAuthData({ token, user: data?.user }))
       localStorage.setItem('profit_connect_token', token)
