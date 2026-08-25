@@ -454,10 +454,10 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                   {teamMembers.map((m) => {
                     const selected = selectedPayee?.id === m.id
                     return (
-                      <Box key={m.id} onClick={() => setPayeeId(m.id)}
-                        sx={{
-                          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 1.5, p: 1.25, borderRadius: 1.5,
-                          border: '2px solid', userSelect: 'none',
+                       <Box key={m.id} onClick={() => setPayeeId(m.id)}
+                         sx={{
+                           cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 1.5, p: 1.25, borderRadius: 1.5, minWidth: 0,
+                           border: '2px solid', userSelect: 'none',
                           borderColor: selected ? COLORS.success : 'divider',
                           bgcolor: selected ? alpha(COLORS.success, 0.06) : 'background.paper',
                           transition: 'all 0.2s ease',
@@ -468,7 +468,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                         </Avatar>
                         <Box sx={{ flex: 1, minWidth: 0 }}>
                           <Typography variant="body2" fontWeight={700} noWrap>{m.name}</Typography>
-                          <Typography variant="caption" color="text.secondary" noWrap>{m.role || t('manage.noRole', 'No role')}</Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{m.role || t('manage.noRole', 'No role')}</Typography>
                         </Box>
                         {selected && <CheckCircleOutlineOutlined sx={{ color: COLORS.success }} />}
                       </Box>

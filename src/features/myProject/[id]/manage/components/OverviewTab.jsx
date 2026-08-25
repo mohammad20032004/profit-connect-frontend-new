@@ -6,11 +6,11 @@ import {
 } from 'chart.js'
 import { Doughnut, Bar } from 'react-chartjs-2'
 import {
-  SpeedOutlined, CalendarMonthOutlined, FlagOutlined, GroupOutlined, PaymentsOutlined,
+  SpeedOutlined, CalendarMonthOutlined, GroupOutlined, PaymentsOutlined,
   AttachMoneyOutlined, CheckCircleOutlineOutlined, HourglassTopOutlined, TaskAltOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { AnimatedNumber, StatCard, SectionHeader } from './ManageShared'
+import { AnimatedNumber, SectionHeader } from './ManageShared'
 import { COLORS, formatDate, formatCurrency } from './manageConstants'
 import { scaleIn, staggerContainer } from '@/utils/animations'
 

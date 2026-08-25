@@ -130,10 +130,10 @@ export default function MilestonesTab({ id, overview, onChanged }) {
         </Paper>
       ) : (
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-30px' }}>
-          <Box sx={{ position: 'relative', pl: { xs: 2.5, sm: 3.5 } }}>
+          <Box sx={{ position: 'relative' }}>
             <Box sx={{
-              position: 'absolute', left: { xs: 7, sm: 9 }, top: 0, bottom: 0, width: 3, borderRadius: 20,
-              background: 'linear-gradient(180deg, #E4DCF2, #C4BBD9)',
+              position: 'absolute', left: 18, top: 12, bottom: 12, width: 3, borderRadius: 20,
+              background: 'linear-gradient(180deg, #E4DCF2, #C4BBD9)', transform: 'translateX(-50%)',
             }} />
             <Stack spacing={2}>
               <AnimatePresence>
@@ -152,19 +152,21 @@ export default function MilestonesTab({ id, overview, onChanged }) {
                       viewport={{ once: true }}
                       layout
                     >
-                      <Paper variant="outlined" sx={{
-                        p: 2, borderRadius: 1.5, position: 'relative',
-                        borderColor: m.status === 'Completed' ? alpha(COLORS.success, 0.35) : 'divider',
-                        transition: 'all 0.2s ease',
-                        '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },
-                      }}>
-                        <Box sx={{
-                          position: 'absolute', left: { xs: -20, sm: -26 }, top: 26, transform: 'translateX(-50%)',
-                          width: 16, height: 16, borderRadius: '50%',
-                          bgcolor: cfg.color, border: '3px solid #fff', boxShadow: `0 0 0 2px ${alpha(cfg.color, 0.3)}`,
-                          zIndex: 1,
-                        }} />
-                        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
+                      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                        <Box sx={{ width: 36, flexShrink: 0, display: 'flex', justifyContent: 'center', pt: 2.25 }}>
+                          <Box sx={{
+                            width: 16, height: 16, borderRadius: '50%',
+                            bgcolor: cfg.color, border: '3px solid #fff', boxShadow: `0 0 0 2px ${alpha(cfg.color, 0.3)}`,
+                            zIndex: 1, flexShrink: 0,
+                          }} />
+                        </Box>
+                        <Paper variant="outlined" sx={{
+                          p: 2, borderRadius: 1.5, flex: 1,
+                          borderColor: m.status === 'Completed' ? alpha(COLORS.success, 0.35) : 'divider',
+                          transition: 'all 0.2s ease',
+                          '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },
+                        }}>
+                         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
                           <Box sx={{ flex: 1, minWidth: 0 }}>
                             <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                               <Typography variant="body1" fontWeight={700}>{m.title}</Typography>
@@ -211,11 +213,12 @@ export default function MilestonesTab({ id, overview, onChanged }) {
                             <Typography variant="caption" color="text.secondary">{t('manage.progress', 'Progress')}</Typography>
                             <Typography variant="caption" fontWeight={700}>{m.progress ?? 0}%</Typography>
                           </Stack>
-                          <LinearProgress variant="determinate" value={m.progress ?? 0}
-                            sx={{ height: 7, '& .MuiLinearProgress-bar': { bgcolor: m.status === 'Completed' ? COLORS.success : cfg.color } }} />
-                        </Box>
-                      </Paper>
-                    </motion.div>
+                           <LinearProgress variant="determinate" value={m.progress ?? 0}
+                             sx={{ height: 7, '& .MuiLinearProgress-bar': { bgcolor: m.status === 'Completed' ? COLORS.success : cfg.color } }} />
+                         </Box>
+                       </Paper>
+                      </Box>
+                     </motion.div>
                   )
                 })}
               </AnimatePresence>

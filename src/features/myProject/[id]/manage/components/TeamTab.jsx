@@ -153,10 +153,10 @@ export default function TeamTab({ id, overview, onChanged }) {
                           <Typography variant="caption" color="text.secondary" noWrap>{prof.headline || user.email || ''}</Typography>
                         </Box>
                       </Stack>
-                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 1.5, flexWrap: 'wrap' }}>
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 1.5, flexWrap: 'wrap', gap: 2 }}>
                         <Chip label={m.role || t('manage.noRole', 'No role')} size="small" sx={{ bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'primary.main', fontWeight: 600, fontSize: '0.7rem' }} />
                         <Chip label={t(`manage.teamStatus.${m.status}`, m.status)} size="small"
-                          sx={{ height: 20, fontSize: '0.66rem', fontWeight: 700, color: cfg.color, bgcolor: alpha(cfg.color, 0.1) }} />
+                          sx={{ height: 20, fontSize: '0.66rem', fontWeight: 700, color: cfg.color,my:1, bgcolor: alpha(cfg.color, 0.1) }} />
                       </Stack>
                       <Stack spacing={0.5} sx={{ mt: 1.5 }}>
                         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
