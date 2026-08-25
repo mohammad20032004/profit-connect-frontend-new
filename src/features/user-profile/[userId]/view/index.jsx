@@ -26,7 +26,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { getUserById, resolveMediaPath } from '@/services/profile'
+import { getUserById, resolveMediaPath, resolveCompanyMediaPath } from '@/services/profile'
 import { getConnectionStatus, sendConnectionRequest, acceptConnectionRequest, rejectConnectionRequest,
   cancelConnectionRequest, removeConnection, toggleFollowUser, getMyFollowing,
 } from '@/services/networkService'
@@ -242,7 +242,7 @@ export default function UserProfileUserIdView() {
               {isEmployer && user.company && (
                 <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 2, width: '100%' }}>
                   <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-                    <Avatar src={resolveMediaPath(user.company.logo)} sx={{ width: 40, height: 40, bgcolor: 'primary.main', fontSize: 16 }}>
+                    <Avatar src={resolveCompanyMediaPath(user.company.logo)} sx={{ width: 40, height: 40, bgcolor: 'primary.main', fontSize: 16 }}>
                       {user.company.name?.charAt(0)}
                     </Avatar>
                     <Box sx={{ minWidth: 0, flex: 1, textAlign: 'left' }}>

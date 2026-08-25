@@ -36,6 +36,15 @@ export function resolveMediaPath(path) {
   return `${origin}/${path}`
 }
 
+export function resolveCompanyMediaPath(path) {
+  if (!path) return null
+  if (path.startsWith('http://') || path.startsWith('https://')) return path
+  const base = new URL(API_BASE)
+  const origin = base.origin
+  if (path.startsWith('/')) return `${origin}${path}`
+  return `${origin}/uploads/company-media/${path}`
+}
+
 export async function refreshProfile(dispatch) {
   try {
     const res = await getProfile()

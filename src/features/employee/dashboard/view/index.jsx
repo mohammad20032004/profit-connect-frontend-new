@@ -12,6 +12,7 @@ import {
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getMyCompanyInfo, getEmployeeStats } from '@/services/employeeService'
+import { resolveCompanyMediaPath } from '@/services/profile'
 
 export default function EmployeeDashboard() {
   const { t } = useTranslation()
@@ -73,7 +74,7 @@ export default function EmployeeDashboard() {
             <Fade in timeout={500}>
               <Paper sx={{ p: 2.5, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Avatar src={company.logo} sx={{ width: 52, height: 52, bgcolor: 'primary.main', fontSize: 20 }}>
+                  <Avatar src={company.logo ? resolveCompanyMediaPath(company.logo) : undefined} sx={{ width: 52, height: 52, bgcolor: 'primary.main', fontSize: 20 }}>
                     {company.name?.charAt(0)}
                   </Avatar>
                   <Box sx={{ flex: 1, minWidth: 0 }}>

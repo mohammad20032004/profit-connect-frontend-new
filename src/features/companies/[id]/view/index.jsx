@@ -9,7 +9,7 @@ import {
 import Button from '@/ui/Button'
 import UserAvatar from '@/components/common/UserAvatar'
 import LocationMap from '@/components/LocationMap'
-import { resolveMediaPath } from '@/services/profile'
+import { resolveMediaPath, resolveCompanyMediaPath } from '@/services/profile'
 import {
   ArrowBackOutlined, LocationOnOutlined,
   LanguageOutlined, EmailOutlined, LinkedIn, Twitter, FavoriteBorderOutlined, FavoriteOutlined,
@@ -228,8 +228,8 @@ export default function CompanyDetail() {
   )
 
   const industryColor = INDUSTRY_COLORS[company.industry] || '#3D1C6E'
-  const coverPhoto = company.coverPhoto ? resolveMediaPath(company.coverPhoto) : null
-  const logoSrc = company.logo ? resolveMediaPath(company.logo) : null
+  const coverPhoto = company.coverPhoto ? resolveCompanyMediaPath(company.coverPhoto) : null
+  const logoSrc = company.logo ? resolveCompanyMediaPath(company.logo) : null
   const ownerAvatar = company.owner?.profile?.avatar ? resolveMediaPath(company.owner.profile.avatar) : null
   const openJobs = company.recentJobs?.filter((j) => j.status === 'Open').slice(0, 4) || []
 
@@ -267,11 +267,12 @@ export default function CompanyDetail() {
 
         {/* Header Card */}
         <Box sx={{ px: { xs: 2, md: 3 }, pb: 3, pt: 0 }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'center', sm: 'flex-end' }, mt: { xs: -7, sm: -6 } }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'center', sm: 'flex-end' } }}>
             <Avatar
               src={logoSrc}
               sx={{
                 width: { xs: 96, sm: 112 }, height: { xs: 96, sm: 112 },
+                mt: { xs: -6, sm: -7 },
                 border: '4px solid', borderColor: 'background.paper',
                 bgcolor: industryColor, fontSize: '2.5rem', fontWeight: 800, color: '#fff',
                 boxShadow: `0 8px 24px ${alpha(industryColor, 0.3)}`, flexShrink: 0,
@@ -310,13 +311,14 @@ export default function CompanyDetail() {
             </Stack>
           </Stack>
 
-          {/* Stats row */}
-          <Stack direction="row" spacing={{ xs: 2, md: 3 }} sx={{ flexWrap: 'wrap', gap: 1.5, mt: 2, justifyContent: { xs: 'center', sm: 'flex-start' }, alignItems: 'center' }} divider={<Box sx={{ width: 1, height: 18, bgcolor: 'divider' }} />}>
+          {/* Quick info stats */}
+          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, mt: 2, justifyContent: { xs: 'center', sm: 'flex-start' }, alignItems: 'stretch' }}>
             {heroStats.map((s) => (
-              <Stack key={s.label} direction="row" spacing={0.75} alignItems="center">
+              <Stack key={s.label} direction="row" spacing={0.75} alignItems="center"
+                sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: alpha('#3D1C6E', 0.06) }}>
                 <Box sx={{ color: 'primary.main', display: 'flex' }}>{s.icon}</Box>
                 <Box>
-                  <Typography variant="subtitle1" fontWeight={800} lineHeight={1}>{s.value}</Typography>
+                  <Typography variant="subtitle2" fontWeight={800} lineHeight={1}>{s.value}</Typography>
                   <Typography variant="caption" color="text.secondary">{s.label}</Typography>
                 </Box>
               </Stack>
@@ -449,35 +451,57 @@ export default function CompanyDetail() {
 
         {/* Sidebar */}
         <Stack spacing={3} sx={{ width: { xs: '100%', lg: 320 }, flexShrink: 0, order: { xs: 1, lg: 2 } }}>
-          {/* Contact */}
-          {(company.website || company.contactEmail || company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
-            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 2 }}>
-              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                <ContactSupportOutlined sx={{ color: 'secondary.main' }} />
-                <Typography variant="h6" fontWeight={800}>{t('companies.contact', lang === 'ar' ? 'التواصل' : 'Contact')}</Typography>
-              </Stack>
-              <Stack spacing={1.5}>
-                {company.website && (
-                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><LanguageOutlined fontSize="small" /></Box>} href={company.website} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
-                    {company.website.replace(/^https?:\/\//, '')}
-                  </Button>
-                )}
-                {company.contactEmail && (
-                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><EmailOutlined fontSize="small" /></Box>} href={`mailto:${company.contactEmail}`} sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
-                    {company.contactEmail}
-                  </Button>
-                )}
-                {company.socialLinks?.linkedin && (
-                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: 'rgba(10,102,194,0.1)', display: 'flex', color: '#0A66C2' }}><LinkedIn fontSize="small" /></Box>} href={company.socialLinks.linkedin} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
-                    LinkedIn
-                  </Button>
-                )}
-                {company.socialLinks?.twitter && (
-                  <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: 'rgba(29,161,242,0.1)', display: 'flex', color: '#1DA1F2' }}><Twitter fontSize="small" /></Box>} href={company.socialLinks.twitter} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
-                    X (Twitter)
-                  </Button>
-                )}
-              </Stack>
+          {/* Contact & Location */}
+          {(company.website || company.contactEmail || company.socialLinks?.linkedin || company.socialLinks?.twitter || company.location) && (
+            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 1 }}>
+              {(company.website || company.contactEmail || company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
+                <>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                    <ContactSupportOutlined sx={{ color: 'secondary.main' }} />
+                    <Typography variant="h6" fontWeight={800}>{t('companies.contact', lang === 'ar' ? 'التواصل' : 'Contact')}</Typography>
+                  </Stack>
+                  <Stack spacing={1.5}>
+                    {company.website && (
+                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><LanguageOutlined fontSize="small" /></Box>} href={company.website} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                        {company.website.replace(/^https?:\/\//, '')}
+                      </Button>
+                    )}
+                    {company.contactEmail && (
+                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><EmailOutlined fontSize="small" /></Box>} href={`mailto:${company.contactEmail}`} sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                        {company.contactEmail}
+                      </Button>
+                    )}
+                    {company.socialLinks?.linkedin && (
+                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: 'rgba(10,102,194,0.1)', display: 'flex', color: '#0A66C2' }}><LinkedIn fontSize="small" /></Box>} href={company.socialLinks.linkedin} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                        LinkedIn
+                      </Button>
+                    )}
+                    {company.socialLinks?.twitter && (
+                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: 'rgba(29,161,242,0.1)', display: 'flex', color: '#1DA1F2' }}><Twitter fontSize="small" /></Box>} href={company.socialLinks.twitter} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                        X (Twitter)
+                      </Button>
+                    )}
+                  </Stack>
+                </>
+              )}
+
+              {company.location && (
+                <>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2, mt: (company.website || company.contactEmail || company.socialLinks?.linkedin || company.socialLinks?.twitter) ? 3 : 0 }}>
+                    <LocationOnOutlined sx={{ color: 'secondary.main' }} />
+                    <Typography variant="h6" fontWeight={800}>{t('companies.location', 'Location')}</Typography>
+                  </Stack>
+                  <Box sx={{ borderRadius: 3, overflow: 'hidden', mb: 2 }}>
+                    <LocationMap location={company.location} readonly height={180} controls={false} />
+                  </Box>
+                  <Stack spacing={1}>
+                    {company.location.city && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'المدينة: ' : 'City: '}</Box>{company.location.city}</Typography>}
+                    {company.location.street && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'الشارع: ' : 'Street: '}</Box>{company.location.street}</Typography>}
+                    {company.location.buildingNumber && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'المبنى: ' : 'Building: '}</Box>{company.location.buildingNumber}</Typography>}
+                    {company.location.country && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'الدولة: ' : 'Country: '}</Box>{company.location.country}</Typography>}
+                  </Stack>
+                </>
+              )}
             </Paper>
           )}
 
@@ -497,25 +521,6 @@ export default function CompanyDetail() {
                   <Typography fontWeight={800} noWrap>{company.owner.profile?.firstName} {company.owner.profile?.lastName}</Typography>
                   {company.owner.profile?.headline && <Typography variant="body2" color="text.secondary" noWrap display="block">{company.owner.profile.headline}</Typography>}
                 </Box>
-              </Stack>
-            </Paper>
-          )}
-
-          {/* Location */}
-          {company.location && (
-            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 1 }}>
-              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                <LocationOnOutlined sx={{ color: 'secondary.main' }} />
-                <Typography variant="h6" fontWeight={800}>{t('companies.location', 'Location')}</Typography>
-              </Stack>
-              <Box sx={{ borderRadius: 3, overflow: 'hidden', mb: 2 }}>
-                <LocationMap location={company.location} readonly height={180} controls={false} />
-              </Box>
-              <Stack spacing={1}>
-                {company.location.city && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'المدينة: ' : 'City: '}</Box>{company.location.city}</Typography>}
-                {company.location.street && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'الشارع: ' : 'Street: '}</Box>{company.location.street}</Typography>}
-                {company.location.buildingNumber && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'المبنى: ' : 'Building: '}</Box>{company.location.buildingNumber}</Typography>}
-                {company.location.country && <Typography variant="body2"><Box component="span" fontWeight={700} sx={{ color: 'text.primary' }}>{lang === 'ar' ? 'الدولة: ' : 'Country: '}</Box>{company.location.country}</Typography>}
               </Stack>
             </Paper>
           )}

@@ -9,6 +9,7 @@ import {
 import { motion } from 'framer-motion'
 import { fadeUp } from '@/utils/animations'
 import { INDUSTRY_COLORS, formatLocation, renderStars } from './shared'
+import { resolveCompanyMediaPath } from '@/services/profile'
 
 const MotionCard = motion.create(Box)
 
@@ -92,7 +93,7 @@ export function HeroCompanyCard({ company, t, navigate }) {
 
         <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 4 }}>
           <Avatar
-            src={company.logo}
+            src={company.logo ? resolveCompanyMediaPath(company.logo) : undefined}
             sx={{
               width: { xs: 80, md: 110 },
               height: { xs: 80, md: 110 },
@@ -211,7 +212,7 @@ export function CompanyCard({ company, t, navigate, index }) {
         <Box
           sx={{
             height: 130,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.75)}, ${alpha(theme.palette.secondary.main, 0.65)}), url(${company.coverPhoto})`,
+            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.75)}, ${alpha(theme.palette.secondary.main, 0.65)}), url(${resolveCompanyMediaPath(company.coverPhoto)})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             position: 'relative',
@@ -246,7 +247,7 @@ export function CompanyCard({ company, t, navigate, index }) {
             }
           >
             <Avatar
-              src={company.logo}
+              src={company.logo ? resolveCompanyMediaPath(company.logo) : undefined}
               sx={{
                 width: 60,
                 height: 60,

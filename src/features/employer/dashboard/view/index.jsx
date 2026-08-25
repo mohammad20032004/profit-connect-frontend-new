@@ -17,6 +17,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { getMyCompany, getReputationScore } from '@/services/employerService'
 import { updateCompanyMedia } from '@/services/companyService'
+import { resolveCompanyMediaPath } from '@/services/profile'
 import LocationMap from '@/components/LocationMap'
 import { extractCoordinates } from '@/utils/coordinates'
 import EmployerStats from '../components/EmployerStats'
@@ -262,7 +263,7 @@ export default function EmployerDashboard() {
               onClick={() => coverInputRef.current?.click()}
               sx={{
                 height: { xs: 100, md: 130, lg: 180 }, width: '100%',
-                backgroundImage: company.coverPhoto ? `url(${company.coverPhoto})` : 'none',
+                backgroundImage: company.coverPhoto ? `url(${resolveCompanyMediaPath(company.coverPhoto)})` : 'none',
                 backgroundSize: 'cover', backgroundPosition: 'center',
                 background: company.coverPhoto ? undefined : (t) => alpha(t.palette.primary.main, 0.06),
                 position: 'relative',
@@ -303,7 +304,7 @@ export default function EmployerDashboard() {
                 >
                   <Box sx={{ position: 'relative', flexShrink: 0 }}>
                     <Avatar
-                      src={company.logo}
+                      src={company.logo ? resolveCompanyMediaPath(company.logo) : undefined}
                       sx={{
                         width: { xs: 60, md: 72 }, height: { xs: 60, md: 72 },
                         bgcolor: 'primary.main', fontSize: 26,
@@ -657,7 +658,7 @@ export default function EmployerDashboard() {
                       >
                         <Box sx={{
                           height: { xs: 160, md: 280 },
-                          backgroundImage: company.coverPhoto ? `url(${company.coverPhoto})` : 'none',
+                          backgroundImage: company.coverPhoto ? `url(${resolveCompanyMediaPath(company.coverPhoto)})` : 'none',
                           backgroundSize: 'cover', backgroundPosition: 'center',
                           bgcolor: company.coverPhoto ? 'grey.200' : (t) => alpha(t.palette.primary.main, 0.06),
                         }} />
