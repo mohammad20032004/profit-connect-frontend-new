@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import {
   Box, Paper, Typography, Stack, CircularProgress, Avatar, Chip, Divider, alpha, Tooltip, Dialog, DialogTitle, DialogContent, Grid, useMediaQuery, Snackbar, Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
-  ArrowBackOutlined, AttachMoneyOutlined, AccessTimeOutlined, PersonOutlined, EditOutlined,
-  CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined, ManageSearchOutlined,
+  AttachMoneyOutlined, AccessTimeOutlined, PersonOutlined, EditOutlined,
+  CodeOutlined, DesignServicesOutlined, WorkOutlineOutlined, CalendarMonthOutlined, StarBorderOutlined, VerifiedOutlined, ManageSearchOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material/styles'
-import { getProjectById, getProposals, acceptProposal, rejectProposal, completeProject, deleteProject, updateProject } from '@/services/projectService'
+import { getProjectById, getProposals, acceptProposal, rejectProposal, updateProject } from '@/services/projectService'
 import ProjectBasicFields from '@/features/projects/create/components/ProjectBasicFields'
 import ProjectDetailFields from '@/features/projects/create/components/ProjectDetailFields'
 import ProjectBudgetFields from '@/features/projects/create/components/ProjectBudgetFields'
@@ -25,15 +24,12 @@ const categoryIcons = {
   'Backend Development': <CodeOutlined />, 'Frontend Development': <CodeOutlined />,
 }
 
-const statusColors = { Open: 'success', InProgress: 'info', Completed: 'default', Cancelled: 'error' }
-
 export default function MyProjectDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { t } = useTranslation()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  const currentUserId = useSelector((state) => state.user.user?._id)
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -42,7 +38,7 @@ export default function MyProjectDetail() {
   const [editOpen, setEditOpen] = useState(false)
   const [editLoading, setEditLoading] = useState(false)
   const [editError, setEditError] = useState('')
-  const [editForm, setEditForm] = useState({ title: '', category: '', description: '', skills: '', budgetMin: '', budgetMax: '', currency: 'SAR', deadline: '' })
+  const [editForm, setEditForm] = useState({ title: '', category: '', description: '', skills: '', budgetMin: '', budgetMax: '', currency: 'USD', deadline: '' })
   const [toastMsg, setToastMsg] = useState('')
 
   const fetchProject = useCallback(async (showLoader = true) => {
@@ -65,7 +61,7 @@ export default function MyProjectDetail() {
     try {
       const r = await getProposals(id)
       if (r?.success) setProposals(r.data)
-    } catch { } finally { setProposalsLoading(false) }
+    } catch { /* ignore */ } finally { setProposalsLoading(false) }
   }, [id])
 
   useEffect(() => { fetchProposals() }, [fetchProposals])
@@ -78,9 +74,6 @@ export default function MyProjectDetail() {
     return () => window.removeEventListener('proposal:received', handleProposalReceived)
   }, [id, fetchProposals])
 
-  const isClient = currentUserId === project?.client?._id
-  const isInProgress = project?.status === 'InProgress'
-
   const openEdit = () => {
     setEditForm({
       title: project.title || '',
@@ -89,7 +82,7 @@ export default function MyProjectDetail() {
       skills: (project.skills || []).join(', '),
       budgetMin: project.budget?.min?.toString() || '',
       budgetMax: project.budget?.max?.toString() || '',
-      currency: project.budget?.currency || 'SAR',
+      currency: project.budget?.currency || 'USD',
       deadline: project.deadline ? project.deadline.split('T')[0] : '',
     })
     setEditError('')
@@ -156,24 +149,6 @@ export default function MyProjectDetail() {
     }
   }
 
-  const handleComplete = async () => {
-    try {
-      const res = await completeProject(id)
-      if (res?.success) fetchProject(false)
-    } catch (err) {
-      setToastMsg(err?.response?.data?.message || t('common.error'))
-    }
-  }
-
-  const handleDelete = async () => {
-    try {
-      await deleteProject(id)
-      navigate('/projects')
-    } catch (err) {
-      setToastMsg(err?.response?.data?.message || t('common.error'))
-    }
-  }
-
   if (error) return (<Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}><Typography color="error">{error}</Typography><Button variant="outlined" onClick={() => fetchProject()}>{t('projects.retry', 'Retry')}</Button></Box>);
   if (loading) return <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></Box>
   if (!project) return (<Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button variant="text" onClick={() => navigate('/projects')}>{t('projects.back', 'Back to Projects')}</Button></Box>)
@@ -200,7 +175,7 @@ export default function MyProjectDetail() {
                 <Box sx={{ textAlign: 'center', flex: 1 }}>
                   <AttachMoneyOutlined sx={{ fontSize: 20, color: 'primary.main' }} />
                   <Typography variant="body1" fontWeight="bold">
-                    {project.budget ? `${project.budget.currency || 'SAR'} ${project.budget.min.toLocaleString()}${project.budget.max ? ` - ${project.budget.max.toLocaleString()}` : ''}` : '-'}
+                    {project.budget ? `${project.budget.currency || 'USD'} ${project.budget.min.toLocaleString()}${project.budget.max ? ` - ${project.budget.max.toLocaleString()}` : ''}` : '-'}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">{t('projects.budget', 'Budget')}</Typography>
                 </Box>
@@ -288,7 +263,7 @@ export default function MyProjectDetail() {
                         <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 0.5, mb: 0.5 }}>
                           <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                             <AttachMoneyOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
-                            <Typography variant="body2" fontWeight="bold" color="primary.main">{p.bidAmount?.toLocaleString()} {project.budget?.currency || 'SAR'}</Typography>
+                            <Typography variant="body2" fontWeight="bold" color="primary.main">{p.bidAmount?.toLocaleString()} {project.budget?.currency || 'USD'}</Typography>
                           </Stack>
                           <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                             <AccessTimeOutlined sx={{ fontSize: 14, color: '#5C5580' }} />

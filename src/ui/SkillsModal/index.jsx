@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Dialog, DialogTitle, DialogContent, TextField, Box, Chip, Typography, Stack, InputAdornment, IconButton } from '@mui/material'
 import { SearchOutlined, CloseOutlined } from '@mui/icons-material'
 import SkillIcon from '../SkillIcon'
@@ -47,7 +47,7 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
   const allSkills = useMemo(() => {
     const flat = SKILL_DB.flatMap((g) => g.skills)
     return shuffle(flat)
-  }, [open])
+  }, [])
 
   const categoryMap = useMemo(() => {
     const map = {}

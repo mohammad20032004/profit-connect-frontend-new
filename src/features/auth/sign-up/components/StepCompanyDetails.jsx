@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Stack, TextField, Box, MenuItem, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
@@ -21,7 +21,7 @@ const COMPANY_SIZES = [
 
 const CURRENT_YEAR = new Date().getFullYear()
 
-export default function StepCompanyDetails({ form, onChange, errors }) {
+export default function StepCompanyDetails({ form, onChange }) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
 

@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect, useCallback } from 'react'
 import {
-  Box, Paper, Typography, Stack, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions,
+  Box, Paper, Typography, Stack, Dialog, DialogTitle, DialogContent, DialogActions,
   Chip, useMediaQuery, alpha, Avatar, CircularProgress, Snackbar, Alert,
 } from '@mui/material'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -61,7 +61,6 @@ const fullName = (user) => {
 }
 
 const payeeName = (p) => fullName(p.payee)
-const payerName = (p) => fullName(p.payer)
 
 function MethodCard({ m, selected, onSelect }) {
   const { t } = useTranslation()
@@ -131,14 +130,14 @@ export default function PaymentsTab({ id, overview, onChanged }) {
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  const currency = overview.budget?.currency || 'SAR'
+  const currency = overview.budget?.currency || 'USD'
 
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState({ title: '', amount: '', dueDate: '', method: 'Visa', note: '', cardNumber: '', cardExpiry: '', cardCvv: '', shamcashReceiver: '', shamcashPersonal: '', shamcashPhoto: null })
   const [saving, setSaving] = useState(false)
   const [releasingId, setReleasingId] = useState(null)
   const [releaseTarget, setReleaseTarget] = useState(null)
-  const [error, setError] = useState('')
+  const [, setError] = useState('')
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'error' })
   const [accepted, setAccepted] = useState(null)
   const [loadingPayee, setLoadingPayee] = useState(true)
@@ -602,6 +601,14 @@ export default function PaymentsTab({ id, overview, onChanged }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+        <Alert onClose={() => setSnackbar((p) => ({ ...p, open: false }))} severity={snackbar.severity}
+          variant="filled" sx={{ width: '100%', fontWeight: 600, borderRadius: 2 }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Stack>
   )
 }

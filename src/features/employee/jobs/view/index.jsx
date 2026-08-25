@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Chip, alpha, Fade, Divider,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Chip, Fade,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
-  AddOutlined, WorkOutlineOutlined, LocationOnOutlined, PeopleOutlined,
-  AccessTimeOutlined, OpenInNewOutlined, CloseOutlined,
+  AddOutlined, WorkOutlineOutlined, LocationOnOutlined,
+  OpenInNewOutlined, CloseOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getEmployeeJobs, toggleJobStatus } from '@/services/employeeService'

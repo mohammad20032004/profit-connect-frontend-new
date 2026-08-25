@@ -9,7 +9,7 @@ import {
 import {
   LocationOnOutlined, AccessTimeOutlined,
   AttachMoneyOutlined, CheckCircleOutlineOutlined, CloseOutlined,
-  ArrowBackOutlined, UploadFileOutlined, SendOutlined,
+  UploadFileOutlined, SendOutlined,
   StarOutlineOutlined, PeopleOutlined, BusinessOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'

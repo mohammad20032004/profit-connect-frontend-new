@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/ui/Button'
 import {
   CameraAltOutlined,
-  CheckCircleOutlineOutlined, PendingOutlined, CancelOutlined, TrendingUpOutlined,
+  CheckCircleOutlineOutlined, PendingOutlined, CancelOutlined,
   RocketLaunchOutlined, LocationOnOutlined, LanguageOutlined,
   LinkedIn, Twitter,
   VerifiedOutlined, GroupAddOutlined, WorkOutlineOutlined, PeopleOutlined,
@@ -233,7 +233,6 @@ export default function EmployerDashboard() {
   const industryLabel = company.industry ? INDUSTRIES[company.industry]?.[lang] : null
   const sizeLabel = company.companySize ? COMPANY_SIZES[company.companySize]?.[lang] : null
   const hasLocation = company.location && (locationStr || company.location.coordinates || extractCoordinates(company.location))
-  const coords = hasLocation ? extractCoordinates(company.location) : null
 
   const statusNotification = !notificationDismissed ? (() => {
     const map = {

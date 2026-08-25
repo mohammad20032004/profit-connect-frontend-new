@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, TextField, Grid, CircularProgress,
-  Fade, Divider, Chip, IconButton, MenuItem, alpha, Stepper, Step, StepLabel,
+  Fade, Divider, IconButton, MenuItem, alpha, Stepper, Step, StepLabel,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import { RangeSlider } from '@/ui'
@@ -23,7 +23,7 @@ const fieldSx = {
   },
 }
 
-const CURRENCIES = ['SAR', 'USD', 'EUR', 'AED', 'EGP', 'JOD', 'KWD', 'QAR', 'BHD', 'OMR', 'LBP']
+const CURRENCIES = ['USD']
 
 export default function CreateJob() {
   const { t, i18n } = useTranslation()
@@ -42,7 +42,7 @@ export default function CreateJob() {
     workPlace: '',
     salaryMin: '',
     salaryMax: '',
-    currency: 'SAR',
+    currency: 'USD',
   })
   const [requirements, setRequirements] = useState([''])
   const [responsibilities, setResponsibilities] = useState([''])

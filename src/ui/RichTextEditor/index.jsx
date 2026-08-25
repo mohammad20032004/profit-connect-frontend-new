@@ -60,7 +60,7 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content || '')
     }
-  }, [content])
+  }, [content, editor])
 
   const handleFormat = useCallback((command) => {
     if (!editor) return

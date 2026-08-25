@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { Stack, Box, Avatar, Typography } from '@mui/material'
 import Button from '@/ui/Button'
 import { useTranslation } from 'react-i18next'

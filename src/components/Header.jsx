@@ -112,7 +112,7 @@ const Header = () => {
           disableGutters
           sx={{ minHeight: '72px !important', justifyContent: 'space-between', gap: 2 }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1, height: '100%' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1, height: '100%', gap: { md: 2, lg: 3 } }}>
             <Logo size={32} />
             <Box
               sx={(theme) => ({
@@ -128,10 +128,9 @@ const Header = () => {
                 '&:hover': {
                   backgroundColor: theme.palette.background.paper,
                 },
-                mril: 1.5,
-                mlil: { md: 1.5 },
                 width: { md: 220, lg: 320, xl: 380 },
                 transition: 'all 0.3s',
+                height: 42,
               })}
             >
               <Box

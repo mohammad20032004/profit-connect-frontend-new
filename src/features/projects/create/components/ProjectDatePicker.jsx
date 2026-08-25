@@ -1,8 +1,7 @@
-import React from 'react'
 import { TextField, InputAdornment } from '@mui/material'
 import { CalendarMonthOutlined } from '@mui/icons-material'
 
-export default function ProjectDatePicker({ value, onChange, label, t }) {
+export default function ProjectDatePicker({ value, onChange }) {
   return (
     <TextField
       type="date"

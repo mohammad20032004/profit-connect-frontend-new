@@ -28,7 +28,7 @@ export function CollectionFormDialog({ open, onClose, collection, onSaved }) {
 
   useEffect(() => {
     if (!open) return
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setForm({
       name: collection?.name || '',
       description: collection?.description || '',
@@ -137,7 +137,7 @@ export function CollectionDetailDialog({ open, onClose, collectionId, isOwner, o
 
   useEffect(() => {
     if (open && collectionId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       load()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -202,7 +202,7 @@ export function AddToCollectionDialog({ open, onClose, itemId, collections, onCh
 
   useEffect(() => {
     if (open) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setList(collections || [])
     }
   }, [open, collections])

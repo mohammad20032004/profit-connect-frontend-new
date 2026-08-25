@@ -1,9 +1,8 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  Snackbar, Alert, Typography, Box, Stack, IconButton, Button, useTheme, alpha,
+  Snackbar, Alert, Typography, Box, Stack, useTheme, alpha,
 } from '@mui/material'
-import { CloseOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import {
   CheckCircleOutlineOutlined, CancelOutlined, WorkOutlineOutlined,

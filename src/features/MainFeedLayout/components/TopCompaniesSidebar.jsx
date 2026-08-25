@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Box, Typography, Avatar, CircularProgress, Stack, alpha, Divider } from '@mui/material'
-import { ErrorOutlined, StarRounded, ChevronRightRounded, ArrowForwardRounded } from '@mui/icons-material'
+import { Box, Typography, Avatar, CircularProgress, Stack, alpha } from '@mui/material'
+import { ErrorOutlined, StarRounded, ChevronRightRounded } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'

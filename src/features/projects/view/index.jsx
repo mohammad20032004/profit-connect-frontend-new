@@ -59,7 +59,7 @@ function timeAgo(dateStr, lang) {
 function formatBudget(budget) {
   if (!budget?.min && !budget?.max) return null
   const fmt = (n) => n?.toLocaleString()
-  const cur = budget.currency || 'SAR'
+  const cur = budget.currency || 'USD'
   if (budget.min && budget.max) return `${fmt(budget.min)} - ${fmt(budget.max)} ${cur}`
   if (budget.min) return `${fmt(budget.min)}+ ${cur}`
   return `Up to ${fmt(budget.max)} ${cur}`

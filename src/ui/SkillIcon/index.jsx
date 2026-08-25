@@ -30,7 +30,7 @@ import {
   SiSwagger, SiInsomnia, SiReadme, SiGitbook, SiMintlify, SiSemrush, SiOpenapiinitiative,
   SiVapor,
   SiScrumalliance, SiOpenid, SiGoogleanalytics, SiGooglesearchconsole,
-  SiMicrostrategy, SiRoadmapdotsh, SiVitepress, SiMqtt, SiFresh, SiElastic, SiSocket, SiPuma, SiAmp,
+  SiMicrostrategy, SiRoadmapdotsh, SiVitepress, SiMqtt, SiFresh, SiSocket, SiPuma,
   SiCss, SiRuby, SiR, SiVllm, SiSecurityscorecard, SiSolid, SiZap, SiCorsair, SiGreasyfork, SiMozilla,
   SiOpenjdk, SiSocketdotio,
   SiEslint, SiPrettier, SiStylelint, SiCommitlint, SiPrecommit, SiWebrtc,
@@ -40,9 +40,9 @@ import {
   SiJasmine, SiCoveralls, SiCodecov, SiCodacy, SiTravisci, SiCircleci,
 } from 'react-icons/si'
 
-export const skillIcons = {
+const skillIcons = {
   React: SiReact, 'Vue.js': SiVuedotjs, Angular: SiAngular, 'Next.js': SiNextdotjs, 'Nuxt.js': SiNuxt,
-  Svelte: SiSvelte, Remix: SiRemix, Gatsby: SiGatsby, Astro: SiAstro, 'Solid.js': null, htmx: SiHtmx,
+  Svelte: SiSvelte, Remix: SiRemix, Gatsby: SiGatsby, Astro: SiAstro, htmx: SiHtmx,
   'Node.js': SiNodedotjs, Deno: SiDeno, Bun: SiBun, 'Express.js': SiExpress, NestJS: SiNestjs, Fastify: SiFastify, Koa: SiKoa,
   Python: SiPython, Django: SiDjango, Flask: SiFlask, FastAPI: SiFastapi,
   PyTorch: SiPytorch, TensorFlow: SiTensorflow, Jupyter: SiJupyter, NumPy: SiNumpy,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid, CircularProgress, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
 import UserAvatar from '@/components/common/UserAvatar'
@@ -47,7 +47,7 @@ export default function UserProfileUserIdView() {
 
   const isSelf = currentUserId && currentUserId === userId
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -75,9 +75,9 @@ export default function UserProfileUserIdView() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [userId, currentUserId, t])
 
-  const fetchStatus = async () => {
+  const fetchStatus = useCallback(async () => {
     if (isSelf || !currentUserId) return
     try {
       const res = await getConnectionStatus(userId)
@@ -86,10 +86,10 @@ export default function UserProfileUserIdView() {
         setConnectionId(res.data.connectionId || '')
       }
     } catch { /* ignore */ }
-  }
+  }, [isSelf, currentUserId, userId])
 
-  useEffect(() => { fetchUser() }, [userId])
-  useEffect(() => { fetchStatus() }, [userId, isSelf, currentUserId])
+  useEffect(() => { fetchUser() }, [userId, fetchUser])
+  useEffect(() => { fetchStatus() }, [userId, isSelf, currentUserId, fetchStatus])
 
   const handleToggleFollow = async () => {
     if (isSelf) return

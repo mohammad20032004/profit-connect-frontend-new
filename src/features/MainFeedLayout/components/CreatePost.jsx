@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   Box,
   Paper,
@@ -18,8 +18,6 @@ import {
   LinearProgress,
   Collapse,
   Chip,
-  Snackbar,
-  Alert,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import RichTextEditor from '@/ui/RichTextEditor'
@@ -64,7 +62,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
   const [showEmoji, setShowEmoji] = useState(false)
   const [hashtags, setHashtags] = useState([])
   const [hashtagInput, setHashtagInput] = useState('')
-  const [toastMsg, setToastMsg] = useState('')
+  const [, setToastMsg] = useState('')
 
   const fullName = profile?.fullname || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || user?.username
   const avatarSrc = profile?.avatar
@@ -102,7 +100,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
           if (draft.visibility) setVisibility(draft.visibility)
           if (draft.hashtags) setHashtags(draft.hashtags)
         }
-      } catch {}
+      } catch { /* ignore */ }
     }
   }, [open])
 
@@ -555,7 +553,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
           <Stack direction="row" spacing={0}>
             <Tooltip title={t('dashboard.post.addEmoji', 'Add emoji')}>
               <IconButton
-                onClick={() => { setShowEmoji(!showEmoji); setShowMoreOptions(false) }}
+                onClick={() => { setShowEmoji(!showEmoji) }}
                 aria-label={t('dashboard.post.addEmoji', 'Add emoji')}
                 sx={{
                   color: showEmoji ? 'primary.main' : 'text.secondary',

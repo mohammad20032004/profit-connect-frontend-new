@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Container, Box, Avatar, Typography, Stack, CircularProgress, Grid, Chip, alpha, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material'
 import Button from '@/ui/Button'
 import {
-  ArrowBackOutlined,
   AddPhotoAlternateOutlined,
   CollectionsOutlined,
   ErrorOutlined,
@@ -13,7 +12,7 @@ import {
   MoreVertOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getMyPortfolioItems,

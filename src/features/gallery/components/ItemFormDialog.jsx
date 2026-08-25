@@ -41,7 +41,7 @@ export default function ItemFormDialog({ open, onClose, item, onSaved }) {
   useEffect(() => {
     if (!open) return
     const media = getItemMedia(item)
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setForm({
       title: item?.title || '',
       category: item?.category || '',

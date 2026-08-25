@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useSearchParams, Link as RouterLink } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import {
-  Box, Paper, Typography, Stack, Chip, alpha, CircularProgress, IconButton, Tooltip,
+  Box, Paper, Typography, Stack, Chip, alpha, CircularProgress,
   Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, FormControl, InputLabel,
-  ToggleButton, ToggleButtonGroup, useMediaQuery, Divider,
+  ToggleButton, ToggleButtonGroup, Divider,
 } from '@mui/material'
 import {
   PaymentsOutlined, VerifiedOutlined, HourglassTopOutlined, AccountBalanceWalletOutlined,
@@ -53,7 +53,6 @@ export default function PaymentsView() {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [searchParams, setSearchParams] = useSearchParams()
   const projectFilter = searchParams.get('projectId') || ''
 

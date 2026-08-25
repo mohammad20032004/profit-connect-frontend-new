@@ -20,7 +20,7 @@ export function formatDate(value, locale) {
   return d.toLocaleDateString(locale === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
-export function formatCurrency(amount, currency = 'SAR') {
+export function formatCurrency(amount, currency = 'USD') {
   if (amount == null) return '—'
   return `${currency} ${Number(amount).toLocaleString()}`
 }

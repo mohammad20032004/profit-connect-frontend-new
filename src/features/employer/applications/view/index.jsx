@@ -9,9 +9,9 @@ import {
 import Button from '@/ui/Button'
 import {
   SearchOutlined, PeopleOutlined, WorkOutlineOutlined, LocationOnOutlined,
-  AttachMoneyOutlined, CloseOutlined, OpenInNewOutlined, PhoneOutlined,
+  CloseOutlined, OpenInNewOutlined, PhoneOutlined,
   EmailOutlined, StarOutlineOutlined, ArrowBackOutlined, FilterListOutlined,
-  ExpandMoreOutlined, ExpandLessOutlined, DownloadOutlined,
+  DownloadOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -19,14 +19,6 @@ import { fadeUp, staggerContainer } from '@/utils/animations'
 import {
   getEmployerJobs, getEmployerApplications, updateApplicationStatus,
 } from '@/services/employerService'
-
-const STATUS_ACTIONS = {
-  Pending: { labelKey: 'employerApplications.statusPending', variant: 'secondary' },
-  Reviewed: { labelKey: 'employerApplications.review', variant: 'primary' },
-  Shortlisted: { labelKey: 'employerApplications.shortlist', variant: 'primary' },
-  Accepted: { labelKey: 'employerApplications.accept', variant: 'primary' },
-  Rejected: { labelKey: 'employerApplications.reject', variant: 'secondary' },
-}
 
 const STATUS_COLORS = {
   Pending: { bg: '#FFF3E0', color: '#E65100', label: 'warning' },
@@ -140,9 +132,6 @@ export default function EmployerApplications() {
     }
     return true
   })
-
-  const selectedJobApplicants = applicants.length
-  const totalApplicantsAcrossAll = applicants.length
 
   const SidebarContent = (
     <Stack spacing={0.5}>
@@ -700,7 +689,6 @@ export default function EmployerApplications() {
 
               <DialogActions sx={{ px: 3, py: 2, gap: 1, flexWrap: 'wrap' }}>
                 {nextStatuses(app.status).map((ns) => {
-                  const nsColor = STATUS_COLORS[ns] || {}
                   return (
                     <Button
                       key={ns}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Stack, Box, Typography, TextField, useTheme } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined'

@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, alpha,
-  Fade, Divider,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip,
+  Fade,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
   WorkOutlineOutlined, ContentPasteOutlined, AnalyticsOutlined,
-  TrendingUpOutlined, BusinessOutlined, AddOutlined,
+  BusinessOutlined, AddOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getMyCompanyInfo, getEmployeeStats } from '@/services/employeeService'
@@ -37,7 +37,7 @@ export default function EmployeeDashboard() {
       }
     } catch { /* ignore */ }
     finally { setLoading(false) }
-  }, [empProfile.permissions?.canViewAnalytics])
+  }, [empProfile.permissions])
 
   useEffect(() => { fetchData() }, [fetchData])
 

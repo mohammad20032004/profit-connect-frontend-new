@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -412,7 +412,7 @@ export default function ForgotPasswordView() {
                       '& .Mui-completed .MuiStepIcon-root': { color: 'success.main' },
                     }}
                   >
-                    {steps.map((step, i) => (
+                    {steps.map((step) => (
                       <Step key={step.key}>
                         <StepLabel>{step.label}</StepLabel>
                       </Step>

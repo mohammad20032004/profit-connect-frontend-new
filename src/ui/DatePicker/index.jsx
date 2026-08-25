@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   Box,
   Typography,
@@ -51,7 +51,6 @@ function DatePicker({
 
   const firstDay = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const daysInPrevMonth = new Date(year, month, 0).getDate()
 
   const today = new Date()
   const todayStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`

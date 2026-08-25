@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -38,6 +38,19 @@ import { refreshProfile } from '@/services/profile'
 
 function TabPanel({ children, value, index }) {
   return value === index ? <Box>{children}</Box> : null
+}
+
+function SelectField({ label, value, onChange, options }) {
+  return (
+    <FormControl size="small" sx={{ minWidth: 200 }}>
+      <InputLabel>{label}</InputLabel>
+      <Select value={value} label={label} onChange={onChange}>
+        {options.map((opt) => (
+          <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  )
 }
 
 export default function SettingsView() {
@@ -175,17 +188,6 @@ export default function SettingsView() {
       setProfileLoading(false)
     }
   }
-
-  const SelectField = ({ label, value, onChange, options }) => (
-    <FormControl size="small" sx={{ minWidth: 200 }}>
-      <InputLabel>{label}</InputLabel>
-      <Select value={value} label={label} onChange={onChange}>
-        {options.map((opt) => (
-          <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  )
 
   const tabs = [
     { label: t('settings.language', 'Language'), icon: <LanguageOutlined /> },

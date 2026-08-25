@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -43,7 +43,7 @@ export default function ProjectDetail() {
   const [proposalSent, setProposalSent] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
 
-  const fetchProject = async (showLoader = true) => {
+  const fetchProject = useCallback(async (showLoader = true) => {
     if (showLoader) setLoading(true)
     setError('')
     try {
@@ -54,9 +54,9 @@ export default function ProjectDetail() {
     } finally {
       if (showLoader) setLoading(false)
     }
-  }
+  }, [id, t])
 
-  useEffect(() => { fetchProject() }, [id])
+  useEffect(() => { fetchProject() }, [id, fetchProject])
 
   const handleOpenProposals = async () => {
     setProposalsOpen(true)
@@ -66,7 +66,7 @@ export default function ProjectDetail() {
       if (r?.success) {
         setProposals(r.data)
       }
-    } catch (err) { /* ignore */ } finally { setProposalsLoading(false) }
+    } catch { /* ignore */ } finally { setProposalsLoading(false) }
   }
 
   const isClient = currentUserId === project?.client?._id
@@ -146,7 +146,7 @@ export default function ProjectDetail() {
   if (loading) return <Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><CircularProgress /></Container>
   if (!project) return (<Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button variant="text" onClick={() => navigate('/projects')} sx={{ mt: 2 }}>{t('projects.back', 'Back to Projects')}</Button></Container>)
 
-  const budgetText = project.budget ? `${project.budget.currency || 'SAR'} ${project.budget.min.toLocaleString()}${project.budget.max ? ` - ${project.budget.max.toLocaleString()}` : ''}` : '-'
+  const budgetText = project.budget ? `${project.budget.currency || 'USD'} ${project.budget.min.toLocaleString()}${project.budget.max ? ` - ${project.budget.max.toLocaleString()}` : ''}` : '-'
   const deadlineText = project.deadline ? new Date(project.deadline).toLocaleDateString() : '-'
 
   return (
@@ -401,7 +401,7 @@ export default function ProjectDetail() {
                         <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 0.5, mb: 0.5 }}>
                           <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                             <AttachMoneyOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
-                            <Typography variant="body2" fontWeight="bold" color="primary.main">{p.bidAmount?.toLocaleString()} {project.budget?.currency || 'SAR'}</Typography>
+                            <Typography variant="body2" fontWeight="bold" color="primary.main">{p.bidAmount?.toLocaleString()} {project.budget?.currency || 'USD'}</Typography>
                           </Stack>
                           <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                             <AccessTimeOutlined sx={{ fontSize: 14, color: '#5C5580' }} />

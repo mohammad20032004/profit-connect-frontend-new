@@ -1,5 +1,4 @@
-import React from 'react'
-import { Box, Container, Stack, Typography, Card } from '@mui/material'
+import { Box, Container, Stack, Typography, Card, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
 import { keyframes } from '@mui/system'
 import WorkOutlineOutlined from '@mui/icons-material/WorkOutlineOutlined'
@@ -12,7 +11,7 @@ import RocketLaunchOutlined from '@mui/icons-material/RocketLaunchOutlined'
 import HandshakeOutlined from '@mui/icons-material/HandshakeOutlined'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { alpha } from '@mui/material/styles'
+import { alpha, useTheme } from '@mui/material/styles'
 
 const palette = {
   ink: '#0a0715',
@@ -271,8 +270,30 @@ function HowItWorksSection() {
 }
 
 export default function LandingView() {
+  const { i18n } = useTranslation()
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
+
+  const toggleLang = () => {
+    const next = i18n.language === 'en' ? 'ar' : 'en'
+    i18n.changeLanguage(next)
+  }
+
   return (
     <div style={{ position: 'relative' }}>
+      <IconButton onClick={toggleLang} aria-label={i18n.language === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}
+        sx={{
+          position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10,
+          bgcolor: isDark ? 'background.paper' : 'white',
+          boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.4)' : '0 2px 12px rgba(0,0,0,0.08)',
+          borderRadius: 2, px: 1.5, py: 0.5,
+          transition: 'all 0.3s ease',
+          '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.5)' : '0 4px 16px rgba(0,0,0,0.12)' },
+        }}
+      >
+        <Typography variant="caption" fontWeight="bold" sx={{ color: 'primary.main' }}>{i18n.language === 'en' ? 'AR' : 'EN'}</Typography>
+      </IconButton>
+
       <Box sx={{ width: '100%', position: 'relative' }}>
         <HeroSection />
         <FeaturesSection />

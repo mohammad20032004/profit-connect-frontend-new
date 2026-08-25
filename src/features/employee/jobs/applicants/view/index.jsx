@@ -3,13 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import {
   Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, alpha,
   Divider, Dialog, DialogTitle, DialogContent, DialogActions, Slide,
-  useMediaQuery, useTheme, Grid, IconButton,
+  useMediaQuery, useTheme, IconButton,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
   ArrowBackOutlined, PeopleOutlined, OpenInNewOutlined, PhoneOutlined,
   EmailOutlined, LocationOnOutlined, StarOutlineOutlined, CloseOutlined,
-  DownloadOutlined, WorkOutlineOutlined,
+  DownloadOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getJobApplicants, updateApplicationStatus } from '@/services/employeeService'
@@ -424,7 +424,6 @@ export default function JobApplicants() {
                 {nextStatuses(detailOpen.status).map((ns) => {
                   const action = STATUS_ACTIONS[ns]
                   if (!action) return null
-                  const nsColor = STATUS_COLORS[ns] || {}
                   return (
                     <Button
                       key={ns}

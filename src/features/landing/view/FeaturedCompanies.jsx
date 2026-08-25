@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Box, Chip, Container, Stack, Typography, Card, Avatar, CircularProgress, Rating } from '@mui/material'
 import Button from '@/ui/Button'
 import { keyframes } from '@mui/system'

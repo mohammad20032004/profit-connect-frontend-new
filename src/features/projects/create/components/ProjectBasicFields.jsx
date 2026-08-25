@@ -1,4 +1,3 @@
-import React from 'react'
 import { TextField, MenuItem, Grid } from '@mui/material'
 
 const categories = [

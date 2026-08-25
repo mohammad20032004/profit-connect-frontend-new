@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   TextField as MuiTextField,
   OutlinedInput,
@@ -326,7 +326,7 @@ function RangeSlider({
   )
 }
 
-function FileUpload({ label, value, onChange, accept, multiple, sx, ...props }) {
+function FileUpload({ label, onChange, accept, multiple, sx, ...props }) {
   return (
     <TextField
       label={label}

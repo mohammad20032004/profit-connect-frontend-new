@@ -2,8 +2,6 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { Container, Box, Paper, Avatar, Typography, Stack, CircularProgress, Chip, IconButton, Menu, MenuItem, ListItemIcon, Divider, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material'
 import Button from '@/ui/Button'
 import {
-  ArrowBackOutlined,
-  MoreVertOutlined,
   EditOutlined,
   DeleteOutlined,
   ContentCopyOutlined,
@@ -182,8 +180,6 @@ export default function PortfolioItemView() {
   const heroRef = useRef(null)
 
   const owner = getItemOwnerInfo(item)
-  const itemUserId = getItemUserId(item)
-  const isOwner = currentUserId && currentUserId === itemUserId
   const media = getItemMedia(item)
   const active = media[activeIdx]
   const hasMultiple = media.length > 1

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Stack, CircularProgress } from '@mui/material'
 import Button from '@/ui/Button'
 

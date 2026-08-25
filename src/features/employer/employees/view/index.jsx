@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import {
-  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip, alpha,
+  Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip,
   Fade, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Switch,
   FormControlLabel, IconButton, Divider, Tooltip,
 } from '@mui/material'
@@ -8,7 +8,7 @@ import Button from '@/ui/Button'
 import {
   GroupAddOutlined, EditOutlined, DeleteOutlineOutlined, PeopleOutlined,
   WorkOutlineOutlined, AnalyticsOutlined, ContentPasteOutlined, Close,
-  ContentCopyOutlined, InfoOutlined,
+  ContentCopyOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'

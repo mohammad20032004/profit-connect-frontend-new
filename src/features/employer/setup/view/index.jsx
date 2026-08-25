@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
-  ArrowBackOutlined, ArrowForwardOutlined, CloudUploadOutlined, DeleteOutlineOutlined,
+  CloudUploadOutlined, DeleteOutlineOutlined,
   BusinessCenterOutlined, DescriptionOutlined, CheckCircleOutlineOutlined,
   LocationOnOutlined, PendingOutlined, CancelOutlined, DashboardOutlined,
 } from '@mui/icons-material'
@@ -216,14 +216,6 @@ const fieldSx = {
   },
 }
 
-const sectionTitleSx = {
-  fontSize: '0.7rem',
-  fontWeight: 700,
-  textTransform: 'uppercase',
-  letterSpacing: 1,
-  color: 'text.secondary',
-}
-
 export default function EmployerSetup() {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
@@ -270,7 +262,7 @@ export default function EmployerSetup() {
       finally { setCheckingCompany(false) }
     }
     checkCompany()
-  }, [])
+  }, [user])
 
   const set = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }))
   const setLocationField = (key) => (e) => setForm((p) => ({ ...p, location: { ...p.location, [key]: e.target.value } }))

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  Box, Container, Paper, Typography, Stack, Avatar, Chip, Divider, CircularProgress, alpha,
+  Box, Container, Paper, Typography, Stack, Chip, CircularProgress, alpha,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
@@ -28,8 +28,7 @@ const STATUS_MESSAGES = {
 }
 
 export default function EmployerWelcome() {
-  const { t, i18n } = useTranslation()
-  const lang = i18n.language === 'ar' ? 'ar' : 'en'
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useSelector((s) => s.user.user)

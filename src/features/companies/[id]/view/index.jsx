@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -93,7 +93,7 @@ export default function CompanyDetail() {
     { value: 'other', en: 'Other', ar: 'أخرى' },
   ]
 
-  const fetchCompany = async (showLoader = true) => {
+  const fetchCompany = useCallback(async (showLoader = true) => {
     if (showLoader) setLoading(true)
     setError('')
     try {
@@ -112,9 +112,9 @@ export default function CompanyDetail() {
     } finally {
       if (showLoader) setLoading(false)
     }
-  }
+  }, [id, currentUserId, t])
 
-  useEffect(() => { fetchCompany() }, [id])
+  useEffect(() => { fetchCompany() }, [id, fetchCompany])
 
   const isOwner = currentUserId && currentUserId === (company?.owner?._id || company?.owner?.id)
   const currentUserRating = company?.ratings?.find((r) => {
@@ -385,7 +385,7 @@ export default function CompanyDetail() {
                     </Stack>
                     {job.salary?.min && (
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 700 }}>
-                        <PaymentsOutlined fontSize="small" /> {job.salary.currency || 'SAR'} {job.salary.min.toLocaleString()}{job.salary.max ? ` - ${job.salary.max.toLocaleString()}` : ''}
+                        <PaymentsOutlined fontSize="small" /> {job.salary.currency || 'USD'} {job.salary.min.toLocaleString()}{job.salary.max ? ` - ${job.salary.max.toLocaleString()}` : ''}
                       </Typography>
                     )}
                   </Box>

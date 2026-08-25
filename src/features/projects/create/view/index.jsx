@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Container, Typography, Stack, Paper, Grid } from '@mui/material'
-import Button from '@/ui/Button'
-import { ArrowBackOutlined, CreateNewFolderOutlined } from '@mui/icons-material'
+import { Container, Typography, Paper, Grid } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { createProject, improveText } from '@/services/projectService'
 import ProjectBasicFields from '../components/ProjectBasicFields'
@@ -23,7 +21,6 @@ export default function CreateProject() {
     skills: '',
     budgetMin: '',
     budgetMax: '',
-    currency: 'SAR',
     deadline: '',
   })
 
@@ -60,7 +57,7 @@ export default function CreateProject() {
         deadline: form.deadline || undefined,
       }
       if (form.budgetMin) {
-        payload.budget = { min: Number(form.budgetMin), currency: form.currency }
+        payload.budget = { min: Number(form.budgetMin), currency: 'USD' }
         if (form.budgetMax) payload.budget.max = Number(form.budgetMax)
       }
       const res = await createProject(payload)

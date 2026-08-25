@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Stack, TextField, Chip, Box, Typography } from '@mui/material'
 import { SkillsModal } from '@/ui'
 import { useTranslation } from 'react-i18next'
