@@ -54,7 +54,7 @@ export default function CreateProject() {
         category: form.category,
         description: form.description.trim(),
         skills: form.skills.split(',').map((s) => s.trim()).filter(Boolean),
-        deadline: form.deadline || undefined,
+        deadline: form.deadline ? Number(form.deadline) : undefined,
       }
       if (form.budgetMin) {
         payload.budget = { min: Number(form.budgetMin), currency: 'USD' }

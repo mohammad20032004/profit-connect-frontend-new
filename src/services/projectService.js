@@ -12,6 +12,11 @@ export async function getProjectById(id) {
   return data
 }
 
+export async function getProjectFull(id) {
+  const { data } = await axios.get(`${API_BASE}/projects/${id}/full`)
+  return data
+}
+
 export async function createProject(payload) {
   const { data } = await axios.post(`${API_BASE}/projects`, payload)
   return data

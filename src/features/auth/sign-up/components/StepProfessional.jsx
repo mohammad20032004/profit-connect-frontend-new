@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stack, TextField, Chip, Box, Typography } from '@mui/material'
+import { Stack, TextField, MenuItem, Chip, Box, Typography } from '@mui/material'
 import { SkillsModal } from '@/ui'
 import { useTranslation } from 'react-i18next'
 
@@ -7,6 +7,23 @@ const suggestedSkills = [
   'React', 'Node.js', 'Python', 'UI/UX Design', 'Graphic Design',
   'JavaScript', 'TypeScript', 'MongoDB', 'Docker', 'AWS',
   'Flutter', 'React Native', 'Vue.js', 'Angular', 'PHP',
+]
+
+const industryDomains = [
+  { key: 'web', value: 'Web Development' },
+  { key: 'mobile', value: 'Mobile Development' },
+  { key: 'frontend', value: 'Frontend Development' },
+  { key: 'backend', value: 'Backend Development' },
+  { key: 'fullstack', value: 'Full Stack Development' },
+  { key: 'uiux', value: 'UI/UX Design' },
+  { key: 'graphic', value: 'Graphic Design' },
+  { key: 'game', value: 'Game Development' },
+  { key: 'devops', value: 'DevOps & Cloud' },
+  { key: 'data', value: 'Data Science' },
+  { key: 'ai', value: 'Machine Learning & AI' },
+  { key: 'desktop', value: 'Desktop Development' },
+  { key: 'qa', value: 'QA & Testing' },
+  { key: 'security', value: 'Cybersecurity' },
 ]
 
 const fieldSx = {
@@ -32,7 +49,24 @@ export default function StepProfessional({ form, onChange }) {
   return (
     <Stack spacing={2.5}>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0s both' }}>
-        <TextField label={t('auth.industryOptional')} value={form.industry} onChange={onChange('industry')} fullWidth placeholder={t('auth.industryPlaceholder')} sx={fieldSx} />
+        <TextField
+          select
+          label={t('auth.industryOptional')}
+          value={form.industry}
+          onChange={onChange('industry')}
+          fullWidth
+          size="small"
+          sx={fieldSx}
+        >
+          <MenuItem value="">
+            <em>{t('auth.selectIndustry', 'Select industry')}</em>
+          </MenuItem>
+          {industryDomains.map((opt) => (
+            <MenuItem key={opt.key} value={opt.value}>
+              {t(`auth.industryDomains.${opt.key}`, opt.value)}
+            </MenuItem>
+          ))}
+        </TextField>
       </Box>
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.08s both' }}>
         <TextField label={t('auth.yearsExpOptional')} type="number" value={form.yearsOfExperience} onChange={onChange('yearsOfExperience')} fullWidth sx={fieldSx} />

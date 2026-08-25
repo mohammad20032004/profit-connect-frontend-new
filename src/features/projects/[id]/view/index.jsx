@@ -10,6 +10,7 @@ import {
   CodeOutlined, DesignServicesOutlined, AssignmentOutlined, CheckCircleOutlined, DeleteOutlined, CalendarMonthOutlined, RequestQuoteOutlined, VerifiedOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import { formatDeadline } from '@/utils/deadline'
 import { useTheme } from '@mui/material/styles'
 import { getProjectById, getProposals, acceptProposal, rejectProposal, completeProject, deleteProject, submitProposal } from '@/services/projectService'
 
@@ -27,7 +28,7 @@ const statusColors = { Open: 'success', InProgress: 'info', Completed: 'default'
 export default function ProjectDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const theme = useTheme()
   const currentUserId = useSelector((state) => state.user.user?._id)
   const [project, setProject] = useState(null)
@@ -147,7 +148,7 @@ export default function ProjectDetail() {
   if (!project) return (<Container maxWidth="sm" sx={{ mt: 4, textAlign: 'center' }}><Typography color="text.secondary">{t('projects.notFound', 'Project not found')}</Typography><Button variant="text" onClick={() => navigate('/projects')} sx={{ mt: 2 }}>{t('projects.back', 'Back to Projects')}</Button></Container>)
 
   const budgetText = project.budget ? `${project.budget.currency || 'USD'} ${project.budget.min.toLocaleString()}${project.budget.max ? ` - ${project.budget.max.toLocaleString()}` : ''}` : '-'
-  const deadlineText = project.deadline ? new Date(project.deadline).toLocaleDateString() : '-'
+  const deadlineText = formatDeadline(project.deadline, i18n.language === 'ar' ? 'ar' : 'en') || '-'
 
   return (
     <Box sx={{ minHeight: 'calc(100vh - 88px)', bgcolor: 'background.default' }}>

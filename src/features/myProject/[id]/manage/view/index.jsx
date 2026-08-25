@@ -6,7 +6,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowBackOutlined, SummarizeOutlined, FlagOutlined, GroupOutlined,
-  PaymentsOutlined, SettingsOutlined,
+  PaymentsOutlined, SettingsOutlined, SpeedOutlined, CalendarMonthOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import Button from '@/ui/Button'
@@ -23,7 +23,7 @@ export default function ManageProject() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [overview, setOverview] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -87,6 +87,12 @@ export default function ManageProject() {
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography variant="h5" fontWeight="bold" noWrap>{overview.title}</Typography>
               <Typography variant="caption" color="text.secondary">{t('manage.title', 'Project Management')} â€¢ {t(`projects.categoryOptions.${overview.category}`, overview.category)}</Typography>
+              <Stack direction="row" spacing={1.5} sx={{ mt: 0.75, flexWrap: 'wrap', gap: 0.75 }}>
+                <CompactStat icon={<SpeedOutlined sx={{ fontSize: 15 }} />} label={t('manage.progress', 'Progress')} value={`${overview.progress ?? 0}%`} />
+                <CompactStat icon={<CalendarMonthOutlined sx={{ fontSize: 15 }} />} label={t('manage.durationDays', 'Duration')} value={`${overview.durationDays ?? 0}${i18n.language === 'ar' ? 'ي' : 'd'}`} />
+                <CompactStat icon={<FlagOutlined sx={{ fontSize: 15 }} />} label={t('manage.milestonesCount', 'Milestones')} value={`${overview.milestonesCount ?? 0}`} />
+                <CompactStat icon={<GroupOutlined sx={{ fontSize: 15 }} />} label={t('manage.teamCount', 'Team')} value={`${overview.teamCount ?? 0}`} />
+              </Stack>
             </Box>
             <Chip label={t(`projects.statusOptions.${overview.status}`, overview.status)} color={statusColors[overview.status] || 'default'} size="small" />
           </Stack>
@@ -138,5 +144,15 @@ export default function ManageProject() {
         </Alert>
       </Snackbar>
     </Box>
+  )
+}
+
+function CompactStat({ icon, label, value }) {
+  return (
+    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', px: 1, py: 0.25, borderRadius: 1, bgcolor: 'action.hover' }}>
+      <Box sx={{ color: 'primary.main', display: 'flex' }}>{icon}</Box>
+      <Typography variant="caption" fontWeight={700}>{value}</Typography>
+      <Typography variant="caption" color="text.secondary">{label}</Typography>
+    </Stack>
   )
 }

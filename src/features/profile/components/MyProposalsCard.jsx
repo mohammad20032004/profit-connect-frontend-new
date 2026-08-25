@@ -76,7 +76,7 @@ export default function MyProposalsCard() {
             const projStatusColor = PROJECT_STATUS_COLOR[proj.status] || COLORS.navy
             const budget = proj.budget || {}
             return (
-              <Box key={p._id} onClick={() => navigate(`/projects/${proj._id}`)} sx={{
+              <Box key={p._id} onClick={() => navigate(p.status === 'Accepted' ? `/my-project/${proj._id}` : `/projects/${proj._id}`)} sx={{
                 cursor: 'pointer', p: 1.25, borderRadius: 2,
                 border: '1px solid', borderColor: 'divider',
                 bgcolor: alpha(COLORS.primary, 0.02),

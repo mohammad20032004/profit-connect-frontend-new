@@ -162,36 +162,29 @@ export default function OverviewTab({ overview }) {
     <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}>
       <Stack spacing={2.5}>
         {/* Stat cards */}
-        <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1.5 }}>
-          <StatCard icon={<SpeedOutlined sx={{ fontSize: 20 }} />} label={t('manage.progress', 'Progress')} value={overview.progress ?? 0} suffix="%" color={overview.progress >= 50 ? COLORS.primary : COLORS.warning} index={0} />
-          <StatCard icon={<CalendarMonthOutlined sx={{ fontSize: 20 }} />} label={t('manage.durationDays', 'Duration')} value={overview.durationDays ?? 0} suffix={lang === 'ar' ? ' ظٹظˆظ…' : 'd'} color={COLORS.navy} index={1} />
-          <StatCard icon={<FlagOutlined sx={{ fontSize: 20 }} />} label={t('manage.milestonesCount', 'Milestones')} value={overview.milestonesCount ?? 0} color={COLORS.purple} index={2} />
-          <StatCard icon={<GroupOutlined sx={{ fontSize: 20 }} />} label={t('manage.teamCount', 'Team')} value={overview.teamCount ?? 0} color={COLORS.secondary} index={3} />
-        </Stack>
-
         <Grid container spacing={2.5}>
-          {/* Progress ring + payments */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          {/* Left: tall circular chart */}
+          <Grid size={{ xs: 12, md: 5 }}>
             <motion.div variants={scaleIn} custom={0} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
+              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <SectionHeader icon={<SpeedOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.overview', 'Overview')} />
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} sx={{ alignItems: 'center', justifyContent: 'space-around' }}>
-                  <ProgressRing value={overview.progress ?? 0} />
-                  <Stack spacing={1.25} sx={{ flex: 1, minWidth: 0 }}>
+                <Stack spacing={2} sx={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <ProgressRing value={overview.progress ?? 0} size={230} stroke={16} />
+                  <Stack spacing={1} sx={{ width: '100%' }}>
                     <Box>
-                      <Typography variant="caption" color="text.secondary">{t('manage.totalBudget', 'Total Budget')}</Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.totalBudget', 'Total Budget')}</Typography>
                       <Typography variant="h6" fontWeight={800}>{overview.budget ? formatCurrency(overview.budget.min, overview.budget.currency) : 'â€”'}</Typography>
                     </Box>
                     {overview.startDate && (
                       <Box>
-                        <Typography variant="caption" color="text.secondary">{t('manage.dateRange', 'Project Period')}</Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.dateRange', 'Project Period')}</Typography>
                         <Typography variant="body2" fontWeight={600}>
                           {formatDate(overview.startDate, lang)} â€” {formatDate(overview.endDate || overview.deadline, lang)}
                         </Typography>
                       </Box>
                     )}
                     <Box>
-                      <Typography variant="caption" color="text.secondary">{t('manage.deadline', 'Deadline')}</Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.deadline', 'Deadline')}</Typography>
                       <Typography variant="body2" fontWeight={600}>{formatDate(overview.deadline, lang)}</Typography>
                     </Box>
                   </Stack>
@@ -200,69 +193,68 @@ export default function OverviewTab({ overview }) {
             </motion.div>
           </Grid>
 
-          {/* Payments doughnut */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <motion.div variants={scaleIn} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
-                <SectionHeader icon={<PaymentsOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.paymentsSummary', 'Payments Summary')} />
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <Box sx={{ width: 180, height: 180 }}>
-                    <Doughnut data={paymentsData} options={paymentsOptions} />
-                  </Box>
-                  <Stack spacing={1} sx={{ minWidth: 140 }}>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                      <AttachMoneyOutlined sx={{ fontSize: 18, color: COLORS.navy }} />
-                      <Box>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.totalAmount', 'Total')}</Typography>
-                        <Typography variant="body1" fontWeight={700}>{formatCurrency(summary.total, overview.budget?.currency)}</Typography>
-                      </Box>
-                    </Stack>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                      <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: COLORS.success }} />
-                      <Box>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.paid', 'Paid')}</Typography>
-                        <Typography variant="body1" fontWeight={700} color="success.main">{formatCurrency(summary.paid, overview.budget?.currency)}</Typography>
-                      </Box>
-                    </Stack>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                      <HourglassTopOutlined sx={{ fontSize: 18, color: COLORS.warning }} />
-                      <Box>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.pendingPay', 'Pending')}</Typography>
-                        <Typography variant="body1" fontWeight={700} color="warning.main">{formatCurrency(summary.pending, overview.budget?.currency)}</Typography>
-                      </Box>
+          {/* Right: three compact charts stacked */}
+          <Grid size={{ xs: 12, md: 7 }}>
+            <Stack spacing={2.5} sx={{ height: '100%' }}>
+              {/* Payments Summary */}
+              <motion.div variants={scaleIn} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ flex: 1 }}>
+                <Paper sx={{ p: 2, borderRadius: 1.5, height: '100%' }}>
+                  <SectionHeader icon={<PaymentsOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.paymentsSummary', 'Payments Summary')} />
+                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <Box sx={{ width: 150, height: 150 }}>
+                      <Doughnut data={paymentsData} options={paymentsOptions} />
+                    </Box>
+                    <Stack spacing={1} sx={{ minWidth: 140 }}>
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <AttachMoneyOutlined sx={{ fontSize: 18, color: COLORS.navy }} />
+                        <Box>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.totalAmount', 'Total')}</Typography>
+                          <Typography variant="body1" fontWeight={700}>{formatCurrency(summary.total, overview.budget?.currency)}</Typography>
+                        </Box>
+                      </Stack>
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: COLORS.success }} />
+                        <Box>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.paid', 'Paid')}</Typography>
+                          <Typography variant="body1" fontWeight={700} color="success.main">{formatCurrency(summary.paid, overview.budget?.currency)}</Typography>
+                        </Box>
+                      </Stack>
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <HourglassTopOutlined sx={{ fontSize: 18, color: COLORS.warning }} />
+                        <Box>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{t('manage.pendingPay', 'Pending')}</Typography>
+                          <Typography variant="body1" fontWeight={700} color="warning.main">{formatCurrency(summary.pending, overview.budget?.currency)}</Typography>
+                        </Box>
+                      </Stack>
                     </Stack>
                   </Stack>
-                </Stack>
-              </Paper>
-            </motion.div>
-          </Grid>
+                </Paper>
+              </motion.div>
 
-          {/* Time elapsed progress */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <motion.div variants={scaleIn} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
-                <SectionHeader icon={<CalendarMonthOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.timelineElapsed', 'Timeline Progress')} />
-                <TimelineProgress overview={overview} />
-              </Paper>
-            </motion.div>
-          </Grid>
+              {/* Timeline Progress */}
+              <motion.div variants={scaleIn} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ flex: 1 }}>
+                <Paper sx={{ p: 2, borderRadius: 1.5, height: '100%' }}>
+                  <SectionHeader icon={<CalendarMonthOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.timelineElapsed', 'Timeline Progress')} />
+                  <TimelineProgress overview={overview} />
+                </Paper>
+              </motion.div>
 
-          {/* Milestones breakdown */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <motion.div variants={scaleIn} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%' }}>
-                <SectionHeader icon={<TaskAltOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.milestonesBreakdown', 'Milestones')} />
-                <Box sx={{ height: 190 }}>
-                  {milestones.length === 0 ? (
-                    <Stack sx={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                      <Typography variant="body2" color="text.secondary">{t('manage.noMilestones', 'No milestones yet')}</Typography>
-                    </Stack>
-                  ) : (
-                    <Bar data={milestoneBarData} options={milestoneBarOptions} />
-                  )}
-                </Box>
-              </Paper>
-            </motion.div>
+              {/* Milestones breakdown */}
+              <motion.div variants={scaleIn} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ flex: 1 }}>
+                <Paper sx={{ p: 2, borderRadius: 1.5, height: '100%' }}>
+                  <SectionHeader icon={<TaskAltOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.milestonesBreakdown', 'Milestones')} />
+                  <Box sx={{ height: 150 }}>
+                    {milestones.length === 0 ? (
+                      <Stack sx={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                        <Typography variant="body2" color="text.secondary">{t('manage.noMilestones', 'No milestones yet')}</Typography>
+                      </Stack>
+                    ) : (
+                      <Bar data={milestoneBarData} options={milestoneBarOptions} />
+                    )}
+                  </Box>
+                </Paper>
+              </motion.div>
+            </Stack>
           </Grid>
         </Grid>
 

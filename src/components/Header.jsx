@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Logo from './common/Logo'
 import UserAvatar from './common/UserAvatar'
+import HeaderProjectsButton from './HeaderProjectsButton'
 import { clearUserProfile } from '../redux/slices/userSlice'
 import { logoutRequest } from '../services/authService'
 
@@ -211,6 +212,7 @@ const Header = () => {
 
           {/* Right: Notifications + Profile */}
           <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minWidth: 0, height: '100%', gap: 1.5 }}>
+            {isAuthenticated && <HeaderProjectsButton />}
             <Box
               component={Link}
               to="/alerts"

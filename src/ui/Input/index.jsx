@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatMoney } from '@/utils/money'
 import {
   TextField as MuiTextField,
   OutlinedInput,
@@ -268,13 +269,13 @@ function RangeSlider({
   max = 100000,
   step = 500,
   currency = '',
-  formatValue = (v) => v.toLocaleString(),
+  formatValue = (v, c) => formatMoney(v, c),
   sx,
   ...props
 }) {
   const numMin = Number(valueMin) || 0
   const numMax = Number(valueMax) || 0
-  const safeMax = Math.max(max, numMin, numMax)
+  const safeMax = Math.max(max, numMin, numMax, min + step)
 
   const current = [
     Math.min(numMin, safeMax),
@@ -287,15 +288,16 @@ function RangeSlider({
   }
 
   const hasValue = Boolean(valueMin || valueMax)
+  const render = (v) => formatValue(v, currency)
 
   return (
     <Box sx={{ width: '100%' }}>
       {label && (
-        <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'baseline', minHeight: 20 }}>
           <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.secondary' }}>{label}</Typography>
           {hasValue && (
-            <Typography variant="caption" sx={{ fontWeight: 700, color: 'primary.main', whiteSpace: 'nowrap' }}>
-              {formatValue(current[0])}{current[1] >= safeMax ? '+' : ` - ${formatValue(current[1])}`}{currency ? ` ${currency}` : ''}
+            <Typography variant="caption" sx={{ fontWeight: 700, color: 'primary.main', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '60%' }}>
+              {render(current[0])}{current[1] >= safeMax ? '+' : ` - ${render(current[1])}`}
             </Typography>
           )}
         </Stack>
@@ -308,8 +310,8 @@ function RangeSlider({
         step={step}
         valueLabelDisplay="auto"
         getAriaLabel={(index) => (index === 0 ? 'Minimum value' : 'Maximum value')}
-        getAriaValueText={(v) => formatValue(v)}
-        valueLabelFormat={(v) => formatValue(v)}
+        getAriaValueText={(v) => render(v)}
+        valueLabelFormat={(v) => render(v)}
         sx={(theme) => ({
           color: 'primary.main',
           mt: 1,

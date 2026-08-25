@@ -85,6 +85,7 @@ const router = createBrowserRouter([
       { path: "/projects/create", element: <CreateProject /> },
       { path: "/projects/:id", element: <ProjectDetail /> },
       { path: "/myProject/:id", element: <MyProjectDetail /> },
+      { path: "/my-project/:id", element: <MyProjectDetail /> },
       { path: "/myProject/:id/manage", element: <ManageProject /> },
 
       { path: "/employer/welcome", element: <EmployerWelcome /> },

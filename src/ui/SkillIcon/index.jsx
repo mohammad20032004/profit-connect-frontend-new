@@ -124,6 +124,9 @@ const skillIcons = {
 
 const letterColors = ['#2D1055', '#3a008b', '#0f0024']
 
+// eslint-disable-next-line react-refresh/only-export-components
+export const skillNames = Object.keys(skillIcons)
+
 export default function SkillIcon({ name, size = 12 }) {
   const Icon = skillIcons[name]
   if (!Icon) {
