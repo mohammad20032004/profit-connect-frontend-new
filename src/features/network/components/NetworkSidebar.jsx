@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { Box, Typography, Stack, alpha, Divider, CircularProgress, Chip, IconButton, Tooltip, Skeleton } from '@mui/material'
 import { KeyboardArrowUpOutlined } from '@mui/icons-material'
 import UserAvatar from '@/components/common/UserAvatar'
@@ -9,7 +10,7 @@ function MenuItem({ icon: Icon, label, count, active, loading, onClick }) {
       onClick={onClick}
       sx={{
         display: 'flex', alignItems: 'center', gap: 1.25, px: 1.25, py: 1, mx: 0.5,
-        borderRadius: 1, cursor: 'pointer', userSelect: 'none', transition: 'all 0.15s ease',
+        borderRadius: RADIUS, cursor: 'pointer', userSelect: 'none', transition: 'all 0.15s ease',
         bgcolor: active ? alpha(COLORS.primary, 0.08) : 'transparent',
         '&:hover': {
           bgcolor: active ? alpha(COLORS.primary, 0.12) : alpha(COLORS.primary, 0.05),
@@ -54,7 +55,7 @@ export default function NetworkSidebar({
       sx={{
         display: 'flex', flexDirection: 'column', height: '100%',
         bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider',
-        borderRadius: 1.5, overflow: 'hidden',
+        borderRadius: RADIUS, overflow: 'hidden',
       }}
     >
       {isFollowingTab && expanded ? (
@@ -114,7 +115,7 @@ export default function NetworkSidebar({
                     onClick={() => onSelectUser(u._id)}
                     sx={{
                       display: 'flex', gap: 1, alignItems: 'center', px: 1, py: 0.85,
-                      borderRadius: 1, cursor: 'pointer', transition: 'all 0.15s ease',
+                      borderRadius: RADIUS, cursor: 'pointer', transition: 'all 0.15s ease',
                       bgcolor: active ? alpha(COLORS.primary, 0.08) : 'transparent',
                       '&:hover': { bgcolor: active ? alpha(COLORS.primary, 0.12) : alpha(COLORS.primary, 0.06) },
                     }}

@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 import React, { useEffect, useCallback } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import { StarterKit } from '@tiptap/starter-kit'
@@ -16,9 +17,9 @@ import {
 } from '@mui/icons-material'
 
 const COLOR_PALETTE = [
-  '#1F0A3B', '#3D1C6E', '#5C3594', '#7D5DAB',
+  '#1F0A3B', BRAND, '#5C3594', '#7D5DAB',
   '#1F3670', '#3B5591', '#576FA2', '#768BB5',
-  '#DC2626', '#EA580C', '#D97706', '#16A34A',
+  DANGER, '#EA580C', '#D97706', '#16A34A',
   '#0891B2', '#2563EB', '#7C3AED', '#DB2777',
 ]
 
@@ -150,8 +151,8 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
                 aria-label="Bold"
                 sx={{
                   color: editor.isActive('bold') ? 'primary.main' : 'text.secondary',
-                  bgcolor: editor.isActive('bold') ? alpha('#3D1C6E', 0.08) : 'transparent',
-                  '&:hover': { bgcolor: alpha('#3D1C6E', 0.08) },
+                  bgcolor: editor.isActive('bold') ? alpha(BRAND, 0.08) : 'transparent',
+                  '&:hover': { bgcolor: alpha(BRAND, 0.08) },
                 }}
               >
                 <FormatBoldOutlined fontSize="small" />
@@ -164,8 +165,8 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
                 aria-label="Italic"
                 sx={{
                   color: editor.isActive('italic') ? 'primary.main' : 'text.secondary',
-                  bgcolor: editor.isActive('italic') ? alpha('#3D1C6E', 0.08) : 'transparent',
-                  '&:hover': { bgcolor: alpha('#3D1C6E', 0.08) },
+                  bgcolor: editor.isActive('italic') ? alpha(BRAND, 0.08) : 'transparent',
+                  '&:hover': { bgcolor: alpha(BRAND, 0.08) },
                 }}
               >
                 <FormatItalicOutlined fontSize="small" />
@@ -179,8 +180,8 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
                 aria-label="Bullet list"
                 sx={{
                   color: editor.isActive('bulletList') ? 'primary.main' : 'text.secondary',
-                  bgcolor: editor.isActive('bulletList') ? alpha('#3D1C6E', 0.08) : 'transparent',
-                  '&:hover': { bgcolor: alpha('#3D1C6E', 0.08) },
+                  bgcolor: editor.isActive('bulletList') ? alpha(BRAND, 0.08) : 'transparent',
+                  '&:hover': { bgcolor: alpha(BRAND, 0.08) },
                 }}
               >
                 <FormatListBulletedOutlined fontSize="small" />
@@ -193,8 +194,8 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
                 aria-label="Numbered list"
                 sx={{
                   color: editor.isActive('orderedList') ? 'primary.main' : 'text.secondary',
-                  bgcolor: editor.isActive('orderedList') ? alpha('#3D1C6E', 0.08) : 'transparent',
-                  '&:hover': { bgcolor: alpha('#3D1C6E', 0.08) },
+                  bgcolor: editor.isActive('orderedList') ? alpha(BRAND, 0.08) : 'transparent',
+                  '&:hover': { bgcolor: alpha(BRAND, 0.08) },
                 }}
               >
                 <FormatListNumberedOutlined fontSize="small" />
@@ -208,7 +209,7 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
                 aria-label="Text color"
                 sx={{
                   color: editor.isActive('textStyle') ? editor.getAttributes('textStyle').color || 'text.secondary' : 'text.secondary',
-                  '&:hover': { bgcolor: alpha('#3D1C6E', 0.08) },
+                  '&:hover': { bgcolor: alpha(BRAND, 0.08) },
                 }}
               >
                 <FormatColorTextOutlined fontSize="small" />
@@ -279,7 +280,7 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
                 sx={{
                   width: 28,
                   height: 28,
-                  borderRadius: 1,
+                  borderRadius: RADIUS,
                   bgcolor: color,
                   cursor: 'pointer',
                   border: '2px solid',
@@ -294,7 +295,7 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
               sx={{
                 width: 28,
                 height: 28,
-                borderRadius: 1,
+                borderRadius: RADIUS,
                 bgcolor: 'background.paper',
                 border: '2px solid',
                 borderColor: !editor.getAttributes('textStyle').color ? 'primary.main' : 'divider',

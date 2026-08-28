@@ -1,4 +1,5 @@
-﻿import { useState } from 'react'
+﻿﻿import { RADIUS } from '@/theme/tokens'
+import { useState } from 'react'
 import {
   Box, Paper, Typography, Stack, alpha, Dialog, DialogTitle, DialogContent, DialogActions,
   Grid, Avatar, IconButton, Tooltip, LinearProgress, useMediaQuery,
@@ -124,7 +125,7 @@ export default function MilestonesTab({ id, overview, onChanged }) {
       </Stack>
 
       {milestones.length === 0 ? (
-        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1.5, borderStyle: 'dashed' }}>
+        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: RADIUS, borderStyle: 'dashed' }}>
           <FlagOutlined sx={{ fontSize: 44, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
           <Typography color="text.secondary">{t('manage.noMilestones', 'No milestones yet')}</Typography>
         </Paper>
@@ -161,7 +162,7 @@ export default function MilestonesTab({ id, overview, onChanged }) {
                           }} />
                         </Box>
                         <Paper variant="outlined" sx={{
-                          p: 2, borderRadius: 1.5, flex: 1,
+                          p: 2, borderRadius: RADIUS, flex: 1,
                           borderColor: m.status === 'Completed' ? alpha(COLORS.success, 0.35) : 'divider',
                           transition: 'all 0.2s ease',
                           '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },

@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -78,7 +79,7 @@ export default function EmployerWelcome() {
             <Box sx={{
               width: 72, height: 72, borderRadius: '20px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              bgcolor: alpha('#3D1C6E', 0.08),
+              bgcolor: alpha(BRAND, 0.08),
             }}>
               <BusinessOutlined sx={{ fontSize: 36, color: 'primary.main' }} />
             </Box>
@@ -93,7 +94,7 @@ export default function EmployerWelcome() {
             </Box>
 
             <Paper sx={{
-              p: 3, borderRadius: 2, width: '100%', maxWidth: 480,
+              p: 3, borderRadius: RADIUS, width: '100%', maxWidth: 480,
               border: '1px solid', borderColor: 'divider',
             }}>
               <Stack spacing={2} sx={{ alignItems: 'center' }}>
@@ -167,7 +168,7 @@ export default function EmployerWelcome() {
           <Box sx={{
             width: 72, height: 72, borderRadius: '20px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            bgcolor: alpha('#3D1C6E', 0.08),
+            bgcolor: alpha(BRAND, 0.08),
           }}>
             <RocketLaunchOutlined sx={{ fontSize: 36, color: 'primary.main' }} />
           </Box>
@@ -182,7 +183,7 @@ export default function EmployerWelcome() {
           </Box>
 
           {filledFields.length > 0 && (
-            <Paper sx={{ p: 3, borderRadius: 1, width: '100%', maxWidth: 520 }}>
+            <Paper sx={{ p: 3, borderRadius: RADIUS, width: '100%', maxWidth: 520 }}>
               <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 2 }}>
                 {t('employer.welcome.companyFromRegistration')}
               </Typography>
@@ -206,7 +207,7 @@ export default function EmployerWelcome() {
             </Paper>
           )}
 
-          <Paper sx={{ p: 3, borderRadius: 1, width: '100%', maxWidth: 520, border: '1px dashed', borderColor: 'divider' }}>
+          <Paper sx={{ p: 3, borderRadius: RADIUS, width: '100%', maxWidth: 520, border: '1px dashed', borderColor: 'divider' }}>
             <Stack spacing={2} sx={{ alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
                 {t('employer.welcome.createPageDesc')}
@@ -216,7 +217,7 @@ export default function EmployerWelcome() {
                 size="large"
                 endIcon={<ArrowForwardOutlined />}
                 onClick={() => navigate('/employer/setup')}
-                sx={{ px: 4, py: 1.2, fontWeight: 700, borderRadius: 2 }}
+                sx={{ px: 4, py: 1.2, fontWeight: 700, borderRadius: RADIUS }}
               >
                 {t('employer.welcome.createYourPage')}
               </Button>

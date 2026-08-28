@@ -1,3 +1,4 @@
+﻿import { RADIUS } from '@/theme/tokens'
 import React, { useMemo, useState } from 'react'
 import {
   AppBar,
@@ -9,6 +10,7 @@ import {
   Stack,
   Badge,
   Divider,
+  IconButton,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -24,6 +26,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import PersonIcon from '@mui/icons-material/Person'
 import SettingsIcon from '@mui/icons-material/Settings'
+import MenuIcon from '@mui/icons-material/Menu'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import BusinessIcon from '@mui/icons-material/Business'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -36,7 +39,7 @@ import { clearUserProfile } from '../redux/slices/userSlice'
 import { logoutRequest } from '../services/authService'
 
 const Header = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const location = useLocation()
   const pathname = location.pathname
   const navigate = useNavigate()
@@ -46,7 +49,9 @@ const Header = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
   const unreadCount = useSelector((state) => state.notifications?.unreadCount || 0)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [navAnchorEl, setNavAnchorEl] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const dir = i18n.dir()
 
   const navItems = [
     { label: t('nav.home'), icon: <HomeIcon />, hasBadge: false, link: '/' },
@@ -58,6 +63,10 @@ const Header = () => {
 
   const hiddenRoutes = ['/sign-in', '/sign-up', '/forgot-password', '/verify-email', '/landing', '/settings']
   const menuOpen = Boolean(anchorEl)
+  const navMenuOpen = Boolean(navAnchorEl)
+
+  const handleOpenNav = (event) => setNavAnchorEl(event.currentTarget)
+  const handleCloseNav = () => setNavAnchorEl(null)
 
   const fullName = useMemo(
     () =>
@@ -115,6 +124,15 @@ const Header = () => {
         >
           <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: 1, height: '100%', gap: { md: 2, lg: 3 } }}>
             <Logo size={32} />
+            <IconButton
+              onClick={handleOpenNav}
+              aria-label={t('header.menu', 'Menu')}
+              aria-haspopup="menu"
+              aria-expanded={navMenuOpen}
+              sx={{ display: { xs: 'inline-flex', md: 'none' }, color: 'text.primary', ml: 0.5 }}
+            >
+              <MenuIcon />
+            </IconButton>
             <Box
               sx={(theme) => ({
                 display: { xs: 'none', md: 'flex' },
@@ -174,7 +192,7 @@ const Header = () => {
             </Box>
           </Box>
 
-          <Stack direction="row" spacing={{ xs: 1, md: 1.5 }} sx={{ alignItems: 'center', height: '72px', flexShrink: 0 }}>
+          <Stack direction="row" spacing={{ xs: 1, md: 1.5 }} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', height: '72px', flexShrink: 0 }}>
             {navItems.map((item) => {
               const isActive = pathname === item.link || (item.link !== '/' && pathname.startsWith(item.link + '/'))
               return (
@@ -280,7 +298,7 @@ const Header = () => {
             sx: {
               mt: 1.5,
               minWidth: 280,
-              borderRadius: 1,
+              borderRadius: RADIUS,
               border: '1px solid',
               borderColor: 'divider',
               overflow: 'visible',
@@ -349,6 +367,52 @@ const Header = () => {
           </ListItemIcon>
           <ListItemText primary={t('menu.signOut')} secondary={t('menu.signOutDesc')} />
         </MenuItem>
+      </Menu>
+
+      <Menu
+        anchorEl={navAnchorEl}
+        open={navMenuOpen}
+        onClose={handleCloseNav}
+        anchorOrigin={{ horizontal: dir === 'rtl' ? 'right' : 'left', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: dir === 'rtl' ? 'right' : 'left', vertical: 'top' }}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              mt: 1.5,
+              minWidth: 240,
+              borderRadius: RADIUS,
+              border: '1px solid',
+              borderColor: 'divider',
+              overflow: 'visible',
+            },
+          },
+        }}
+      >
+        {navItems.map((item) => {
+          const isActive = pathname === item.link || (item.link !== '/' && pathname.startsWith(item.link + '/'))
+          return (
+            <MenuItem
+              key={item.link}
+              component={Link}
+              to={item.link}
+              onClick={handleCloseNav}
+              sx={(theme) => ({
+                py: 1.2,
+                px: 2,
+                gap: 1.5,
+                color: isActive ? 'primary.main' : 'text.primary',
+                bgcolor: isActive ? alpha(theme.palette.primary.main, 0.06) : 'transparent',
+                '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) },
+              })}
+            >
+              <ListItemIcon sx={{ minWidth: 34, color: 'inherit' }}>
+                {React.cloneElement(item.icon, { fontSize: 'small' })}
+              </ListItemIcon>
+              <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: isActive ? 700 : 500 }} />
+            </MenuItem>
+          )
+        })}
       </Menu>
     </AppBar>
   )

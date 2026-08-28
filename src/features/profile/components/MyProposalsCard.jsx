@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { Box, Paper, Typography, Stack, Chip, alpha, CircularProgress, Divider } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
@@ -44,11 +45,11 @@ export default function MyProposalsCard() {
   }, [])
 
   return (
-    <Paper variant="outlined" sx={{ p: 1.75, borderRadius: 1, border: '1px solid', borderColor: alpha(COLORS.primary, 0.18), bgcolor: 'background.paper', width: '100%', textAlign: 'left' }}>
+    <Paper variant="outlined" sx={{ p: 1.75, borderRadius: RADIUS, border: '1px solid', borderColor: alpha(COLORS.primary, 0.18), bgcolor: 'background.paper', width: '100%', textAlign: 'left' }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <Box sx={{
-            width: 30, height: 30, borderRadius: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: 30, height: 30, borderRadius: RADIUS, display: 'flex', alignItems: 'center', justifyContent: 'center',
             bgcolor: alpha(COLORS.primary, 0.08), color: COLORS.primary,
           }}>
             <WorkOutlineOutlined sx={{ fontSize: 17 }} />
@@ -77,7 +78,7 @@ export default function MyProposalsCard() {
             const budget = proj.budget || {}
             return (
               <Box key={p._id} onClick={() => navigate(p.status === 'Accepted' ? `/my-project/${proj._id}` : `/projects/${proj._id}`)} sx={{
-                cursor: 'pointer', p: 1.25, borderRadius: 2,
+                cursor: 'pointer', p: 1.25, borderRadius: RADIUS,
                 border: '1px solid', borderColor: 'divider',
                 bgcolor: alpha(COLORS.primary, 0.02),
                 transition: 'all 0.2s ease',

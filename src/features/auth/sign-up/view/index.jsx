@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
@@ -164,7 +165,7 @@ export default function SignUpView() {
             position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10,
             bgcolor: isDark ? 'background.paper' : 'white',
             boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.4)' : '0 2px 12px rgba(0,0,0,0.08)',
-            borderRadius: 2, px: 1.5, py: 0.5,
+            borderRadius: RADIUS, px: 1.5, py: 0.5,
             transition: 'all 0.3s ease',
             '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.5)' : '0 4px 16px rgba(0,0,0,0.12)' },
             animation: 'fadeUp 0.5s ease 0.2s both',
@@ -263,7 +264,7 @@ export default function SignUpView() {
                 </Stepper>
 
                 <Paper sx={{
-                  p: { xs: 2.5, sm: 3.5 }, borderRadius: 1, bgcolor: isDark ? 'background.paper' : 'white',
+                  p: { xs: 2.5, sm: 3.5 }, borderRadius: RADIUS, bgcolor: isDark ? 'background.paper' : 'white',
                   border: '1px solid', borderColor: 'divider',
                   boxShadow: '0 4px 24px rgba(12,8,24,0.06)',
                   transition: 'box-shadow 0.3s ease',
@@ -279,7 +280,7 @@ export default function SignUpView() {
                   </Box>
 
                   {errors.submit && (
-                      <Typography color="error" variant="body2" sx={{ mt: 2, textAlign: 'center', bgcolor: isDark ? 'rgba(248,113,113,0.12)' : '#FEE2E2', p: 1.5, borderRadius: 2, animation: 'fadeUp 0.3s ease' }}>
+                      <Typography color="error" variant="body2" sx={{ mt: 2, textAlign: 'center', bgcolor: isDark ? 'rgba(248,113,113,0.12)' : '#FEE2E2', p: 1.5, borderRadius: RADIUS, animation: 'fadeUp 0.3s ease' }}>
                       {errors.submit}
                     </Typography>
                   )}

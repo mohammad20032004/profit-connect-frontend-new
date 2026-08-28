@@ -1,3 +1,4 @@
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -194,7 +195,7 @@ export default function MyProjectDetail() {
   const stats = data.statistics || {}
 
   const PaymentCard = ({ p }) => (
-    <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+    <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="body2" fontWeight="bold">{p.title}</Typography>
         <Chip label={t(`projects.statusOptions.${p.status}`, p.status)} size="small" color={statusColors[p.status] || 'default'} />
@@ -309,7 +310,7 @@ export default function MyProjectDetail() {
                         <Typography variant="body2" fontWeight={600}>{m.title}</Typography>
                         <Chip size="small" label={t(`projects.statusOptions.${m.status}`, m.status)} color={statusColors[m.status] || 'default'} />
                       </Stack>
-                      <LinearProgress variant="determinate" value={m.progress || 0} sx={{ mt: 0.5, borderRadius: 2, height: 6 }} />
+                      <LinearProgress variant="determinate" value={m.progress || 0} sx={{ mt: 0.5, borderRadius: RADIUS, height: 6 }} />
                     </Box>
                   ))}
                 </Stack>
@@ -357,7 +358,7 @@ export default function MyProjectDetail() {
                     const prof = user.profile || {}
                     const name = fullName(prof) || user.email || user.name || t('projects.anonymous')
                     return (
-                      <Paper key={p._id} variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                      <Paper key={p._id} variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                         <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
                           <Avatar src={prof.avatar} sx={{ width: 44, height: 44 }}>{name.charAt(0)}</Avatar>
                           <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -419,7 +420,7 @@ export default function MyProjectDetail() {
               <Paper sx={{ p: 2.5, borderRadius: 3, mb: 2 }}>
                 <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5 }}>{t('projects.freelanceView.milestones')}</Typography>
                 <Stack spacing={1.5}>
-                  {(data.milestones || data.project?.milestones).map((m, i) => (
+                  {(data.milestones || data.project?.milestones || []).map((m, i) => (
                     <Box key={m._id || i}>
                       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                         <Typography variant="body2" fontWeight={600}>{m.title}</Typography>
@@ -428,7 +429,7 @@ export default function MyProjectDetail() {
                       {m.assignedTo?.profile && (
                         <Typography variant="caption" color="text.secondary">{t('projects.freelanceView.assignedTo', 'Assigned to')}: {fullName(m.assignedTo.profile)}</Typography>
                       )}
-                      <LinearProgress variant="determinate" value={m.progress || 0} sx={{ mt: 0.5, borderRadius: 2, height: 6 }} />
+                      <LinearProgress variant="determinate" value={m.progress || 0} sx={{ mt: 0.5, borderRadius: RADIUS, height: 6 }} />
                     </Box>
                   ))}
                 </Stack>
@@ -471,7 +472,7 @@ export default function MyProjectDetail() {
       </Dialog>
 
       <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity="error" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+        <Alert severity="error" onClose={() => setToastMsg('')} sx={{ borderRadius: RADIUS }}>{toastMsg}</Alert>
       </Snackbar>
     </Box>
   )
@@ -479,7 +480,7 @@ export default function MyProjectDetail() {
 
 function Stat({ icon, label, value }) {
   return (
-    <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 2, textAlign: 'center' }}>
+    <Paper variant="outlined" sx={{ p: 1.5, borderRadius: RADIUS, textAlign: 'center' }}>
       <Box sx={{ color: 'primary.main', mb: 0.5 }}>{icon}</Box>
       <Typography variant="body1" fontWeight="bold">{value}</Typography>
       <Typography variant="caption" color="text.secondary">{label}</Typography>

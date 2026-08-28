@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { Box, Container, Paper, Typography, Chip, Stack, alpha, Grid, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
 import UserAvatar from '@/components/common/UserAvatar'
@@ -47,7 +48,7 @@ export default function ProfileView() {
     color: '#fff',
     transition: 'all 0.2s ease',
     '&:hover': {
-      bgcolor: '#3D1C6E',
+      bgcolor: BRAND,
       transform: 'translateY(-2px)',
       boxShadow: '0 6px 16px rgba(31,54,112,0.45)',
     },
@@ -55,7 +56,7 @@ export default function ProfileView() {
 
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
-      <Paper sx={{ borderRadius: 1, p: { xs: 2, md: 3 } }}>
+      <Paper sx={{ borderRadius: RADIUS, p: { xs: 2, md: 3 } }}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 4, lg: 3 }}>
             <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
@@ -150,21 +151,21 @@ export default function ProfileView() {
                 size="small"
                 fullWidth
                 startIcon={<EditOutlined />}
-                sx={{ borderRadius: 2, maxWidth: 200 }}
+                sx={{ borderRadius: RADIUS, maxWidth: 200 }}
               >
                 {t('profile.editProfile')}
               </Button>
 
               <Stack direction="row" spacing={1} sx={{ justifyContent: 'center', width: '100%' }}>
-                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 2 }}>
+                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: RADIUS }}>
                   <Typography variant="h6" fontWeight="bold">{profile?.postsCount ?? 0}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('profile.posts')}</Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 2 }}>
+                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: RADIUS }}>
                   <Typography variant="h6" fontWeight="bold">{profile?.followersCount ?? 0}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('profile.followers')}</Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 2 }}>
+                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: RADIUS }}>
                   <Typography variant="h6" fontWeight="bold">{profile?.followingCount ?? 0}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('profile.following')}</Typography>
                 </Box>
@@ -180,7 +181,7 @@ export default function ProfileView() {
               <WalletCard />
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, flex: 1 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1 }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
                     <StarRounded sx={{ color: 'warning.main', fontSize: 20 }} />
                     <Typography variant="subtitle2" fontWeight="bold">{t('profile.reputation')}</Typography>
@@ -191,14 +192,14 @@ export default function ProfileView() {
                       label={`${Rscore}`}
                       color={Rscore >= 4000 ? 'warning' : 'default'}
                       size="small"
-                      sx={{ fontWeight: 700, borderRadius: 1.5 }}
+                      sx={{ fontWeight: 700, borderRadius: RADIUS }}
                     />
                     <Typography variant="caption" color="text.secondary">{t('profile.rScore')}</Typography>
                   </Stack>
                 </Paper>
 
                 {(user?.email || profile?.phoneNumber) && (
-                  <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, flex: 1 }}>
+                  <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1 }}>
                     <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('profile.contactInfo')}</Typography>
                     <Stack spacing={0.75}>
                       {user?.email && (
@@ -219,7 +220,7 @@ export default function ProfileView() {
               </Stack>
 
               {(professional?.industry || professional?.yearsOfExperience || skills.length > 0) && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
                     <BusinessCenterOutlined sx={{ fontSize: 20, color: 'text.secondary' }} />
                     <Typography variant="subtitle2" fontWeight="bold">{t('profile.professionalInfo')}</Typography>
@@ -242,7 +243,7 @@ export default function ProfileView() {
                         <Typography variant="caption" color="text.secondary">{t('profile.skills')}</Typography>
                         <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5, mt: 0.3 }}>
                           {skills.map((skill) => (
-                            <Chip key={skill} label={skill} size="small" icon={<BuildOutlined sx={{ fontSize: 13 }} />} sx={{ borderRadius: 1.5, height: 26 }} />
+                            <Chip key={skill} label={skill} size="small" icon={<BuildOutlined sx={{ fontSize: 13 }} />} sx={{ borderRadius: RADIUS, height: 26 }} />
                           ))}
                         </Stack>
                       </Box>
@@ -252,7 +253,7 @@ export default function ProfileView() {
               )}
 
               {profile?.bio && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                   <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 0.75 }}>{t('profile.bio')}</Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.875rem' }}>
                     {profile.bio}

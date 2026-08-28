@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useCallback } from 'react'
 import {
   Box, Container, Paper, Typography, Stack, CircularProgress, Avatar, Chip,
@@ -142,7 +143,7 @@ export default function EmployeeManagement() {
             <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
           ) : employees.length === 0 ? (
             <Fade in timeout={500}>
-              <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+              <Paper sx={{ p: 4, textAlign: 'center', borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
                 <PeopleOutlined sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold" sx={{ mb: 0.5 }}>
                   {t('employees.noEmployees')}
@@ -159,7 +160,7 @@ export default function EmployeeManagement() {
             employees.map((emp, i) => (
               <Fade in key={emp.user?._id || i} timeout={400 + i * 100}>
                 <Paper sx={{
-                  p: 2, borderRadius: 1.5, border: '1px solid', borderColor: 'divider',
+                  p: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider',
                   '&:hover': { borderColor: 'primary.main', boxShadow: '0 2px 8px rgba(61,28,110,0.06)' },
                   transition: 'all 0.2s ease',
                 }}>

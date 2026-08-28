@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { Box, Container, Stack, Typography, Card, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
 import { keyframes } from '@mui/system'
@@ -17,7 +18,7 @@ const palette = {
   ink: '#0a0715',
   deep: '#12082a',
   plum: '#1f0d42',
-  berry: '#3d1c6e',
+  berry: BRAND,
   navy: '#0c1828',
   navyMid: '#1a2d4a',
   sand: '#f4f2f8',
@@ -99,10 +100,10 @@ function HeroSection() {
             </Typography>
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1, width: { xs: '100%', sm: 'auto' } }}>
-              <Button component={Link} to="/sign-up" variant="contained" size="large" sx={{ fontWeight: 700, px: 5, py: 1.4, background: `linear-gradient(135deg, ${palette.deep} 0%, ${palette.plum} 55%, ${palette.berry} 140%)`, boxShadow: '0px 10px 28px rgba(18,8,42,0.3)', fontSize: '1.05rem', borderRadius: 2, '&:hover': { boxShadow: '0px 14px 36px rgba(18,8,42,0.4)', transform: 'translateY(-2px)' } }}>
+              <Button component={Link} to="/sign-up" variant="contained" size="large" sx={{ fontWeight: 700, px: 5, py: 1.4, background: `linear-gradient(135deg, ${palette.deep} 0%, ${palette.plum} 55%, ${palette.berry} 140%)`, boxShadow: '0px 10px 28px rgba(18,8,42,0.3)', fontSize: '1.05rem', borderRadius: RADIUS, '&:hover': { boxShadow: '0px 14px 36px rgba(18,8,42,0.4)', transform: 'translateY(-2px)' } }}>
                 {t('landing.cta')}
               </Button>
-              <Button component={Link} to="/sign-in" variant="outlined" size="large" sx={{ fontWeight: 700, px: 4, py: 1.4, color: palette.navy, borderColor: 'rgba(12,24,40,0.2)', bgcolor: 'rgba(255,255,255,0.72)', fontSize: '1.05rem', borderRadius: 2 }}>
+              <Button component={Link} to="/sign-in" variant="outlined" size="large" sx={{ fontWeight: 700, px: 4, py: 1.4, color: palette.navy, borderColor: 'rgba(12,24,40,0.2)', bgcolor: 'rgba(255,255,255,0.72)', fontSize: '1.05rem', borderRadius: RADIUS }}>
                 {t('landing.signIn')}
               </Button>
             </Stack>
@@ -133,7 +134,7 @@ function HeroSection() {
                 <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#34d399' }} />
               </Stack>
 
-              <Box sx={{ borderRadius: 2, bgcolor: '#f7f8fc', border: `1px solid ${palette.line}`, p: 2.5 }}>
+              <Box sx={{ borderRadius: RADIUS, bgcolor: '#f7f8fc', border: `1px solid ${palette.line}`, p: 2.5 }}>
                 <Typography sx={{ fontSize: '1.05rem', fontWeight: 800, color: palette.deep, mb: 2 }}>{t('landing.previewTitle')}</Typography>
                 <Stack spacing={1.5}>
                   {[
@@ -142,19 +143,19 @@ function HeroSection() {
                     { icon: <PeopleOutlineOutlined sx={{ fontSize: 18, color: '#3b82f6' }} />, text: t('landing.preview3'), badge: '+12' },
                     { icon: <PaymentsOutlined sx={{ fontSize: 18, color: '#f59e0b' }} />, text: t('landing.preview4'), badge: '⚡' },
                   ].map((item, i) => (
-                    <Stack key={i} direction="row" spacing={1.5} sx={{ alignItems: 'center', p: 1.25, borderRadius: 1.5, bgcolor: '#ffffff', border: '1px solid rgba(31,13,66,0.06)', animation: `${floatCard} ${4 + i * 0.5}s ease-in-out infinite`, animationDelay: `${i * 0.15}s` }}>
-                      <Box sx={{ width: 34, height: 34, borderRadius: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: alpha(palette.berry, 0.08), flexShrink: 0 }}>
+                    <Stack key={i} direction="row" spacing={1.5} sx={{ alignItems: 'center', p: 1.25, borderRadius: RADIUS, bgcolor: '#ffffff', border: '1px solid rgba(31,13,66,0.06)', animation: `${floatCard} ${4 + i * 0.5}s ease-in-out infinite`, animationDelay: `${i * 0.15}s` }}>
+                      <Box sx={{ width: 34, height: 34, borderRadius: RADIUS, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: alpha(palette.berry, 0.08), flexShrink: 0 }}>
                         {item.icon}
                       </Box>
                       <Typography sx={{ flex: 1, fontSize: '0.85rem', color: '#4b4561' }}>{item.text}</Typography>
-                      <Box sx={{ px: 1, py: 0.3, borderRadius: 1, bgcolor: alpha(palette.berry, 0.08), color: palette.berry, fontSize: '0.7rem', fontWeight: 800 }}>{item.badge}</Box>
+                      <Box sx={{ px: 1, py: 0.3, borderRadius: RADIUS, bgcolor: alpha(palette.berry, 0.08), color: palette.berry, fontSize: '0.7rem', fontWeight: 800 }}>{item.badge}</Box>
                     </Stack>
                   ))}
                 </Stack>
               </Box>
             </Card>
 
-            <Box sx={{ position: 'absolute', insetInlineEnd: -10, top: 50, width: 150, p: 2, borderRadius: 2, bgcolor: 'rgba(255,255,255,0.8)', border: `1px solid ${palette.line}`, backdropFilter: 'blur(16px)', textAlign: 'start', animation: `${floatCard} 5.2s ease-in-out infinite` }}>
+            <Box sx={{ position: 'absolute', insetInlineEnd: -10, top: 50, width: 150, p: 2, borderRadius: RADIUS, bgcolor: 'rgba(255,255,255,0.8)', border: `1px solid ${palette.line}`, backdropFilter: 'blur(16px)', textAlign: 'start', animation: `${floatCard} 5.2s ease-in-out infinite` }}>
               <Typography sx={{ fontSize: '0.75rem', color: '#666', mb: 0.3 }}>{t('landing.floatingLabel')}</Typography>
               <Typography sx={{ fontSize: '1.5rem', fontWeight: 900, color: palette.plum }}>94%</Typography>
             </Box>
@@ -202,7 +203,7 @@ function FeaturesSection() {
               key={i}
               elevation={0}
               sx={{
-                p: 4, borderRadius: 2, border: '1px solid rgba(36,0,70,0.06)',
+                p: 4, borderRadius: RADIUS, border: '1px solid rgba(36,0,70,0.06)',
                 background: 'linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)',
                 transition: 'all 0.3s ease', animation: `${fadeInUp} 0.5s ease-out ${i * 0.08}s both`,
                 '&:hover': { transform: 'translateY(-6px)', boxShadow: '0 20px 40px rgba(36,0,70,0.08)', borderColor: alpha(f.color, 0.3) },
@@ -249,7 +250,7 @@ function HowItWorksSection() {
               key={i}
               elevation={0}
               sx={{
-                p: 3.5, borderRadius: 2, textAlign: 'center', position: 'relative',
+                p: 3.5, borderRadius: RADIUS, textAlign: 'center', position: 'relative',
                 border: '1px solid rgba(36,0,70,0.06)', bgcolor: '#ffffff',
                 transition: 'all 0.3s ease', animation: `${fadeInUp} 0.5s ease-out ${i * 0.1}s both`,
                 '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 16px 40px rgba(36,0,70,0.08)' },
@@ -286,7 +287,7 @@ export default function LandingView() {
           position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10,
           bgcolor: isDark ? 'background.paper' : 'white',
           boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.4)' : '0 2px 12px rgba(0,0,0,0.08)',
-          borderRadius: 2, px: 1.5, py: 0.5,
+          borderRadius: RADIUS, px: 1.5, py: 0.5,
           transition: 'all 0.3s ease',
           '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.5)' : '0 4px 16px rgba(0,0,0,0.12)' },
         }}

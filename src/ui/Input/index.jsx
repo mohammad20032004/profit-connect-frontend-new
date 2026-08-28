@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import { formatMoney } from '@/utils/money'
 import {
@@ -35,7 +36,7 @@ function TextField({ label, error, helperText, sx, ...props }) {
       fullWidth
       sx={(theme) => ({
         '& .MuiOutlinedInput-root': {
-          borderRadius: 1,
+          borderRadius: RADIUS,
           backgroundColor: theme.palette.background.paper,
           transition: 'all 0.2s ease',
           '& fieldset': { borderColor: theme.palette.divider },
@@ -130,7 +131,7 @@ function Select({ label, options = [], value, onChange, placeholder, error, help
         label={label}
         displayEmpty={!!placeholder}
         sx={(theme) => ({
-          borderRadius: 1,
+          borderRadius: RADIUS,
           backgroundColor: theme.palette.background.paper,
           '& fieldset': { borderColor: theme.palette.divider },
           '&:hover fieldset': { borderColor: alpha(theme.palette.primary.main, 0.4) },

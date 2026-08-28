@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -328,7 +329,7 @@ export default function NotificationProvider({ children }) {
             alignItems: 'stretch',
             p: 0,
             overflow: 'hidden',
-            borderRadius: 1,
+            borderRadius: RADIUS,
             fontFamily: theme.typography.fontFamily,
             boxShadow: `0 8px 32px ${alpha(theme.palette[toast?.severity || 'info'].main, 0.35)}`,
             borderInlineStart: `4px solid ${severityColor[toast?.severity || 'info']}`,

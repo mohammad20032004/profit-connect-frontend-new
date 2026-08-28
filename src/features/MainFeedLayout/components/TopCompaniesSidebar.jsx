@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { Box, Typography, Avatar, CircularProgress, Stack, alpha } from '@mui/material'
 import { ErrorOutlined, StarRounded, ChevronRightRounded } from '@mui/icons-material'
@@ -39,7 +40,7 @@ export default function TopCompaniesSidebar({ variant = 'default' }) {
       sx={variant === 'plain'
         ? { width: '100%' }
         : {
-            borderRadius: 2,
+            borderRadius: RADIUS,
             overflow: 'hidden',
             border: '1px solid',
             borderColor: 'divider',
@@ -85,7 +86,7 @@ export default function TopCompaniesSidebar({ variant = 'default' }) {
                 px: 2,
                 py: 1,
                 mx: 1,
-                borderRadius: 1.5,
+                borderRadius: RADIUS,
                 transition: 'all 0.2s ease',
                 '&:hover': {
                   bgcolor: alpha(theme.palette.primary.main, 0.04),
@@ -161,7 +162,7 @@ export default function TopCompaniesSidebar({ variant = 'default' }) {
                   fontWeight: 600,
                   fontSize: '0.75rem',
                   textDecoration: 'none',
-                  borderRadius: 1,
+                  borderRadius: RADIUS,
                   transition: 'all 0.2s',
                   '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) },
                 }}

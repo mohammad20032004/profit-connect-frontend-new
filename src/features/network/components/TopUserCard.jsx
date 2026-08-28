@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { Paper, Typography, Stack, alpha, Chip } from '@mui/material'
 import { EmojiEventsOutlined, StarBorderOutlined, PeopleAltOutlined, PersonOffOutlined, PersonAddAlt1Outlined } from '@mui/icons-material'
 import Button from '@/ui/Button'
@@ -16,7 +17,7 @@ export default function TopUserCard({ user, rank, following, onToggleFollow, bus
 
   return (
     <Paper variant="outlined" sx={{
-      width: 200, flex: '0 0 auto', p: 2, borderRadius: 1.5, textAlign: 'center',
+      width: 200, flex: '0 0 auto', p: 2, borderRadius: RADIUS, textAlign: 'center',
       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.75,
       position: 'relative', transition: 'all 0.2s ease',
       '&:hover': {
@@ -86,7 +87,7 @@ export default function TopUserCard({ user, rank, following, onToggleFollow, bus
         startIcon={following ? <PersonOffOutlined sx={{ fontSize: 15 }} /> : <PersonAddAlt1Outlined sx={{ fontSize: 15 }} />}
         onClick={() => onToggleFollow(user)}
         disabled={busyId === user._id}
-        sx={{ mt: 'auto', pt: 0.75, pb: 0.75, minHeight: 36, textTransform: 'none', fontSize: '0.75rem', borderRadius: 1 }}
+        sx={{ mt: 'auto', pt: 0.75, pb: 0.75, minHeight: 36, textTransform: 'none', fontSize: '0.75rem', borderRadius: RADIUS }}
       >
         {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
       </Button>

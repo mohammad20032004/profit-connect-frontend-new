@@ -1,3 +1,4 @@
+﻿import { DANGER, RADIUS } from '@/theme/tokens'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -48,7 +49,7 @@ function TabPanel({ children, value, index }) {
 
 function SelectField({ label, value, onChange, options }) {
   return (
-    <FormControl size="small" sx={{ minWidth: 200 }}>
+    <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 200 } }}>
       <InputLabel>{label}</InputLabel>
       <Select value={value} label={label} onChange={onChange}>
         {options.map((opt) => (
@@ -299,7 +300,7 @@ export default function SettingsView() {
             orientation="vertical"
             value={tab}
             onChange={(_, v) => setTab(v)}
-            sx={{ borderInlineEnd: '1px solid', borderColor: 'divider', minWidth: 180, '& .MuiTab-root': { alignItems: 'flex-start', textTransform: 'none', fontSize: '0.9rem', py: 1.5 } }}
+            sx={{ borderInlineEnd: '1px solid', borderColor: 'divider', minWidth: { xs: 0, md: 180 }, width: { xs: '100%', md: 'auto' }, '& .MuiTab-root': { alignItems: 'flex-start', textTransform: 'none', fontSize: '0.9rem', py: 1.5 } }}
           >
             {tabs.map((t) => (
               <Tab key={t.label} icon={t.icon} iconPosition="start" label={t.label} />
@@ -534,7 +535,7 @@ export default function SettingsView() {
               {passwordSuccess && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setPasswordSuccess(false)}>{t('settings.pwdChanged', 'Password changed successfully')}</Alert>}
               {passwordError && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setPasswordError('')}>{passwordError}</Alert>}
 
-              <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, borderColor: 'divider', mb: 3 }}>
+              <Paper variant="outlined" sx={{ p: 2.5, borderRadius: RADIUS, borderColor: 'divider', mb: 3 }}>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
                   <KeyOutlined sx={{ color: 'primary.main' }} />
                   <Typography variant="subtitle1" fontWeight="bold">{t('settings.changePassword', 'Change Password')}</Typography>
@@ -574,7 +575,7 @@ export default function SettingsView() {
                 </Stack>
               </Paper>
 
-              <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, borderColor: 'error.main', bgcolor: alpha('#DC2626', 0.03) }}>
+              <Paper variant="outlined" sx={{ p: 2.5, borderRadius: RADIUS, borderColor: 'error.main', bgcolor: alpha(DANGER, 0.03) }}>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
                   <WarningAmberOutlined sx={{ color: 'error.main' }} />
                   <Typography variant="subtitle1" fontWeight="bold" sx={{ color: 'error.main' }}>{t('settings.dangerZone', 'Danger Zone')}</Typography>

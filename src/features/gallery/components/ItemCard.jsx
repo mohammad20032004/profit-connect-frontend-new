@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import { Box, Typography, Stack, Chip, IconButton, Menu, MenuItem, ListItemIcon, alpha, Tooltip } from '@mui/material'
 import {
@@ -37,7 +38,7 @@ export default function ItemCard({ item, isOwner = false, onEdit, onDelete }) {
   const likesCount = Array.isArray(item?.likes) ? item.likes.length : 0
 
   return (
-    <Box sx={{ position: 'relative', aspectRatio: '1 / 1', borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
+    <Box sx={{ position: 'relative', aspectRatio: '1 / 1', borderRadius: RADIUS, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
       <Box
         component={Link}
         to={`/portfolio/item/${item._id}`}

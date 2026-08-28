@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
 import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid, CircularProgress, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
@@ -197,7 +198,7 @@ export default function UserProfileUserIdView() {
         <Typography variant="h5" fontWeight="bold" noWrap>{fullName}</Typography>
       </Stack>
 
-      <Paper sx={{ borderRadius: 1, p: { xs: 2, md: 3 } }}>
+      <Paper sx={{ borderRadius: RADIUS, p: { xs: 2, md: 3 } }}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 4, lg: 3.5 }}>
             <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
@@ -240,7 +241,7 @@ export default function UserProfileUserIdView() {
               </Box>
 
               {isEmployer && user.company && (
-                <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 2, width: '100%' }}>
+                <Paper variant="outlined" sx={{ p: 1.5, borderRadius: RADIUS, width: '100%' }}>
                   <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                     <Avatar src={resolveCompanyMediaPath(user.company.logo)} sx={{ width: 40, height: 40, bgcolor: 'primary.main', fontSize: 16 }}>
                       {user.company.name?.charAt(0)}
@@ -254,15 +255,15 @@ export default function UserProfileUserIdView() {
               )}
 
               <Stack direction="row" spacing={1} sx={{ justifyContent: 'center', width: '100%' }}>
-                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 2 }}>
+                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: RADIUS }}>
                   <Typography variant="h6" fontWeight="bold">{profile?.postsCount ?? 0}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('profile.posts')}</Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 2 }}>
+                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: RADIUS }}>
                   <Typography variant="h6" fontWeight="bold">{profile?.followersCount ?? 0}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('profile.followers')}</Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 2 }}>
+                <Box sx={{ textAlign: 'center', flex: 1, py: 1, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: RADIUS }}>
                   <Typography variant="h6" fontWeight="bold">{profile?.followingCount ?? 0}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('profile.following')}</Typography>
                 </Box>
@@ -373,7 +374,7 @@ export default function UserProfileUserIdView() {
             <Stack spacing={2.5}>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, flex: 1 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1 }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
                     <StarRounded sx={{ color: 'warning.main', fontSize: 20 }} />
                     <Typography variant="subtitle2" fontWeight="bold">{t('profile.reputation')}</Typography>
@@ -384,14 +385,14 @@ export default function UserProfileUserIdView() {
                       label={`${Rscore}`}
                       color={Rscore >= 4000 ? 'warning' : 'default'}
                       size="small"
-                      sx={{ fontWeight: 700, borderRadius: 1.5 }}
+                      sx={{ fontWeight: 700, borderRadius: RADIUS }}
                     />
                     <Typography variant="caption" color="text.secondary">{t('profile.rScore')}</Typography>
                   </Stack>
                 </Paper>
 
                 {(user?.email || profile?.phoneNumber) && (
-                  <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, flex: 1 }}>
+                  <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1 }}>
                     <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('profile.contactInfo')}</Typography>
                     <Stack spacing={0.75}>
                       {user?.email && (
@@ -412,7 +413,7 @@ export default function UserProfileUserIdView() {
               </Stack>
 
               {isCompanyEmployee && user.companyEmployeeProfile && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
                     <BadgeOutlined sx={{ fontSize: 20, color: 'text.secondary' }} />
                     <Typography variant="subtitle2" fontWeight="bold">{isRtl ? 'البيانات الوظيفية' : 'Work Info'}</Typography>
@@ -441,7 +442,7 @@ export default function UserProfileUserIdView() {
               )}
 
               {(professional?.industry || professional?.yearsOfExperience > 0 || skills.length > 0) && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
                     <BusinessCenterOutlined sx={{ fontSize: 20, color: 'text.secondary' }} />
                     <Typography variant="subtitle2" fontWeight="bold">{t('profile.professionalInfo')}</Typography>
@@ -464,7 +465,7 @@ export default function UserProfileUserIdView() {
                         <Typography variant="caption" color="text.secondary">{t('profile.skills')}</Typography>
                         <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5, mt: 0.3 }}>
                           {skills.map((skill) => (
-                            <Chip key={skill} label={skill} size="small" icon={<BuildOutlined sx={{ fontSize: 13 }} />} sx={{ borderRadius: 1.5, height: 26 }} />
+                            <Chip key={skill} label={skill} size="small" icon={<BuildOutlined sx={{ fontSize: 13 }} />} sx={{ borderRadius: RADIUS, height: 26 }} />
                           ))}
                         </Stack>
                       </Box>
@@ -474,24 +475,24 @@ export default function UserProfileUserIdView() {
               )}
 
               {(socialLinks?.linkedin || socialLinks?.github || socialLinks?.website) && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                   <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('profile.socialLinks')}</Typography>
                   <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
                     {socialLinks?.linkedin && (
-                      <Button href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<LinkedIn />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>LinkedIn</Button>
+                      <Button href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<LinkedIn />} sx={{ borderRadius: RADIUS, fontSize: '0.8rem' }}>LinkedIn</Button>
                     )}
                     {socialLinks?.github && (
-                      <Button href={socialLinks.github} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<GitHub />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>GitHub</Button>
+                      <Button href={socialLinks.github} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<GitHub />} sx={{ borderRadius: RADIUS, fontSize: '0.8rem' }}>GitHub</Button>
                     )}
                     {socialLinks?.website && (
-                      <Button href={socialLinks.website} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<Language />} sx={{ borderRadius: 1.5, fontSize: '0.8rem' }}>{t('companies.website')}</Button>
+                      <Button href={socialLinks.website} target="_blank" rel="noopener noreferrer" size="small" variant="text" startIcon={<Language />} sx={{ borderRadius: RADIUS, fontSize: '0.8rem' }}>{t('companies.website')}</Button>
                     )}
                   </Stack>
                 </Paper>
               )}
 
               {profile?.bio && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                   <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 0.75 }}>{t('profile.bio')}</Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.875rem' }}>
                     {profile.bio}

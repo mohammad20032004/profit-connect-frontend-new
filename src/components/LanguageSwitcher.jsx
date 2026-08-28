@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import TranslateIcon from '@mui/icons-material/Translate'
 import { useState } from 'react'
@@ -35,7 +36,7 @@ function LanguageSwitcher() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         PaperProps={{
-          sx: { mt: 1, minWidth: 160, borderRadius: 2, boxShadow: '0 12px 28px rgba(12,8,24,0.1)' },
+          sx: { mt: 1, minWidth: 160, borderRadius: RADIUS, boxShadow: '0 12px 28px rgba(12,8,24,0.1)' },
         }}
       >
         {languages.map((lang) => (

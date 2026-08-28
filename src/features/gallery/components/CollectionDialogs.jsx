@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useRef } from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, Box, Stack, Typography, List, ListItem, ListItemButton, ListItemAvatar, ListItemText, Avatar, IconButton, CircularProgress, Checkbox, Switch, FormControlLabel, alpha, Alert } from '@mui/material'
 import Button from '@/ui/Button'
@@ -136,12 +137,12 @@ export function CollectionFormDialog({ open, onClose, collection, onSaved, onIte
                 {manageItems.map((it) => {
                   const cover = getItemCover(it)
                   return (
-                    <Box key={it._id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                    <Box key={it._id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, border: '1px solid', borderColor: 'divider', borderRadius: RADIUS }}>
                       <Box
                         component="img"
                         src={cover ? resolveMediaPath(cover) : undefined}
                         alt=""
-                        sx={{ width: 48, height: 48, borderRadius: 1, objectFit: 'cover', bgcolor: alpha('#3D1C6E', 0.08), flexShrink: 0 }}
+                        sx={{ width: 48, height: 48, borderRadius: RADIUS, objectFit: 'cover', bgcolor: alpha(BRAND, 0.08), flexShrink: 0 }}
                       />
                       <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Typography variant="body2" fontWeight={700} noWrap>{it.title}</Typography>
@@ -196,10 +197,10 @@ export function CollectionFormDialog({ open, onClose, collection, onSaved, onIte
             onClick={() => fileInputRef.current?.click()}
             sx={{
               height: 120,
-              borderRadius: 2,
+              borderRadius: RADIUS,
               border: '1px dashed',
               borderColor: 'divider',
-              bgcolor: alpha('#3D1C6E', 0.05),
+              bgcolor: alpha(BRAND, 0.05),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -317,9 +318,9 @@ export function LinkWorkDialog({ open, onClose, collectionId, existingItemIds = 
               const checked = selected.includes(it._id)
               return (
                 <ListItem key={it._id} disablePadding secondaryAction={existing ? null : (busy ? <CircularProgress size={18} /> : null)}>
-                  <ListItemButton onClick={() => toggle(it._id)} disabled={existing || busy} sx={{ borderRadius: 2 }}>
+                  <ListItemButton onClick={() => toggle(it._id)} disabled={existing || busy} sx={{ borderRadius: RADIUS }}>
                     <ListItemAvatar>
-                      <Avatar variant="rounded" src={cover ? resolveMediaPath(cover) : undefined} sx={{ bgcolor: alpha('#3D1C6E', 0.1), color: 'primary.main' }}>
+                      <Avatar variant="rounded" src={cover ? resolveMediaPath(cover) : undefined} sx={{ bgcolor: alpha(BRAND, 0.1), color: 'primary.main' }}>
                         {it.category ? <FolderOpenOutlined /> : <ImageOutlined />}
                       </Avatar>
                     </ListItemAvatar>
@@ -363,9 +364,9 @@ function CollectionItemRow({ item, isOwner, onRemove }) {
         </IconButton>
       ) : null
     }>
-      <ListItemButton component={Link} to={`/portfolio/item/${item._id}`} sx={{ borderRadius: 2 }}>
+      <ListItemButton component={Link} to={`/portfolio/item/${item._id}`} sx={{ borderRadius: RADIUS }}>
         <ListItemAvatar>
-          <Avatar variant="rounded" src={cover ? resolveMediaPath(cover) : undefined} sx={{ bgcolor: alpha('#3D1C6E', 0.1), color: 'primary.main' }}>
+          <Avatar variant="rounded" src={cover ? resolveMediaPath(cover) : undefined} sx={{ bgcolor: alpha(BRAND, 0.1), color: 'primary.main' }}>
             {isVideo ? <PlayCircleOutlineRounded /> : <FolderOpenOutlined />}
           </Avatar>
         </ListItemAvatar>
@@ -442,7 +443,7 @@ export function CollectionDetailDialog({ open, onClose, collectionId, isOwner, o
             component="img"
             src={resolveMediaPath(detail.coverImage)}
             alt=""
-            sx={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 2, mb: 2, display: 'block', bgcolor: alpha('#3D1C6E', 0.06) }}
+            sx={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: RADIUS, mb: 2, display: 'block', bgcolor: alpha(BRAND, 0.06) }}
           />
         )}
         {detail?.description && (
@@ -543,9 +544,9 @@ export function AddToCollectionDialog({ open, onClose, itemId, collections, onCh
               <ListItem key={col._id} disablePadding secondaryAction={
                 busyId === col._id ? <CircularProgress size={18} /> : null
               }>
-                <ListItemButton onClick={() => handleToggle(col)} disabled={Boolean(busyId)} sx={{ borderRadius: 2 }}>
+                <ListItemButton onClick={() => handleToggle(col)} disabled={Boolean(busyId)} sx={{ borderRadius: RADIUS }}>
                   <ListItemAvatar>
-                    <Avatar variant="rounded" sx={{ bgcolor: alpha('#3D1C6E', 0.1), color: 'primary.main' }}>
+                    <Avatar variant="rounded" sx={{ bgcolor: alpha(BRAND, 0.1), color: 'primary.main' }}>
                       <FolderOpenOutlined />
                     </Avatar>
                   </ListItemAvatar>

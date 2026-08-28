@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { Paper, Box, Typography, Stack, alpha, CircularProgress } from '@mui/material'
 import {
   PersonAddAlt1Outlined, PersonOffOutlined, PersonAddOutlined, HourglassTopOutlined,
@@ -104,7 +105,7 @@ export default function ProfileCard({
   return (
     <Paper variant="outlined" sx={{
       width: '100%',
-      borderRadius: 1.5, overflow: 'hidden', display: 'flex', flexDirection: 'column',
+      borderRadius: RADIUS, overflow: 'hidden', display: 'flex', flexDirection: 'column',
       transition: 'all 0.2s ease', height: '100%', alignSelf: 'stretch',
       '&:hover': {
         boxShadow: '0 8px 24px rgba(31,10,59,0.12)', borderColor: alpha(COLORS.primary, 0.3), transform: 'translateY(-2px)',

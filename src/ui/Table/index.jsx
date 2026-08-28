@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useMemo } from 'react'
 import {
   Table as MuiTable,
@@ -116,7 +117,7 @@ function Table({
   return (
     <Paper
       sx={(theme) => ({
-        borderRadius: 1,
+        borderRadius: RADIUS,
         border: `1px solid ${theme.palette.divider}`,
         boxShadow: `0 4px 12px ${alpha(theme.palette.common.black, 0.04)}`,
         overflow: 'hidden',
@@ -248,7 +249,7 @@ function Table({
         sx={(theme) => ({
           borderTop: `1px solid ${theme.palette.divider}`,
           '.MuiTablePagination-toolbar': { minHeight: 52 },
-          '.MuiTablePagination-select': { borderRadius: 2 },
+          '.MuiTablePagination-select': { borderRadius: RADIUS },
         })}
       />
     </Paper>

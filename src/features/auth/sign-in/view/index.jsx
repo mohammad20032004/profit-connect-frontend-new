@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
@@ -87,7 +88,7 @@ export default function SignInView() {
             position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10,
             bgcolor: isDark ? 'background.paper' : 'white',
             boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.4)' : '0 2px 12px rgba(0,0,0,0.08)',
-            borderRadius: 2, px: 1.5, py: 0.5,
+            borderRadius: RADIUS, px: 1.5, py: 0.5,
             transition: 'all 0.3s ease',
             '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#f0ecf6', transform: 'scale(1.05) rotate(-4deg)', boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.5)' : '0 4px 16px rgba(0,0,0,0.12)' },
             animation: 'fadeUp 0.5s ease 0.2s both',
@@ -206,7 +207,7 @@ export default function SignInView() {
                     </Box>
 
                     {error && (
-                        <Typography color="error" variant="body2" role="alert" sx={{ textAlign: 'center', bgcolor: isDark ? 'rgba(248,113,113,0.12)' : '#FEE2E2', p: 1.5, borderRadius: 2, animation: 'fadeUp 0.3s ease' }}>
+                        <Typography color="error" variant="body2" role="alert" sx={{ textAlign: 'center', bgcolor: isDark ? 'rgba(248,113,113,0.12)' : '#FEE2E2', p: 1.5, borderRadius: RADIUS, animation: 'fadeUp 0.3s ease' }}>
                         {error}
                       </Typography>
                     )}

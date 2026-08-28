@@ -1,3 +1,4 @@
+﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { Container, Box, Paper, Avatar, Typography, Stack, CircularProgress, Chip, IconButton, Menu, MenuItem, ListItemIcon, Divider, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material'
 import Button from '@/ui/Button'
@@ -94,7 +95,7 @@ function FacebookGrid({ media, activeIdx, onSelect }) {
     <Box sx={{
       display: 'grid',
       gap: '3px',
-      borderRadius: 1,
+      borderRadius: RADIUS,
       overflow: 'hidden',
       ...gridStyles[Math.min(count, 4)],
       maxHeight: 540,
@@ -119,7 +120,7 @@ function FacebookGrid({ media, activeIdx, onSelect }) {
           >
             <Box sx={{
               position: 'absolute', inset: 0, zIndex: 2,
-              bgcolor: isActive ? alpha('#3D1C6E', 0.15) : 'transparent',
+              bgcolor: isActive ? alpha(BRAND, 0.15) : 'transparent',
               border: isActive ? '3px solid' : '3px solid transparent',
               borderColor: isActive ? 'primary.main' : 'transparent',
               transition: 'all 0.3s ease',
@@ -345,7 +346,7 @@ export default function PortfolioItemView() {
                   elevation={0}
                   sx={{
                     position: 'relative',
-                    borderRadius: 1,
+                    borderRadius: RADIUS,
                     overflow: 'hidden',
                     border: '1px solid',
                     borderColor: 'divider',
@@ -432,7 +433,7 @@ export default function PortfolioItemView() {
                       <Box sx={{ position: 'absolute', top: 12, left: 12, right: 12, zIndex: 5, display: 'flex', gap: '3px' }}>
                         {media.slice(0, 8).map((_, idx) => (
                           <Box key={idx} onClick={() => goTo(idx)} sx={{
-                            flex: 1, height: 4, borderRadius: 2, cursor: 'pointer',
+                            flex: 1, height: 4, borderRadius: RADIUS, cursor: 'pointer',
                             bgcolor: idx === activeIdx ? '#fff' : alpha('#fff', 0.35),
                             transition: 'all 0.3s ease',
                             '&:hover': { bgcolor: alpha('#fff', 0.7) },
@@ -455,13 +456,13 @@ export default function PortfolioItemView() {
 
             <Box sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
               <motion.div variants={scaleIn} custom={2}>
-                <Paper sx={{ p: 3, borderRadius: 1, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88 }}>
+                <Paper sx={{ p: 3, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88 }}>
                   <Stack spacing={2.5}>
 
                     {(item.tags?.length > 0 || item.skills?.length > 0 || item.category) && (
                       <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', gap: 0.75 }}>
                         {item.category && (
-                          <Chip label={item.category} size="small" sx={{ fontSize: '0.72rem', fontWeight: 700, bgcolor: alpha('#3D1C6E', 0.1), color: 'primary.main' }} />
+                          <Chip label={item.category} size="small" sx={{ fontSize: '0.72rem', fontWeight: 700, bgcolor: alpha(BRAND, 0.1), color: 'primary.main' }} />
                         )}
                         {item.tags?.map((tag) => (
                           <Chip key={tag} label={tag} size="small" sx={{ fontSize: '0.72rem', fontWeight: 600, bgcolor: 'action.hover' }} />
@@ -558,7 +559,7 @@ export default function PortfolioItemView() {
                     {owner ? (
                       <Box component={Link} to={owner.id ? `/user-profile/${owner.id}` : '/gallery'} sx={{
                         display: 'flex', alignItems: 'center', gap: 1.5, textDecoration: 'none', color: 'inherit',
-                        p: 1.5, borderRadius: 2, transition: 'all 0.2s', '&:hover': { bgcolor: 'action.hover', '& .ownerName': { color: 'primary.main' } },
+                        p: 1.5, borderRadius: RADIUS, transition: 'all 0.2s', '&:hover': { bgcolor: 'action.hover', '& .ownerName': { color: 'primary.main' } },
                       }}>
                         <Avatar src={owner.avatar ? resolveMediaPath(owner.avatar) : undefined} sx={{ width: 48, height: 48 }}>
                           {owner.name?.charAt(0)?.toUpperCase()}

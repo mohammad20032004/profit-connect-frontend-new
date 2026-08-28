@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { TextField, InputAdornment } from '@mui/material'
 import { CalendarMonthOutlined } from '@mui/icons-material'
 
@@ -21,7 +22,7 @@ export default function ProjectDatePicker({ value, onChange }) {
       }}
       sx={{
         '& .MuiOutlinedInput-root': {
-          borderRadius: 2,
+          borderRadius: RADIUS,
           bgcolor: 'background.light',
           transition: 'all 0.2s',
           '&:hover': { borderColor: 'primary.light' },

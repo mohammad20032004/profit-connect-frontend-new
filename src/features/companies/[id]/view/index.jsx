@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -212,9 +213,9 @@ export default function CompanyDetail() {
 
   if (loading) return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <LinearProgress sx={{ mb: 3, borderRadius: 2, height: 3, bgcolor: alpha('#3D1C6E', 0.08), '& .MuiLinearProgress-bar': { borderRadius: 2, background: 'linear-gradient(90deg, #3D1C6E, #1F3670)' } }} />
-      <Box sx={{ height: 180, borderRadius: 3, bgcolor: alpha('#3D1C6E', 0.06), animation: 'pulse 1.5s ease-in-out infinite' }} />
-      <Box sx={{ mt: -6, ml: 4, width: 96, height: 96, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.1), border: '4px solid #fff', animation: 'pulse 1.5s ease-in-out infinite' }} />
+      <LinearProgress sx={{ mb: 3, borderRadius: RADIUS, height: 3, bgcolor: alpha(BRAND, 0.08), '& .MuiLinearProgress-bar': { borderRadius: RADIUS, background: 'linear-gradient(90deg, BRAND, #1F3670)' } }} />
+      <Box sx={{ height: 180, borderRadius: 3, bgcolor: alpha(BRAND, 0.06), animation: 'pulse 1.5s ease-in-out infinite' }} />
+      <Box sx={{ mt: -6, ml: 4, width: 96, height: 96, borderRadius: '50%', bgcolor: alpha(BRAND, 0.1), border: '4px solid #fff', animation: 'pulse 1.5s ease-in-out infinite' }} />
     </Container>
   )
 
@@ -227,7 +228,7 @@ export default function CompanyDetail() {
     </Container>
   )
 
-  const industryColor = INDUSTRY_COLORS[company.industry] || '#3D1C6E'
+  const industryColor = INDUSTRY_COLORS[company.industry] || BRAND
   const coverPhoto = company.coverPhoto ? resolveCompanyMediaPath(company.coverPhoto) : null
   const logoSrc = company.logo ? resolveCompanyMediaPath(company.logo) : null
   const ownerAvatar = company.owner?.profile?.avatar ? resolveMediaPath(company.owner.profile.avatar) : null
@@ -239,7 +240,7 @@ export default function CompanyDetail() {
     { label: t('companies.founded', 'Founded'), value: company.foundedYear || '-', icon: <CalendarMonthOutlined fontSize="small" /> },
   ]
 
-  const tagSx = { bgcolor: alpha('#3D1C6E', 0.1), color: '#3D1C6E', fontWeight: 700, borderRadius: 2, fontSize: '0.7rem' }
+  const tagSx = { bgcolor: alpha(BRAND, 0.1), color: BRAND, fontWeight: 700, borderRadius: RADIUS, fontSize: '0.7rem' }
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
@@ -291,7 +292,7 @@ export default function CompanyDetail() {
                 <Chip
                   label={company.industry}
                   size="small"
-                  sx={{ mt: 0.5, bgcolor: alpha(industryColor, 0.1), color: industryColor, fontWeight: 600, fontSize: '0.75rem', borderRadius: 1.5 }}
+                  sx={{ mt: 0.5, bgcolor: alpha(industryColor, 0.1), color: industryColor, fontWeight: 600, fontSize: '0.75rem', borderRadius: RADIUS }}
                 />
               )}
             </Box>
@@ -301,11 +302,11 @@ export default function CompanyDetail() {
                 startIcon={following ? <FavoriteOutlined /> : <FavoriteBorderOutlined />}
                 onClick={handleFollow}
                 color={following ? 'error' : 'primary'}
-                sx={{ borderRadius: 2, px: 2.5 }}
+                sx={{ borderRadius: RADIUS, px: 2.5 }}
               >
                 {following ? t('companies.unfollow') : t('companies.follow')} ({followersCount})
               </Button>
-              <Button variant="outlined" startIcon={<StarBorderOutlined />} onClick={() => setRatingOpen(true)} sx={{ borderRadius: 2, px: 2.5 }}>
+              <Button variant="outlined" startIcon={<StarBorderOutlined />} onClick={() => setRatingOpen(true)} sx={{ borderRadius: RADIUS, px: 2.5 }}>
                 {currentUserRating ? t('companies.updateRating') : t('companies.rate')}
               </Button>
             </Stack>
@@ -315,7 +316,7 @@ export default function CompanyDetail() {
           <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, mt: 2, justifyContent: { xs: 'center', sm: 'flex-start' }, alignItems: 'stretch' }}>
             {heroStats.map((s) => (
               <Stack key={s.label} direction="row" spacing={0.75} alignItems="center"
-                sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: alpha('#3D1C6E', 0.06) }}>
+                sx={{ px: 1.5, py: 0.75, borderRadius: RADIUS, bgcolor: alpha(BRAND, 0.06) }}>
                 <Box sx={{ color: 'primary.main', display: 'flex' }}>{s.icon}</Box>
                 <Box>
                   <Typography variant="subtitle2" fontWeight={800} lineHeight={1}>{s.value}</Typography>
@@ -350,7 +351,7 @@ export default function CompanyDetail() {
           {company.description && (
             <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
-                <Box sx={{ width: 4, height: 20, borderRadius: 2, bgcolor: industryColor }} />
+                <Box sx={{ width: 4, height: 20, borderRadius: RADIUS, bgcolor: industryColor }} />
                 <Typography variant="h6" fontWeight={700}>{t('companies.about', lang === 'ar' ? 'نبذة عن الشركة' : 'About')}</Typography>
               </Stack>
               <Typography variant="body1" sx={{ lineHeight: 1.8, color: 'text.secondary' }}>{company.description}</Typography>
@@ -361,7 +362,7 @@ export default function CompanyDetail() {
           {openJobs.length > 0 && (
             <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                <Box sx={{ width: 4, height: 20, borderRadius: 2, bgcolor: industryColor }} />
+                <Box sx={{ width: 4, height: 20, borderRadius: RADIUS, bgcolor: industryColor }} />
                 <Typography variant="h6" fontWeight={700}>{t('companies.openJobs', 'Open Jobs')}</Typography>
                 <Chip label={company.jobsCount} size="small" sx={{ ml: 0.5, bgcolor: alpha(industryColor, 0.1), color: industryColor, fontWeight: 700 }} />
               </Stack>
@@ -371,7 +372,7 @@ export default function CompanyDetail() {
                     key={job._id}
                     onClick={() => navigate(`/jobs/${job._id}`)}
                     sx={{
-                      p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider',
+                      p: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider',
                       cursor: 'pointer', transition: 'all 0.25s ease',
                       '&:hover': { borderColor: alpha(industryColor, 0.35), boxShadow: `0 4px 16px ${alpha(industryColor, 0.08)}`, transform: 'translateY(-2px)' },
                     }}
@@ -399,13 +400,13 @@ export default function CompanyDetail() {
           {/* Ratings */}
           <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
             <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-              <Box sx={{ width: 4, height: 20, borderRadius: 2, bgcolor: industryColor }} />
+              <Box sx={{ width: 4, height: 20, borderRadius: RADIUS, bgcolor: industryColor }} />
               <Typography variant="h6" fontWeight={700}>{t('companies.ratings', 'Ratings')}</Typography>
               <Chip label={company.ratings?.length || 0} size="small" sx={{ ml: 0.5, bgcolor: alpha('#F59E0B', 0.12), color: '#F59E0B', fontWeight: 700 }} />
             </Stack>
 
             {currentUserRating && (
-              <Box sx={{ mb: 2, p: 2, bgcolor: alpha('#3D1C6E', 0.03), borderRadius: 2, border: '1px solid', borderColor: alpha('#3D1C6E', 0.08) }}>
+              <Box sx={{ mb: 2, p: 2, bgcolor: alpha(BRAND, 0.03), borderRadius: RADIUS, border: '1px solid', borderColor: alpha(BRAND, 0.08) }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Typography variant="body2" fontWeight={700} color="primary.main">{t('companies.yourRating', 'Your Rating')}</Typography>
@@ -462,12 +463,12 @@ export default function CompanyDetail() {
                   </Stack>
                   <Stack spacing={1.5}>
                     {company.website && (
-                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><LanguageOutlined fontSize="small" /></Box>} href={company.website} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha(BRAND, 0.08), display: 'flex', color: 'primary.main' }}><LanguageOutlined fontSize="small" /></Box>} href={company.website} target="_blank" sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
                         {company.website.replace(/^https?:\/\//, '')}
                       </Button>
                     )}
                     {company.contactEmail && (
-                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', color: 'primary.main' }}><EmailOutlined fontSize="small" /></Box>} href={`mailto:${company.contactEmail}`} sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
+                      <Button fullWidth variant="text" startIcon={<Box component="span" sx={{ p: 1, borderRadius: '50%', bgcolor: alpha(BRAND, 0.08), display: 'flex', color: 'primary.main' }}><EmailOutlined fontSize="small" /></Box>} href={`mailto:${company.contactEmail}`} sx={{ justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', fontWeight: 600, px: 1 }}>
                         {company.contactEmail}
                       </Button>
                     )}
@@ -611,7 +612,7 @@ export default function CompanyDetail() {
       </Dialog>
 
       <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity="error" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+        <Alert severity="error" onClose={() => setToastMsg('')} sx={{ borderRadius: RADIUS }}>{toastMsg}</Alert>
       </Snackbar>
     </Container>
   )

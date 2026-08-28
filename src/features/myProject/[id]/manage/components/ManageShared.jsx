@@ -1,4 +1,5 @@
-﻿import { useEffect, useRef, useState } from 'react'
+﻿﻿import { RADIUS } from '@/theme/tokens'
+import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Stack, Chip, alpha, Paper } from '@mui/material'
 import { motion, useInView } from 'framer-motion'
 import { COLORS } from './manageConstants'
@@ -32,7 +33,7 @@ export function SectionHeader({ icon, title }) {
   return (
     <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 1.25 }}>
       <Box sx={{
-        width: 28, height: 28, borderRadius: 1, flexShrink: 0,
+        width: 28, height: 28, borderRadius: RADIUS, flexShrink: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         bgcolor: (t) => alpha(t.palette.primary.main, 0.08),
       }}>
@@ -57,7 +58,7 @@ export function StatCard({ icon, label, value, suffix, color = COLORS.primary, d
       style={{ flex: 1, minWidth: 130 }}
     >
       <Paper sx={{
-        p: 1.5, borderRadius: 1.5, textAlign: 'center', height: '100%',
+        p: 1.5, borderRadius: RADIUS, textAlign: 'center', height: '100%',
         border: '1px solid', borderColor: 'divider',
         transition: 'border-color 0.2s ease',
         '&:hover': { borderColor: 'primary.main' },

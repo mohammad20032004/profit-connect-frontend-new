@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { Box, Chip, Container, Stack, Typography, Card, Avatar, CircularProgress, Rating } from '@mui/material'
 import Button from '@/ui/Button'
@@ -12,7 +13,7 @@ import axios from 'axios'
 
 const palette = {
   deep: '#12082a',
-  berry: '#3d1c6e',
+  berry: BRAND,
 }
 
 const fadeInUp = keyframes`
@@ -142,7 +143,7 @@ export default function FeaturedCompanies() {
                 sx={{
                   textDecoration: 'none',
                   p: 3.5,
-                  borderRadius: 1,
+                  borderRadius: RADIUS,
                   border: '1px solid',
                   borderColor: 'rgba(31, 13, 66, 0.06)',
                   bgcolor: '#ffffff',

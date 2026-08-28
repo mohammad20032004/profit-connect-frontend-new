@@ -1,3 +1,4 @@
+﻿﻿import { DANGER, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import {
@@ -35,7 +36,7 @@ const STATUS_CONFIG = {
   Open: { color: '#16A34A', bg: '#DCFCE7', darkBg: '#052E16', label: 'Open' },
   InProgress: { color: '#2563EB', bg: '#DBEAFE', darkBg: '#0C1929', label: 'In Progress' },
   Completed: { color: '#6B7280', bg: '#F3F4F6', darkBg: '#374151', label: 'Completed' },
-  Cancelled: { color: '#DC2626', bg: '#FEE2E2', darkBg: '#450A0A', label: 'Cancelled' },
+  Cancelled: { color: DANGER, bg: '#FEE2E2', darkBg: '#450A0A', label: 'Cancelled' },
 }
 
 const CATEGORIES = [
@@ -67,10 +68,10 @@ function formatBudget(budget) {
 
 function ProjectSkeleton() {
   return (
-    <Paper sx={{ p: 2.5, borderRadius: 2 }}>
+    <Paper sx={{ p: 2.5, borderRadius: RADIUS }}>
       <Stack spacing={1.5}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-          <Skeleton variant="rounded" width={44} height={44} sx={{ borderRadius: 1.5 }} />
+          <Skeleton variant="rounded" width={44} height={44} sx={{ borderRadius: RADIUS }} />
           <Box sx={{ flex: 1 }}>
             <Skeleton variant="text" width="60%" height={22} />
             <Skeleton variant="text" width="30%" height={16} sx={{ mt: 0.25 }} />
@@ -211,13 +212,13 @@ export default function ProjectsList() {
                 <Paper
                   key={s.label}
                   sx={{
-                    px: 2, py: 1.5, borderRadius: 2, minWidth: 120, flex: 1,
+                    px: 2, py: 1.5, borderRadius: RADIUS, minWidth: 120, flex: 1,
                     border: '1px solid', borderColor: 'divider',
                     display: 'flex', alignItems: 'center', gap: 1.5,
                   }}
                 >
                   <Box sx={{
-                    width: 36, height: 36, borderRadius: 1.5,
+                    width: 36, height: 36, borderRadius: RADIUS,
                     bgcolor: alpha(s.color, 0.08),
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
@@ -235,13 +236,13 @@ export default function ProjectsList() {
 
         {/* Search & Filters */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }}>
-          <Paper sx={{ p: 1.5, mb: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+          <Paper sx={{ p: 1.5, mb: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: 'center' }}>
               {/* Search */}
               <Paper
                 sx={{
                   display: 'flex', alignItems: 'center', flex: 1, px: 1.5, py: 0.5,
-                  border: '1px solid', borderColor: 'divider', borderRadius: 1.5,
+                  border: '1px solid', borderColor: 'divider', borderRadius: RADIUS,
                   bgcolor: isLight ? '#FFFFFF' : alpha('#FFFFFF', 0.03),
                   transition: 'all 0.2s ease',
                   '&:focus-within': { borderColor: primaryMain, boxShadow: `0 0 0 3px ${alpha(primaryMain, 0.08)}` },
@@ -326,8 +327,8 @@ export default function ProjectsList() {
                     onClick={clearAllFilters}
                     sx={{
                       fontWeight: 600, fontSize: '0.7rem', cursor: 'pointer',
-                      bgcolor: alpha('#DC2626', 0.06), color: '#DC2626',
-                      '&:hover': { bgcolor: alpha('#DC2626', 0.12) },
+                      bgcolor: alpha(DANGER, 0.06), color: DANGER,
+                      '&:hover': { bgcolor: alpha(DANGER, 0.12) },
                     }}
                   />
                 </Stack>
@@ -347,12 +348,12 @@ export default function ProjectsList() {
         {/* Error State */}
         {error && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
-            <Paper sx={{ p: 5, textAlign: 'center', borderRadius: 1, border: '1px solid', borderColor: alpha('#DC2626', 0.2) }}>
+            <Paper sx={{ p: 5, textAlign: 'center', borderRadius: RADIUS, border: '1px solid', borderColor: alpha(DANGER, 0.2) }}>
               <Box sx={{
-                width: 56, height: 56, borderRadius: '50%', bgcolor: alpha('#DC2626', 0.08),
+                width: 56, height: 56, borderRadius: '50%', bgcolor: alpha(DANGER, 0.08),
                 display: 'flex', alignItems: 'center', justifyContent: 'center', mx: 'auto', mb: 2,
               }}>
-                <AssignmentOutlined sx={{ fontSize: 28, color: '#DC2626' }} />
+                <AssignmentOutlined sx={{ fontSize: 28, color: DANGER }} />
               </Box>
               <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
                 {lang === 'ar' ? 'حدث خطأ' : 'Something went wrong'}
@@ -430,7 +431,7 @@ export default function ProjectsList() {
                       <Paper
                         onClick={() => navigate(mine ? `/myProject/${p._id}` : `/projects/${p._id}`)}
                         sx={{
-                          p: 2.5, borderRadius: 2, cursor: 'pointer', height: '100%',
+                          p: 2.5, borderRadius: RADIUS, cursor: 'pointer', height: '100%',
                           border: '1px solid', borderColor: 'divider',
                           transition: 'all 0.2s ease',
                           display: 'flex', flexDirection: 'column',

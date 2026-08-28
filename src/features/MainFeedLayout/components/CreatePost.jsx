@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useRef, useEffect } from 'react'
 import {
   Box,
@@ -292,7 +293,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
         slotProps={{
           paper: {
             sx: {
-              borderRadius: 1,
+              borderRadius: RADIUS,
               overflow: 'hidden',
             }
           }
@@ -352,7 +353,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
                   sx={{
                     fontSize: '0.75rem',
                     height: 28,
-                    borderRadius: 1.5,
+                    borderRadius: RADIUS,
                     bgcolor: 'action.hover',
                     '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
                     '&:hover': { bgcolor: 'action.selected' },
@@ -377,7 +378,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
 
           {/* Rich Text Editor */}
           <Box sx={{
-            borderRadius: 2,
+            borderRadius: RADIUS,
             bgcolor: 'background.paper',
           }}>
             <RichTextEditor
@@ -400,7 +401,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
                     height: 24,
                     fontSize: '0.72rem',
                     fontWeight: 500,
-                    bgcolor: alpha('#3D1C6E', 0.08),
+                    bgcolor: alpha(BRAND, 0.08),
                     color: 'primary.main',
                     '& .MuiChip-deleteIcon': {
                       fontSize: 14,
@@ -444,7 +445,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
 
           {/* Media Previews */}
           {imagePreview && (
-            <Box sx={{ mt: 2, position: 'relative', borderRadius: 2, overflow: 'hidden' }}>
+            <Box sx={{ mt: 2, position: 'relative', borderRadius: RADIUS, overflow: 'hidden' }}>
               <Box
                 component="img"
                 src={imagePreview}
@@ -475,7 +476,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
           )}
 
           {videoPreview && (
-            <Box sx={{ mt: 2, position: 'relative', borderRadius: 2, overflow: 'hidden' }}>
+            <Box sx={{ mt: 2, position: 'relative', borderRadius: RADIUS, overflow: 'hidden' }}>
               <Box
                 component="video"
                 src={videoPreview}
@@ -509,7 +510,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
             <Box sx={{
               mt: 2,
               p: 1.5,
-              borderRadius: 2,
+              borderRadius: RADIUS,
               bgcolor: 'action.hover',
               border: '1px solid',
               borderColor: 'divider',
@@ -557,8 +558,8 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
                 aria-label={t('dashboard.post.addEmoji', 'Add emoji')}
                 sx={{
                   color: showEmoji ? 'primary.main' : 'text.secondary',
-                  bgcolor: showEmoji ? alpha('#3D1C6E', 0.08) : 'transparent',
-                  '&:hover': { bgcolor: alpha('#3D1C6E', 0.08) },
+                  bgcolor: showEmoji ? alpha(BRAND, 0.08) : 'transparent',
+                  '&:hover': { bgcolor: alpha(BRAND, 0.08) },
                 }}
               >
                 <EmojiEmotionsOutlined />
@@ -611,7 +612,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
             disabled={!canPost}
             aria-label={loading ? t('dashboard.post.posting', 'Posting...') : t('dashboard.post.post', 'Post')}
             sx={{
-              borderRadius: 2,
+              borderRadius: RADIUS,
               py: 1.25,
               fontSize: '0.95rem',
               fontWeight: 700,

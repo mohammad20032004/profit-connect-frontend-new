@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { Box, Typography, Avatar, CircularProgress, Stack, Chip, alpha } from '@mui/material'
 import { ErrorOutlined, WorkOutlineOutlined, LocationOnOutlined } from '@mui/icons-material'
@@ -40,7 +41,7 @@ export default function LatestJobsSidebar({ variant = 'default' }) {
 
   return (
     <Box
-      sx={variant === 'plain' ? { width: '100%' } : { borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}
+      sx={variant === 'plain' ? { width: '100%' } : { borderRadius: RADIUS, overflow: 'hidden', border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}
       role="complementary"
       aria-label={t('sidebar.latestJobs')}
     >
@@ -62,7 +63,7 @@ export default function LatestJobsSidebar({ variant = 'default' }) {
             <Box key={job._id} component={Link} to={`/jobs/${job._id}`} role="listitem"
               sx={{
                 display: 'flex', gap: 1.25, alignItems: 'flex-start', textDecoration: 'none',
-                px: 2, py: 1, mx: 1, borderRadius: 1.5, transition: 'all 0.2s ease',
+                px: 2, py: 1, mx: 1, borderRadius: RADIUS, transition: 'all 0.2s ease',
                 '&:hover': {
                   bgcolor: alpha(theme.palette.primary.main, 0.04),
                   '& .jobTitle': { color: 'primary.main' },
@@ -115,7 +116,7 @@ export default function LatestJobsSidebar({ variant = 'default' }) {
           ))}
           {displayJobs.length > 0 && (
             <Box sx={{ px: 2, pt: 0.5, pb: 1 }}>
-              <Box component={Link} to="/jobs" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, py: 0.75, color: 'primary.main', fontWeight: 600, fontSize: '0.75rem', textDecoration: 'none', borderRadius: 1, transition: 'all 0.2s', '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) } }}>
+              <Box component={Link} to="/jobs" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, py: 0.75, color: 'primary.main', fontWeight: 600, fontSize: '0.75rem', textDecoration: 'none', borderRadius: RADIUS, transition: 'all 0.2s', '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) } }}>
                 {t('sidebar.viewAll')}
               </Box>
             </Box>

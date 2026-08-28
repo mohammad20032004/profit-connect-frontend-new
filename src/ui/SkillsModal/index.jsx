@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useMemo } from 'react'
 import { Dialog, DialogTitle, DialogContent, TextField, Box, Chip, Typography, Stack, InputAdornment, IconButton } from '@mui/material'
 import { SearchOutlined, CloseOutlined } from '@mui/icons-material'
@@ -65,7 +66,7 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 1, maxHeight: '80vh', overflow: 'hidden',
+          borderRadius: RADIUS, maxHeight: '80vh', overflow: 'hidden',
           boxShadow: '0 32px 80px rgba(12,8,24,0.2)',
           animation: 'fadeUp 0.3s ease',
           '@keyframes fadeUp': { from: { opacity: 0, transform: 'translateY(12px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
@@ -99,7 +100,7 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
             },
           }}
         />
-        <Box sx={{ display: 'flex', gap: 0.6, overflowX: 'auto', pb: 0.5, '&::-webkit-scrollbar': { height: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: '#D1C8E8', borderRadius: 2 } }}>
+        <Box sx={{ display: 'flex', gap: 0.6, overflowX: 'auto', pb: 0.5, '&::-webkit-scrollbar': { height: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: '#D1C8E8', borderRadius: RADIUS } }}>
           {CATEGORIES.map((cat) => (
             <Chip
               key={cat}

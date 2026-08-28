@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { Box, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
@@ -40,7 +41,7 @@ export default function StatsBar({ companies, t }) {
                 alignItems: 'center',
                 gap: 1.5,
                 p: 2,
-                borderRadius: 2,
+                borderRadius: RADIUS,
                 bgcolor: 'background.paper',
                 border: '1px solid',
                 borderColor: 'divider',
@@ -55,7 +56,7 @@ export default function StatsBar({ companies, t }) {
                 sx={{
                   width: 42,
                   height: 42,
-                  borderRadius: 1.5,
+                  borderRadius: RADIUS,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

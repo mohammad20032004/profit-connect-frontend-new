@@ -1,4 +1,5 @@
-﻿import { useEffect, useState, useCallback } from 'react'
+﻿﻿import { RADIUS } from '@/theme/tokens'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Box, Paper, Typography, Stack, IconButton, alpha, Chip, Skeleton,
@@ -234,7 +235,7 @@ export default function AlertsView() {
         {loading ? (
           <Stack spacing={1}>
             {[1, 2, 3, 4, 5].map(i => (
-              <Paper key={i} variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+              <Paper key={i} variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
                   <Skeleton variant="circular" width={40} height={40} sx={{ flexShrink: 0 }} />
                   <Box sx={{ flex: 1 }}>
@@ -247,7 +248,7 @@ export default function AlertsView() {
             ))}
           </Stack>
         ) : items.length === 0 ? (
-          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1 }} role="status" aria-live="polite">
+          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: RADIUS }} role="status" aria-live="polite">
             <NotificationsOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
             <Typography color="text.secondary">{t('dashboard.noNotifications', 'No notifications yet')}</Typography>
           </Paper>
@@ -258,7 +259,7 @@ export default function AlertsView() {
                 const display = getNotificationDisplay(n, t)
                 return (
                   <Paper key={n._id} variant="outlined" sx={{
-                    p: 2, borderRadius: 2,
+                    p: 2, borderRadius: RADIUS,
                     borderColor: n.read ? 'divider' : alpha(theme.palette[display.color].main, 0.25),
                     bgcolor: n.read ? 'transparent' : alpha(theme.palette[display.color].main, 0.04),
                     cursor: 'pointer',

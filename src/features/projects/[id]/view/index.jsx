@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -161,12 +162,12 @@ export default function ProjectDetail() {
         </Stack>
 
         {/* Single Horizontal Card */}
-        <Paper sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+        <Paper sx={{ borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
           <Grid container>
 
             {/* ── Left: Main Content (scrollable) ── */}
             <Grid size={{ xs: 12, md: 7 }} sx={{ borderColor: 'divider' }}>
-              <Box sx={{ p: { xs: 2.5, md: 3 }, overflow: 'auto', maxHeight: { md: 'calc(100vh - 140px)' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}>
+              <Box sx={{ p: { xs: 2.5, md: 3 }, overflow: 'auto', maxHeight: { md: 'calc(100vh - 140px)' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: RADIUS } }}>
 
                 {/* Title + Category */}
                 <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', mb: 2 }}>
@@ -244,7 +245,7 @@ export default function ProjectDetail() {
                 maxHeight: { md: 'calc(100vh - 140px)' },
                 overflow: 'auto',
                 '&::-webkit-scrollbar': { width: 4 },
-                '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 },
+                '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: RADIUS },
               }}>
 
                 {/* Client Actions */}
@@ -295,7 +296,7 @@ export default function ProjectDetail() {
 
                 {/* Freelancer: Success */}
                 {!isClient && proposalSent && (
-                  <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 1.5, textAlign: 'center', border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`, mb: 2.5 }}>
+                  <Paper variant="outlined" sx={{ p: 2.5, borderRadius: RADIUS, textAlign: 'center', border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`, mb: 2.5 }}>
                     <CheckCircleOutlined sx={{ fontSize: 36, color: 'success.main', mb: 0.5 }} />
                     <Typography variant="body2" fontWeight="bold" color="success.main">{t('projects.proposalSent', 'Your proposal has been submitted!')}</Typography>
                     <Divider sx={{ mt: 2 }} />
@@ -384,7 +385,7 @@ export default function ProjectDetail() {
                 const name = prof.firstName && prof.lastName ? `${prof.firstName} ${prof.lastName}` : user.email || user.name || t('projects.anonymous', 'Anonymous')
                 return (
                   <Paper key={p._id} variant="outlined" sx={{
-                    p: 2, borderRadius: 2,
+                    p: 2, borderRadius: RADIUS,
                     borderColor: idx === 0 ? alpha('#16A34A', 0.3) : undefined,
                     bgcolor: idx === 0 ? alpha('#16A34A', 0.03) : undefined,
                   }}>
@@ -464,7 +465,7 @@ export default function ProjectDetail() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         sx={{ mt: 8 }}
       >
-        <Alert severity="error" variant="filled" onClose={() => setToastMsg('')} sx={{ borderRadius: 2, alignItems: 'center' }}>
+        <Alert severity="error" variant="filled" onClose={() => setToastMsg('')} sx={{ borderRadius: RADIUS, alignItems: 'center' }}>
           {toastMsg}
         </Alert>
       </Snackbar>

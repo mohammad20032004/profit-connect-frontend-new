@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { Box, Container, Grid, Stack, Divider } from '@mui/material'
 import InfoSide from '../components/InfoSide'
 import PostsSection from '../components/PostsSection'
@@ -21,7 +22,7 @@ function DashboardView() {
         <Grid container spacing={2} sx={{ height: '100%' }}>
           <Grid
             size={{ xs: 12, lg: 2.5 }}
-            sx={{ height: '100%', overflow: 'auto', py: 'auto', display: { xs: 'none', lg: 'block' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}
+            sx={{ height: '100%', overflow: 'auto', py: 'auto', display: { xs: 'none', lg: 'block' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: RADIUS } }}
           >
             <Stack spacing={2}>
               <AnimatedBox delay={0} sx={{ width: '100%' }}>
@@ -43,7 +44,7 @@ function DashboardView() {
           </Grid>
           <Grid
             size={{ xs: 12, lg: 2.5 }}
-            sx={{ height: '100%', overflow: 'auto', display: { xs: 'none', lg: 'block' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}
+            sx={{ height: '100%', overflow: 'auto', display: { xs: 'none', lg: 'block' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: RADIUS } }}
           >
             <Stack spacing={2}>
               <AnimatedBox delay={0.2} sx={{ width: '100%' }}>

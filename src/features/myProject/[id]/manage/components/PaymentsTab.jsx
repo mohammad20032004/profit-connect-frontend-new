@@ -1,4 +1,5 @@
-﻿import { useState, useEffect, useCallback } from 'react'
+﻿﻿import { RADIUS } from '@/theme/tokens'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Box, Paper, Typography, Stack, Dialog, DialogTitle, DialogContent, DialogActions,
   Chip, useMediaQuery, alpha, Avatar, CircularProgress, Snackbar, Alert,
@@ -71,7 +72,7 @@ function MethodCard({ m, selected, onSelect }) {
       aria-checked={selected}
       sx={{
         flex: '1 1 0', minWidth: 96, cursor: 'pointer',
-        borderRadius: 1.5, p: 1.5, textAlign: 'center',
+        borderRadius: RADIUS, p: 1.5, textAlign: 'center',
         border: '2px solid', userSelect: 'none',
         borderColor: selected ? m.color : 'divider',
         bgcolor: selected ? m.bg : 'background.paper',
@@ -95,7 +96,7 @@ function CardPreview({ form, currency }) {
   const m = methodMeta(form.method)
   return (
     <Box sx={{
-      borderRadius: 1.5, p: 2.5, color: '#fff',
+      borderRadius: RADIUS, p: 2.5, color: '#fff',
       background: `linear-gradient(135deg, ${m.color} 0%, ${alpha(m.color, 0.72)} 100%)`,
       boxShadow: `0 10px 24px ${alpha(m.color, 0.35)}`,
       position: 'relative', overflow: 'hidden',
@@ -306,7 +307,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
           <Typography variant="caption" color="text.secondary">...</Typography>
         </Stack>
       ) : invoices.length === 0 ? (
-        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1.5, borderStyle: 'dashed' }}>
+        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: RADIUS, borderStyle: 'dashed' }}>
           <ReceiptLongOutlined sx={{ fontSize: 44, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
           <Typography color="text.secondary">{t('manage.noInvoices', 'No payments yet')}</Typography>
         </Paper>
@@ -329,14 +330,14 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                     layout
                   >
                     <Paper variant="outlined" sx={{
-                      p: 2, borderRadius: 1.5,
+                      p: 2, borderRadius: RADIUS,
                       borderColor: p.status === 'held' ? alpha(cfg.color, 0.4) : p.status === 'released' ? alpha(COLORS.success, 0.35) : 'divider',
                       transition: 'all 0.2s ease',
                       '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },
                     }}>
                       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
                         <Box sx={{
-                          width: 40, height: 40, borderRadius: 1.5, flexShrink: 0,
+                          width: 40, height: 40, borderRadius: RADIUS, flexShrink: 0,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           bgcolor: alpha(cfg.color, 0.1), color: cfg.color,
                         }}>
@@ -390,7 +391,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                               startIcon={releasingId === p._id ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <VerifiedOutlined sx={{ fontSize: 16 }} />}
                               onClick={() => setReleaseTarget(p)}
                               disabled={releasingId === p._id}
-                              sx={{ borderRadius: 1.5, fontWeight: 700, textTransform: 'none', px: 2, minHeight: 40, whiteSpace: 'nowrap' }}
+                              sx={{ borderRadius: RADIUS, fontWeight: 700, textTransform: 'none', px: 2, minHeight: 40, whiteSpace: 'nowrap' }}
                             >
                               {t('manage.releasePay', 'تحرير')}
                             </Button>
@@ -418,7 +419,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
         <DialogContent dividers>
           <Stack spacing={2.25}>
             <Box sx={{
-              p: 1.75, borderRadius: 1.5, border: '1px dashed',
+              p: 1.75, borderRadius: RADIUS, border: '1px dashed',
               borderColor: alpha(COLORS.warning, 0.5), bgcolor: alpha(COLORS.warning, 0.05),
               display: 'flex', alignItems: 'center', gap: 1,
             }}>
@@ -433,7 +434,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
               </Stack>
             ) : teamMembers.length === 0 ? (
               <Paper variant="outlined" sx={{
-                p: 1.5, borderRadius: 1.5, display: 'flex', alignItems: 'center', gap: 1.5,
+                p: 1.5, borderRadius: RADIUS, display: 'flex', alignItems: 'center', gap: 1.5,
                 bgcolor: alpha(COLORS.warning, 0.06), borderColor: alpha(COLORS.warning, 0.4),
               }}>
                 <InfoOutlined sx={{ fontSize: 20, color: COLORS.warning }} />
@@ -456,7 +457,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
                     return (
                        <Box key={m.id} onClick={() => setPayeeId(m.id)}
                          sx={{
-                           cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 1.5, p: 1.25, borderRadius: 1.5, minWidth: 0,
+                           cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 1.5, p: 1.25, borderRadius: RADIUS, minWidth: 0,
                            border: '2px solid', userSelect: 'none',
                           borderColor: selected ? COLORS.success : 'divider',
                           bgcolor: selected ? alpha(COLORS.success, 0.06) : 'background.paper',
@@ -507,7 +508,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
             ) : form.method === 'ShamCash' ? (
               <>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-                  <Box component="img" src="/logo/shamcash.jpg" alt="ShamCash" sx={{ width: 32, height: 32, borderRadius: 1, objectFit: 'cover' }} />
+                  <Box component="img" src="/logo/shamcash.jpg" alt="ShamCash" sx={{ width: 32, height: 32, borderRadius: RADIUS, objectFit: 'cover' }} />
                   <Typography variant="body2" fontWeight={700} sx={{ color: '#1B8C5A' }}>ShamCash</Typography>
                 </Box>
                 <TextField label={t('manage.shamcashReceiver', 'Receiver Code')} value={form.shamcashReceiver} onChange={set('shamcashReceiver')}
@@ -532,7 +533,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
               </>
             ) : (
               <Paper variant="outlined" sx={{
-                p: 1.75, borderRadius: 1.5,
+                p: 1.75, borderRadius: RADIUS,
                 bgcolor: form.method === 'PayPal' ? alpha('#003087', 0.05) : alpha('#111111', 0.04),
                 borderColor: form.method === 'PayPal' ? alpha('#003087', 0.25) : alpha('#111111', 0.15),
                 display: 'flex', alignItems: 'center', gap: 1.5,
@@ -575,14 +576,14 @@ export default function PaymentsTab({ id, overview, onChanged }) {
           {releaseTarget && (
             <Stack spacing={2}>
               <Paper variant="outlined" sx={{
-                p: 2, borderRadius: 1.5, bgcolor: alpha(COLORS.success, 0.05), borderColor: alpha(COLORS.success, 0.25),
+                p: 2, borderRadius: RADIUS, bgcolor: alpha(COLORS.success, 0.05), borderColor: alpha(COLORS.success, 0.25),
                 textAlign: 'center',
               }}>
                 <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>{releaseTarget.note || t('manage.untitledPayment', 'Payment')}</Typography>
                 <Typography variant="h6" fontWeight={800} color="success.main">{formatCurrency(releaseTarget.amount, currency)}</Typography>
               </Paper>
               <Box sx={{
-                p: 1.75, borderRadius: 1.5, border: '1px dashed',
+                p: 1.75, borderRadius: RADIUS, border: '1px dashed',
                 borderColor: alpha(COLORS.warning, 0.5), bgcolor: alpha(COLORS.warning, 0.05),
                 display: 'flex', alignItems: 'flex-start', gap: 1,
               }}>
@@ -605,7 +606,7 @@ export default function PaymentsTab({ id, overview, onChanged }) {
       <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
         <Alert onClose={() => setSnackbar((p) => ({ ...p, open: false }))} severity={snackbar.severity}
-          variant="filled" sx={{ width: '100%', fontWeight: 600, borderRadius: 2 }}>
+          variant="filled" sx={{ width: '100%', fontWeight: 600, borderRadius: RADIUS }}>
           {snackbar.message}
         </Alert>
       </Snackbar>

@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -25,7 +26,7 @@ const STATUS_ACTIONS = {
 const STATUS_COLORS = {
   Pending: { bg: '#FFF3E0', color: '#E65100' },
   Reviewed: { bg: '#E3F2FD', color: '#1565C0' },
-  Shortlisted: { bg: '#EDE7F6', color: '#3D1C6E' },
+  Shortlisted: { bg: '#EDE7F6', color: BRAND },
   Accepted: { bg: '#E8F5E9', color: '#2E7D32' },
   Rejected: { bg: '#FFEBEE', color: '#C62828' },
 }
@@ -128,7 +129,7 @@ export default function JobApplicants() {
           {loading ? (
             <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
           ) : applicants.length === 0 ? (
-            <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+            <Paper sx={{ p: 4, textAlign: 'center', borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
               <PeopleOutlined sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
               <Typography variant="h6" fontWeight="bold">{t('applicants.noApplicants')}</Typography>
               <Typography variant="body2" color="text.secondary">{t('applicants.noApplicantsDesc')}</Typography>
@@ -142,10 +143,10 @@ export default function JobApplicants() {
                 <Paper
                   key={app._id || i}
                   sx={{
-                    p: 2.5, borderRadius: 1.5, border: '1px solid', borderColor: 'divider',
+                    p: 2.5, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
-                    '&:hover': { borderColor: '#3D1C6E', boxShadow: '0 4px 16px rgba(61,28,110,0.06)' },
+                    '&:hover': { borderColor: BRAND, boxShadow: '0 4px 16px rgba(61,28,110,0.06)' },
                   }}
                   onClick={() => setDetailOpen(app)}
                 >
@@ -154,9 +155,9 @@ export default function JobApplicants() {
                       src={profile.avatar}
                       sx={{
                         width: 44, height: 44, flexShrink: 0,
-                        bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
+                        bgcolor: alpha(BRAND, 0.08), color: BRAND,
                         fontSize: '0.85rem', fontWeight: 700,
-                        border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
+                        border: `1px solid ${alpha(BRAND, 0.12)}`,
                       }}
                     >
                       {profile.firstName?.charAt(0)}
@@ -184,8 +185,8 @@ export default function JobApplicants() {
                             <Chip key={skill} label={skill} size="small"
                               sx={{
                                 height: 18, fontSize: '0.55rem', fontWeight: 500,
-                                bgcolor: alpha('#3D1C6E', 0.06), color: '#3D1C6E',
-                                border: `1px solid ${alpha('#3D1C6E', 0.1)}`,
+                                bgcolor: alpha(BRAND, 0.06), color: BRAND,
+                                border: `1px solid ${alpha(BRAND, 0.1)}`,
                               }} />
                           ))}
                           {professional.skills.length > 3 && (
@@ -244,9 +245,9 @@ export default function JobApplicants() {
                     src={profile.avatar}
                     sx={{
                       width: 48, height: 48,
-                      bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
+                      bgcolor: alpha(BRAND, 0.08), color: BRAND,
                       fontSize: '1rem', fontWeight: 700,
-                      border: `2px solid ${alpha('#3D1C6E', 0.12)}`,
+                      border: `2px solid ${alpha(BRAND, 0.12)}`,
                     }}
                   >
                     {profile.firstName?.charAt(0)}
@@ -282,17 +283,17 @@ export default function JobApplicants() {
                     <SectionTitle>{t('employerApplications.contactInfo')}</SectionTitle>
                     <Stack spacing={1.5}>
                       {detailOpen.applicant?.email && (
-                        <InfoRow icon={<EmailOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />}
+                        <InfoRow icon={<EmailOutlined sx={{ fontSize: 16, color: BRAND }} />}
                           label={t('employerApplications.email')}
                           value={detailOpen.applicant.email} />
                       )}
                       {profile.phoneNumber && (
-                        <InfoRow icon={<PhoneOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />}
+                        <InfoRow icon={<PhoneOutlined sx={{ fontSize: 16, color: BRAND }} />}
                           label={t('employerApplications.phone')}
                           value={profile.phoneNumber} />
                       )}
                       {profile.location && (
-                        <InfoRow icon={<LocationOnOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />}
+                        <InfoRow icon={<LocationOnOutlined sx={{ fontSize: 16, color: BRAND }} />}
                           label={t('employerApplications.location')}
                           value={profile.location} />
                       )}
@@ -334,8 +335,8 @@ export default function JobApplicants() {
                             <Chip key={skill} label={skill} size="small"
                               sx={{
                                 height: 24, fontSize: '0.7rem', fontWeight: 500,
-                                bgcolor: alpha('#3D1C6E', 0.06), color: '#3D1C6E',
-                                border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
+                                bgcolor: alpha(BRAND, 0.06), color: BRAND,
+                                border: `1px solid ${alpha(BRAND, 0.12)}`,
                               }} />
                           ))}
                         </Stack>
@@ -349,7 +350,7 @@ export default function JobApplicants() {
                   {detailOpen.coverLetter && (
                     <Box>
                       <SectionTitle>{t('applicants.coverLetter')}</SectionTitle>
-                      <Paper variant="outlined" sx={{ p: 2, borderRadius: 1.5, borderColor: 'divider' }}>
+                      <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, borderColor: 'divider' }}>
                         <Typography variant="body2" sx={{ lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'text.primary' }}>
                           {detailOpen.coverLetter}
                         </Typography>
@@ -385,7 +386,7 @@ export default function JobApplicants() {
                       {detailOpen.resume.endsWith('.pdf') && (
                         <Box sx={{
                           mt: 1.5, border: '1px solid', borderColor: 'divider',
-                          borderRadius: 1.5, overflow: 'hidden', height: 400,
+                          borderRadius: RADIUS, overflow: 'hidden', height: 400,
                         }}>
                           <iframe
                             src={detailOpen.resume}

@@ -13,7 +13,8 @@
   "header": {
     "search": "Search for jobs, skills, or people",
     "me": "Me",
-    "forBusiness": "For Business"
+    "forBusiness": "For Business",
+    "menu": "Menu"
   },
   "menu": {
     "viewProfile": "View Profile",

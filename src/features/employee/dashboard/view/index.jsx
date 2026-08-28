@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -72,7 +73,7 @@ export default function EmployeeDashboard() {
           {/* Company Identity */}
           {company && (
             <Fade in timeout={500}>
-              <Paper sx={{ p: 2.5, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+              <Paper sx={{ p: 2.5, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Avatar src={company.logo ? resolveCompanyMediaPath(company.logo) : undefined} sx={{ width: 52, height: 52, bgcolor: 'primary.main', fontSize: 20 }}>
                     {company.name?.charAt(0)}
@@ -91,7 +92,7 @@ export default function EmployeeDashboard() {
 
           {/* Permissions */}
           <Fade in timeout={600}>
-            <Paper sx={{ p: 2.5, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+            <Paper sx={{ p: 2.5, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
               <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.7rem', color: 'text.secondary' }}>
                 {t('employeeDashboard.yourPermissions')}
               </Typography>
@@ -121,7 +122,7 @@ export default function EmployeeDashboard() {
                   { label: t('employeeDashboard.totalApplicants'), value: stats.totalApplicants ?? 0, color: 'warning.main' },
                 ].map((s) => (
                   <Paper key={s.label} sx={{
-                    flex: 1, p: 2, borderRadius: 1.5, textAlign: 'center',
+                    flex: 1, p: 2, borderRadius: RADIUS, textAlign: 'center',
                     border: '1px solid', borderColor: 'divider',
                   }}>
                     <Typography variant="h5" fontWeight="bold" sx={{ color: s.color }}>{s.value}</Typography>

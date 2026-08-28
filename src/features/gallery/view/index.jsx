@@ -1,3 +1,4 @@
+﻿import { RADIUS } from '@/theme/tokens'
 import { useEffect, useState } from 'react'
 import { Container, Box, Avatar, Typography, Stack, CircularProgress, Grid, Chip, alpha, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material'
 import Button from '@/ui/Button'
@@ -49,7 +50,7 @@ function CollectionCard({ collection, isOwner, onOpen, onEdit, onDelete }) {
         maxWidth: 240,
         cursor: 'pointer',
         position: 'relative',
-        borderRadius: 2,
+        borderRadius: RADIUS,
         border: '1px solid',
         borderColor: 'divider',
         overflow: 'hidden',

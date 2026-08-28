@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
 import {
@@ -392,10 +393,10 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
         )}
 
         {post?.image && (
-          <Box component="img" src={post.image} alt={t('dashboard.post.image')} sx={{ mt: 2, width: '100%', maxHeight: 400, objectFit: 'cover', borderRadius: 2, border: '1px solid', borderColor: 'divider' }} />
+          <Box component="img" src={post.image} alt={t('dashboard.post.image')} sx={{ mt: 2, width: '100%', maxHeight: 400, objectFit: 'cover', borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }} />
         )}
         {post?.video && (
-          <Box component="video" src={post.video} controls sx={{ mt: 2, width: '100%', maxHeight: 400, borderRadius: 2, border: '1px solid', borderColor: 'divider' }} />
+          <Box component="video" src={post.video} controls sx={{ mt: 2, width: '100%', maxHeight: 400, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }} />
         )}
       </Box>
 
@@ -422,22 +423,22 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
 
       <Stack direction="row" sx={{ px: 1, py: 0.5 }}>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth variant="text" startIcon={liked ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleLike} sx={{ color: liked ? 'error.main' : 'text.secondary', fontWeight: liked ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'error.light', color: 'error.main' } }}>
+          <Button fullWidth variant="text" startIcon={liked ? <FavoriteOutlined /> : <FavoriteBorderOutlined />} onClick={handleLike} sx={{ color: liked ? 'error.main' : 'text.secondary', fontWeight: liked ? 700 : 500, borderRadius: RADIUS, py: 1, '&:hover': { bgcolor: 'error.light', color: 'error.main' } }}>
             {t('dashboard.action.like')}
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth variant="text" startIcon={<ChatBubbleOutlineOutlined />} onClick={() => setShowComments(!showComments)} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+          <Button fullWidth variant="text" startIcon={<ChatBubbleOutlineOutlined />} onClick={() => setShowComments(!showComments)} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: RADIUS, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
             {t('dashboard.action.comment')}
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth variant="text" startIcon={<RepeatOutlined />} onClick={handleOpenShare} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+          <Button fullWidth variant="text" startIcon={<RepeatOutlined />} onClick={handleOpenShare} sx={{ color: 'text.secondary', fontWeight: 500, borderRadius: RADIUS, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
             {t('dashboard.action.share')}
           </Button>
         </Box>
         <Box component={motion.div} {...btnAnim} sx={{ flex: 1 }}>
-          <Button fullWidth variant="text" startIcon={saved ? <BookmarkOutlined /> : <BookmarkBorderOutlined />} onClick={handleSave} disabled={saveLoading} sx={{ color: saved ? 'primary.main' : 'text.secondary', fontWeight: saved ? 700 : 500, borderRadius: 1, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+          <Button fullWidth variant="text" startIcon={saved ? <BookmarkOutlined /> : <BookmarkBorderOutlined />} onClick={handleSave} disabled={saveLoading} sx={{ color: saved ? 'primary.main' : 'text.secondary', fontWeight: saved ? 700 : 500, borderRadius: RADIUS, py: 1, '&:hover': { bgcolor: 'action.hover' } }}>
             {t('dashboard.action.save')}
           </Button>
         </Box>
@@ -449,7 +450,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
         onClose={handleCloseShare}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        slotProps={{ paper: { sx: { minWidth: 280, borderRadius: 2, mt: 0.5, p: 0.5 } } }}
+        slotProps={{ paper: { sx: { minWidth: 280, borderRadius: RADIUS, mt: 0.5, p: 0.5 } } }}
       >
         <Box sx={{ px: 2, pt: 1.5, pb: 0.5 }}>
           <Typography variant="subtitle2" fontWeight={700}>{t('dashboard.share.title', 'Share post')}</Typography>
@@ -467,7 +468,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
                 alignItems: 'center',
                 gap: 0.75,
                 py: 1.5,
-                borderRadius: 2,
+                borderRadius: RADIUS,
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
                 '&:hover': { bgcolor: 'action.hover' },
@@ -503,7 +504,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
                       transition={{ duration: 0.3, delay: idx * 0.04, ease: 'easeOut' }}
                     >
                       <UserAvatar src={cAvatar} name={cName} role={comment.user?.role} gender={cProfile?.gender} sx={{ width: 32, height: 32 }} />
-                      <Box sx={{ bgcolor: 'action.hover', borderRadius: 2, p: 1.5, flex: 1, position: 'relative' }}>
+                      <Box sx={{ bgcolor: 'action.hover', borderRadius: RADIUS, p: 1.5, flex: 1, position: 'relative' }}>
                         <Typography variant="subtitle2" fontWeight="bold">{cName}</Typography>
                         <Box
                           className="comment-content"
@@ -559,7 +560,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
         <DialogContent>
           <Box sx={{
             mt: 1,
-            borderRadius: 2,
+            borderRadius: RADIUS,
             bgcolor: 'background.paper',
           }}>
             <RichTextEditor
@@ -599,7 +600,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
       </Dialog>
 
       <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity="success" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+        <Alert severity="success" onClose={() => setToastMsg('')} sx={{ borderRadius: RADIUS }}>{toastMsg}</Alert>
       </Snackbar>
     </Paper>
   )
@@ -624,7 +625,7 @@ function PostSkeleton() {
           <Skeleton variant="text" width="70%" height={16} />
         </Box>
 
-        <Skeleton variant="rectangular" width="100%" height={200} sx={{ mt: 2, borderRadius: 2 }} />
+        <Skeleton variant="rectangular" width="100%" height={200} sx={{ mt: 2, borderRadius: RADIUS }} />
       </Box>
 
       <Divider sx={{ mx: 3 }} />

@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -23,13 +24,13 @@ import {
 const STATUS_COLORS = {
   Pending: { bg: '#FFF3E0', color: '#E65100', label: 'warning' },
   Reviewed: { bg: '#E3F2FD', color: '#1565C0', label: 'info' },
-  Shortlisted: { bg: '#EDE7F6', color: '#3D1C6E', label: 'primary' },
+  Shortlisted: { bg: '#EDE7F6', color: BRAND, label: 'primary' },
   Accepted: { bg: '#E8F5E9', color: '#2E7D32', label: 'success' },
   Rejected: { bg: '#FFEBEE', color: '#C62828', label: 'error' },
 }
 
 const TYPE_COLORS = {
-  'Full-time': { bg: '#EDE7F6', color: '#3D1C6E' },
+  'Full-time': { bg: '#EDE7F6', color: BRAND },
   'Part-time': { bg: '#E3F2FD', color: '#1565C0' },
   'Freelance': { bg: '#E0F7FA', color: '#00838F' },
   'Internship': { bg: '#E8F5E9', color: '#2E7D32' },
@@ -139,15 +140,15 @@ export default function EmployerApplications() {
       <Box
         onClick={() => { setSelectedJob(null); if (isMobile) setSidebarOpen(false) }}
         sx={{
-          p: 1.5, borderRadius: 1.5, cursor: 'pointer',
-          bgcolor: !selectedJob ? alpha('#3D1C6E', 0.08) : 'transparent',
-          border: '1px solid', borderColor: !selectedJob ? '#3D1C6E' : 'transparent',
+          p: 1.5, borderRadius: RADIUS, cursor: 'pointer',
+          bgcolor: !selectedJob ? alpha(BRAND, 0.08) : 'transparent',
+          border: '1px solid', borderColor: !selectedJob ? BRAND : 'transparent',
           transition: 'all 0.2s ease',
-          '&:hover': { bgcolor: alpha('#3D1C6E', 0.04) },
+          '&:hover': { bgcolor: alpha(BRAND, 0.04) },
         }}
       >
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-          <WorkOutlineOutlined sx={{ fontSize: 18, color: !selectedJob ? '#3D1C6E' : 'text.secondary' }} />
+          <WorkOutlineOutlined sx={{ fontSize: 18, color: !selectedJob ? BRAND : 'text.secondary' }} />
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="body2" fontWeight={600} fontSize="0.8rem" noWrap>
               {t('employerApplications.allJobs')}
@@ -168,11 +169,11 @@ export default function EmployerApplications() {
             key={job._id}
             onClick={() => { setSelectedJob(job); if (isMobile) setSidebarOpen(false) }}
             sx={{
-              p: 1.25, borderRadius: 1.5, cursor: 'pointer',
-              bgcolor: isSelected ? alpha('#3D1C6E', 0.08) : 'transparent',
-              border: '1px solid', borderColor: isSelected ? '#3D1C6E' : 'transparent',
+              p: 1.25, borderRadius: RADIUS, cursor: 'pointer',
+              bgcolor: isSelected ? alpha(BRAND, 0.08) : 'transparent',
+              border: '1px solid', borderColor: isSelected ? BRAND : 'transparent',
               transition: 'all 0.2s ease',
-              '&:hover': { bgcolor: isSelected ? alpha('#3D1C6E', 0.08) : alpha('#000', 0.02) },
+              '&:hover': { bgcolor: isSelected ? alpha(BRAND, 0.08) : alpha('#000', 0.02) },
             }}
           >
             <Typography variant="body2" fontWeight={600} fontSize="0.78rem" noWrap sx={{ mb: 0.25 }}>
@@ -225,7 +226,7 @@ export default function EmployerApplications() {
           {!isMobile && (
             <Grid size={{ xs: 12, md: 3 }}>
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-                <Paper sx={{ p: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88, maxHeight: 'calc(100vh - 110px)', overflowY: 'auto' }}>
+                <Paper sx={{ p: 1.5, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88, maxHeight: 'calc(100vh - 110px)', overflowY: 'auto' }}>
                   <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 1 }}>
                     <FilterListOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
                     <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: '0.85rem' }}>
@@ -286,7 +287,7 @@ export default function EmployerApplications() {
                 {loadingJobs ? (
                   <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
                 ) : jobs.length === 0 ? (
-                  <Paper sx={{ p: 5, textAlign: 'center', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+                  <Paper sx={{ p: 5, textAlign: 'center', borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
                     <WorkOutlineOutlined sx={{ fontSize: 56, color: 'action.disabled', mb: 1.5 }} />
                     <Typography variant="h6" fontWeight={700}>{t('employerApplications.noJobs')}</Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>{t('employerApplications.noJobsDesc')}</Typography>
@@ -304,14 +305,14 @@ export default function EmployerApplications() {
                           <Paper
                             onClick={() => setSelectedJob(job)}
                             sx={{
-                              p: 2, borderRadius: 2, cursor: 'pointer',
+                              p: 2, borderRadius: RADIUS, cursor: 'pointer',
                               border: '1px solid', borderColor: 'divider',
                               transition: 'all 0.2s ease',
-                              '&:hover': { borderColor: '#3D1C6E', boxShadow: '0 4px 16px rgba(61,28,110,0.06)' },
+                              '&:hover': { borderColor: BRAND, boxShadow: '0 4px 16px rgba(61,28,110,0.06)' },
                             }}
                           >
                             <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
-                              <Avatar sx={{ width: 40, height: 40, bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E', fontSize: '0.85rem', fontWeight: 700, border: `1px solid ${alpha('#3D1C6E', 0.12)}` }}>
+                              <Avatar sx={{ width: 40, height: 40, bgcolor: alpha(BRAND, 0.08), color: BRAND, fontSize: '0.85rem', fontWeight: 700, border: `1px solid ${alpha(BRAND, 0.12)}` }}>
                                 {job.title?.charAt(0)?.toUpperCase()}
                               </Avatar>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -334,7 +335,7 @@ export default function EmployerApplications() {
                                 size="small"
                                 sx={{
                                   height: 24, fontWeight: 700, fontSize: '0.7rem',
-                                  bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
+                                  bgcolor: alpha(BRAND, 0.08), color: BRAND,
                                 }}
                               />
                             </Stack>
@@ -350,7 +351,7 @@ export default function EmployerApplications() {
               <Stack spacing={2}>
                 {/* Job Header */}
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                  <Paper sx={{ p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+                  <Paper sx={{ p: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
                     <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                       {!isMobile && (
                         <IconButton size="small" onClick={() => setSelectedJob(null)} sx={{ color: 'text.secondary' }}>
@@ -358,7 +359,7 @@ export default function EmployerApplications() {
                         </IconButton>
                       )}
                       {isMobile && (
-                        <IconButton size="small" onClick={() => setSidebarOpen(true)} sx={{ color: '#3D1C6E' }}>
+                        <IconButton size="small" onClick={() => setSidebarOpen(true)} sx={{ color: BRAND }}>
                           <FilterListOutlined />
                         </IconButton>
                       )}
@@ -375,7 +376,7 @@ export default function EmployerApplications() {
                 {/* Search + Filters */}
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                    <Paper sx={{ display: 'flex', alignItems: 'center', px: 2, py: 0.5, flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                    <Paper sx={{ display: 'flex', alignItems: 'center', px: 2, py: 0.5, flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: RADIUS }}>
                       <SearchOutlined sx={{ color: 'text.secondary', mr: 1 }} />
                       <InputBase
                         placeholder={t('employerApplications.search')}
@@ -403,7 +404,7 @@ export default function EmployerApplications() {
                 {loadingApplicants ? (
                   <Box sx={{ textAlign: 'center', py: 6 }}><CircularProgress /></Box>
                 ) : filtered.length === 0 ? (
-                  <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+                  <Paper sx={{ p: 4, textAlign: 'center', borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
                     <PeopleOutlined sx={{ fontSize: 48, color: 'action.disabled', mb: 1 }} />
                     <Typography variant="h6" fontWeight={700}>{t('employerApplications.noApplicants')}</Typography>
                     <Typography variant="body2" color="text.secondary">{t('employerApplications.noApplicantsDesc')}</Typography>
@@ -418,10 +419,10 @@ export default function EmployerApplications() {
                             <Paper
                               onClick={() => setDetailApplicant(app)}
                               sx={{
-                                p: 2, borderRadius: 2, cursor: 'pointer',
+                                p: 2, borderRadius: RADIUS, cursor: 'pointer',
                                 border: '1px solid', borderColor: 'divider',
                                 transition: 'all 0.2s ease',
-                                '&:hover': { borderColor: '#3D1C6E', boxShadow: '0 4px 16px rgba(61,28,110,0.06)' },
+                                '&:hover': { borderColor: BRAND, boxShadow: '0 4px 16px rgba(61,28,110,0.06)' },
                               }}
                             >
                               <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
@@ -429,9 +430,9 @@ export default function EmployerApplications() {
                                   src={app.applicant?.profile?.avatar}
                                   sx={{
                                     width: 44, height: 44, flexShrink: 0,
-                                    bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
+                                    bgcolor: alpha(BRAND, 0.08), color: BRAND,
                                     fontSize: '0.85rem', fontWeight: 700,
-                                    border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
+                                    border: `1px solid ${alpha(BRAND, 0.12)}`,
                                   }}
                                 >
                                   {app.applicant?.profile?.firstName?.charAt(0)}
@@ -507,7 +508,7 @@ export default function EmployerApplications() {
                   )}
                   <Avatar
                     src={profile.avatar}
-                    sx={{ width: 48, height: 48, bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E', fontSize: '1rem', fontWeight: 700, border: `2px solid ${alpha('#3D1C6E', 0.12)}` }}
+                    sx={{ width: 48, height: 48, bgcolor: alpha(BRAND, 0.08), color: BRAND, fontSize: '1rem', fontWeight: 700, border: `2px solid ${alpha(BRAND, 0.12)}` }}
                   >
                     {profile.firstName?.charAt(0)}
                   </Avatar>
@@ -543,17 +544,17 @@ export default function EmployerApplications() {
                     <Grid container spacing={1.5}>
                       {app.applicant?.email && (
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <InfoItem icon={<EmailOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />} label={t('employerApplications.email')} value={app.applicant.email} />
+                          <InfoItem icon={<EmailOutlined sx={{ fontSize: 16, color: BRAND }} />} label={t('employerApplications.email')} value={app.applicant.email} />
                         </Grid>
                       )}
                       {profile.phoneNumber && (
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <InfoItem icon={<PhoneOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />} label={t('employerApplications.phone')} value={profile.phoneNumber} />
+                          <InfoItem icon={<PhoneOutlined sx={{ fontSize: 16, color: BRAND }} />} label={t('employerApplications.phone')} value={profile.phoneNumber} />
                         </Grid>
                       )}
                       {profile.location && (
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          <InfoItem icon={<LocationOnOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />} label={t('employerApplications.location')} value={profile.location} />
+                          <InfoItem icon={<LocationOnOutlined sx={{ fontSize: 16, color: BRAND }} />} label={t('employerApplications.location')} value={profile.location} />
                         </Grid>
                       )}
                     </Grid>
@@ -600,8 +601,8 @@ export default function EmployerApplications() {
                             <Chip key={skill} label={skill} size="small"
                               sx={{
                                 height: 24, fontSize: '0.7rem', fontWeight: 500,
-                                bgcolor: alpha('#3D1C6E', 0.06), color: '#3D1C6E',
-                                border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
+                                bgcolor: alpha(BRAND, 0.06), color: BRAND,
+                                border: `1px solid ${alpha(BRAND, 0.12)}`,
                               }} />
                           ))}
                         </Stack>
@@ -615,7 +616,7 @@ export default function EmployerApplications() {
                   {app.coverLetter && (
                     <Box>
                       <SectionTitle>{t('employerApplications.coverLetter')}</SectionTitle>
-                      <Paper variant="outlined" sx={{ p: 2, borderRadius: 1.5, borderColor: 'divider' }}>
+                      <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, borderColor: 'divider' }}>
                         <Typography variant="body2" sx={{ lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'text.primary' }}>
                           {app.coverLetter}
                         </Typography>

@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useMemo } from 'react'
 import { Box, Badge, Menu, MenuItem, Typography, Chip, Divider, Stack } from '@mui/material'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
@@ -156,7 +157,7 @@ export default function HeaderProjectsButton() {
           ))
         )}
         <Box sx={{ p: 1 }}>
-          <MenuItem onClick={() => { handleClose(); navigate('/projects') }} sx={{ justifyContent: 'center', borderRadius: 2 }}>
+          <MenuItem onClick={() => { handleClose(); navigate('/projects') }} sx={{ justifyContent: 'center', borderRadius: RADIUS }}>
             <Typography variant="body2" fontWeight={700} color="primary">{t('nav.viewAllProjects')}</Typography>
           </MenuItem>
         </Box>

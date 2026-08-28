@@ -1,3 +1,4 @@
+﻿﻿import { DANGER, RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -17,7 +18,7 @@ import CountrySelect from '@/ui/CountrySelect'
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
-    borderRadius: 1,
+    borderRadius: RADIUS,
     transition: 'all 0.3s ease',
     '&:hover': { boxShadow: '0 2px 8px rgba(61,28,110,0.06)' },
     '&.Mui-focused': { boxShadow: '0 2px 12px rgba(61,28,110,0.12)' },
@@ -243,13 +244,13 @@ export default function CreateJob() {
 
           {error && (
             <Fade in>
-              <Box sx={{ p: 1.5, borderRadius: 1, bgcolor: alpha('#DC2626', 0.06), border: '1px solid', borderColor: alpha('#DC2626', 0.2) }}>
+              <Box sx={{ p: 1.5, borderRadius: RADIUS, bgcolor: alpha(DANGER, 0.06), border: '1px solid', borderColor: alpha(DANGER, 0.2) }}>
                 <Typography variant="body2" color="error" fontWeight={500}>{error}</Typography>
               </Box>
             </Fade>
           )}
 
-          <Paper sx={{ borderRadius: 1.5, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+          <Paper sx={{ borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
             <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
               <Fade in timeout={300} key={activeStep}>
                 {renderStepContent()}

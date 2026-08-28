@@ -13,7 +13,8 @@
   "header": {
     "search": "ابحث عن وظائف، مهارات، أو أشخاص",
     "me": "أنا",
-    "forBusiness": "للأعمال"
+    "forBusiness": "للأعمال",
+    "menu": "القائمة"
   },
   "menu": {
     "viewProfile": "عرض الملف الشخصي",

@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import {
   Card as MuiCard,
   CardContent,
@@ -26,7 +27,7 @@ function Card({
   return (
     <MuiCard
       sx={(theme) => ({
-        borderRadius: 1,
+        borderRadius: RADIUS,
         border: bordered ? `1px solid ${theme.palette.divider}` : 'none',
         boxShadow: `0 4px 12px ${alpha(theme.palette.common.black, 0.04)}`,
         transition: hoverable ? 'all 0.25s ease' : 'none',
@@ -98,7 +99,7 @@ function CardStat({ label, value, icon, trend, trendLabel }) {
           sx={(theme) => ({
             width: 48,
             height: 48,
-            borderRadius: 1,
+            borderRadius: RADIUS,
             backgroundColor: alpha(theme.palette.primary.main, 0.08),
             display: 'flex',
             alignItems: 'center',

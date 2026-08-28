@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useRef } from 'react'
 import { Box, Paper, Typography, Stack, Grid, CircularProgress, Tabs, Tab, alpha } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +19,7 @@ ChartJS.register(
 )
 
 const COLORS = {
-  primary: '#3D1C6E',
+  primary: BRAND,
   primaryLight: '#5C3594',
   secondary: '#1F3670',
   secondaryLight: '#3B5591',
@@ -26,7 +27,7 @@ const COLORS = {
   successLight: '#DCFCE7',
   warning: '#D97706',
   warningLight: '#FEF3C7',
-  error: '#DC2626',
+  error: DANGER,
   errorLight: '#FEE2E2',
   purple: '#7D5DAB',
   navy: '#576FA2',
@@ -72,7 +73,7 @@ function ChartCard({ title, icon, children, span, index = 0 }) {
         style={{ height: '100%' }}
       >
         <Paper sx={{
-          p: 2, borderRadius: 1, border: '1px solid', borderColor: 'divider',
+          p: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider',
           height: '100%', transition: 'border-color 0.2s ease',
           '&:hover': { borderColor: 'primary.main' },
         }}>
@@ -82,7 +83,7 @@ function ChartCard({ title, icon, children, span, index = 0 }) {
               transition={{ duration: 0.4 }}
             >
               <Box sx={{
-                width: 28, height: 28, borderRadius: 1, flexShrink: 0,
+                width: 28, height: 28, borderRadius: RADIUS, flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 bgcolor: (t) => alpha(t.palette.primary.main, 0.08),
               }}>
@@ -113,7 +114,7 @@ function StatMini({ label, value, color, index = 0 }) {
       style={{ flex: 1, minWidth: 120 }}
     >
       <Paper sx={{
-        py: 1.25, px: 1, borderRadius: 1, textAlign: 'center',
+        py: 1.25, px: 1, borderRadius: RADIUS, textAlign: 'center',
         border: '1px solid', borderColor: 'divider',
         transition: 'border-color 0.2s ease',
       }}>
@@ -297,7 +298,7 @@ export default function EmployerStats({ companyId }) {
       label: lang === 'ar' ? 'الوظائف' : 'Jobs',
       data: (stats.jobs?.byWorkLevel || []).map((j) => j.count),
       backgroundColor: [COLORS.primary, COLORS.warning, COLORS.success],
-      borderRadius: 1,
+      borderRadius: RADIUS,
       barPercentage: 0.6,
     }],
   }
@@ -319,7 +320,7 @@ export default function EmployerStats({ companyId }) {
       data: dailyData.map((d) => d.newFollowers),
       backgroundColor: alpha(COLORS.primary, 0.6),
       hoverBackgroundColor: COLORS.primary,
-      borderRadius: 1,
+      borderRadius: RADIUS,
       barPercentage: 0.7,
     }],
   }
@@ -331,7 +332,7 @@ export default function EmployerStats({ companyId }) {
       data: (stats.monthlyJobs || []).map((m) => m.jobsPosted),
       backgroundColor: alpha(COLORS.secondary, 0.7),
       hoverBackgroundColor: COLORS.secondary,
-      borderRadius: 1,
+      borderRadius: RADIUS,
       barPercentage: 0.6,
     }],
   }
@@ -345,7 +346,7 @@ export default function EmployerStats({ companyId }) {
       label: lang === 'ar' ? 'التقييمات' : 'Ratings',
       data: ratingsValues,
       backgroundColor: [COLORS.success, '#4ADE80', COLORS.warning, '#FBBF24', COLORS.error],
-      borderRadius: 1,
+      borderRadius: RADIUS,
       barPercentage: 0.5,
     }],
   }

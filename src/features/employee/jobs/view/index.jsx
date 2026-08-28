@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -93,7 +94,7 @@ export default function EmployeeJobs() {
             <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /></Box>
           ) : jobs.length === 0 ? (
             <Fade in timeout={500}>
-              <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+              <Paper sx={{ p: 4, textAlign: 'center', borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
                 <WorkOutlineOutlined sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold">{t('jobs.noJobs')}</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>{t('jobs.noJobsDesc')}</Typography>
@@ -107,7 +108,7 @@ export default function EmployeeJobs() {
               <Fade in key={job._id || i} timeout={400 + i * 80}>
                 <Paper
                   sx={{
-                    p: 2.5, borderRadius: 1.5, border: '1px solid', borderColor: 'divider', cursor: 'pointer',
+                    p: 2.5, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     '&:hover': { borderColor: 'primary.main', boxShadow: '0 2px 12px rgba(61,28,110,0.08)' },
                   }}

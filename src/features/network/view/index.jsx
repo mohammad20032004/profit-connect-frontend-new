@@ -1,3 +1,4 @@
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -44,13 +45,13 @@ function ProfileCardSkeleton() {
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
       {Array.from({ length: 6 }).map((_, i) => (
-        <Paper key={i} sx={{ flex: { xs: '0 0 100%', sm: '0 0 240px' }, maxWidth: { xs: '100%', sm: 250 }, minWidth: { xs: 0, sm: 200 }, borderRadius: 1.5, overflow: 'hidden' }}>
+        <Paper key={i} sx={{ flex: { xs: '0 0 100%', sm: '0 0 240px' }, maxWidth: { xs: '100%', sm: 250 }, minWidth: { xs: 0, sm: 200 }, borderRadius: RADIUS, overflow: 'hidden' }}>
           <Skeleton variant="rectangular" sx={{ width: '100%', paddingTop: '66.7%' }} />
           <Box sx={{ p: 1.25 }}>
             <Skeleton variant="text" width="60%" height={18} />
             <Skeleton variant="text" width="80%" height={12} />
-            <Skeleton variant="rounded" width="100%" height={28} sx={{ mt: 1.25, borderRadius: 1 }} />
-            <Skeleton variant="rounded" width="100%" height={28} sx={{ mt: 0.6, borderRadius: 1 }} />
+            <Skeleton variant="rounded" width="100%" height={28} sx={{ mt: 1.25, borderRadius: RADIUS }} />
+            <Skeleton variant="rounded" width="100%" height={28} sx={{ mt: 0.6, borderRadius: RADIUS }} />
           </Box>
         </Paper>
       ))}
@@ -62,7 +63,7 @@ function ListSkeleton() {
   return (
     <Stack spacing={1.5}>
       {Array.from({ length: 3 }).map((_, i) => (
-        <Paper key={i} sx={{ p: 2, borderRadius: 2 }}>
+        <Paper key={i} sx={{ p: 2, borderRadius: RADIUS }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <Skeleton variant="circular" width={44} height={44} />
             <Box sx={{ flex: 1 }}>
@@ -79,7 +80,7 @@ function ListSkeleton() {
 
 function StatBox({ value, label }) {
   return (
-    <Box sx={{ textAlign: 'center', px: 2.5, py: 1.25, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: 1.5, minWidth: 92 }} aria-label={`${value} ${label}`}>
+    <Box sx={{ textAlign: 'center', px: 2.5, py: 1.25, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04), borderRadius: RADIUS, minWidth: 92 }} aria-label={`${value} ${label}`}>
       <Typography variant="h6" fontWeight={800}>{value ?? 0}</Typography>
       <Typography variant="caption" color="text.secondary">{label}</Typography>
     </Box>
@@ -517,7 +518,7 @@ export default function NetworkView() {
         subtitle={t('network.noSuggestions', 'اقتراحات مخصصة لتوسيع شبكتك')}
         extra={
           <Button size="small" variant="outlined" startIcon={<RefreshOutlined sx={{ fontSize: 15 }} />}
-            onClick={fetchDiscover} disabled={discoverLoading} sx={{ fontSize: '0.72rem', textTransform: 'none', borderRadius: 1, flexShrink: 0 }}>
+            onClick={fetchDiscover} disabled={discoverLoading} sx={{ fontSize: '0.72rem', textTransform: 'none', borderRadius: RADIUS, flexShrink: 0 }}>
             {t('network.moreSuggestions', 'اقتراحات أكثر')}
           </Button>
         }
@@ -629,7 +630,7 @@ export default function NetworkView() {
     let body
     if (previewLoading) {
       body = (
-        <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Paper variant="outlined" sx={{ borderRadius: RADIUS, overflow: 'hidden' }}>
           <Skeleton variant="rectangular" sx={{ height: 170, width: '100%' }} />
           <Box sx={{ px: 3, pb: 3 }}>
             <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-end' }}>
@@ -640,9 +641,9 @@ export default function NetworkView() {
               </Box>
             </Stack>
             <Stack direction="row" spacing={1.5} sx={{ mt: 2.5 }}>
-              <Skeleton variant="rounded" width={90} height={48} sx={{ borderRadius: 1.5 }} />
-              <Skeleton variant="rounded" width={90} height={48} sx={{ borderRadius: 1.5 }} />
-              <Skeleton variant="rounded" width={90} height={48} sx={{ borderRadius: 1.5 }} />
+              <Skeleton variant="rounded" width={90} height={48} sx={{ borderRadius: RADIUS }} />
+              <Skeleton variant="rounded" width={90} height={48} sx={{ borderRadius: RADIUS }} />
+              <Skeleton variant="rounded" width={90} height={48} sx={{ borderRadius: RADIUS }} />
             </Stack>
           </Box>
         </Paper>
@@ -656,7 +657,7 @@ export default function NetworkView() {
       const perms = companyEmployee.permissions || {}
 
       body = (
-        <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Paper variant="outlined" sx={{ borderRadius: RADIUS, overflow: 'hidden' }}>
           {/* Banner */}
           <Box sx={{ position: 'relative', height: 170, bgcolor: alpha(COLORS.primary, 0.08) }}>
             {avatarSrc && (
@@ -719,7 +720,7 @@ export default function NetworkView() {
                 </Stack>
               </Box>
               <Stack direction={{ xs: 'row', sm: 'column' }} spacing={1} sx={{ flexShrink: 0 }}>
-                <Button variant="contained" size="small" onClick={openSelectedProfile} sx={{ borderRadius: 1, px: 2, py: 0.75, fontSize: '0.78rem' }}>
+                <Button variant="contained" size="small" onClick={openSelectedProfile} sx={{ borderRadius: RADIUS, px: 2, py: 0.75, fontSize: '0.78rem' }}>
                   {t('network.viewProfile', 'عرض الملف الشخصي')}
                 </Button>
                 <Button
@@ -729,7 +730,7 @@ export default function NetworkView() {
                   startIcon={isPreviewFollowing ? <PersonOffOutlined sx={{ fontSize: 15 }} /> : <CheckOutlined sx={{ fontSize: 15 }} />}
                   onClick={() => handleToggleFollow(previewUser)}
                   disabled={busyId === uid}
-                  sx={{ borderRadius: 1, px: 1.5, py: 0.75, fontSize: '0.78rem' }}
+                  sx={{ borderRadius: RADIUS, px: 1.5, py: 0.75, fontSize: '0.78rem' }}
                 >
                   {isPreviewFollowing ? t('network.unfollow', 'إلغاء المتابعة') : t('network.follow', 'متابعة')}
                 </Button>
@@ -747,7 +748,7 @@ export default function NetworkView() {
 
             {/* Employer info */}
             {employer.companyName && (
-              <Paper variant="outlined" sx={{ mt: 2.5, p: 2, borderRadius: 1.5, bgcolor: alpha(COLORS.primary, 0.02) }}>
+              <Paper variant="outlined" sx={{ mt: 2.5, p: 2, borderRadius: RADIUS, bgcolor: alpha(COLORS.primary, 0.02) }}>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
                   <BusinessCenterOutlined sx={{ fontSize: 20, color: COLORS.primary }} />
                   <Typography variant="subtitle1" fontWeight={800}>
@@ -787,7 +788,7 @@ export default function NetworkView() {
 
             {/* Company employee info */}
             {previewUser.role === 'CompanyEmployee' && (
-              <Paper variant="outlined" sx={{ mt: 2.5, p: 2, borderRadius: 1.5, bgcolor: alpha(COLORS.primary, 0.02) }}>
+              <Paper variant="outlined" sx={{ mt: 2.5, p: 2, borderRadius: RADIUS, bgcolor: alpha(COLORS.primary, 0.02) }}>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
                   <BadgeOutlined sx={{ fontSize: 20, color: COLORS.primary }} />
                   <Typography variant="subtitle1" fontWeight={800}>
@@ -826,7 +827,7 @@ export default function NetworkView() {
                 <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
                   {social.map((s) => (
                     <Button key={s.key} size="small" variant="outlined" component="a" href={s.href} target="_blank" rel="noreferrer"
-                      startIcon={s.icon} sx={{ borderRadius: 1, px: 1.5, py: 0.6, fontSize: '0.72rem', textTransform: 'none' }}>
+                      startIcon={s.icon} sx={{ borderRadius: RADIUS, px: 1.5, py: 0.6, fontSize: '0.72rem', textTransform: 'none' }}>
                       {s.label}
                     </Button>
                   ))}
@@ -839,7 +840,7 @@ export default function NetworkView() {
     } else {
       body = (
         <Paper sx={{
-          py: 8, px: 3, textAlign: 'center', borderRadius: 2,
+          py: 8, px: 3, textAlign: 'center', borderRadius: RADIUS,
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           minHeight: 420, borderStyle: 'dashed', bgcolor: 'transparent',
         }}>
@@ -878,7 +879,7 @@ export default function NetworkView() {
                       flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
                       p: 1.25, bgcolor: active ? alpha(COLORS.primary, 0.08) : 'background.paper',
                       border: '1px solid', borderColor: active ? alpha(COLORS.primary, 0.4) : 'divider',
-                      borderRadius: 1.5, cursor: 'pointer', transition: 'all 0.2s ease',
+                      borderRadius: RADIUS, cursor: 'pointer', transition: 'all 0.2s ease',
                       '&:hover': { borderColor: alpha(COLORS.primary, 0.3), boxShadow: '0 4px 14px rgba(31,10,59,0.08)' },
                     }}>
                     <Avatar
@@ -904,7 +905,7 @@ export default function NetworkView() {
     const searching = searchQuery.trim().length > 0
     return (
       <Stack spacing={2.5}>
-        <Paper variant="outlined" sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 1.5 }}>
+        <Paper variant="outlined" sx={{ p: 2, bgcolor: 'background.paper', borderRadius: RADIUS }}>
           <MuiTextField
             fullWidth
             size="small"
@@ -912,7 +913,7 @@ export default function NetworkView() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             inputProps={{ role: 'searchbox', 'aria-label': t('network.searchPlaceholder', 'ابحث بالاسم أو المسمى أو اسم المستخدم...') }}
-            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1 } }}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: RADIUS } }}
             slotProps={{
               input: {
                 startAdornment: <SearchOutlined sx={{ fontSize: 18, color: 'text.secondary', mr: 1 }} />,
@@ -961,7 +962,7 @@ export default function NetworkView() {
               {topLoading ? (
                 <Box sx={{ display: 'flex', gap: 1.5, overflow: 'hidden', py: 0.5 }}>
                   {[1, 2, 3].map(i => (
-                    <Paper key={i} sx={{ flex: '0 0 240px', borderRadius: 2, overflow: 'hidden' }}>
+                    <Paper key={i} sx={{ flex: '0 0 240px', borderRadius: RADIUS, overflow: 'hidden' }}>
                       <Skeleton variant="rectangular" height={140} />
                       <Box sx={{ p: 1.5 }}>
                         <Stack direction="row" spacing={1} alignItems="center">
@@ -984,7 +985,7 @@ export default function NetworkView() {
                       scrollbarWidth: 'thin', scrollBehavior: 'smooth',
                       WebkitOverflowScrolling: 'touch',
                       '&::-webkit-scrollbar': { height: 4 },
-                      '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 },
+                      '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: RADIUS },
                       '@keyframes cardFadeUp': {
                         from: { opacity: 0, transform: 'translateY(16px)' },
                         to: { opacity: 1, transform: 'translateY(0)' },
@@ -1001,7 +1002,7 @@ export default function NetworkView() {
                     sx={{
                       position: 'absolute', top: '50%', insetInlineStart: { xs: -12, md: -20 },
                       transform: 'translateY(-50%)', zIndex: 2, bgcolor: 'background.paper',
-                      border: '1px solid', borderColor: 'divider', borderRadius: 1,
+                      border: '1px solid', borderColor: 'divider', borderRadius: RADIUS,
                       boxShadow: '0 2px 10px rgba(0,0,0,0.1)', color: 'text.secondary',
                       transition: 'all 0.2s ease',
                       '&:hover': { bgcolor: alpha(COLORS.primary, 0.08), borderColor: alpha(COLORS.primary, 0.35), color: COLORS.primary },
@@ -1012,7 +1013,7 @@ export default function NetworkView() {
                     sx={{
                       position: 'absolute', top: '50%', insetInlineEnd: { xs: -12, md: -20 },
                       transform: 'translateY(-50%)', zIndex: 2, bgcolor: 'background.paper',
-                      border: '1px solid', borderColor: 'divider', borderRadius: 1,
+                      border: '1px solid', borderColor: 'divider', borderRadius: RADIUS,
                       boxShadow: '0 2px 10px rgba(0,0,0,0.1)', color: 'text.secondary',
                       transition: 'all 0.2s ease',
                       '&:hover': { bgcolor: alpha(COLORS.primary, 0.08), borderColor: alpha(COLORS.primary, 0.35), color: COLORS.primary },
@@ -1030,7 +1031,7 @@ export default function NetworkView() {
               title={t('network.suggestedTitle', 'مقترح لك')}
               extra={
                 <Button size="small" variant="outlined" startIcon={<RefreshOutlined sx={{ fontSize: 15 }} />}
-                  onClick={fetchDiscover} disabled={discoverLoading} sx={{ fontSize: '0.72rem', textTransform: 'none', borderRadius: 1, flexShrink: 0 }}>
+                  onClick={fetchDiscover} disabled={discoverLoading} sx={{ fontSize: '0.72rem', textTransform: 'none', borderRadius: RADIUS, flexShrink: 0 }}>
                   {t('network.moreSuggestions', 'اقتراحات أكثر')}
                 </Button>
               }
@@ -1140,7 +1141,7 @@ export default function NetworkView() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Box sx={{  maxWidth: 1500, mx: 'auto' }}>
+      <Box sx={{ maxWidth: 1500, mx: 'auto', px: { xs: 1.5, sm: 2 } }}>
         {error && (
           <Typography variant="body2" color="error.main" role="alert" sx={{ p: 1.5, borderRadius: 0.5, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
             {error}

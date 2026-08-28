@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
@@ -210,7 +211,7 @@ export default function PaymentsView() {
   }
 
   const statItem = (label, value, color, icon) => (
-    <Box sx={{ flex: 1, minWidth: 140, textAlign: 'center', p: 1.5, borderRadius: 1, bgcolor: alpha(color, 0.06), border: '1px solid', borderColor: alpha(color, 0.2) }}>
+    <Box sx={{ flex: 1, minWidth: 140, textAlign: 'center', p: 1.5, borderRadius: RADIUS, bgcolor: alpha(color, 0.06), border: '1px solid', borderColor: alpha(color, 0.2) }}>
       <Box sx={{ color, mb: 0.5 }}>{icon}</Box>
       <Typography variant="h6" fontWeight={800} sx={{ color, lineHeight: 1.15 }}>{formatCurrency(value)}</Typography>
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.62rem', fontWeight: 700 }}>{label}</Typography>
@@ -226,10 +227,10 @@ export default function PaymentsView() {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: 6 }}>
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1140, mx: 'auto' }}>
-        <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 1, mb: 2.5, border: '1px solid', borderColor: 'divider', boxShadow: '0 6px 20px rgba(31,10,59,0.04)' }}>
+        <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: RADIUS, mb: 2.5, border: '1px solid', borderColor: 'divider', boxShadow: '0 6px 20px rgba(31,10,59,0.04)' }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
             <Box sx={{
-              width: 44, height: 44, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 44, height: 44, borderRadius: RADIUS, display: 'flex', alignItems: 'center', justifyContent: 'center',
               bgcolor: alpha(COLORS.primary, 0.08), color: COLORS.primary,
             }}>
               <PaymentsOutlined />
@@ -267,7 +268,7 @@ export default function PaymentsView() {
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} sx={{ alignItems: 'flex-start' }}>
           {/* Sidebar filters */}
           <Paper variant="outlined" sx={{
-            p: 2, borderRadius: 1,
+            p: 2, borderRadius: RADIUS,
             width: { xs: '100%', md: 260 }, flexShrink: 0,
             position: { md: 'sticky' }, top: { md: 24 }, zIndex: 2,
           }}>
@@ -320,13 +321,13 @@ export default function PaymentsView() {
           <Box sx={{ flex: 1, minWidth: 0 }}>
 
         {success && (
-          <Typography variant="body2" color="success.main" sx={{ mt: 1.25, p: 1.5, borderRadius: 1.5, bgcolor: alpha('#16A34A', 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
+          <Typography variant="body2" color="success.main" sx={{ mt: 1.25, p: 1.5, borderRadius: RADIUS, bgcolor: alpha('#16A34A', 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
             {success}
           </Typography>
         )}
 
         {error && (
-          <Typography variant="body2" color="error.main" sx={{ p: 1.5, borderRadius: 1.5, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
+          <Typography variant="body2" color="error.main" sx={{ p: 1.5, borderRadius: RADIUS, bgcolor: alpha(COLORS.error, 0.08), textAlign: 'center', fontWeight: 600, mb: 2 }}>
             {error}
           </Typography>
         )}
@@ -337,7 +338,7 @@ export default function PaymentsView() {
             <Typography variant="caption" color="text.secondary">...</Typography>
           </Stack>
         ) : filtered.length === 0 ? (
-          <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 1, borderStyle: 'dashed' }}>
+          <Paper sx={{ p: 8, textAlign: 'center', borderRadius: RADIUS, borderStyle: 'dashed' }}>
             <PaymentsOutlined sx={{ fontSize: 48, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
             <Typography color="text.secondary">
               {payments.length === 0 ? t('payments.noPayments', 'No payments yet') : t('payments.noResults', 'No payments match your filters')}
@@ -352,14 +353,14 @@ export default function PaymentsView() {
               const isHeld = p.status === 'held'
               return (
                 <Paper key={p._id} variant="outlined" sx={{
-                  p: 2, borderRadius: 1,
+                  p: 2, borderRadius: RADIUS,
                   borderColor: isHeld ? alpha(cfg.color, 0.4) : p.status === 'released' ? alpha(COLORS.success, 0.35) : 'divider',
                   transition: 'all 0.2s ease',
                   '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(theme.palette.primary.main, 0.3) },
                 }}>
                   <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
                     <Box sx={{
-                      width: 40, height: 40, borderRadius: 2, flexShrink: 0,
+                      width: 40, height: 40, borderRadius: RADIUS, flexShrink: 0,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       bgcolor: alpha(cfg.color, 0.1), color: cfg.color,
                     }}>
@@ -439,7 +440,7 @@ export default function PaymentsView() {
                         startIcon={releasingId === p._id ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <VerifiedOutlined sx={{ fontSize: 16 }} />}
                         onClick={() => setReleaseTarget(p)}
                         disabled={releasingId === p._id}
-                        sx={{ borderRadius: 1.5, fontWeight: 700, textTransform: 'none', px: 2, minHeight: 40, whiteSpace: 'nowrap' }}
+                        sx={{ borderRadius: RADIUS, fontWeight: 700, textTransform: 'none', px: 2, minHeight: 40, whiteSpace: 'nowrap' }}
                       >
                         {t('manage.releasePay', 'تحرير')}
                       </Button>
@@ -472,14 +473,14 @@ export default function PaymentsView() {
           {releaseTarget && (
             <Stack spacing={2}>
               <Paper variant="outlined" sx={{
-                p: 2, borderRadius: 2, bgcolor: alpha(COLORS.success, 0.05), borderColor: alpha(COLORS.success, 0.25),
+                p: 2, borderRadius: RADIUS, bgcolor: alpha(COLORS.success, 0.05), borderColor: alpha(COLORS.success, 0.25),
                 textAlign: 'center',
               }}>
                 <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>{releaseTarget.note || t('payments.payment', 'Payment')}</Typography>
                 <Typography variant="h6" fontWeight={800} color="success.main">{formatCurrency(releaseTarget.amount)}</Typography>
               </Paper>
               <Box sx={{
-                p: 1.75, borderRadius: 2, border: '1px dashed',
+                p: 1.75, borderRadius: RADIUS, border: '1px dashed',
                 borderColor: alpha(COLORS.warning, 0.5), bgcolor: alpha(COLORS.warning, 0.05),
                 display: 'flex', alignItems: 'flex-start', gap: 1,
               }}>
@@ -505,7 +506,7 @@ export default function PaymentsView() {
         <DialogTitle sx={{ fontSize: '1rem', fontWeight: 800 }}>{t('profile.withdrawTitle', 'Withdraw Funds')}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={2}>
-            <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: alpha('#16A34A', 0.06), border: '1px solid', borderColor: alpha('#16A34A', 0.2), textAlign: 'center' }}>
+            <Box sx={{ p: 1.5, borderRadius: RADIUS, bgcolor: alpha('#16A34A', 0.06), border: '1px solid', borderColor: alpha('#16A34A', 0.2), textAlign: 'center' }}>
               <Typography variant="caption" color="text.secondary">{t('profile.availableBalance', 'Available balance')}</Typography>
               <Typography variant="h6" fontWeight={800} color="success.main">{formatCurrency(balance)}</Typography>
             </Box>
@@ -514,7 +515,7 @@ export default function PaymentsView() {
             <TextField label={t('profile.bankName', 'Bank Name')} value={bankName} onChange={(e) => setBankName(e.target.value)} placeholder="Al Rajhi Bank" />
             <TextField label={t('profile.iban', 'IBAN')} value={iban} onChange={(e) => setIban(e.target.value)} placeholder="SA00 0000 0000 0000 0000 0000" dir="ltr" />
             <TextField label={t('profile.holderName', 'Account Holder')} value={holderName} onChange={(e) => setHolderName(e.target.value)} />
-            <Typography variant="caption" color="text.secondary" sx={{ bgcolor: alpha('#D97706', 0.07), p: 1, borderRadius: 1.5, border: '1px dashed', borderColor: alpha('#D97706', 0.35), lineHeight: 1.6 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ bgcolor: alpha('#D97706', 0.07), p: 1, borderRadius: RADIUS, border: '1px dashed', borderColor: alpha('#D97706', 0.35), lineHeight: 1.6 }}>
               {t('profile.withdrawNote', 'Your request will be reviewed by the support team. The amount moves to "Held" until approval.')}
             </Typography>
           </Stack>

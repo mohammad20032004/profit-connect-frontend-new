@@ -1,3 +1,4 @@
+﻿import { RADIUS } from '@/theme/tokens'
 import {
   Box, Avatar, Chip, Stack, Typography, Badge, Divider,
 } from '@mui/material'
@@ -113,7 +114,7 @@ export function HeroCompanyCard({ company, t, navigate }) {
               {company.name}
             </Typography>
             {company.description && (
-              <Typography sx={{ opacity: 0.88, fontSize: { xs: '0.875rem', md: '1rem', color: '#fff' }, lineHeight: 1.5, maxWidth: 500, mb: 1.5 }} noWrap>
+              <Typography sx={{ opacity: 0.88, fontSize: { xs: '0.875rem', md: '1rem' }, color: '#fff', lineHeight: 1.5, maxWidth: 500, mb: 1.5 }} noWrap>
                 {company.description}
               </Typography>
             )}
@@ -192,7 +193,7 @@ export function CompanyCard({ company, t, navigate, index }) {
       whileHover={{ y: -6, boxShadow: `0 16px 40px ${alpha(theme.palette.primary.main, 0.12)}` }}
       whileTap={{ scale: 0.98 }}
       sx={{
-        borderRadius: 2.5,
+        borderRadius: RADIUS,
         border: '1px solid',
         borderColor: 'divider',
         bgcolor: 'background.paper',

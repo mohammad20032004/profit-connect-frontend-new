@@ -1,3 +1,4 @@
+﻿import { BRAND } from '@/theme/tokens'
 import { useRef } from 'react'
 import { Stack, Box, Avatar, Typography } from '@mui/material'
 import Button from '@/ui/Button'
@@ -23,7 +24,7 @@ export default function StepAvatarReview({ form, setForm }) {
       <Box sx={{ animation: 'fadeUp 0.5s ease both', position: 'relative' }}>
         <Box sx={{
           position: 'absolute', inset: -6, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #3D1C6E, #1F3670)',
+          background: `linear-gradient(135deg, ${BRAND}, #1F3670)`,
           opacity: 0.15, animation: 'pulse 2.5s ease-in-out infinite',
         }} />
         <Avatar src={previewUrl} sx={{

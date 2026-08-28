@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -101,7 +102,7 @@ export default function VerifyEmailView() {
           position: 'fixed', top: 16, insetInlineEnd: 16, zIndex: 10,
           bgcolor: isDark ? 'background.paper' : 'white',
           boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.4)' : '0 2px 12px rgba(0,0,0,0.08)',
-          borderRadius: 2, px: 1.5, py: 0.5, transition: 'all 0.3s ease',
+          borderRadius: RADIUS, px: 1.5, py: 0.5, transition: 'all 0.3s ease',
           '&:hover': { transform: 'scale(1.05) rotate(-4deg)' },
           animation: 'fadeUp 0.5s ease 0.2s both',
         }}
@@ -157,7 +158,7 @@ export default function VerifyEmailView() {
             <Box sx={{ width: '100%', maxWidth: '520px', px: { xs: 0.5, sm: 2 }, py: 1, mx: 'auto', animation: 'fadeUp 0.5s ease 0.3s both' }}>
 
               <Box sx={{
-                p: { xs: 2.5, sm: 3.5 }, borderRadius: 1, bgcolor: isDark ? 'background.paper' : 'white',
+                p: { xs: 2.5, sm: 3.5 }, borderRadius: RADIUS, bgcolor: isDark ? 'background.paper' : 'white',
                 border: '1px solid', borderColor: 'divider', boxShadow: '0 4px 24px rgba(12,8,24,0.06)',
               }}>
                 {success ? (

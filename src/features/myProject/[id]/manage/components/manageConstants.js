@@ -1,11 +1,12 @@
+﻿﻿import { BRAND, DANGER } from '@/theme/tokens'
 export const COLORS = {
-  primary: '#3D1C6E',
+  primary: BRAND,
   secondary: '#1F3670',
   success: '#16A34A',
   successLight: '#DCFCE7',
   warning: '#D97706',
   warningLight: '#FEF3C7',
-  error: '#DC2626',
+  error: DANGER,
   errorLight: '#FEE2E2',
   navy: '#576FA2',
   purple: '#7D5DAB',

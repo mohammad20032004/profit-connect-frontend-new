@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -17,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { getJobById, applyToJob } from '@/services/jobService'
 
 const TYPE_COLORS = {
-  'Full-time': { bg: '#EDE7F6', color: '#3D1C6E' },
+  'Full-time': { bg: '#EDE7F6', color: BRAND },
   'Part-time': { bg: '#E3F2FD', color: '#1565C0' },
   'Freelance': { bg: '#E0F7FA', color: '#00838F' },
   'Internship': { bg: '#E8F5E9', color: '#2E7D32' },
@@ -134,12 +135,12 @@ export default function JobDetailView() {
 
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <Paper sx={{ borderRadius: 2, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+          <Paper sx={{ borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
             <Grid container>
 
               {/* ── Left: Main Content (scrollable) ── */}
               <Grid size={{ xs: 12, md: 7 }} sx={{ borderColor: 'divider' }}>
-                <Box sx={{ p: { xs: 2.5, md: 3 }, overflow: 'auto', maxHeight: { md: 'calc(100vh - 140px)' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 } }}>
+                <Box sx={{ p: { xs: 2.5, md: 3 }, overflow: 'auto', maxHeight: { md: 'calc(100vh - 140px)' }, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: RADIUS } }}>
 
                   {/* Title + Company */}
                   <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', mb: 2 }}>
@@ -148,9 +149,9 @@ export default function JobDetailView() {
                       alt={job.company?.name}
                       sx={{
                         width: 48, height: 48, flexShrink: 0,
-                        bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
+                        bgcolor: alpha(BRAND, 0.08), color: BRAND,
                         fontSize: '1.1rem', fontWeight: 700,
-                        border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
+                        border: `1px solid ${alpha(BRAND, 0.12)}`,
                       }}
                     >
                       {job.company?.name?.charAt(0)?.toUpperCase()}
@@ -188,8 +189,8 @@ export default function JobDetailView() {
                       <Chip label={job.status === 'Open' ? t('jobs.statusOpen') : t('jobs.statusClosed')} size="small"
                         sx={{
                           height: 24, fontSize: '0.7rem', fontWeight: 600,
-                          bgcolor: job.status === 'Open' ? alpha('#16A34A', 0.1) : alpha('#DC2626', 0.1),
-                          color: job.status === 'Open' ? '#16A34A' : '#DC2626',
+                          bgcolor: job.status === 'Open' ? alpha('#16A34A', 0.1) : alpha(DANGER, 0.1),
+                          color: job.status === 'Open' ? '#16A34A' : DANGER,
                         }} />
                     )}
                   </Stack>
@@ -253,7 +254,7 @@ export default function JobDetailView() {
                   maxHeight: { md: 'calc(100vh - 140px)' },
                   overflow: 'auto',
                   '&::-webkit-scrollbar': { width: 4 },
-                  '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: 2 },
+                  '&::-webkit-scrollbar-thumb': { bgcolor: 'action.hover', borderRadius: RADIUS },
                 }}>
 
                   {/* Quick Info */}
@@ -288,7 +289,7 @@ export default function JobDetailView() {
                     startIcon={<SendOutlined />}
                     onClick={() => user ? setApplyOpen(true) : navigate('/sign-in')}
                     disabled={job.status !== 'Open'}
-                    sx={{ py: 1.4, fontWeight: 700, fontSize: '0.95rem', textTransform: 'none', borderRadius: 1.5, mb: 0.75 }}
+                    sx={{ py: 1.4, fontWeight: 700, fontSize: '0.95rem', textTransform: 'none', borderRadius: RADIUS, mb: 0.75 }}
                   >
                     {job.status === 'Open' ? (lang === 'ar' ? 'تقدم للوظيفة' : 'Apply Now') : (lang === 'ar' ? 'الوظيفة مغلقة' : 'Job Closed')}
                   </Button>
@@ -303,12 +304,12 @@ export default function JobDetailView() {
                   {/* Company Info */}
                   <Box
                     onClick={() => navigate(`/companies/${job.company?._id || job.company?.id}`)}
-                    sx={{ cursor: 'pointer', mb: 2.5, p: 1.5, borderRadius: 1, transition: 'all 0.2s ease', '&:hover': { bgcolor: alpha('#3D1C6E', 0.04) } }}
+                    sx={{ cursor: 'pointer', mb: 2.5, p: 1.5, borderRadius: RADIUS, transition: 'all 0.2s ease', '&:hover': { bgcolor: alpha(BRAND, 0.04) } }}
                   >
                     <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                       <Avatar
                         src={job.company?.logo}
-                        sx={{ width: 40, height: 40, flexShrink: 0, bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E', fontSize: '0.85rem', fontWeight: 700 }}
+                        sx={{ width: 40, height: 40, flexShrink: 0, bgcolor: alpha(BRAND, 0.08), color: BRAND, fontSize: '0.85rem', fontWeight: 700 }}
                       >
                         {job.company?.name?.charAt(0)?.toUpperCase()}
                       </Avatar>
@@ -345,7 +346,7 @@ export default function JobDetailView() {
                       <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                         <Avatar
                           src={job.postedBy?.profile?.avatar}
-                          sx={{ width: 32, height: 32, bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E', fontSize: '0.75rem', fontWeight: 700 }}
+                          sx={{ width: 32, height: 32, bgcolor: alpha(BRAND, 0.08), color: BRAND, fontSize: '0.75rem', fontWeight: 700 }}
                         >
                           {job.postedBy?.profile?.firstName?.charAt(0)}
                         </Avatar>
@@ -381,7 +382,7 @@ export default function JobDetailView() {
             onClose={handleCloseApply}
             maxWidth="sm"
             fullWidth
-            PaperProps={{ sx: { borderRadius: 2 } }}
+            PaperProps={{ sx: { borderRadius: RADIUS } }}
             TransitionComponent={motion}
             TransitionProps={{ initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 20 } }}
           >
@@ -422,9 +423,9 @@ export default function JobDetailView() {
                         sx={{
                           p: 2, cursor: 'pointer', textAlign: 'center',
                           border: '2px dashed', borderColor: resumeFile ? 'primary.main' : 'divider',
-                          borderRadius: 1.5, transition: 'all 0.2s',
-                          bgcolor: resumeFile ? alpha('#3D1C6E', 0.03) : 'transparent',
-                          '&:hover': { borderColor: 'primary.main', bgcolor: alpha('#3D1C6E', 0.02) },
+                          borderRadius: RADIUS, transition: 'all 0.2s',
+                          bgcolor: resumeFile ? alpha(BRAND, 0.03) : 'transparent',
+                          '&:hover': { borderColor: 'primary.main', bgcolor: alpha(BRAND, 0.02) },
                         }}
                       >
                         <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" hidden
@@ -459,7 +460,7 @@ export default function JobDetailView() {
                         value={coverLetter}
                         onChange={(e) => setCoverLetter(e.target.value)}
                         placeholder={lang === 'ar' ? 'لماذا أنت مناسب لهذه الوظيفة؟' : 'Why are you a good fit for this role?'}
-                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5 } }}
+                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: RADIUS } }}
                       />
                     </Box>
 

@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { Box, Chip, Typography, Stack, alpha, Divider } from '@mui/material'
 import WorkspacePremiumRounded from '@mui/icons-material/WorkspacePremiumRounded'
 import {
@@ -23,7 +24,7 @@ export default function InfoSide({ variant = 'default' }) {
 
   const surfaceSx = variant === 'plain'
     ? { width: '100%' }
-    : { borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider', minWidth: 280, maxWidth: 320, bgcolor: 'background.paper' }
+    : { borderRadius: RADIUS, overflow: 'hidden', border: '1px solid', borderColor: 'divider', minWidth: 280, maxWidth: 320, bgcolor: 'background.paper' }
 
   return (
     <Box sx={surfaceSx} role="complementary" aria-label={t('profile.profileCard', 'Profile Card')}>
@@ -84,7 +85,7 @@ export default function InfoSide({ variant = 'default' }) {
             fontWeight: 700,
             fontSize: '0.75rem',
             height: 28,
-            borderRadius: 1.5,
+            borderRadius: RADIUS,
             '& .MuiChip-icon': { ml: 0.5 },
           }}
         />
@@ -92,21 +93,21 @@ export default function InfoSide({ variant = 'default' }) {
 
       {/* Stats Section */}
       <Stack direction="row" divider={<Divider orientation="vertical" flexItem />} sx={{ py: 1.5, px: 1 }}>
-        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: 1 }, transition: 'all 0.2s' }}>
+        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: RADIUS }, transition: 'all 0.2s' }}>
           <Typography variant="subtitle1" fontWeight={800} sx={{ lineHeight: 1.2, color: 'text.primary' }}>{profile?.postsCount ?? 0}</Typography>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25, fontSize: '0.68rem', mt: 0.25 }}>
             <PostAddOutlined sx={{ fontSize: 12 }} />
             {t('profile.posts')}
           </Typography>
         </Box>
-        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: 1 }, transition: 'all 0.2s' }}>
+        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: RADIUS }, transition: 'all 0.2s' }}>
           <Typography variant="subtitle1" fontWeight={800} sx={{ lineHeight: 1.2, color: 'text.primary' }}>{profile?.followersCount ?? 0}</Typography>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25, fontSize: '0.68rem', mt: 0.25 }}>
             <PeopleAltOutlined sx={{ fontSize: 12 }} />
             {t('profile.followers')}
           </Typography>
         </Box>
-        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: 1 }, transition: 'all 0.2s' }}>
+        <Box sx={{ flex: 1, textAlign: 'center', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover', borderRadius: RADIUS }, transition: 'all 0.2s' }}>
           <Typography variant="subtitle1" fontWeight={800} sx={{ lineHeight: 1.2, color: 'text.primary' }}>{profile?.followingCount ?? 0}</Typography>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25, fontSize: '0.68rem', mt: 0.25 }}>
             <PersonOutlineOutlined sx={{ fontSize: 12 }} />

@@ -1,3 +1,4 @@
+﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 /* eslint-disable react-hooks/static-components */
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -11,6 +12,7 @@ import {
   AttachMoneyOutlined, FilterListOutlined, CloseOutlined,
   ExpandMoreOutlined, ExpandLessOutlined,
   BusinessOutlined, SignalCellularAltOutlined, PublicOutlined,
+  SmartphoneOutlined, GetAppOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -24,7 +26,7 @@ const PLACE_OPTIONS = ['On-site', 'Remote', 'Hybrid']
 const LEVEL_OPTIONS = ['Entry', 'Mid', 'Senior', 'Director', 'VP']
 
 const TYPE_COLORS = {
-  'Full-time': { bg: '#EDE7F6', color: '#3D1C6E' },
+  'Full-time': { bg: '#EDE7F6', color: BRAND },
   'Part-time': { bg: '#E3F2FD', color: '#1565C0' },
   'Freelance': { bg: '#E0F7FA', color: '#00838F' },
   'Internship': { bg: '#E8F5E9', color: '#2E7D32' },
@@ -64,11 +66,11 @@ function FilterSection({ title, icon, defaultOpen = false, count, children }) {
         onClick={() => setOpen(!open)}
         sx={{
           justifyContent: 'space-between', textTransform: 'none',
-          color: open ? '#3D1C6E' : 'text.secondary',
+          color: open ? BRAND : 'text.secondary',
           fontWeight: 700, fontSize: '0.78rem', px: 1.5, py: 1, minWidth: 0,
-          borderRadius: 1.5,
-          bgcolor: open ? alpha('#3D1C6E', 0.04) : 'transparent',
-          '&:hover': { bgcolor: alpha('#3D1C6E', 0.06) },
+          borderRadius: RADIUS,
+          bgcolor: open ? alpha(BRAND, 0.04) : 'transparent',
+          '&:hover': { bgcolor: alpha(BRAND, 0.06) },
           transition: 'all 0.2s ease',
         }}
         endIcon={
@@ -76,7 +78,7 @@ function FilterSection({ title, icon, defaultOpen = false, count, children }) {
             {count > 0 && (
               <Box sx={{
                 width: 20, height: 20, borderRadius: '50%',
-                bgcolor: '#3D1C6E', color: '#fff',
+                bgcolor: BRAND, color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '0.6rem', fontWeight: 700,
               }}>
@@ -101,6 +103,87 @@ function FilterSection({ title, icon, defaultOpen = false, count, children }) {
   )
 }
 
+const MotionBox = motion(Box)
+
+function AppPromoBanner({ lang, onClose }) {
+  const ar = lang === 'ar'
+  return (
+    <MotionBox
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.15 }}
+      sx={{
+        position: 'relative',
+        overflow: 'hidden',
+        borderRadius: RADIUS,
+        p: 2.5,
+        color: '#fff',
+        background: 'linear-gradient(135deg, rgba(61,28,110,0.92), rgba(124,58,237,0.78))',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        border: '1px solid rgba(255,255,255,0.25)',
+        boxShadow: '0 12px 30px rgba(61,28,110,0.35)',
+      }}
+    >
+      <MotionBox
+        animate={{ scale: [1, 1.25, 1], opacity: [0.5, 0.85, 0.5] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        sx={{ position: 'absolute', top: -40, insetInlineStart: -30, width: 140, height: 140, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.4), transparent 70%)', filter: 'blur(6px)' }}
+      />
+      <MotionBox
+        animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        sx={{ position: 'absolute', bottom: -50, insetInlineEnd: -20, width: 160, height: 160, borderRadius: '50%', background: 'radial-gradient(circle, rgba(168,85,247,0.55), transparent 70%)', filter: 'blur(8px)' }}
+      />
+      <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+        <MotionBox
+          animate={{ x: ['-120%', '120%'] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
+          sx={{ position: 'absolute', top: 0, bottom: 0, width: '40%', background: 'linear-gradient(100deg, transparent, rgba(255,255,255,0.28), transparent)' }}
+        />
+      </Box>
+
+      <IconButton
+        onClick={onClose}
+        size="small"
+        aria-label="close"
+        sx={{ position: 'absolute', top: 8, insetInlineEnd: 8, color: 'rgba(255,255,255,0.8)', '&:hover': { color: '#fff', bgcolor: 'rgba(255,255,255,0.14)' }, width: 30, height: 30 }}
+      >
+        <CloseOutlined fontSize="small" />
+      </IconButton>
+
+      <Stack direction="row" spacing={1.5} sx={{ position: 'relative', alignItems: 'center' }}>
+        <MotionBox
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          sx={{ width: 54, height: 54, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.3)', flexShrink: 0 }}
+        >
+          <SmartphoneOutlined sx={{ fontSize: 28 }} />
+        </MotionBox>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="subtitle2" fontWeight={1400} sx={{ fontSize: '0.95rem', lineHeight: 2,color: '#fff' }}>
+            {ar ? 'حمّل تطبيقنا على الموبايل' : 'Get our mobile app'}
+          </Typography>
+          <Typography variant="caption" sx={{ display: 'block', color: '#fff', opacity: 1, fontSize: '0.72rem', mt: 0.25 }}>
+            {ar ? 'ابحث عن الوظائف في أي مكان' : 'Search jobs anywhere, anytime'}
+          </Typography>
+        </Box>
+      </Stack>
+
+      <Stack direction="row" spacing={1} sx={{ position: 'relative', mt: 1.5 }}>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<GetAppOutlined />}
+          sx={{ color: '#fff', borderColor: 'rgba(255,255,255,0.7)', textTransform: 'none', fontWeight: 700, borderRadius: RADIUS, '&:hover': { borderColor: '#fff', bgcolor: 'rgba(255,255,255,0.14)' } }}
+        >
+          {ar ? 'تحميل' : 'Download'}
+        </Button>
+      </Stack>
+    </MotionBox>
+  )
+}
+
 export default function JobsView() {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
@@ -119,6 +202,7 @@ export default function JobsView() {
   const [minSalary, setMinSalary] = useState('')
   const [maxSalary, setMaxSalary] = useState('')
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
+  const [showAppAd, setShowAppAd] = useState(true)
 
   const toggleFilter = (arr, setArr, val) => {
     setArr((prev) => prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val])
@@ -183,12 +267,12 @@ export default function JobsView() {
             onClick={() => onChange(opt)}
             sx={{
               height: 28, minHeight: 36, fontSize: '0.7rem', fontWeight: on ? 700 : 500,
-              bgcolor: on ? '#3D1C6E' : alpha('#3D1C6E', 0.06),
+              bgcolor: on ? BRAND : alpha(BRAND, 0.06),
               color: on ? '#fff' : 'text.secondary',
-              border: on ? 'none' : `1px solid ${alpha('#3D1C6E', 0.12)}`,
+              border: on ? 'none' : `1px solid ${alpha(BRAND, 0.12)}`,
               transition: 'all 0.2s ease',
               '&:hover': {
-                bgcolor: on ? '#2E1555' : alpha('#3D1C6E', 0.12),
+                bgcolor: on ? '#2E1555' : alpha(BRAND, 0.12),
               },
             }}
           />
@@ -203,21 +287,21 @@ export default function JobsView() {
       <Box sx={{ px: 1.5, pt: 1, pb: 0.5 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <Box sx={{
-            width: 30, height: 30, borderRadius: 1,
-            bgcolor: alpha('#3D1C6E', 0.08),
+            width: 30, height: 30, borderRadius: RADIUS,
+            bgcolor: alpha(BRAND, 0.08),
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <FilterListOutlined sx={{ fontSize: 16, color: '#3D1C6E' }} />
+            <FilterListOutlined sx={{ fontSize: 16, color: BRAND }} />
           </Box>
           <Typography variant="subtitle2" fontWeight={800} sx={{ fontSize: '0.85rem' }}>
             {lang === 'ar' ? 'الفلاتر' : 'Filters'}
           </Typography>
           {countActive > 0 && (
             <Box sx={{
-              ml: 'auto', px: 1, py: 0.25, borderRadius: 1,
-              bgcolor: alpha('#3D1C6E', 0.08),
+              ml: 'auto', px: 1, py: 0.25, borderRadius: RADIUS,
+              bgcolor: alpha(BRAND, 0.08),
             }}>
-              <Typography variant="caption" fontWeight={700} color="#3D1C6E" sx={{ fontSize: '0.65rem' }}>
+              <Typography variant="caption" fontWeight={700} color={BRAND} sx={{ fontSize: '0.65rem' }}>
                 {countActive}
               </Typography>
             </Box>
@@ -231,9 +315,9 @@ export default function JobsView() {
             size="small"
             onClick={clearFilters}
             sx={{
-              textTransform: 'none', fontSize: '0.7rem', color: '#DC2626',
+              textTransform: 'none', fontSize: '0.7rem', color: DANGER,
               fontWeight: 600, minWidth: 0, p: 0.5,
-              '&:hover': { bgcolor: alpha('#DC2626', 0.06) },
+              '&:hover': { bgcolor: alpha(DANGER, 0.06) },
             }}
           >
             {lang === 'ar' ? 'مسح الكل' : 'Clear all'}
@@ -291,10 +375,10 @@ export default function JobsView() {
           placeholder={lang === 'ar' ? 'مثال: السعودية' : 'e.g. Saudi Arabia'}
           sx={{
             '& .MuiOutlinedInput-root': {
-              borderRadius: 1.5, fontSize: '0.8rem',
-              bgcolor: alpha('#3D1C6E', 0.03),
+              borderRadius: RADIUS, fontSize: '0.8rem',
+              bgcolor: alpha(BRAND, 0.03),
               '&.Mui-focused': {
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#3D1C6E', borderWidth: 2 },
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: BRAND, borderWidth: 2 },
               },
             },
           }}
@@ -320,10 +404,10 @@ export default function JobsView() {
             slotProps={{ htmlInput: { min: 0 } }}
             sx={{
               '& .MuiOutlinedInput-root': {
-                borderRadius: 1.5, fontSize: '0.8rem',
-                bgcolor: alpha('#3D1C6E', 0.03),
+                borderRadius: RADIUS, fontSize: '0.8rem',
+                bgcolor: alpha(BRAND, 0.03),
                 '&.Mui-focused': {
-                  '& .MuiOutlinedInput-notchedOutline': { borderColor: '#3D1C6E', borderWidth: 2 },
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: BRAND, borderWidth: 2 },
                 },
               },
             }}
@@ -338,10 +422,10 @@ export default function JobsView() {
             slotProps={{ htmlInput: { min: 0 } }}
             sx={{
               '& .MuiOutlinedInput-root': {
-                borderRadius: 1.5, fontSize: '0.8rem',
-                bgcolor: alpha('#3D1C6E', 0.03),
+                borderRadius: RADIUS, fontSize: '0.8rem',
+                bgcolor: alpha(BRAND, 0.03),
                 '&.Mui-focused': {
-                  '& .MuiOutlinedInput-notchedOutline': { borderColor: '#3D1C6E', borderWidth: 2 },
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: BRAND, borderWidth: 2 },
                 },
               },
             }}
@@ -365,10 +449,15 @@ export default function JobsView() {
           {/* Filters Sidebar - Desktop */}
           <Grid size={{ xs: 12, lg: 3 }} sx={{ display: { xs: 'none', lg: 'block' } }}>
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-              <Paper sx={{ p: 2.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88 }}>
+              <Paper sx={{ p: 2.5, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88 }}>
                 {FiltersContent}
               </Paper>
             </motion.div>
+            {showAppAd && (
+              <Box sx={{ mt: 2 }}>
+                <AppPromoBanner lang={lang} onClose={() => setShowAppAd(false)} />
+              </Box>
+            )}
           </Grid>
 
           {/* Mobile Filters Drawer */}
@@ -391,7 +480,7 @@ export default function JobsView() {
                 >
                   <Box sx={{ p: 2 }}>
                     <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                      <Typography variant="subtitle1" fontWeight={800} sx={{ color: '#3D1C6E' }}>
+                      <Typography variant="subtitle1" fontWeight={800} sx={{ color: BRAND }}>
                         {lang === 'ar' ? 'الفلاتر' : 'Filters'}
                       </Typography>
                       <IconButton size="medium" onClick={() => setMobileFilterOpen(false)} sx={{ color: 'text.secondary', minWidth: 44, minHeight: 44 }}>
@@ -405,7 +494,7 @@ export default function JobsView() {
                       fullWidth
                       variant="contained"
                       onClick={() => setMobileFilterOpen(false)}
-                      sx={{ bgcolor: '#3D1C6E', '&:hover': { bgcolor: '#2E1555' }, textTransform: 'none', borderRadius: 1.5, py: 1.25 }}
+                      sx={{ bgcolor: BRAND, '&:hover': { bgcolor: '#2E1555' }, textTransform: 'none', borderRadius: RADIUS, py: 1.25 }}
                     >
                       {lang === 'ar' ? 'عرض النتائج' : 'Show Results'}
                       {countActive > 0 && ` (${countActive})`}
@@ -422,7 +511,7 @@ export default function JobsView() {
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
               <Paper sx={{
                 display: 'flex', alignItems: 'center', px: 2, py: 0.5, mb: 2.5,
-                border: '1px solid', borderColor: 'divider', borderRadius: 2,
+                border: '1px solid', borderColor: 'divider', borderRadius: RADIUS,
               }}>
                 <SearchOutlined sx={{ color: 'text.secondary', mril: 1 }} />
                 <InputBase
@@ -434,12 +523,18 @@ export default function JobsView() {
               </Paper>
             </motion.div>
 
+            {showAppAd && (
+              <Box sx={{ display: { xs: 'block', lg: 'none' }, mb: 2.5 }}>
+                <AppPromoBanner lang={lang} onClose={() => setShowAppAd(false)} />
+              </Box>
+            )}
+
             {/* Active Filters Chips */}
             {hasActiveFilters && (
               <Stack direction="row" spacing={0.5} sx={{ mb: 2, flexWrap: 'wrap', gap: 0.5 }}>
                 {types.map((v) => (
                   <Chip key={`t-${v}`} label={v} size="small" onDelete={() => toggleFilter(types, setTypes, v)}
-                    sx={{ bgcolor: alpha('#3D1C6E', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
+                    sx={{ bgcolor: alpha(BRAND, 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 ))}
                 {places.map((v) => (
                   <Chip key={`p-${v}`} label={v} size="small" onDelete={() => toggleFilter(places, setPlaces, v)}
@@ -462,7 +557,7 @@ export default function JobsView() {
                     sx={{ bgcolor: alpha('#7C3AED', 0.08), fontWeight: 600, fontSize: '0.7rem', minHeight: 36, '& .MuiChip-deleteIcon': { width: 20, height: 20 } }} />
                 )}
                 <Chip label={lang === 'ar' ? 'مسح الكل' : 'Clear all'} size="small" onClick={clearFilters}
-                  sx={{ fontWeight: 600, fontSize: '0.7rem', minHeight: 36, cursor: 'pointer', '&:hover': { bgcolor: alpha('#DC2626', 0.08) } }} />
+                  sx={{ fontWeight: 600, fontSize: '0.7rem', minHeight: 36, cursor: 'pointer', '&:hover': { bgcolor: alpha(DANGER, 0.08) } }} />
               </Stack>
             )}
 
@@ -494,7 +589,7 @@ export default function JobsView() {
                             <Paper
                               onClick={() => navigate(`/jobs/${job._id}`)}
                               sx={{
-                                p: 2.5, borderRadius: 2, cursor: 'pointer', height: '100%',
+                                p: 2.5, borderRadius: RADIUS, cursor: 'pointer', height: '100%',
                                 border: '1px solid', borderColor: 'divider',
                                 transition: 'all 0.2s ease',
                                 display: 'flex', flexDirection: 'column',
@@ -508,9 +603,9 @@ export default function JobsView() {
                                   alt={job.company?.name}
                                   sx={{
                                     width: 40, height: 40, flexShrink: 0,
-                                    bgcolor: alpha('#3D1C6E', 0.08), color: '#3D1C6E',
+                                    bgcolor: alpha(BRAND, 0.08), color: BRAND,
                                     fontSize: '0.85rem', fontWeight: 700,
-                                    border: `1px solid ${alpha('#3D1C6E', 0.12)}`,
+                                    border: `1px solid ${alpha(BRAND, 0.12)}`,
                                   }}
                                 >
                                   {job.company?.name?.charAt(0)?.toUpperCase()}

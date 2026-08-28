@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -67,7 +68,7 @@ export default function EmployerPending() {
               <Skeleton variant="circular" width={72} height={72} />
               <Skeleton variant="text" width="60%" height={32} />
               <Skeleton variant="text" width="80%" />
-              <Skeleton variant="rectangular" width="100%" height={48} sx={{ borderRadius: 2 }} />
+              <Skeleton variant="rectangular" width="100%" height={48} sx={{ borderRadius: RADIUS }} />
             </Stack>
           ) : (
             <>

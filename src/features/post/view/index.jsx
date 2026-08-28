@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -202,10 +203,10 @@ export default function PostPage() {
         )}
 
         {post?.image && (
-          <Box component="img" src={post.image} alt="" sx={{ mt: 2, width: '100%', maxHeight: 500, objectFit: 'cover', borderRadius: 2 }} />
+          <Box component="img" src={post.image} alt="" sx={{ mt: 2, width: '100%', maxHeight: 500, objectFit: 'cover', borderRadius: RADIUS }} />
         )}
         {post?.video && (
-          <Box component="video" src={post.video} controls sx={{ mt: 2, width: '100%', maxHeight: 500, borderRadius: 2 }} />
+          <Box component="video" src={post.video} controls sx={{ mt: 2, width: '100%', maxHeight: 500, borderRadius: RADIUS }} />
         )}
       </Paper>
 
@@ -244,7 +245,7 @@ export default function PostPage() {
       </Dialog>
 
       <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity="success" onClose={() => setToastMsg('')} sx={{ borderRadius: 1.5 }}>{toastMsg}</Alert>
+        <Alert severity="success" onClose={() => setToastMsg('')} sx={{ borderRadius: RADIUS }}>{toastMsg}</Alert>
       </Snackbar>
     </Container>
   )

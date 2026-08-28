@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -68,7 +69,7 @@ function SectionHeader({ icon, title }) {
   return (
     <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 1.25 }}>
       <Box sx={{
-        width: 28, height: 28, borderRadius: 1, flexShrink: 0,
+        width: 28, height: 28, borderRadius: RADIUS, flexShrink: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         bgcolor: (t) => alpha(t.palette.primary.main, 0.08),
       }}>
@@ -190,7 +191,7 @@ export default function EmployerDashboard() {
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <Paper sx={{
-              p: { xs: 4, md: 6 }, borderRadius: 1, textAlign: 'center',
+              p: { xs: 4, md: 6 }, borderRadius: RADIUS, textAlign: 'center',
               border: '1px solid', borderColor: 'divider',
             }}>
               <Stack spacing={3} sx={{ alignItems: 'center' }}>
@@ -199,7 +200,7 @@ export default function EmployerDashboard() {
                   transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <Box sx={{
-                    width: 80, height: 80, borderRadius: 2,
+                    width: 80, height: 80, borderRadius: RADIUS,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     bgcolor: (t) => alpha(t.palette.primary.main, 0.05),
                   }}>
@@ -255,7 +256,7 @@ export default function EmployerDashboard() {
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <Paper sx={{
-            borderRadius: 1, overflow: 'hidden', mb: 1.5,
+            borderRadius: RADIUS, overflow: 'hidden', mb: 1.5,
             border: '1px solid', borderColor: 'divider',
           }}>
             {/* Cover Photo */}
@@ -283,7 +284,7 @@ export default function EmployerDashboard() {
                 whileHover={{ scale: 1.1 }}
                 sx={{
                   position: 'absolute', top: 8, insetInlineEnd: 8,
-                  width: 32, height: 32, borderRadius: 1,
+                  width: 32, height: 32, borderRadius: RADIUS,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   bgcolor: 'rgba(0,0,0,0.5)', color: 'white',
                   opacity: uploading === 'coverPhoto' ? 1 : 0,
@@ -322,7 +323,7 @@ export default function EmployerDashboard() {
                         onClick={() => logoInputRef.current?.click()}
                         sx={{
                            position: 'absolute', bottom: 0, insetInlineEnd: -2,
-                          width: 26, height: 26, borderRadius: 1,
+                          width: 26, height: 26, borderRadius: RADIUS,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           bgcolor: 'primary.main', color: 'white',
                           border: '2px solid', borderColor: 'background.paper',
@@ -402,7 +403,7 @@ export default function EmployerDashboard() {
                           onClick={() => navigate('/employer/employees')}
                           sx={{
                             justifyContent: 'flex-start',
-                            bgcolor: '#3D1C6E',
+                            bgcolor: BRAND,
                             '&:hover': { bgcolor: '#2E1555' },
                           }}
                         >
@@ -417,7 +418,7 @@ export default function EmployerDashboard() {
                           onClick={() => navigate('/employer/jobs')}
                           sx={{
                             justifyContent: 'flex-start',
-                            bgcolor: '#3D1C6E',
+                            bgcolor: BRAND,
                             '&:hover': { bgcolor: '#2E1555' },
                           }}
                         >
@@ -432,7 +433,7 @@ export default function EmployerDashboard() {
                           onClick={() => navigate('/employer/applications')}
                           sx={{
                             justifyContent: 'flex-start',
-                            bgcolor: '#3D1C6E',
+                            bgcolor: BRAND,
                             '&:hover': { bgcolor: '#2E1555' },
                           }}
                         >
@@ -523,7 +524,7 @@ export default function EmployerDashboard() {
                 {/* Social Links */}
                 {(company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
                   <motion.div variants={fadeUp} whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
-                    <Paper sx={{ p: 2, borderRadius: 1, border: '1px solid', borderColor: 'divider', transition: 'border-color 0.2s ease', '&:hover': { borderColor: 'primary.main' } }}>
+                    <Paper sx={{ p: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', transition: 'border-color 0.2s ease', '&:hover': { borderColor: 'primary.main' } }}>
                       <SectionHeader icon={<LanguageOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={lang === 'ar' ? 'روابط التواصل' : 'Social Links'} />
                       <Divider sx={{ mb: 1.25 }} />
                       <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', gap: 0.75 }}>
@@ -578,7 +579,7 @@ export default function EmployerDashboard() {
                             <Stack spacing={1.25}>
                               {(company.location?.country || company.location?.city) && (
                                 <motion.div variants={fadeUp}>
-                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
+                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: RADIUS, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
                                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
                                       <Box>
@@ -595,7 +596,7 @@ export default function EmployerDashboard() {
                               )}
                               {(company.location?.street || company.location?.buildingNumber) && (
                                 <motion.div variants={fadeUp}>
-                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
+                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: RADIUS, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
                                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
                                       <Box>
@@ -612,7 +613,7 @@ export default function EmployerDashboard() {
                               )}
                               {company.location?.country && (
                                 <motion.div variants={fadeUp}>
-                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
+                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: RADIUS, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
                                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
                                       <Box>
@@ -627,7 +628,7 @@ export default function EmployerDashboard() {
                               )}
                               {company.location?.city && (
                                 <motion.div variants={fadeUp}>
-                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
+                                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: RADIUS, borderColor: 'divider', transition: 'all 0.2s ease', '&:hover': { borderColor: 'primary.main', bgcolor: (t) => alpha(t.palette.primary.main, 0.02) } }}>
                                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'secondary.main' }} />
                                       <Box>
@@ -651,7 +652,7 @@ export default function EmployerDashboard() {
                 {/* Cover Photo Full */}
                 {!hasLocation && (
                   <motion.div variants={fadeUp}>
-                    <Paper sx={{ borderRadius: 1, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+                    <Paper sx={{ borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
                       <motion.div
                         whileHover={{ scale: 1.01 }}
                         transition={{ duration: 0.3 }}
@@ -721,7 +722,7 @@ export default function EmployerDashboard() {
                 sx={{
                   width: '100%',
                   minWidth: 320,
-                  borderRadius: 1,
+                  borderRadius: RADIUS,
                   boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
                   '& .MuiAlert-message': { width: '100%' },
                 }}

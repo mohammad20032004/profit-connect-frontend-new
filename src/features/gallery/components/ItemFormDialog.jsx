@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useEffect, useState } from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, Box, Stack, Chip, Typography, FormControl, InputLabel, Select, MenuItem, IconButton, alpha } from '@mui/material'
 import Button from '@/ui/Button'
@@ -170,7 +171,7 @@ export default function ItemFormDialog({ open, onClose, item, onSaved, collectio
   }
 
   const renderMediaPreview = (url, { isVideo, onRemove, onCover, isCover }) => (
-    <Box key={url} sx={{ position: 'relative', width: 96, height: 96, borderRadius: 1.5, overflow: 'hidden', border: '1px solid', borderColor: isCover ? 'primary.main' : 'divider', flexShrink: 0 }}>
+    <Box key={url} sx={{ position: 'relative', width: 96, height: 96, borderRadius: RADIUS, overflow: 'hidden', border: '1px solid', borderColor: isCover ? 'primary.main' : 'divider', flexShrink: 0 }}>
       {isVideo ? (
         <video src={url} preload="metadata" muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       ) : (
@@ -270,7 +271,7 @@ export default function ItemFormDialog({ open, onClose, item, onSaved, collectio
                     label={t('portfolio.form.addMedia')}
                     color="primary"
                     variant="outlined"
-                    sx={{ height: 34, fontSize: '0.8rem', borderRadius: 2, cursor: 'pointer', '&:hover': { bgcolor: alpha('#3D1C6E', 0.08) } }}
+                    sx={{ height: 34, fontSize: '0.8rem', borderRadius: RADIUS, cursor: 'pointer', '&:hover': { bgcolor: alpha(BRAND, 0.08) } }}
                   />
                 </label>
               </Box>

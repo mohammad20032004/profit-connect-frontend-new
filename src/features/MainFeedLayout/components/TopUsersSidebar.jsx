@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { Box, Typography, CircularProgress, Stack, alpha, Chip } from '@mui/material'
 import { ErrorOutlined, WorkspacePremiumRounded, ArrowForwardRounded, EmojiEventsRounded } from '@mui/icons-material'
@@ -37,7 +38,7 @@ export default function TopUsersSidebar({ variant = 'default' }) {
       sx={variant === 'plain'
         ? { width: '100%' }
         : {
-            borderRadius: 2,
+            borderRadius: RADIUS,
             overflow: 'hidden',
             border: '1px solid',
             borderColor: 'divider',
@@ -51,7 +52,7 @@ export default function TopUsersSidebar({ variant = 'default' }) {
       {/* Header */}
       <Box sx={{ px: 2, pt: 2, pb: 1, display: 'flex', alignItems: 'center', gap: 0.75 }}>
         <Box sx={{
-          width: 24, height: 24, borderRadius: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          width: 24, height: 24, borderRadius: RADIUS, display: 'flex', alignItems: 'center', justifyContent: 'center',
           bgcolor: alpha(theme.palette.warning.main, 0.12),
         }}>
           <EmojiEventsRounded sx={{ fontSize: 14, color: theme.palette.warning.main }} />
@@ -95,7 +96,7 @@ export default function TopUsersSidebar({ variant = 'default' }) {
                   px: 2,
                   py: 1,
                   mx: 1,
-                  borderRadius: 1.5,
+                  borderRadius: RADIUS,
                   transition: 'all 0.2s ease',
                   '&:hover': {
                     bgcolor: alpha(theme.palette.primary.main, 0.04),
@@ -189,7 +190,7 @@ export default function TopUsersSidebar({ variant = 'default' }) {
                   fontWeight: 600,
                   fontSize: '0.75rem',
                   textDecoration: 'none',
-                  borderRadius: 1,
+                  borderRadius: RADIUS,
                   transition: 'all 0.2s',
                   '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06) },
                 }}

@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -128,7 +129,7 @@ export default function CompaniesList() {
         {/* Header */}
         <MotionBox variants={fadeUp} sx={{ mb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
-            <Box sx={{ width: 4, height: 32, borderRadius: 2, background: `linear-gradient(180deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})` }} />
+            <Box sx={{ width: 4, height: 32, borderRadius: RADIUS, background: `linear-gradient(180deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})` }} />
             <Typography variant="h3" fontWeight={800}>
               {t('companies.title')}
             </Typography>
@@ -148,7 +149,7 @@ export default function CompaniesList() {
           {/* Filters Sidebar - Desktop */}
           <Grid size={{ xs: 12, lg: 3 }} sx={{ display: { xs: 'none', lg: 'block' } }}>
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-              <Paper sx={{ p: 2.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88 }}>
+              <Paper sx={{ p: 2.5, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', position: 'sticky', top: 88 }}>
                 <CompaniesFilters {...filterProps} />
               </Paper>
             </motion.div>
@@ -188,7 +189,7 @@ export default function CompaniesList() {
                       fullWidth
                       variant="contained"
                       onClick={() => setMobileFilterOpen(false)}
-                      sx={{ bgcolor: 'text.primary', color: 'background.paper', '&:hover': { bgcolor: 'rgba(0,0,0,0.8)' }, textTransform: 'none', borderRadius: 1.5, py: 1.25 }}
+                      sx={{ bgcolor: 'text.primary', color: 'background.paper', '&:hover': { bgcolor: 'rgba(0,0,0,0.8)' }, textTransform: 'none', borderRadius: RADIUS, py: 1.25 }}
                     >
                       {t('companies.showResults', 'عرض النتائج')}
                       {countActive > 0 && ` (${countActive})`}
@@ -207,7 +208,7 @@ export default function CompaniesList() {
               sx={{
                 mb: 3,
                 p: { xs: 2, md: 2.5 },
-                borderRadius: 2.5,
+                borderRadius: RADIUS,
                 bgcolor: 'background.paper',
                 border: '1px solid',
                 borderColor: hasActiveFilters ? alpha(primary, 0.2) : 'divider',
@@ -247,14 +248,14 @@ export default function CompaniesList() {
                   onClick={() => setMobileFilterOpen(true)}
                   sx={{
                     display: { xs: 'inline-flex', lg: 'none' },
-                    textTransform: 'none', borderRadius: 1.5, minWidth: 44,
+                    textTransform: 'none', borderRadius: RADIUS, minWidth: 44,
                     borderColor: 'divider', color: 'text.primary',
                     '&:hover': { borderColor: 'rgba(0,0,0,0.4)', bgcolor: 'rgba(0,0,0,0.04)' },
                   }}
                 >
                   {t('companies.filtersTitle', 'الفلاتر')}
                   {countActive > 0 && (
-                    <Box sx={{ ml: 0.5, px: 0.75, py: 0.1, borderRadius: 1, bgcolor: 'rgba(0,0,0,0.08)', color: 'text.primary', fontSize: '0.7rem', fontWeight: 700 }}>
+                    <Box sx={{ ml: 0.5, px: 0.75, py: 0.1, borderRadius: RADIUS, bgcolor: 'rgba(0,0,0,0.08)', color: 'text.primary', fontSize: '0.7rem', fontWeight: 700 }}>
                       {countActive}
                     </Box>
                   )}
@@ -325,10 +326,10 @@ export default function CompaniesList() {
                 sx={{
                   mb: 3,
                   height: 3,
-                  borderRadius: 2,
+                  borderRadius: RADIUS,
                   bgcolor: alpha(primary, 0.06),
                   '& .MuiLinearProgress-bar': {
-                    borderRadius: 2,
+                    borderRadius: RADIUS,
                     background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                   },
                 }}

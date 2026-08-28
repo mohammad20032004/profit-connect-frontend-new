@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useRef, useEffect } from 'react'
 import {
   Box,
@@ -104,7 +105,7 @@ function DatePicker({
           justifyContent: 'center',
           borderRadius: 20,
           cursor: isDisabled(d) ? 'not-allowed' : 'pointer',
-          backgroundColor: isSelected ? '#3D1C6E' : isToday ? 'rgba(61, 28, 110, 0.08)' : 'transparent',
+          backgroundColor: isSelected ? BRAND : isToday ? 'rgba(61, 28, 110, 0.08)' : 'transparent',
           color: isSelected ? '#fff' : isDisabled(d) ? '#D4CFE0' : '#1F0A3B',
           fontWeight: isToday || isSelected ? 600 : 400,
           fontSize: '0.85rem',
@@ -136,14 +137,14 @@ function DatePicker({
         }}
         sx={{
           '& .MuiOutlinedInput-root': {
-            borderRadius: 1,
+            borderRadius: RADIUS,
             backgroundColor: '#fff',
             cursor: 'pointer',
             '& fieldset': { borderColor: 'rgba(31, 10, 59, 0.12)' },
             '&:hover fieldset': { borderColor: 'rgba(61, 28, 110, 0.3)' },
-            '&.Mui-focused fieldset': { borderColor: '#3D1C6E', borderWidth: 2 },
+            '&.Mui-focused fieldset': { borderColor: BRAND, borderWidth: 2 },
           },
-          '& .MuiInputLabel-root.Mui-focused': { color: '#3D1C6E' },
+          '& .MuiInputLabel-root.Mui-focused': { color: BRAND },
           ...sx,
         }}
       />
@@ -157,7 +158,7 @@ function DatePicker({
         PaperProps={{
           sx: {
             mt: 1,
-            borderRadius: 1,
+            borderRadius: RADIUS,
             border: '1px solid rgba(31, 10, 59, 0.08)',
             boxShadow: '0 18px 40px rgba(31, 10, 59, 0.08)',
             overflow: 'visible',

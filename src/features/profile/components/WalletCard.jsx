@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import {
   Box, Paper, Typography, Stack, Dialog, DialogTitle, DialogContent, DialogActions,
@@ -16,13 +17,13 @@ import { getMyPayments } from '@/services/projectService'
 const PAY_STATUS = {
   held: { color: '#D97706', labelKey: 'profile.payHeld' },
   released: { color: '#16A34A', labelKey: 'profile.payReleased' },
-  refunded: { color: '#DC2626', labelKey: 'profile.payRefunded' },
+  refunded: { color: DANGER, labelKey: 'profile.payRefunded' },
   cancelled: { color: '#5C5580', labelKey: 'profile.payCancelled' },
 }
 
 const TXN_COLORS = {
   release: '#16A34A',
-  fee: '#DC2626',
+  fee: DANGER,
   refund: '#16A34A',
   withdraw: '#D97706',
   withdraw_refund: '#16A34A',
@@ -148,7 +149,7 @@ export default function WalletCard() {
   }
 
   const statItem = (label, value, color, icon) => (
-    <Box sx={{ flex: 1, minWidth: 110, textAlign: 'center', p: 1.25, borderRadius: 2, bgcolor: alpha(color, 0.06), border: '1px solid', borderColor: alpha(color, 0.18) }}>
+    <Box sx={{ flex: 1, minWidth: 110, textAlign: 'center', p: 1.25, borderRadius: RADIUS, bgcolor: alpha(color, 0.06), border: '1px solid', borderColor: alpha(color, 0.18) }}>
       <Box sx={{ color, mb: 0.5 }}>{icon}</Box>
       <Typography variant="h6" fontWeight={800} fontSize="1.05rem" sx={{ color, lineHeight: 1.15 }}>{fmt(value)}</Typography>
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 600 }}>{label}</Typography>
@@ -156,16 +157,16 @@ export default function WalletCard() {
   )
 
   return (
-    <Paper variant="outlined" sx={{ p: 2, borderRadius: 1, overflow: 'hidden', border: '1px solid', borderColor: alpha('#3D1C6E', 0.18), bgcolor: 'background.paper' }}>
+    <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, overflow: 'hidden', border: '1px solid', borderColor: alpha(BRAND, 0.18), bgcolor: 'background.paper' }}>
       <Box sx={{
-        height: 4, borderRadius: 1, mb: 1.5,
-        background: 'linear-gradient(90deg, #3D1C6E 0%, #1F3670 60%, #16A34A 100%)',
+        height: 4, borderRadius: RADIUS, mb: 1.5,
+        background: 'linear-gradient(90deg, BRAND 0%, #1F3670 60%, #16A34A 100%)',
       }} />
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <Box sx={{
-            width: 34, height: 34, borderRadius: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            bgcolor: alpha('#3D1C6E', 0.08), color: 'primary.main',
+            width: 34, height: 34, borderRadius: RADIUS, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            bgcolor: alpha(BRAND, 0.08), color: 'primary.main',
           }}>
             <AccountBalanceWalletOutlined sx={{ fontSize: 20 }} />
           </Box>
@@ -182,7 +183,7 @@ export default function WalletCard() {
       </Stack>
 
       {success && (
-        <Typography variant="body2" color="success.main" sx={{ mt: 1.25, p: 1, borderRadius: 1.5, bgcolor: alpha('#16A34A', 0.08), textAlign: 'center', fontWeight: 600 }}>
+        <Typography variant="body2" color="success.main" sx={{ mt: 1.25, p: 1, borderRadius: RADIUS, bgcolor: alpha('#16A34A', 0.08), textAlign: 'center', fontWeight: 600 }}>
           {success}
         </Typography>
       )}
@@ -196,7 +197,7 @@ export default function WalletCard() {
         ) : (
           <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1.5 }}>
             {statItem(t('profile.availableBalance', 'Available balance'), balance, '#16A34A', <LockOutlined sx={{ fontSize: 18 }} />)}
-            {statItem(`${t('profile.inEscrow', 'In escrow')}${inEscrowCount ? ` (${inEscrowCount})` : ''}`, inEscrow, '#3D1C6E', <ReceiptLongOutlined sx={{ fontSize: 18 }} />)}
+            {statItem(`${t('profile.inEscrow', 'In escrow')}${inEscrowCount ? ` (${inEscrowCount})` : ''}`, inEscrow, BRAND, <ReceiptLongOutlined sx={{ fontSize: 18 }} />)}
             {statItem(t('profile.holding', 'Held for review'), holding, '#D97706', <HourglassTopOutlined sx={{ fontSize: 18 }} />)}
             {statItem(t('profile.totalEarned', 'Total earned'), totalEarned, '#7D5DAB', <TrendingUpOutlined sx={{ fontSize: 18 }} />)}
             {statItem(t('profile.totalWithdrawn', 'Total withdrawn'), totalWithdrawn, '#576FA2', <SwapHorizOutlined sx={{ fontSize: 18 }} />)}
@@ -220,7 +221,7 @@ export default function WalletCard() {
               return (
                 <Stack key={i} direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
                   <Box sx={{
-                    width: 28, height: 28, borderRadius: 1, flexShrink: 0,
+                    width: 28, height: 28, borderRadius: RADIUS, flexShrink: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     bgcolor: alpha(color, 0.1), color,
                   }}>
@@ -266,7 +267,7 @@ export default function WalletCard() {
               return (
                 <Stack key={i} direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
                   <Box sx={{
-                    width: 28, height: 28, borderRadius: 1, flexShrink: 0,
+                    width: 28, height: 28, borderRadius: RADIUS, flexShrink: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     bgcolor: alpha(st.color, 0.1), color: st.color,
                   }}>
@@ -294,7 +295,7 @@ export default function WalletCard() {
         <DialogTitle sx={{ fontSize: '1rem', fontWeight: 800 }}>{t('profile.withdrawTitle', 'Withdraw Funds')}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={2}>
-            <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: alpha('#16A34A', 0.06), border: '1px solid', borderColor: alpha('#16A34A', 0.2), textAlign: 'center' }}>
+            <Box sx={{ p: 1.5, borderRadius: RADIUS, bgcolor: alpha('#16A34A', 0.06), border: '1px solid', borderColor: alpha('#16A34A', 0.2), textAlign: 'center' }}>
               <Typography variant="caption" color="text.secondary">{t('profile.availableBalance', 'Available balance')}</Typography>
               <Typography variant="h6" fontWeight={800} color="success.main">{fmt(balance)}</Typography>
             </Box>
@@ -303,7 +304,7 @@ export default function WalletCard() {
             <TextField label={t('profile.bankName', 'Bank Name')} value={bankName} onChange={(e) => setBankName(e.target.value)} placeholder="Al Rajhi Bank" />
             <TextField label={t('profile.iban', 'IBAN')} value={iban} onChange={(e) => setIban(e.target.value)} placeholder="SA00 0000 0000 0000 0000 0000" dir="ltr" />
             <TextField label={t('profile.holderName', 'Account Holder')} value={holderName} onChange={(e) => setHolderName(e.target.value)} />
-            <Typography variant="caption" color="text.secondary" sx={{ bgcolor: alpha('#D97706', 0.07), p: 1, borderRadius: 1.5, border: '1px dashed', borderColor: alpha('#D97706', 0.35), lineHeight: 1.6 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ bgcolor: alpha('#D97706', 0.07), p: 1, borderRadius: RADIUS, border: '1px dashed', borderColor: alpha('#D97706', 0.35), lineHeight: 1.6 }}>
               {t('profile.withdrawNote', 'Your request will be reviewed by the support team. The amount moves to "Held" until approval.')}
             </Typography>
           </Stack>

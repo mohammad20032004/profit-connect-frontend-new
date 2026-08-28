@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react'
+﻿﻿import { RADIUS } from '@/theme/tokens'
+import { useState, useEffect } from 'react'
 import { Box, Paper, Typography, Stack, Grid, LinearProgress, Avatar, alpha } from '@mui/material'
 import { motion } from 'framer-motion'
 import {
@@ -142,7 +143,7 @@ export default function OverviewTab({ overview }) {
       label: '',
       data: [completedMs, inProgressMs, notStartedMs],
       backgroundColor: [COLORS.success, COLORS.primary, '#C4BBD9'],
-      borderRadius: 1,
+      borderRadius: RADIUS,
       barPercentage: 0.55,
     }],
   }
@@ -166,7 +167,7 @@ export default function OverviewTab({ overview }) {
           {/* Left: tall circular chart */}
           <Grid size={{ xs: 12, md: 5 }}>
             <motion.div variants={scaleIn} custom={0} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ height: '100%' }}>
-              <Paper sx={{ p: 2.5, borderRadius: 1.5, height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Paper sx={{ p: 2.5, borderRadius: RADIUS, height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <SectionHeader icon={<SpeedOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.overview', 'Overview')} />
                 <Stack spacing={2} sx={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                   <ProgressRing value={overview.progress ?? 0} size={230} stroke={16} />
@@ -198,7 +199,7 @@ export default function OverviewTab({ overview }) {
             <Stack spacing={2.5} sx={{ height: '100%' }}>
               {/* Payments Summary */}
               <motion.div variants={scaleIn} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ flex: 1 }}>
-                <Paper sx={{ p: 2, borderRadius: 1.5, height: '100%' }}>
+                <Paper sx={{ p: 2, borderRadius: RADIUS, height: '100%' }}>
                   <SectionHeader icon={<PaymentsOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.paymentsSummary', 'Payments Summary')} />
                   <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <Box sx={{ width: 150, height: 150 }}>
@@ -233,7 +234,7 @@ export default function OverviewTab({ overview }) {
 
               {/* Timeline Progress */}
               <motion.div variants={scaleIn} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ flex: 1 }}>
-                <Paper sx={{ p: 2, borderRadius: 1.5, height: '100%' }}>
+                <Paper sx={{ p: 2, borderRadius: RADIUS, height: '100%' }}>
                   <SectionHeader icon={<CalendarMonthOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.timelineElapsed', 'Timeline Progress')} />
                   <TimelineProgress overview={overview} />
                 </Paper>
@@ -241,7 +242,7 @@ export default function OverviewTab({ overview }) {
 
               {/* Milestones breakdown */}
               <motion.div variants={scaleIn} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ flex: 1 }}>
-                <Paper sx={{ p: 2, borderRadius: 1.5, height: '100%' }}>
+                <Paper sx={{ p: 2, borderRadius: RADIUS, height: '100%' }}>
                   <SectionHeader icon={<TaskAltOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.milestonesBreakdown', 'Milestones')} />
                   <Box sx={{ height: 150 }}>
                     {milestones.length === 0 ? (
@@ -261,7 +262,7 @@ export default function OverviewTab({ overview }) {
         {/* Team preview */}
         {team.length > 0 && (
           <motion.div variants={scaleIn} custom={4} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <Paper sx={{ p: 2.5, borderRadius: 1.5 }}>
+            <Paper sx={{ p: 2.5, borderRadius: RADIUS }}>
               <SectionHeader icon={<GroupOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('manage.team', 'Team')} />
               <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
                 {team.map((m, i) => {

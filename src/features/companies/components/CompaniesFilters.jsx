@@ -1,3 +1,4 @@
+﻿﻿import { DANGER, RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import { Box, Stack, Typography, Chip, Button, Divider, Collapse } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
@@ -19,7 +20,7 @@ function FilterSection({ title, icon, defaultOpen = false, count, children, colo
           justifyContent: 'space-between', textTransform: 'none',
           color: open ? color : 'text.secondary',
           fontWeight: 700, fontSize: '0.78rem', px: 1.5, py: 1, minWidth: 0,
-          borderRadius: 1.5,
+          borderRadius: RADIUS,
           '&:hover': { bgcolor: alpha(color, 0.06) },
           transition: 'all 0.2s ease',
           bgcolor: '#fff'
@@ -106,7 +107,7 @@ export default function CompaniesFilters({
       <Box sx={{ px: 1.5, pt: 1, pb: 0.5 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <Box sx={{
-            width: 30, height: 30, borderRadius: 1,
+            width: 30, height: 30, borderRadius: RADIUS,
             bgcolor: alpha(primary, 0.08),
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
@@ -117,7 +118,7 @@ export default function CompaniesFilters({
           </Typography>
           {countActive > 0 && (
             <Box sx={{
-              ml: 'auto', px: 1, py: 0.25, borderRadius: 1,
+              ml: 'auto', px: 1, py: 0.25, borderRadius: RADIUS,
               bgcolor: alpha(primary, 0.08),
             }}>
               <Typography variant="caption" fontWeight={700} color="primary" sx={{ fontSize: '0.65rem' }}>
@@ -134,9 +135,9 @@ export default function CompaniesFilters({
             size="small"
             onClick={clearFilters}
             sx={{
-              textTransform: 'none', fontSize: '0.7rem', color: '#DC2626',
+              textTransform: 'none', fontSize: '0.7rem', color: DANGER,
               fontWeight: 600, minWidth: 0, p: 0.5,
-              '&:hover': { bgcolor: alpha('#DC2626', 0.06) },
+              '&:hover': { bgcolor: alpha(DANGER, 0.06) },
             }}
           >
             {t('companies.clearAllFilters', 'مسح الكل')}

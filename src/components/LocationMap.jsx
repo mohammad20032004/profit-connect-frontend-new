@@ -1,3 +1,4 @@
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useRef, useEffect, useState, useMemo } from 'react'
 import { Box, Button, Typography, useTheme, Autocomplete, TextField } from '@mui/material'
 import AddLocationAltOutlined from '@mui/icons-material/AddLocationAltOutlined'
@@ -37,7 +38,7 @@ function makeMarkerStyles() {
     new Style({
       image: new CircleStyle({
         radius: 10,
-        fill: new Fill({ color: '#3D1C6E' }),
+        fill: new Fill({ color: BRAND }),
         stroke: new Stroke({ color: 'white', width: 3 }),
       }),
     }),
@@ -191,7 +192,7 @@ export default function LocationMap({
         sx={{
           width: '100%',
           height,
-          borderRadius: 1,
+          borderRadius: RADIUS,
           overflow: 'hidden',
           border: '1px solid',
           borderColor: 'divider',
@@ -234,8 +235,8 @@ export default function LocationMap({
                   size="small"
                   placeholder={t('employer.setup.searchCountry')}
                   sx={{
-                    bgcolor: 'background.paper', borderRadius: 1, boxShadow: 3,
-                    '& .MuiOutlinedInput-root': { borderRadius: 1 },
+                    bgcolor: 'background.paper', borderRadius: RADIUS, boxShadow: 3,
+                    '& .MuiOutlinedInput-root': { borderRadius: RADIUS },
                   }}
                 />
               )}
@@ -280,7 +281,7 @@ export default function LocationMap({
             {picking && (
               <Typography variant="caption" sx={{
                 bgcolor: 'background.paper', color: 'text.primary',
-                px: 1, py: 0.5, borderRadius: 1, boxShadow: 1, textAlign: 'center', lineHeight: 1.4,
+                px: 1, py: 0.5, borderRadius: RADIUS, boxShadow: 1, textAlign: 'center', lineHeight: 1.4,
               }}>
                 {t('employer.setup.pickHint')}
               </Typography>

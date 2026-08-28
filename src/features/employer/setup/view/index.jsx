@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react'
+﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -54,7 +55,7 @@ const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
-    borderRadius: 1,
+    borderRadius: RADIUS,
     transition: 'all 0.3s ease',
     '&:hover': { boxShadow: '0 2px 8px rgba(61,28,110,0.06)' },
     '&.Mui-focused': { boxShadow: '0 2px 12px rgba(61,28,110,0.12)' },
@@ -199,12 +200,12 @@ export default function EmployerSetup() {
         ) : existingCompany ? (
           <Fade in timeout={500}>
             <Box>
-              <Paper sx={{ p: 4, borderRadius: 1.5, border: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
+              <Paper sx={{ p: 4, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
                 <Stack spacing={2.5} sx={{ alignItems: 'center' }}>
                   <Box sx={{
                     width: 64, height: 64, borderRadius: '16px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    bgcolor: alpha('#3D1C6E', 0.08),
+                    bgcolor: alpha(BRAND, 0.08),
                   }}>
                     <BusinessCenterOutlined sx={{ fontSize: 32, color: 'primary.main' }} />
                   </Box>
@@ -273,7 +274,7 @@ export default function EmployerSetup() {
         <Fade in timeout={500}>
           <Box>
             {/* Stepper */}
-            <Paper sx={{ p: { xs: 2, md: 3 }, mb: 2, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+            <Paper sx={{ p: { xs: 2, md: 3 }, mb: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }}>
               <Stepper activeStep={step} sx={{
                 '& .MuiStepLabel-label': { fontSize: '0.8rem', fontWeight: 600, mt: 0.5 },
                 '& .Mui-active .MuiStepLabel-label': { color: 'primary.main' },
@@ -293,16 +294,16 @@ export default function EmployerSetup() {
             {/* Error */}
             {error && (
               <Fade in>
-                <Alert severity="error" onClose={() => setError('')} sx={{ mb: 2, borderRadius: 1 }}>
+                <Alert severity="error" onClose={() => setError('')} sx={{ mb: 2, borderRadius: RADIUS }}>
                   {error}
                 </Alert>
               </Fade>
             )}
 
-            {loading && <LinearProgress sx={{ mb: 2, borderRadius: 1 }} />}
+            {loading && <LinearProgress sx={{ mb: 2, borderRadius: RADIUS }} />}
 
             {/* Form Card */}
-            <Paper sx={{ borderRadius: 1.5, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+            <Paper sx={{ borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
               {/* Step 0: Company Info */}
               {step === 0 && (
                 <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
@@ -409,9 +410,9 @@ export default function EmployerSetup() {
                     <Box sx={{ flex: { xs: '1 1 100%', md: '0 0 380px' }, minWidth: 0 }}>
                       {/* Step 0 summary */}
                       <Box sx={{
-                        p: 1.5, borderRadius: 1, mb: 2,
+                        p: 1.5, borderRadius: RADIUS, mb: 2,
                         border: '1px solid', borderColor: 'divider',
-                        bgcolor: alpha('#3D1C6E', 0.03),
+                        bgcolor: alpha(BRAND, 0.03),
                       }}>
                         <Typography variant="caption" fontWeight={700} color="primary.main" sx={{ display: 'block', mb: 1, textTransform: 'uppercase', letterSpacing: 0.5 }}>
                           {t('employer.setup.companyInfoSummary')}
@@ -490,13 +491,13 @@ export default function EmployerSetup() {
                                 icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
                                 label={`Lat: ${parsed[1].toFixed(6)}`}
                                 size="small" variant="outlined"
-                                sx={{ borderRadius: 1, fontSize: '0.7rem' }}
+                                sx={{ borderRadius: RADIUS, fontSize: '0.7rem' }}
                               />
                               <Chip
                                 icon={<LocationOnOutlined sx={{ fontSize: 14 }} />}
                                 label={`Lng: ${parsed[0].toFixed(6)}`}
                                 size="small" variant="outlined"
-                                sx={{ borderRadius: 1, fontSize: '0.7rem' }}
+                                sx={{ borderRadius: RADIUS, fontSize: '0.7rem' }}
                               />
                             </Stack>
                           )
@@ -535,16 +536,16 @@ export default function EmployerSetup() {
                   <Box
                     sx={{
                       display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center',
-                      border: '2px dashed', borderColor: 'divider', borderRadius: 2,
+                      border: '2px dashed', borderColor: 'divider', borderRadius: RADIUS,
                       p: { xs: 2.5, md: 3 }, cursor: 'pointer',
-                      transition: 'all 0.2s ease', bgcolor: alpha('#3D1C6E', 0.02),
+                      transition: 'all 0.2s ease', bgcolor: alpha(BRAND, 0.02),
                       mb: 2.5,
-                      '&:hover': { borderColor: 'primary.main', bgcolor: alpha('#3D1C6E', 0.05) },
+                      '&:hover': { borderColor: 'primary.main', bgcolor: alpha(BRAND, 0.05) },
                     }}
                     component="label"
                   >
                     <input type="file" hidden multiple accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={handleDocAdd} />
-                    <Box sx={{ width: 52, height: 52, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Box sx={{ width: 52, height: 52, borderRadius: '50%', bgcolor: alpha(BRAND, 0.08), display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <CloudUploadOutlined sx={{ fontSize: 28, color: 'primary.main' }} />
                     </Box>
                     <Box sx={{ textAlign: { xs: 'center', sm: 'left' }, minWidth: 0 }}>
@@ -563,7 +564,7 @@ export default function EmployerSetup() {
                         <LinearProgress
                           variant="determinate"
                           value={(documents.length / MAX_DOCS) * 100}
-                          sx={{ flex: 1, borderRadius: 1, height: 4 }}
+                          sx={{ flex: 1, borderRadius: RADIUS, height: 4 }}
                         />
                         <Typography variant="caption" color="text.secondary" fontWeight={600}>
                           {documents.length}/{MAX_DOCS}
@@ -573,10 +574,10 @@ export default function EmployerSetup() {
                         {documents.map((doc, i) => (
                           <Fade in key={i} timeout={300}>
                             <Stack direction="row" spacing={1} sx={{
-                              alignItems: 'center', p: 1, borderRadius: 1,
+                              alignItems: 'center', p: 1, borderRadius: RADIUS,
                               border: '1px solid', borderColor: 'divider',
                               bgcolor: 'background.paper',
-                              '&:hover': { bgcolor: alpha('#3D1C6E', 0.02) },
+                              '&:hover': { bgcolor: alpha(BRAND, 0.02) },
                             }}>
                               <CheckCircleOutlineOutlined sx={{ fontSize: 18, color: 'success.main' }} />
                               <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -597,7 +598,7 @@ export default function EmployerSetup() {
                   )}
 
                   {documents.length === 0 && (
-                    <Box sx={{ p: 3, borderRadius: 1, textAlign: 'center', border: '1px dashed', borderColor: 'divider', bgcolor: alpha('#3D1C6E', 0.02) }}>
+                    <Box sx={{ p: 3, borderRadius: RADIUS, textAlign: 'center', border: '1px dashed', borderColor: 'divider', bgcolor: alpha(BRAND, 0.02) }}>
                       <DescriptionOutlined sx={{ fontSize: 32, color: 'text.disabled', mb: 0.5 }} />
                       <Typography variant="body2" color="text.disabled">
                         {t('employer.setup.noDocuments')}
@@ -624,7 +625,7 @@ export default function EmployerSetup() {
                   onClick={() => handleStep('forward')}
                   disabled={!stepValidation[step]}
                   sx={{
-                    px: 4, fontWeight: 600, borderRadius: 1,
+                    px: 4, fontWeight: 600, borderRadius: RADIUS,
                     '&:hover': { boxShadow: '0 4px 16px rgba(61,28,110,0.25)' },
                   }}
                 >
@@ -636,7 +637,7 @@ export default function EmployerSetup() {
                   onClick={handleSubmit}
                   disabled={loading || !form.name.trim()}
                   sx={{
-                    px: 4, fontWeight: 600, borderRadius: 1,
+                    px: 4, fontWeight: 600, borderRadius: RADIUS,
                     '&:hover': { boxShadow: '0 4px 16px rgba(61,28,110,0.25)' },
                     '&:disabled': { bgcolor: '#B5AECB' },
                   }}

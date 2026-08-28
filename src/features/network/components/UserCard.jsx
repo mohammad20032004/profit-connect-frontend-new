@@ -1,3 +1,4 @@
+﻿﻿import { RADIUS } from '@/theme/tokens'
 import { Paper, Box, Typography, Stack, alpha, CircularProgress, IconButton, Tooltip, Chip } from '@mui/material'
 import {
   PersonAddOutlined, PersonAddAlt1Outlined, HourglassTopOutlined, PeopleAltOutlined, PersonOffOutlined,
@@ -19,7 +20,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
 
   return (
     <Paper variant="outlined" sx={{
-      p: 1.75, borderRadius: 1.5, display: 'flex', gap: 1.5, alignItems: 'center',
+      p: 1.75, borderRadius: RADIUS, display: 'flex', gap: 1.5, alignItems: 'center',
       transition: 'all 0.2s ease',
       '&:hover': { boxShadow: '0 6px 20px rgba(31,10,59,0.08)', borderColor: alpha(COLORS.primary, 0.25), transform: 'translateY(-2px)' },
       ...(sx || {}),
@@ -75,7 +76,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
             startIcon={following ? <PersonOffOutlined sx={{ fontSize: 15 }} /> : <PersonAddAlt1Outlined sx={{ fontSize: 15 }} />}
             onClick={() => onToggleFollow(user)}
             disabled={busyId === user._id}
-            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
+            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: RADIUS }}
           >
             {following ? t('network.unfollow', 'Unfollow') : t('network.follow', 'Follow')}
           </Button>
@@ -88,7 +89,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
             disabled={busyId === user._id}
             startIcon={status === 'none' ? <PersonAddOutlined sx={{ fontSize: 15 }} /> : <HourglassTopOutlined sx={{ fontSize: 15 }} />}
             onClick={() => onConnect(user)}
-            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
+            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: RADIUS }}
           >
             {status === 'connected'
               ? t('network.connected', 'Connected')
@@ -124,7 +125,7 @@ export default function UserCard({ user, status, following, onConnect, onAccept,
             color="error"
             onClick={() => onCancel(user)}
             disabled={busyId === user._id}
-            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: 1 }}
+            sx={{ minWidth: 0, px: 1.25, minHeight: 36, fontSize: '0.72rem', textTransform: 'none', borderRadius: RADIUS }}
           >
             {t('network.cancel', 'Cancel')}
           </Button>

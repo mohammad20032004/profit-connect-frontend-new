@@ -1,4 +1,5 @@
-﻿import { useState } from 'react'
+﻿﻿import { RADIUS } from '@/theme/tokens'
+import { useState } from 'react'
 import {
   Box, Paper, Typography, Stack, Grid, Avatar, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions,
   Chip, useMediaQuery, alpha,
@@ -111,7 +112,7 @@ export default function TeamTab({ id, overview, onChanged }) {
       </Stack>
 
       {team.length === 0 ? (
-        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 1.5, borderStyle: 'dashed' }}>
+        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: RADIUS, borderStyle: 'dashed' }}>
           <PersonOutlined sx={{ fontSize: 44, color: alpha(theme.palette.text.disabled, 0.3), mb: 1 }} />
           <Typography color="text.secondary">{t('manage.noTeam', 'No team members yet')}</Typography>
         </Paper>
@@ -133,7 +134,7 @@ export default function TeamTab({ id, overview, onChanged }) {
                     whileHover={{ y: -4, boxShadow: '0 12px 28px rgba(31,10,59,0.1)' }}
                     transition={{ duration: 0.35, delay: i * 0.08 }}
                   >
-                    <Paper sx={{ p: 2, borderRadius: 1.5, height: '100%', position: 'relative', transition: 'border-color 0.2s' }}>
+                    <Paper sx={{ p: 2, borderRadius: RADIUS, height: '100%', position: 'relative', transition: 'border-color 0.2s' }}>
                       <Stack direction="row" spacing={0.5} sx={{ position: 'absolute', top: 8, right: 8 }}>
                         <Tooltip title={t('manage.edit', 'Edit')}>
                           <IconButton size="small" onClick={() => openEdit(m)}>
