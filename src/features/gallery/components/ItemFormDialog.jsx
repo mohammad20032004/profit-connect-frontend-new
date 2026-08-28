@@ -9,7 +9,7 @@ import {
   StarRounded,
   StarBorderRounded,
 } from '@mui/icons-material'
-import { createPortfolioItem, updatePortfolioItem } from '@/services/portfolioService'
+import { createPortfolioItem, updatePortfolioItem, createCollectionItem } from '@/services/portfolioService'
 import { resolveMediaPath } from '@/services/profile'
 import { getItemMedia } from '../media'
 
@@ -18,7 +18,7 @@ const MAX_FILE_MB = 50
 
 const CATEGORY_KEYS = ['development', 'design', 'writing', 'marketing', 'photography', 'video', 'other']
 
-export default function ItemFormDialog({ open, onClose, item, onSaved }) {
+export default function ItemFormDialog({ open, onClose, item, onSaved, collectionId }) {
   const { t } = useTranslation()
   const [form, setForm] = useState({
     title: '',
@@ -150,7 +150,11 @@ export default function ItemFormDialog({ open, onClose, item, onSaved }) {
           if (coverImage) fd.append('coverImage', coverImage)
         }
         newFiles.forEach(({ file }) => fd.append('media', file))
-        res = item ? await updatePortfolioItem(item._id, fd) : await createPortfolioItem(fd)
+        if (collectionId) {
+          res = await createCollectionItem(collectionId, fd)
+        } else {
+          res = item ? await updatePortfolioItem(item._id, fd) : await createPortfolioItem(fd)
+        }
       }
       if (!res?.success) {
         setError(res?.message || t('common.error'))

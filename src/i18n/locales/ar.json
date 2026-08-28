@@ -1037,6 +1037,10 @@
       "name": "اسم المجموعة",
       "nameRequired": "اسم المجموعة مطلوب",
       "description": "الوصف",
+      "cover": "صورة الغلاف",
+      "coverHint": "اختيارية — صورة أو فيديو يظهر على المجموعة",
+      "changeCover": "تغيير الغلاف",
+      "removeCover": "إزالة الغلاف",
       "isPublic": "مجموعة عامة",
       "createTitle": "مجموعة جديدة",
       "editTitle": "تعديل المجموعة",
@@ -1050,7 +1054,15 @@
       "addTo": "إضافة إلى مجموعة",
       "removeItem": "إزالة من المجموعة",
       "private": "خاصة",
-      "close": "إغلاق"
+      "close": "إغلاق",
+      "linkWork": "إضافة عمل شخصي",
+      "createInside": "إنشاء عمل داخل المجموعة",
+      "linkWorkTitle": "اختر أعمالك لإضافتها",
+      "linkWorkEmpty": "ليس لديك أعمال بعد",
+      "linkWorkConfirm": "إضافة إلى المجموعة",
+      "inCollection": "مُضافة مسبقاً",
+      "manageTitle": "أعمال المجموعة",
+      "finish": "تم"
     }
   },
   "employer": {

@@ -181,7 +181,7 @@ export default function ProjectsList() {
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                 {mine
-                  ? (lang === 'ar' ? 'مشاريعك المرسلوعة والمشاريع التي عملت عليها' : 'Your posted projects and projects you worked on')
+                  ? (lang === 'ar' ? 'مشاريعك المرسلة والمشاريع التي عملت عليها' : 'Your posted projects and projects you worked on')
                   : (lang === 'ar' ? 'تصفح المشاريع المتاحة وقدم عروضك' : 'Browse available projects and submit your proposals')
                 }
               </Typography>

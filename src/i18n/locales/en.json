@@ -1035,6 +1035,10 @@
       "name": "Collection name",
       "nameRequired": "Collection name is required",
       "description": "Description",
+      "cover": "Cover image",
+      "coverHint": "Optional — image or video shown on the collection",
+      "changeCover": "Change cover",
+      "removeCover": "Remove cover",
       "isPublic": "Public collection",
       "createTitle": "New Collection",
       "editTitle": "Edit Collection",
@@ -1048,7 +1052,15 @@
       "addTo": "Add to collection",
       "removeItem": "Remove from collection",
       "private": "Private",
-      "close": "Close"
+      "close": "Close",
+      "linkWork": "Add personal work",
+      "createInside": "Create work inside collection",
+      "linkWorkTitle": "Select your works to add",
+      "linkWorkEmpty": "You have no works yet",
+      "linkWorkConfirm": "Add to collection",
+      "inCollection": "Already added",
+      "manageTitle": "Collection works",
+      "finish": "Done"
     }
   },
   "employer": {

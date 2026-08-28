@@ -34,10 +34,12 @@ function CollectionCard({ collection, isOwner, onOpen, onEdit, onDelete }) {
   const { t } = useTranslation()
   const [anchor, setAnchor] = useState(null)
   const items = collection?.items || []
-  let cover = null
-  for (const it of items) {
-    const c = getItemCover(it)
-    if (c) { cover = c; break }
+  let cover = collection?.coverImage ? resolveMediaPath(collection.coverImage) : null
+  if (!cover) {
+    for (const it of items) {
+      const c = getItemCover(it)
+      if (c) { cover = resolveMediaPath(c); break }
+    }
   }
   return (
     <Box
@@ -372,6 +374,7 @@ export default function GalleryView() {
         onClose={() => setCollectionFormOpen(false)}
         collection={collectionFormData}
         onSaved={reloadCollections}
+        onItemsChanged={handleItemSaved}
       />
 
       <CollectionDetailDialog
@@ -380,6 +383,7 @@ export default function GalleryView() {
         collectionId={viewCollectionId}
         isOwner={isOwnGallery}
         onItemRemoved={reloadCollections}
+        onItemsChanged={handleItemSaved}
       />
 
       <Dialog open={Boolean(deleteItemTarget)} onClose={() => setDeleteItemTarget(null)}>

@@ -87,12 +87,16 @@ export async function getCollectionById(collectionId) {
 }
 
 export async function createCollection(payload) {
-  const { data } = await api.post('/portfolio/collections', payload)
+  const isForm = typeof FormData !== 'undefined' && payload instanceof FormData
+  const config = isForm ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined
+  const { data } = await api.post('/portfolio/collections', payload, config)
   return data
 }
 
 export async function updateCollection(collectionId, payload) {
-  const { data } = await api.put(`/portfolio/collections/${collectionId}`, payload)
+  const isForm = typeof FormData !== 'undefined' && payload instanceof FormData
+  const config = isForm ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined
+  const { data } = await api.put(`/portfolio/collections/${collectionId}`, payload, config)
   return data
 }
 
@@ -103,6 +107,13 @@ export async function deleteCollection(collectionId) {
 
 export async function addItemToCollection(collectionId, itemId) {
   const { data } = await api.post(`/portfolio/collections/${collectionId}/items/${itemId}`)
+  return data
+}
+
+export async function createCollectionItem(collectionId, formData) {
+  const { data } = await api.post(`/portfolio/collections/${collectionId}/items`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
   return data
 }
 
