@@ -27,3 +27,19 @@ export async function updateAvatar(file) {
   })
   return data
 }
+
+export async function changePassword(payload) {
+  const token = localStorage.getItem('profit_connect_token')
+  const { data } = await axios.put(`${API_BASE}/user/change-password`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
+}
+
+export async function deleteAccount() {
+  const token = localStorage.getItem('profit_connect_token')
+  const { data } = await axios.delete(`${API_BASE}/user/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return data
+}

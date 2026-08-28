@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { alpha } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 import {
   Box,
@@ -26,13 +27,18 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import { SkillsModal } from '@/ui'
 import UserAvatar from '@/components/common/UserAvatar'
-import { SaveOutlined, LanguageOutlined, PaletteOutlined, NotificationsOutlined, LockOutlined, PersonOutlined, AddOutlined, HomeOutlined, PhotoCameraOutlined } from '@mui/icons-material'
-import { updateSettings } from '@/redux/slices/userSlice'
-import { updateSettings as updateSettingsApi, updateProfile as updateProfileApi, updateAvatar as updateAvatarApi } from '@/services/settingsService'
+import CountrySelect from '@/ui/CountrySelect'
+import { LanguageOutlined, PaletteOutlined, NotificationsOutlined, LockOutlined, PersonOutlined, AddOutlined, HomeOutlined, PhotoCameraOutlined, SecurityOutlined, KeyOutlined, DeleteOutlineOutlined, WarningAmberOutlined } from '@mui/icons-material'
+import { updateSettings, clearUserProfile } from '@/redux/slices/userSlice'
+import { updateSettings as updateSettingsApi, updateProfile as updateProfileApi, updateAvatar as updateAvatarApi, changePassword as changePasswordApi, deleteAccount as deleteAccountApi } from '@/services/settingsService'
 import { refreshReputation } from '@/services/reputation'
 import { refreshProfile } from '@/services/profile'
 
@@ -132,62 +138,71 @@ export default function SettingsView() {
   const set = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }))
   const toggle = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.checked }))
 
-  const handleSave = async () => {
-    setLoading(true)
-    setSuccess(false)
-    setError('')
-    try {
-      const payload = { ...form }
-      await updateSettingsApi(payload)
-      dispatch(updateSettings(payload))
-      if (payload.language && ['en', 'ar'].includes(payload.language)) {
-        i18n.changeLanguage(payload.language)
+  useEffect(() => {
+    if (JSON.stringify(form) === JSON.stringify(userSettings)) return
+    const id = setTimeout(async () => {
+      setLoading(true)
+      setSuccess(false)
+      setError('')
+      try {
+        const payload = { ...form }
+        await updateSettingsApi(payload)
+        dispatch(updateSettings(payload))
+        if (payload.language && ['en', 'ar'].includes(payload.language)) {
+          i18n.changeLanguage(payload.language)
+        }
+        setSuccess(true)
+        refreshReputation(dispatch)
+      } catch (err) {
+        setError(err?.response?.data?.message || err.message || t('settings.saveError', 'Failed to save settings'))
+      } finally {
+        setLoading(false)
       }
-      setSuccess(true)
-      refreshReputation(dispatch)
-    } catch (err) {
-      setError(err?.response?.data?.message || err.message || t('settings.saveError', 'Failed to save settings'))
-    } finally {
-      setLoading(false)
-    }
-  }
+    }, 800)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form])
 
-  const isDirty = JSON.stringify(form) !== JSON.stringify(userSettings)
-
-  const handleSaveProfile = async () => {
-    setProfileLoading(true)
-    setProfileSuccess(false)
-    setProfileError('')
-    try {
-      const payload = {
-        firstName: profileForm.firstName,
-        lastName: profileForm.lastName,
-        gender: profileForm.gender,
-        headline: profileForm.headline,
-        bio: profileForm.bio,
-        location: profileForm.location,
-        phoneNumber: profileForm.phoneNumber,
-        socialLinks: {
-          linkedin: profileForm.linkedin,
-          github: profileForm.github,
-          website: profileForm.website,
-        },
-        skills: profileForm.skills
-          ? profileForm.skills.split(',').map((s) => s.trim()).filter(Boolean)
-          : [],
-        industry: profileForm.industry,
-        yearsOfExperience: Number(profileForm.yearsOfExperience) || 0,
+  const initialProfile = useRef(profileForm)
+  useEffect(() => {
+    if (JSON.stringify(profileForm) === JSON.stringify(initialProfile.current)) return
+    const id = setTimeout(async () => {
+      setProfileLoading(true)
+      setProfileSuccess(false)
+      setProfileError('')
+      try {
+        const payload = {
+          firstName: profileForm.firstName,
+          lastName: profileForm.lastName,
+          gender: profileForm.gender,
+          headline: profileForm.headline,
+          bio: profileForm.bio,
+          location: profileForm.location,
+          phoneNumber: profileForm.phoneNumber,
+          socialLinks: {
+            linkedin: profileForm.linkedin,
+            github: profileForm.github,
+            website: profileForm.website,
+          },
+          skills: profileForm.skills
+            ? profileForm.skills.split(',').map((s) => s.trim()).filter(Boolean)
+            : [],
+          industry: profileForm.industry,
+          yearsOfExperience: Number(profileForm.yearsOfExperience) || 0,
+        }
+        await updateProfileApi(payload)
+        await refreshProfile(dispatch)
+        setProfileSuccess(true)
+        refreshReputation(dispatch)
+      } catch (err) {
+        setProfileError(err?.response?.data?.message || err.message || t('settings.saveError', 'Failed to save settings'))
+      } finally {
+        setProfileLoading(false)
       }
-      await updateProfileApi(payload)
-      await refreshProfile(dispatch)
-      setProfileSuccess(true)
-      refreshReputation(dispatch)
-    } catch (err) {
-      setProfileError(err?.response?.data?.message || err.message || t('settings.saveError', 'Failed to save settings'))
-    } finally {
-      setProfileLoading(false)
-    }
-  }
+    }, 800)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileForm])
 
   const tabs = [
     { label: t('settings.language', 'Language'), icon: <LanguageOutlined /> },
@@ -195,7 +210,72 @@ export default function SettingsView() {
     { label: t('settings.notifications', 'Notifications'), icon: <NotificationsOutlined /> },
     { label: t('settings.privacy', 'Privacy'), icon: <LockOutlined /> },
     { label: t('settings.personalInfo', 'Personal Data'), icon: <PersonOutlined /> },
+    { label: t('settings.security', 'Security'), icon: <SecurityOutlined /> },
   ]
+
+  const [passwordForm, setPasswordForm] = useState(() => ({ currentPassword: '', newPassword: '', confirmPassword: '' }))
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
+  const [passwordError, setPasswordError] = useState('')
+  const setPasswordField = (key) => (e) => setPasswordForm((prev) => ({ ...prev, [key]: e.target.value }))
+
+  const handleChangePassword = async () => {
+    setPasswordSuccess(false)
+    setPasswordError('')
+    if (!passwordForm.currentPassword || !passwordForm.newPassword) {
+      setPasswordError(t('settings.pwdRequired', 'Please fill in all password fields'))
+      return
+    }
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordError(t('settings.pwdTooShort', 'New password must be at least 6 characters'))
+      return
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError(t('settings.pwdMismatch', 'New password and confirmation do not match'))
+      return
+    }
+    setPasswordLoading(true)
+    try {
+      const res = await changePasswordApi({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      })
+      if (res?.success) {
+        setPasswordSuccess(true)
+        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      } else {
+        setPasswordError(res?.message || t('settings.pwdError', 'Failed to change password'))
+      }
+    } catch (err) {
+      setPasswordError(err?.response?.data?.message || err.message || t('settings.pwdError', 'Failed to change password'))
+    } finally {
+      setPasswordLoading(false)
+    }
+  }
+
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      const res = await deleteAccountApi()
+      if (res?.success) {
+        localStorage.removeItem('profit_connect_token')
+        localStorage.removeItem('profit_connect_refresh_token')
+        dispatch(clearUserProfile())
+        navigate('/landing')
+      } else {
+        setDeleteError(res?.message || t('settings.deleteError', 'Failed to delete account'))
+        setDeleting(false)
+      }
+    } catch (err) {
+      setDeleteError(err?.response?.data?.message || err.message || t('settings.deleteError', 'Failed to delete account'))
+      setDeleting(false)
+    }
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -212,6 +292,7 @@ export default function SettingsView() {
 
         {success && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(false)}>{t('settings.saved', 'Settings saved successfully')}</Alert>}
         {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
+        {loading && <Alert severity="info" sx={{ mb: 2 }}>{t('settings.saving', 'Saving changes…')}</Alert>}
 
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
           <Tabs
@@ -318,6 +399,7 @@ export default function SettingsView() {
             <TabPanel value={tab} index={4}>
               {profileSuccess && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setProfileSuccess(false)}>{t('settings.saved', 'Settings saved successfully')}</Alert>}
               {profileError && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setProfileError('')}>{profileError}</Alert>}
+              {profileLoading && <Alert severity="info" sx={{ mb: 2 }}>{t('settings.saving', 'Saving changes…')}</Alert>}
               <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 3 }}>
                 {profileSteps.map((label, i) => (
                   <Step
@@ -391,7 +473,7 @@ export default function SettingsView() {
                 {activeStep === 1 && (
                   <Stack spacing={2} sx={{ maxWidth: 520 }}>
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                      <TextField fullWidth size="small" label={t('settings.location')} value={profileForm.location} onChange={setProfileField('location')} />
+                      <CountrySelect label={t('settings.location')} value={profileForm.location} onChange={setProfileField('location')} />
                       <TextField fullWidth size="small" label={t('settings.phone')} value={profileForm.phoneNumber} onChange={setProfileField('phoneNumber')} />
                     </Stack>
                     <TextField fullWidth size="small" label={t('settings.linkedin')} value={profileForm.linkedin} onChange={setProfileField('linkedin')} />
@@ -440,38 +522,78 @@ export default function SettingsView() {
                 <Button variant="text" onClick={() => goStep(activeStep - 1)} disabled={activeStep === 0}>
                   {t('settings.back', 'Back')}
                 </Button>
-                {activeStep < profileSteps.length - 1 ? (
+                {activeStep < profileSteps.length - 1 && (
                   <Button variant="contained" onClick={() => goStep(activeStep + 1)}>
                     {t('settings.next', 'Next')}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="contained"
-                    startIcon={profileLoading ? <CircularProgress size={20} color="inherit" /> : <SaveOutlined />}
-                    onClick={handleSaveProfile}
-                    disabled={profileLoading}
-                  >
-                    {t('settings.save', 'Save Settings')}
                   </Button>
                 )}
               </Box>
             </TabPanel>
 
-            <Divider sx={{ my: 3 }} />
+            <TabPanel value={tab} index={5}>
+              {passwordSuccess && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setPasswordSuccess(false)}>{t('settings.pwdChanged', 'Password changed successfully')}</Alert>}
+              {passwordError && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setPasswordError('')}>{passwordError}</Alert>}
 
-            {tab !== 4 && (
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, borderColor: 'divider', mb: 3 }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
+                  <KeyOutlined sx={{ color: 'primary.main' }} />
+                  <Typography variant="subtitle1" fontWeight="bold">{t('settings.changePassword', 'Change Password')}</Typography>
+                </Stack>
+                <Stack spacing={2} sx={{ maxWidth: 420 }}>
+                  <TextField
+                    type="password"
+                    size="small"
+                    label={t('settings.currentPassword')}
+                    value={passwordForm.currentPassword}
+                    onChange={setPasswordField('currentPassword')}
+                  />
+                  <TextField
+                    type="password"
+                    size="small"
+                    label={t('settings.newPassword')}
+                    value={passwordForm.newPassword}
+                    onChange={setPasswordField('newPassword')}
+                  />
+                  <TextField
+                    type="password"
+                    size="small"
+                    label={t('settings.confirmPassword')}
+                    value={passwordForm.confirmPassword}
+                    onChange={setPasswordField('confirmPassword')}
+                  />
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                      variant="contained"
+                      startIcon={passwordLoading ? <CircularProgress size={18} color="inherit" /> : <KeyOutlined />}
+                      onClick={handleChangePassword}
+                      disabled={passwordLoading}
+                    >
+                      {t('settings.updatePassword', 'Update Password')}
+                    </Button>
+                  </Box>
+                </Stack>
+              </Paper>
+
+              <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, borderColor: 'error.main', bgcolor: alpha('#DC2626', 0.03) }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
+                  <WarningAmberOutlined sx={{ color: 'error.main' }} />
+                  <Typography variant="subtitle1" fontWeight="bold" sx={{ color: 'error.main' }}>{t('settings.dangerZone', 'Danger Zone')}</Typography>
+                </Stack>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  {t('settings.deleteAccountDesc', 'Deleting your account will permanently remove your profile, posts and all associated data. This action cannot be undone.')}
+                </Typography>
                 <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveOutlined />}
-                  onClick={handleSave}
-                  disabled={!isDirty || loading}
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteOutlineOutlined />}
+                  onClick={() => setDeleteOpen(true)}
                 >
-                  {t('settings.save', 'Save Settings')}
+                  {t('settings.deleteAccount', 'Delete Account')}
                 </Button>
-              </Box>
-            )}
+              </Paper>
+            </TabPanel>
+
+            <Divider sx={{ my: 3 }} />
           </Box>
         </Stack>
       </Paper>
@@ -490,6 +612,35 @@ export default function SettingsView() {
       >
         <HomeOutlined />
       </Fab>
+
+      <Dialog open={deleteOpen} onClose={() => !deleting && setDeleteOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle sx={{ pb: 1 }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <WarningAmberOutlined sx={{ color: 'error.main' }} />
+            <Typography variant="h6" fontWeight={800}>{t('settings.deleteAccount', 'Delete Account')}</Typography>
+          </Stack>
+        </DialogTitle>
+        <DialogContent dividers>
+          {deleteError && <Alert severity="error" sx={{ mb: 2 }}>{deleteError}</Alert>}
+          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+            {t('settings.deleteConfirm', 'Are you sure you want to delete your account? This will permanently remove your profile, posts and all associated data and cannot be undone.')}
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button variant="outlined" onClick={() => setDeleteOpen(false)} disabled={deleting}>
+            {t('settings.cancel', 'Cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={deleting ? <CircularProgress size={18} color="inherit" /> : <DeleteOutlineOutlined />}
+            onClick={handleDeleteAccount}
+            disabled={deleting}
+          >
+            {t('settings.confirmDelete', 'Delete Permanently')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   )
 }

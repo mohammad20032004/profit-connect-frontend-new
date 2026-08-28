@@ -1,6 +1,7 @@
 
 import { Stack, TextField, Box, Typography, MenuItem } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import CountrySelect from '@/ui/CountrySelect'
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
@@ -86,11 +87,10 @@ export default function StepCompanyInfo({ form, onChange, errors }) {
       </Box>
 
       <Box sx={{ animation: 'fadeUp 0.4s ease 0.2s both' }}>
-        <TextField
+        <CountrySelect
           label={t('auth.companyLocation')}
-          value={form.companyLocation || ''}
+          value={form.companyLocation}
           onChange={onChange('companyLocation')}
-          fullWidth
           sx={fieldSx}
         />
       </Box>

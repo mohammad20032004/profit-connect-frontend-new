@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, TextField, Grid, Stepper, Step, StepLabel,
   CircularProgress, Alert, IconButton, Chip, alpha, LinearProgress, MenuItem, Fade, Divider,
-  Autocomplete,
 } from '@mui/material'
 import Button from '@/ui/Button'
 import {
@@ -17,6 +16,7 @@ import { createCompanyWithDocs } from '@/services/companyService'
 import { getMyCompany } from '@/services/employerService'
 import LocationMap from '@/components/LocationMap'
 import { extractCoordinates } from '@/utils/coordinates'
+import { COUNTRIES, getStates, getCities } from '@/data/locations'
 
 const INDUSTRIES = [
   { value: 'web-development', en: 'Web Development', ar: 'تطوير المواقع' },
@@ -47,161 +47,6 @@ const COMPANY_SIZES = [
   { value: '1000+', en: '1000+ employees', ar: '1000+ موظف' },
 ]
 
-const COUNTRIES = [
-  {
-    value: 'SA', en: 'Saudi Arabia', ar: 'المملكة العربية السعودية',
-    cities: [
-      { value: 'riyadh', en: 'Riyadh', ar: 'الرياض' },
-      { value: 'jeddah', en: 'Jeddah', ar: 'جدة' },
-      { value: 'mecca', en: 'Mecca', ar: 'مكة المكرمة' },
-      { value: 'medina', en: 'Medina', ar: 'المدينة المنورة' },
-      { value: 'dammam', en: 'Dammam', ar: 'الدمام' },
-      { value: 'khobar', en: 'Khobar', ar: 'الخبر' },
-      { value: 'dhahran', en: 'Dhahran', ar: 'الظهران' },
-      { value: 'tabuk', en: 'Tabuk', ar: 'تبوك' },
-      { value: 'abha', en: 'Abha', ar: 'أبها' },
-      { value: 'buraidah', en: 'Buraidah', ar: 'بريدة' },
-      { value: 'khamis_mushait', en: 'Khamis Mushait', ar: 'خميس مشيط' },
-      { value: 'hail', en: 'Hail', ar: 'حائل' },
-      { value: 'jizan', en: 'Jizan', ar: 'جازان' },
-      { value: 'najran', en: 'Najran', ar: 'نجران' },
-      { value: 'alkharj', en: 'Al Kharj', ar: 'الخرج' },
-      { value: 'yanbu', en: 'Yanbu', ar: 'ينبع' },
-      { value: 'sakaka', en: 'Sakaka', ar: 'سكاكا' },
-      { value: 'al_jubail', en: 'Al Jubail', ar: 'الجبيل' },
-      { value: 'ras_tanura', en: 'Ras Tanura', ar: 'رأس تنورة' },
-    ],
-  },
-  {
-    value: 'AE', en: 'United Arab Emirates', ar: 'الإمارات العربية المتحدة',
-    cities: [
-      { value: 'dubai', en: 'Dubai', ar: 'دبي' },
-      { value: 'abu_dhabi', en: 'Abu Dhabi', ar: 'أبو ظبي' },
-      { value: 'sharjah', en: 'Sharjah', ar: 'الشارقة' },
-      { value: 'ajman', en: 'Ajman', ar: 'عجمان' },
-      { value: 'ras_al_khaimah', en: 'Ras Al Khaimah', ar: 'رأس الخيمة' },
-      { value: 'fujairah', en: 'Fujairah', ar: 'الفجيرة' },
-      { value: 'umm_al_quwain', en: 'Umm Al Quwain', ar: 'أم القيوين' },
-      { value: 'al_ain', en: 'Al Ain', ar: 'العين' },
-    ],
-  },
-  {
-    value: 'EG', en: 'Egypt', ar: 'مصر',
-    cities: [
-      { value: 'cairo', en: 'Cairo', ar: 'القاهرة' },
-      { value: 'alexandria', en: 'Alexandria', ar: 'الإسكندرية' },
-      { value: 'giza', en: 'Giza', ar: 'الجيزة' },
-      { value: 'sharm_el_sheikh', en: 'Sharm El Sheikh', ar: 'شرم الشيخ' },
-      { value: 'luxor', en: 'Luxor', ar: 'الأقصر' },
-      { value: 'aswan', en: 'Aswan', ar: 'أسوان' },
-      { value: 'port_said', en: 'Port Said', ar: 'بورسعيد' },
-      { value: 'suez', en: 'Suez', ar: 'السويس' },
-    ],
-  },
-  {
-    value: 'JO', en: 'Jordan', ar: 'الأردن',
-    cities: [
-      { value: 'amman', en: 'Amman', ar: 'عمّان' },
-      { value: 'irbid', en: 'Irbid', ar: 'إربد' },
-      { value: 'zarqa', en: 'Zarqa', ar: 'الزرقاء' },
-      { value: 'aqaba', en: 'Aqaba', ar: 'العقبة' },
-      { value: 'maan', en: "Ma'an", ar: 'معان' },
-      { value: 'salt', en: 'Salt', ar: 'السلط' },
-    ],
-  },
-  {
-    value: 'LB', en: 'Lebanon', ar: 'لبنان',
-    cities: [
-      { value: 'beirut', en: 'Beirut', ar: 'بيروت' },
-      { value: 'tripoli', en: 'Tripoli', ar: 'طرابلس' },
-      { value: 'sidon', en: 'Sidon', ar: 'صيدا' },
-      { value: 'tyre', en: 'Tyre', ar: 'صور' },
-      { value: 'byblos', en: 'Byblos', ar: 'جبيل' },
-    ],
-  },
-  {
-    value: 'KW', en: 'Kuwait', ar: 'الكويت',
-    cities: [
-      { value: 'kuwait_city', en: 'Kuwait City', ar: 'مدينة الكويت' },
-      { value: 'hawalli', en: 'Hawalli', ar: 'حولي' },
-      { value: 'salmiya', en: 'Salmiya', ar: 'السالمية' },
-      { value: 'farwaniya', en: 'Farwaniya', ar: 'الفروانية' },
-      { value: 'jahra', en: 'Jahra', ar: 'الجهراء' },
-    ],
-  },
-  {
-    value: 'QA', en: 'Qatar', ar: 'قطر',
-    cities: [
-      { value: 'doha', en: 'Doha', ar: 'الدوحة' },
-      { value: 'al_wakrah', en: 'Al Wakrah', ar: 'الوكرة' },
-      { value: 'al_khor', en: 'Al Khor', ar: 'الخور' },
-      { value: 'duhan', en: 'Dukhan', ar: 'دخان' },
-    ],
-  },
-  {
-    value: 'BH', en: 'Bahrain', ar: 'البحرين',
-    cities: [
-      { value: 'manama', en: 'Manama', ar: 'المنامة' },
-      { value: 'muharraq', en: 'Muharraq', ar: 'المحرق' },
-      { value: 'riffa', en: 'Riffa', ar: 'الريف' },
-      { value: 'hamad_town', en: 'Hamad Town', ar: 'مدينة حمد' },
-    ],
-  },
-  {
-    value: 'OM', en: 'Oman', ar: 'عُمان',
-    cities: [
-      { value: 'muscat', en: 'Muscat', ar: 'مسقط' },
-      { value: 'salalah', en: 'Salalah', ar: 'صلالة' },
-      { value: 'sohar', en: 'Sohar', ar: 'صحار' },
-      { value: 'nizwa', en: 'Nizwa', ar: 'نزوى' },
-      { value: 'sur', en: 'Sur', ar: 'صور' },
-    ],
-  },
-  {
-    value: 'IQ', en: 'Iraq', ar: 'العراق',
-    cities: [
-      { value: 'baghdad', en: 'Baghdad', ar: 'بغداد' },
-      { value: 'basra', en: 'Basra', ar: 'البصرة' },
-      { value: 'erbil', en: 'Erbil', ar: 'أربيل' },
-      { value: 'sulaymaniyah', en: 'Sulaymaniyah', ar: 'السليمانية' },
-      { value: 'mosul', en: 'Mosul', ar: 'الموصل' },
-    ],
-  },
-  {
-    value: 'MA', en: 'Morocco', ar: 'المغرب',
-    cities: [
-      { value: 'casablanca', en: 'Casablanca', ar: 'الدار البيضاء' },
-      { value: 'rabat', en: 'Rabat', ar: 'الرباط' },
-      { value: 'marrakech', en: 'Marrakech', ar: 'مراكش' },
-      { value: 'fes', en: 'Fes', ar: 'فاس' },
-      { value: 'tangier', en: 'Tangier', ar: 'طنجة' },
-    ],
-  },
-  {
-    value: 'TN', en: 'Tunisia', ar: 'تونس',
-    cities: [
-      { value: 'tunis', en: 'Tunis', ar: 'تونس' },
-      { value: 'sfax', en: 'Sfax', ar: 'صفاقس' },
-      { value: 'sousse', en: 'Sousse', ar: 'سوسة' },
-    ],
-  },
-  {
-    value: 'DZ', en: 'Algeria', ar: 'الجزائر',
-    cities: [
-      { value: 'algiers', en: 'Algiers', ar: 'الجزائر' },
-      { value: 'oran', en: 'Oran', ar: 'وهران' },
-      { value: 'constantine', en: 'Constantine', ar: 'قسنطينة' },
-    ],
-  },
-  {
-    value: 'SD', en: 'Sudan', ar: 'السودان',
-    cities: [
-      { value: 'khartoum', en: 'Khartoum', ar: 'الخرطوم' },
-      { value: 'omdurman', en: 'Omdurman', ar: 'الدومرمان' },
-    ],
-  },
-  { value: 'other', en: 'Other', ar: 'أخرى', cities: [] },
-]
 
 const CURRENT_YEAR = new Date().getFullYear()
 const MAX_DOCS = 5
@@ -234,6 +79,7 @@ export default function EmployerSetup() {
     industry: profile.companyIndustry || '',
     location: {
       country: profile.companyLocation?.country || '',
+      state: profile.companyLocation?.state || '',
       city: profile.companyLocation?.city || '',
       street: profile.companyLocation?.street || '',
       buildingNumber: profile.companyLocation?.buildingNumber || '',
@@ -269,6 +115,9 @@ export default function EmployerSetup() {
   const handleCoordinatesChange = (coords) => setForm((p) => ({ ...p, location: { ...p.location, coordinates: coords } }))
 
   const selectedCountry = COUNTRIES.find((c) => c.en === form.location.country || c.ar === form.location.country)
+  const states = getStates(selectedCountry?.value)
+  const selectedState = states.find((s) => s.en === form.location.state || s.ar === form.location.state)
+  const cities = getCities(selectedCountry?.value, selectedState?.value)
 
   const handleDocAdd = (e) => {
     const files = Array.from(e.target.files || [])
@@ -303,7 +152,7 @@ export default function EmployerSetup() {
       fd.append('name', form.name.trim())
       if (form.description.trim()) fd.append('description', form.description.trim())
       if (form.industry) fd.append('industry', form.industry)
-      const locationObj = { country: form.location.country, city: form.location.city }
+      const locationObj = { country: form.location.country, state: form.location.state, city: form.location.city }
       if (form.location.street.trim()) locationObj.street = form.location.street.trim()
       if (form.location.buildingNumber.trim()) locationObj.buildingNumber = form.location.buildingNumber.trim()
       if (form.location.coordinates) locationObj.coordinates = form.location.coordinates
@@ -585,30 +434,41 @@ export default function EmployerSetup() {
 
                       {/* Location fields */}
                       <Stack spacing={1.75}>
-                        <Autocomplete
-                          freeSolo
-                          options={COUNTRIES.map((c) => lang === 'ar' ? c.ar : c.en)}
-                          inputValue={form.location.country}
-                          onInputChange={(_, v) => {
-                            setForm((p) => ({ ...p, location: { ...p.location, country: v, city: '' } }))
-                          }}
-                          renderInput={(params) => (
-                            <TextField {...params} label={t('employer.setup.country')} size="small" sx={fieldSx} />
-                          )}
-                          size="small"
-                        />
-                        <Autocomplete
-                          freeSolo
-                          options={selectedCountry?.cities?.map((c) => lang === 'ar' ? c.ar : c.en) || []}
-                          inputValue={form.location.city}
-                          onInputChange={(_, v) => {
-                            setForm((p) => ({ ...p, location: { ...p.location, city: v } }))
-                          }}
-                          renderInput={(params) => (
-                            <TextField {...params} label={t('employer.setup.city')} size="small" sx={fieldSx} />
-                          )}
-                          size="small"
-                        />
+                         <TextField
+                           select
+                           label={t('employer.setup.country')}
+                           value={form.location.country}
+                           onChange={(e) => setForm((p) => ({ ...p, location: { ...p.location, country: e.target.value, state: '', city: '' } }))}
+                           fullWidth size="small" sx={fieldSx}
+                         >
+                           {COUNTRIES.map((c) => (
+                             <MenuItem key={c.value} value={c.en}>{lang === 'ar' ? c.ar : c.en}</MenuItem>
+                           ))}
+                         </TextField>
+                         <TextField
+                           select
+                           label={t('employer.setup.state')}
+                           value={form.location.state}
+                           onChange={(e) => setForm((p) => ({ ...p, location: { ...p.location, state: e.target.value, city: '' } }))}
+                           disabled={!selectedCountry || states.length === 0}
+                           fullWidth size="small" sx={fieldSx}
+                         >
+                           {states.map((s) => (
+                             <MenuItem key={s.value} value={s.en}>{lang === 'ar' ? s.ar : s.en}</MenuItem>
+                           ))}
+                         </TextField>
+                         <TextField
+                           select
+                           label={t('employer.setup.city')}
+                           value={form.location.city}
+                           onChange={(e) => setForm((p) => ({ ...p, location: { ...p.location, city: e.target.value } }))}
+                           disabled={!selectedState || cities.length === 0}
+                           fullWidth size="small" sx={fieldSx}
+                         >
+                           {cities.map((c) => (
+                             <MenuItem key={c.value} value={c.en}>{lang === 'ar' ? c.ar : c.en}</MenuItem>
+                           ))}
+                         </TextField>
                         <TextField
                           label={t('employer.setup.street')}
                           value={form.location.street}
@@ -674,8 +534,9 @@ export default function EmployerSetup() {
 
                   <Box
                     sx={{
-                      border: '2px dashed', borderColor: 'divider', borderRadius: 1,
-                      p: { xs: 3, md: 4 }, textAlign: 'center', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center',
+                      border: '2px dashed', borderColor: 'divider', borderRadius: 2,
+                      p: { xs: 2.5, md: 3 }, cursor: 'pointer',
                       transition: 'all 0.2s ease', bgcolor: alpha('#3D1C6E', 0.02),
                       mb: 2.5,
                       '&:hover': { borderColor: 'primary.main', bgcolor: alpha('#3D1C6E', 0.05) },
@@ -683,13 +544,17 @@ export default function EmployerSetup() {
                     component="label"
                   >
                     <input type="file" hidden multiple accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={handleDocAdd} />
-                    <CloudUploadOutlined sx={{ fontSize: 44, color: 'primary.main', mb: 1 }} />
-                    <Typography variant="body1" fontWeight={600} sx={{ mb: 0.5 }}>
-                      {t('employer.setup.clickToSelect')}
-                    </Typography>
-                    <Typography variant="caption" color="text.disabled">
-                      PDF, JPG, PNG — {t('employer.setup.fileLimit')}
-                    </Typography>
+                    <Box sx={{ width: 52, height: 52, borderRadius: '50%', bgcolor: alpha('#3D1C6E', 0.08), display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <CloudUploadOutlined sx={{ fontSize: 28, color: 'primary.main' }} />
+                    </Box>
+                    <Box sx={{ textAlign: { xs: 'center', sm: 'left' }, minWidth: 0 }}>
+                      <Typography variant="body1" fontWeight={700} sx={{ lineHeight: 1.3 }}>
+                        {t('employer.setup.clickToSelect')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                        PDF, JPG, PNG — {t('employer.setup.fileLimit')}
+                      </Typography>
+                    </Box>
                   </Box>
 
                   {documents.length > 0 && (
@@ -788,3 +653,4 @@ export default function EmployerSetup() {
     </Box>
   )
 }
+

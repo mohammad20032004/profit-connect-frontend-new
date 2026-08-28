@@ -13,6 +13,7 @@ import {
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { createJob } from '@/services/employeeService'
+import CountrySelect from '@/ui/CountrySelect'
 
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
@@ -127,8 +128,7 @@ export default function CreateJob() {
               fullWidth size="small" sx={fieldSx} />
             <TextField label={`${t('jobs.description')} *`} value={form.description} onChange={set('description')}
               fullWidth multiline rows={4} size="small" sx={fieldSx} />
-            <TextField label={t('jobs.location')} value={form.location} onChange={set('location')}
-              fullWidth size="small" sx={fieldSx} placeholder={t('jobs.locationPlaceholder')} />
+            <CountrySelect label={t('jobs.location')} value={form.location} onChange={set('location')} sx={fieldSx} />
           </Stack>
         )
       case 1:
