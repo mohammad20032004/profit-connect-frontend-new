@@ -1,4 +1,4 @@
-﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -243,13 +243,13 @@ export default function CompanyDetail() {
   const tagSx = { bgcolor: alpha(BRAND, 0.1), color: BRAND, fontWeight: 700, borderRadius: RADIUS, fontSize: '0.7rem' }
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
+    <Container maxWidth={false} disableGutters sx={{ maxWidth: { xs: '100%', md: 1180, lg: 1480, xl: 1760 }, '@media (min-width: 1920px)': { maxWidth: 2200 }, '@media (min-width: 2560px)': { maxWidth: 3000 }, mx: 'auto', px: { xs: 0.75, sm: 2, md: 3 }, py: { xs: 1.5, md: 3 } }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
         <IconButton onClick={() => navigate(-1)} size="small" sx={{ bgcolor: 'background.paper', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}><ArrowBackOutlined /></IconButton>
         <Typography variant="h5" fontWeight="bold" noWrap sx={{ flex: 1 }}>{t('companies.title', 'Companies')}</Typography>
       </Stack>
 
-      <Paper sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid', borderColor: 'divider', boxShadow: '0 4px 24px rgba(12,8,24,0.06)' }}>
+      <Paper elevation={0} sx={{ borderRadius: { xs: 0, md: 4 }, overflow: 'hidden', border: '1px solid', borderColor: 'divider', boxShadow: '0 10px 40px rgba(12,8,24,0.07)' }}>
         {/* Cover Banner */}
         <Box sx={{ position: 'relative', height: { xs: 150, md: 200 }, overflow: 'hidden' }}>
           {coverPhoto ? (
@@ -340,27 +340,25 @@ export default function CompanyDetail() {
             </Stack>
           )}
         </Box>
-      </Paper>
-
-
+      <Box sx={{ px: { xs: 2, md: 3 }, py: 3, borderTop: '1px solid', borderColor: 'divider' }}>
       {/* Content */}
-      <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ mt: 3, alignItems: 'flex-start' }}>
+      <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
         {/* Main column */}
-        <Stack spacing={3} sx={{ flex: 1, minWidth: 0, order: { xs: 2, lg: 1 } }}>
+        <Stack spacing={0} sx={{ flex: 1, minWidth: 0, order: { xs: 2, lg: 1 } }}>
           {/* About */}
           {company.description && (
-            <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+            <Box sx={{ p: { xs: 2, md: 3 }, borderBottom: '1px solid', borderColor: 'divider' }}>
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
                 <Box sx={{ width: 4, height: 20, borderRadius: RADIUS, bgcolor: industryColor }} />
                 <Typography variant="h6" fontWeight={700}>{t('companies.about', lang === 'ar' ? 'نبذة عن الشركة' : 'About')}</Typography>
               </Stack>
               <Typography variant="body1" sx={{ lineHeight: 1.8, color: 'text.secondary' }}>{company.description}</Typography>
-            </Paper>
+            </Box>
           )}
 
           {/* Jobs */}
           {openJobs.length > 0 && (
-            <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+            <Box sx={{ p: { xs: 2, md: 3 }, borderBottom: '1px solid', borderColor: 'divider' }}>
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
                 <Box sx={{ width: 4, height: 20, borderRadius: RADIUS, bgcolor: industryColor }} />
                 <Typography variant="h6" fontWeight={700}>{t('companies.openJobs', 'Open Jobs')}</Typography>
@@ -394,11 +392,11 @@ export default function CompanyDetail() {
                   </Box>
                 ))}
               </Stack>
-            </Paper>
+            </Box>
           )}
 
           {/* Ratings */}
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+          <Box sx={{ p: { xs: 2, md: 3 }, borderBottom: '1px solid', borderColor: 'divider' }}>
             <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
               <Box sx={{ width: 4, height: 20, borderRadius: RADIUS, bgcolor: industryColor }} />
               <Typography variant="h6" fontWeight={700}>{t('companies.ratings', 'Ratings')}</Typography>
@@ -447,14 +445,14 @@ export default function CompanyDetail() {
                 ))}
               </Stack>
             )}
-          </Paper>
+          </Box>
         </Stack>
 
         {/* Sidebar */}
-        <Stack spacing={3} sx={{ width: { xs: '100%', lg: 320 }, flexShrink: 0, order: { xs: 1, lg: 2 } }}>
+        <Stack spacing={0} sx={{ width: { xs: '100%', lg: 320 }, flexShrink: 0, order: { xs: 1, lg: 2 } }}>
           {/* Contact & Location */}
           {(company.website || company.contactEmail || company.socialLinks?.linkedin || company.socialLinks?.twitter || company.location) && (
-            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 1 }}>
+            <Box sx={{ p: { xs: 2, md: 3 }, borderBottom: '1px solid', borderColor: 'divider', order: 1 }}>
               {(company.website || company.contactEmail || company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
                 <>
                   <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
@@ -503,12 +501,12 @@ export default function CompanyDetail() {
                   </Stack>
                 </>
               )}
-            </Paper>
+            </Box>
           )}
 
           {/* Owner */}
           {company.owner && (
-            <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: '0 2px 12px rgba(12,8,24,0.04)', order: 3 }}>
+            <Box sx={{ p: { xs: 2, md: 3 }, order: 3 }}>
               <Typography variant="h6" fontWeight={800} sx={{ mb: 2 }}>{t('companies.leadership', lang === 'ar' ? 'فريق القيادة' : 'Leadership')}</Typography>
               <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                 <UserAvatar
@@ -522,11 +520,13 @@ export default function CompanyDetail() {
                   <Typography fontWeight={800} noWrap>{company.owner.profile?.firstName} {company.owner.profile?.lastName}</Typography>
                   {company.owner.profile?.headline && <Typography variant="body2" color="text.secondary" noWrap display="block">{company.owner.profile.headline}</Typography>}
                 </Box>
-              </Stack>
-            </Paper>
+                </Stack>
+            </Box>
           )}
         </Stack>
       </Stack>
+      </Box>
+      </Paper>
 
       {/* Dialogs */}
       <Dialog open={addAdminOpen} onClose={() => setAddAdminOpen(false)} maxWidth="xs" fullWidth>

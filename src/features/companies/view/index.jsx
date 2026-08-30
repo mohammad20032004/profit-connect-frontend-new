@@ -1,4 +1,4 @@
-﻿﻿import { RADIUS } from '@/theme/tokens'
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -35,7 +35,6 @@ export default function CompaniesList() {
   // Sidebar filters
   const [industries, setIndustries] = useState([])
   const [minRating, setMinRating] = useState(0)
-  const [verifiedOnly, setVerifiedOnly] = useState(false)
   const [sortBy, setSortBy] = useState('sortRating')
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
 
@@ -57,14 +56,13 @@ export default function CompaniesList() {
   const toggleIndustry = (val) =>
     setIndustries((prev) => prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val])
 
-  const countActive = industries.length + (minRating ? 1 : 0) + (verifiedOnly ? 1 : 0)
+  const countActive = industries.length + (minRating ? 1 : 0)
   const hasActiveFilters = search.trim() || countActive > 0
 
   const clearFilters = () => {
     setSearch('')
     setIndustries([])
     setMinRating(0)
-    setVerifiedOnly(false)
   }
 
   const filteredCompanies = useMemo(() => {
@@ -88,10 +86,6 @@ export default function CompaniesList() {
       list = list.filter((c) => (c.averageRating || 0) >= minRating)
     }
 
-    if (verifiedOnly) {
-      list = list.filter((c) => c.isVerified)
-    }
-
     switch (sortBy) {
       case 'sortRating':
         list.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
@@ -105,7 +99,7 @@ export default function CompaniesList() {
     }
 
     return list
-  }, [companies, search, industries, minRating, verifiedOnly, sortBy])
+  }, [companies, search, industries, minRating, sortBy])
 
   const topCompany = filteredCompanies.length > 0 ? filteredCompanies[0] : null
   const restCompanies = filteredCompanies.length > 1 ? filteredCompanies.slice(1) : []
@@ -115,8 +109,6 @@ export default function CompaniesList() {
     onToggleIndustry: toggleIndustry,
     minRating,
     setMinRating,
-    verifiedOnly,
-    setVerifiedOnly,
     sortBy,
     setSortBy,
     clearFilters,
@@ -297,14 +289,6 @@ export default function CompaniesList() {
                           label={`${minRating}+`}
                           size="small"
                           onDelete={() => setMinRating(0)}
-                          sx={{ fontWeight: 500 }}
-                        />
-                      )}
-                      {verifiedOnly && (
-                        <Chip
-                          label={t('companies.verifiedOnly', 'موثقة فقط')}
-                          size="small"
-                          onDelete={() => setVerifiedOnly(false)}
                           sx={{ fontWeight: 500 }}
                         />
                       )}

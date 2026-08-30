@@ -1,9 +1,9 @@
-﻿﻿import { DANGER, RADIUS } from '@/theme/tokens'
+﻿import { DANGER, RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import { Box, Stack, Typography, Chip, Button, Divider, Collapse } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import {
-  BusinessOutlined, FilterListOutlined, Star, Verified, TrendingUpOutlined,
+  BusinessOutlined, FilterListOutlined, Star, TrendingUpOutlined,
   ExpandMoreOutlined, ExpandLessOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
@@ -90,8 +90,6 @@ export default function CompaniesFilters({
   onToggleIndustry,
   minRating,
   setMinRating,
-  verifiedOnly,
-  setVerifiedOnly,
   sortBy,
   setSortBy,
   clearFilters,
@@ -173,30 +171,6 @@ export default function CompaniesFilters({
           onChange={(v) => setMinRating(v)}
           color={primary}
           renderLabel={(v) => v === 0 ? t('companies.ratingAny', 'أي تقييم') : `${v}+`}
-        />
-      </FilterSection>
-
-      <Divider sx={{ mx: 1.5 }} />
-
-      {/* Verified */}
-      <FilterSection
-        title={t('companies.filterVerified', 'التوثيق')}
-        icon={<Verified sx={{ fontSize: 15 }} />}
-        count={verifiedOnly ? 1 : 0}
-        color={primary}
-      >
-        <Chip
-          label={t('companies.verifiedOnly', 'موثقة فقط')}
-          size="small"
-          onClick={() => setVerifiedOnly((v) => !v)}
-          sx={{
-            height: 28, minHeight: 36, fontSize: '0.7rem', fontWeight: verifiedOnly ? 700 : 600,
-            bgcolor: verifiedOnly ? primary : alpha(primary, 0.06),
-            color: verifiedOnly ? '#fff' : primary,
-            border: verifiedOnly ? 'none' : `1px solid ${alpha(primary, 0.2)}`,
-            transition: 'all 0.2s ease',
-            '&:hover': { bgcolor: verifiedOnly ? alpha(primary, 0.85) : alpha(primary, 0.12) },
-          }}
         />
       </FilterSection>
 

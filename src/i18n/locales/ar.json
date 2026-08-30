@@ -16,6 +16,10 @@
     "forBusiness": "للأعمال",
     "menu": "القائمة"
   },
+  "offline": {
+    "title": "لا يوجد اتصال بالإنترنت",
+    "desc": "تحقق من اتصالك بالإنترنت وحاول مرة أخرى"
+  },
   "menu": {
     "viewProfile": "عرض الملف الشخصي",
     "accountSettings": "إعدادات الحساب",
@@ -150,11 +154,6 @@
     "verifySuccess": "تم تأكيد البريد بنجاح",
     "verifySuccessRedirect": "جاري التوجيه إلى صفحة تسجيل الدخول...",
     "verifyEmailError": "الكود غير صحيح، حاول مرة أخرى"
-  },
-  "jobs": {
-    "title": "الوظائف",
-    "companies": "الشركات",
-    "salaries": "الرواتب"
   },
   "sidebar": {
     "topCompanies": "أفضل الشركات",
@@ -946,7 +945,9 @@
     "cancel": "إلغاء",
     "apply": "تطبيق",
     "loadMore": "تحميل المزيد",
-    "all": "الكل"
+    "all": "الكل",
+    "back": "رجوع",
+    "next": "التالي"
   },
   "gallery": {
     "title": "المعرض",
@@ -1138,6 +1139,20 @@
       "layerSatellite": "قمر صناعي",
       "layerStreet": "شوارع",
       "searchCountry": "ابحث عن دولة…",
+      "searchPlace": "ابحث عن دولة أو منطقة…",
+      "searching": "جارٍ البحث…",
+      "placeType": {
+        "country": "دولة",
+        "state": "منطقة",
+        "region": "منطقة",
+        "city": "مدينة",
+        "town": "بلدة",
+        "village": "قرية",
+        "suburb": "حي / منطقة",
+        "county": "منطقة",
+        "municipality": "بلدية",
+        "administrative": "منطقة"
+      },
       "docsTitle": "الوثائق الرسمية",
       "docsDesc": "ارفق السجل التجاري أو الرخصة — حتى {{max}} ملفات",
       "clickToSelect": "اضغط لاختيار الملفات",
@@ -1212,12 +1227,18 @@
   },
   "jobs": {
     "title": "الوظائف",
+    "companies": "الشركات",
+    "salaries": "الرواتب",
     "createJob": "نشر وظيفة جديدة",
     "editJob": "تعديل الوظيفة",
     "deleteJob": "حذف الوظيفة",
     "deleteConfirm": "هل أنت متأكد من حذف هذه الوظيفة؟ لا يمكن التراجع عن هذا الإجراء.",
     "noJobs": "لا توجد وظائف منشورة بعد",
     "noJobsDesc": "أنشئ أول إعلان وظيفي لتبدأ بتلقي طلبات التوظيف.",
+    "basicInfo": "المعلومات الأساسية",
+    "details": "التفاصيل",
+    "titleRequired": "المسمى الوظيفي مطلوب",
+    "descriptionRequired": "الوصف مطلوب",
     "jobTitle": "المسمى الوظيفي",
     "jobTitlePlaceholder": "مثال: مطور واجهات أمامية",
     "description": "الوصف",
@@ -1233,7 +1254,7 @@
     "workLevel": "مستوى الخبرة",
     "levelEntry": "مبتدئ",
     "levelMid": "متوسط",
-    "levelSenior": " senior",
+    "levelSenior": "متقدم",
     "levelLead": "قائد فريق",
     "workPlace": "مكان العمل",
     "placeRemote": "عن بُعد",
@@ -1249,6 +1270,10 @@
     "responsibilitiesPlaceholder": "مثال: تطوير الواجهات الأمامية",
     "addRequirement": "إضافة متطلب",
     "addResponsibility": "إضافة مسؤولية",
+    "skills": "المهارات",
+    "skillsHint": "حدد المهارات المطلوبة لهذه الوظيفة",
+    "addSkills": "إضافة مهارات",
+    "selectedExtra": "مهارات إضافية",
     "status": "الحالة",
     "statusOpen": "مفتوحة",
     "statusClosed": "مغلقة",

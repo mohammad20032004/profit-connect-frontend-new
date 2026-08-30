@@ -16,6 +16,10 @@
     "forBusiness": "For Business",
     "menu": "Menu"
   },
+  "offline": {
+    "title": "No internet connection",
+    "desc": "Please check your connection and try again"
+  },
   "menu": {
     "viewProfile": "View Profile",
     "accountSettings": "Account Settings",
@@ -150,11 +154,6 @@
     "verifySuccess": "Email verified successfully",
     "verifySuccessRedirect": "Redirecting to sign in...",
     "verifyEmailError": "Invalid code, try again"
-  },
-  "jobs": {
-    "title": "Jobs",
-    "companies": "Companies",
-    "salaries": "Salaries"
   },
   "sidebar": {
     "topCompanies": "Top Companies",
@@ -1136,6 +1135,20 @@
       "layerSatellite": "Satellite",
       "layerStreet": "Streets",
       "searchCountry": "Search country…",
+      "searchPlace": "Search country or region…",
+      "searching": "Searching…",
+      "placeType": {
+        "country": "Country",
+        "state": "Region",
+        "region": "Region",
+        "city": "City",
+        "town": "Town",
+        "village": "Village",
+        "suburb": "Area",
+        "county": "Region",
+        "municipality": "Municipality",
+        "administrative": "Area"
+      },
       "docsTitle": "Official Documents",
       "docsDesc": "Upload Commercial Register or License — up to {{max}} files",
       "clickToSelect": "Click to select files",
@@ -1210,12 +1223,18 @@
   },
   "jobs": {
     "title": "Jobs",
+    "companies": "Companies",
+    "salaries": "Salaries",
     "createJob": "Post New Job",
     "editJob": "Edit Job",
     "deleteJob": "Delete Job",
     "deleteConfirm": "Are you sure you want to delete this job? This action cannot be undone.",
     "noJobs": "No jobs posted yet",
     "noJobsDesc": "Create your first job listing to start receiving applications.",
+    "basicInfo": "Basic Info",
+    "details": "Details",
+    "titleRequired": "Job title is required",
+    "descriptionRequired": "Description is required",
     "jobTitle": "Job Title",
     "jobTitlePlaceholder": "e.g. Frontend Developer",
     "description": "Description",
@@ -1247,6 +1266,10 @@
     "responsibilitiesPlaceholder": "e.g. Develop frontend applications",
     "addRequirement": "Add requirement",
     "addResponsibility": "Add responsibility",
+    "skills": "Skills",
+    "skillsHint": "Select the skills required for this job",
+    "addSkills": "Add skills",
+    "selectedExtra": "more skills",
     "status": "Status",
     "statusOpen": "Open",
     "statusClosed": "Closed",

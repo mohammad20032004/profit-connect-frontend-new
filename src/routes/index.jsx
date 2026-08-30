@@ -2,6 +2,7 @@
 import { createBrowserRouter, Outlet } from "react-router-dom"
 import Header from "../components/Header"
 import ThemeProvider from "../theme/ThemeProvider"
+import OfflineBanner from "../components/OfflineBanner"
 
 import DashboardView from "../features/MainFeedLayout/view"
 import LandingView from "../features/landing/view"
@@ -50,6 +51,7 @@ function Layout() {
   return (
     <ThemeProvider>
       <Header />
+      <OfflineBanner />
       <Outlet />
     </ThemeProvider>
   )

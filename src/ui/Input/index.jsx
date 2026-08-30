@@ -1,4 +1,4 @@
-﻿﻿import { RADIUS } from '@/theme/tokens'
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState } from 'react'
 import { formatMoney } from '@/utils/money'
 import {
@@ -288,6 +288,18 @@ function RangeSlider({
     onChange(lo <= min ? '' : String(lo), hi >= safeMax ? '' : String(hi))
   }
 
+  const handleMinChange = (e) => {
+    const val = e.target.value.replace(/[^0-9]/g, '')
+    const num = val ? Math.min(Number(val), safeMax) : ''
+    onChange(String(num), valueMax)
+  }
+
+  const handleMaxChange = (e) => {
+    const val = e.target.value.replace(/[^0-9]/g, '')
+    const num = val ? Math.min(Number(val), safeMax) : ''
+    onChange(valueMin, String(num))
+  }
+
   const hasValue = Boolean(valueMin || valueMax)
   const render = (v) => formatValue(v, currency)
 
@@ -303,6 +315,37 @@ function RangeSlider({
           )}
         </Stack>
       )}
+
+      {/* Manual Input Fields */}
+      <Stack direction="row" spacing={1.5} sx={{ mt: 1, mb: 0.5 }}>
+        <MuiTextField
+          size="small"
+          placeholder={min.toLocaleString()}
+          value={valueMin || ''}
+          onChange={handleMinChange}
+          inputProps={{ inputMode: 'numeric', style: { textAlign: 'center', fontWeight: 600, fontSize: '0.9rem' } }}
+          sx={{
+            flex: 1,
+            '& .MuiOutlinedInput-root': { borderRadius: 1 },
+            '& input::placeholder': { opacity: 0.4 },
+          }}
+        />
+        <Typography variant="body2" sx={{ color: 'text.disabled', alignSelf: 'center', fontWeight: 600 }}>—</Typography>
+        <MuiTextField
+          size="small"
+          placeholder={max.toLocaleString()}
+          value={valueMax || ''}
+          onChange={handleMaxChange}
+          inputProps={{ inputMode: 'numeric', style: { textAlign: 'center', fontWeight: 600, fontSize: '0.9rem' } }}
+          sx={{
+            flex: 1,
+            '& .MuiOutlinedInput-root': { borderRadius: 1 },
+            '& input::placeholder': { opacity: 0.4 },
+          }}
+        />
+      </Stack>
+
+      {/* Slider */}
       <MuiSlider
         value={current}
         onChange={handleChange}
@@ -325,6 +368,16 @@ function RangeSlider({
         })}
         {...props}
       />
+
+      {/* Min/Max Labels */}
+      <Stack direction="row" sx={{ justifyContent: 'space-between', mt: -0.5 }}>
+        <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.65rem' }}>
+          {render(min)}
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.65rem' }}>
+          {render(safeMax)}+
+        </Typography>
+      </Stack>
     </Box>
   )
 }

@@ -1,4 +1,4 @@
-﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -415,7 +415,7 @@ export default function EmployerDashboard() {
                           variant="primary"
                           fullWidth
                           startIcon={<WorkOutlineOutlined />}
-                          onClick={() => navigate('/employer/jobs')}
+                           onClick={() => navigate('/employee/jobs')}
                           sx={{
                             justifyContent: 'flex-start',
                             bgcolor: BRAND,

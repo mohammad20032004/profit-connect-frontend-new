@@ -1,31 +1,57 @@
-﻿﻿import { DANGER, RADIUS } from '@/theme/tokens'
+﻿import { DANGER } from '@/theme/tokens'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
   Box, Container, Paper, Typography, Stack, TextField, Grid, CircularProgress,
-  Fade, Divider, IconButton, MenuItem, alpha, Stepper, Step, StepLabel,
+  Fade, Divider, MenuItem, alpha, Stepper, Step, StepLabel, Chip,
 } from '@mui/material'
 import Button from '@/ui/Button'
-import { RangeSlider } from '@/ui'
+import { RangeSlider, SkillsModal } from '@/ui'
+import RichTextEditor from '@/ui/RichTextEditor'
 import {
-  ArrowBackOutlined, AddOutlined, DeleteOutlineOutlined,
-  ArrowForwardOutlined, ArrowBack,
+  ArrowBackOutlined, AddOutlined,
+  ArrowForwardOutlined, ArrowBack, WorkspacePremiumRounded,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { createJob } from '@/services/employeeService'
 import CountrySelect from '@/ui/CountrySelect'
 
+const suggestedSkills = [
+  'React', 'Node.js', 'Python', 'UI/UX Design', 'Graphic Design',
+  'JavaScript', 'TypeScript', 'MongoDB', 'Docker', 'AWS',
+  'Flutter', 'React Native', 'Vue.js', 'Angular', 'PHP',
+]
+
+const TYPE_OPTIONS = [
+  { value: 'Full-time', key: 'typeFullTime' },
+  { value: 'Part-time', key: 'typePartTime' },
+  { value: 'Contract', key: 'typeContract' },
+  { value: 'Internship', key: 'typeInternship' },
+  { value: 'Freelance', key: 'typeFreelance' },
+]
+
+const LEVEL_OPTIONS = [
+  { value: 'Entry', key: 'levelEntry' },
+  { value: 'Mid', key: 'levelMid' },
+  { value: 'Senior', key: 'levelSenior' },
+  { value: 'Lead', key: 'levelLead' },
+]
+
+const PLACE_OPTIONS = [
+  { value: 'Remote', key: 'placeRemote' },
+  { value: 'On-site', key: 'placeOnsite' },
+  { value: 'Hybrid', key: 'placeHybrid' },
+]
+
 const fieldSx = {
   '& .MuiOutlinedInput-root': {
-    borderRadius: RADIUS,
+    borderRadius: 1,
     transition: 'all 0.3s ease',
     '&:hover': { boxShadow: '0 2px 8px rgba(61,28,110,0.06)' },
     '&.Mui-focused': { boxShadow: '0 2px 12px rgba(61,28,110,0.12)' },
   },
 }
-
-const CURRENCIES = ['USD']
 
 export default function CreateJob() {
   const { t, i18n } = useTranslation()
@@ -44,10 +70,11 @@ export default function CreateJob() {
     workPlace: '',
     salaryMin: '',
     salaryMax: '',
-    currency: 'USD',
   })
-  const [requirements, setRequirements] = useState([''])
-  const [responsibilities, setResponsibilities] = useState([''])
+  const [requirements, setRequirements] = useState('')
+  const [responsibilities, setResponsibilities] = useState('')
+  const [skills, setSkills] = useState([])
+  const [skillsModalOpen, setSkillsModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -59,9 +86,25 @@ export default function CreateJob() {
 
   const set = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }))
 
-  const addListItem = (setter) => () => setter((p) => [...p, ''])
-  const removeListItem = (setter) => (idx) => setter((p) => p.filter((_, i) => i !== idx))
-  const updateListItem = (setter) => (idx) => (e) => setter((p) => p.map((v, i) => i === idx ? e.target.value : v))
+  const toggleSkill = (skill) => {
+    setSkills((p) => p.includes(skill) ? p.filter((s) => s !== skill) : [...p, skill])
+  }
+
+  const htmlToList = (html) => {
+    if (!html || html === '<p></p>') return []
+    const div = document.createElement('div')
+    div.innerHTML = html
+    const items = []
+    div.querySelectorAll('li').forEach((li) => {
+      const text = li.textContent.trim()
+      if (text) items.push(text)
+    })
+    if (items.length === 0) {
+      const text = div.textContent.trim()
+      if (text) items.push(text)
+    }
+    return items
+  }
 
   const validateStep = () => {
     if (activeStep === 0) {
@@ -106,10 +149,11 @@ export default function CreateJob() {
         salary: {
           min: form.salaryMin ? Number(form.salaryMin) : undefined,
           max: form.salaryMax ? Number(form.salaryMax) : undefined,
-          currency: form.currency,
+          currency: 'USD',
         },
-        requirements: requirements.filter((r) => r.trim()),
-        responsibilities: responsibilities.filter((r) => r.trim()),
+        requirements: htmlToList(requirements),
+        responsibilities: htmlToList(responsibilities),
+        skills: skills,
       }
       const res = await createJob(payload)
       if (res?.success) navigate('/employee/jobs')
@@ -139,16 +183,16 @@ export default function CreateJob() {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField label={t('jobs.type')} value={form.type} onChange={set('type')} select fullWidth size="small" sx={fieldSx}>
                   <MenuItem value=""><em>{lang === 'ar' ? 'اختر' : 'Select'}</em></MenuItem>
-                  {['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'].map((v) => (
-                    <MenuItem key={v} value={v}>{t(`jobs.type${v.charAt(0).toUpperCase() + v.slice(1).replace('-', '')}`)}</MenuItem>
+                  {TYPE_OPTIONS.map(({ value, key }) => (
+                    <MenuItem key={value} value={value}>{t(`jobs.${key}`)}</MenuItem>
                   ))}
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField label={t('jobs.workLevel')} value={form.workLevel} onChange={set('workLevel')} select fullWidth size="small" sx={fieldSx}>
                   <MenuItem value=""><em>{lang === 'ar' ? 'اختر' : 'Select'}</em></MenuItem>
-                  {['Entry', 'Mid', 'Senior', 'Lead'].map((v) => (
-                    <MenuItem key={v} value={v}>{t(`jobs.level${v}`)}</MenuItem>
+                  {LEVEL_OPTIONS.map(({ value, key }) => (
+                    <MenuItem key={value} value={value}>{t(`jobs.${key}`)}</MenuItem>
                   ))}
                 </TextField>
               </Grid>
@@ -157,14 +201,9 @@ export default function CreateJob() {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField label={t('jobs.workPlace')} value={form.workPlace} onChange={set('workPlace')} select fullWidth size="small" sx={fieldSx}>
                   <MenuItem value=""><em>{lang === 'ar' ? 'اختر' : 'Select'}</em></MenuItem>
-                  {['Remote', 'On-site', 'Hybrid'].map((v) => (
-                    <MenuItem key={v} value={v}>{t(`jobs.place${v.replace('-', '')}`)}</MenuItem>
+                  {PLACE_OPTIONS.map(({ value, key }) => (
+                    <MenuItem key={value} value={value}>{t(`jobs.${key}`)}</MenuItem>
                   ))}
-                </TextField>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField label={t('jobs.currency')} value={form.currency} onChange={set('currency')} select fullWidth size="small" sx={fieldSx}>
-                  {CURRENCIES.map((c) => (<MenuItem key={c} value={c}>{c}</MenuItem>))}
                 </TextField>
               </Grid>
             </Grid>
@@ -173,7 +212,7 @@ export default function CreateJob() {
               valueMin={form.salaryMin}
               valueMax={form.salaryMax}
               onChange={(min, max) => setForm((p) => ({ ...p, salaryMin: min, salaryMax: max }))}
-              currency={form.currency}
+              currency="USD"
               max={200000}
             />
           </Stack>
@@ -181,39 +220,87 @@ export default function CreateJob() {
       case 2:
         return (
           <Stack spacing={2.5}>
-            <Typography variant="subtitle2" fontWeight={700}>{t('jobs.requirements')}</Typography>
-            {requirements.map((req, i) => (
-              <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <TextField value={req} onChange={updateListItem(setRequirements)(i)}
-                  fullWidth size="small" placeholder={`${t('jobs.requirementsPlaceholder')} #${i + 1}`} sx={fieldSx} />
-                <IconButton size="small" onClick={removeListItem(setRequirements)(i)} color="error"
-                  disabled={requirements.length <= 1}>
-                  <DeleteOutlineOutlined sx={{ fontSize: 18 }} />
-                </IconButton>
+            {/* Skills */}
+            <Box>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+                <WorkspacePremiumRounded sx={{ fontSize: 20, color: 'secondary.main' }} />
+                <Typography variant="subtitle2" fontWeight={700}>{t('jobs.skills')}</Typography>
               </Stack>
-            ))}
-            <Button variant="text" startIcon={<AddOutlined />} onClick={addListItem(setRequirements)}
-              size="small" sx={{ alignSelf: 'flex-start' }}>
-              {t('jobs.addRequirement')}
-            </Button>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                {t('jobs.skillsHint')}
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {suggestedSkills.map((skill) => (
+                  <Chip
+                    key={skill}
+                    label={skill}
+                    size="small"
+                    variant={skills.includes(skill) ? 'filled' : 'outlined'}
+                    color={skills.includes(skill) ? 'primary' : 'default'}
+                    onClick={() => toggleSkill(skill)}
+                    sx={{
+                      transition: 'all 0.2s ease',
+                      '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 2px 8px rgba(61,28,110,0.15)' },
+                    }}
+                  />
+                ))}
+                <Chip
+                  label={t('jobs.addSkills')}
+                  size="small"
+                  variant="outlined"
+                  color="secondary"
+                  icon={<AddOutlined />}
+                  onClick={() => setSkillsModalOpen(true)}
+                  sx={{
+                    fontWeight: 700, transition: 'all 0.2s ease',
+                    '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 2px 8px rgba(61,28,110,0.15)' },
+                  }}
+                />
+              </Box>
+              {skills.length > 0 && (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
+                  {skills.map((skill) => (
+                    <Chip
+                      key={skill}
+                      label={skill}
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      onDelete={() => toggleSkill(skill)}
+                    />
+                  ))}
+                </Box>
+              )}
+            </Box>
+
+            <Divider sx={{ my: 0.5 }} />
+
+            <Typography variant="subtitle2" fontWeight={700}>{t('jobs.requirements')}</Typography>
+            <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
+              <RichTextEditor
+                content={requirements}
+                onChange={setRequirements}
+                placeholder={t('jobs.requirementsPlaceholder', 'Add job requirements...')}
+              />
+            </Box>
 
             <Divider sx={{ my: 1 }} />
 
             <Typography variant="subtitle2" fontWeight={700}>{t('jobs.responsibilities')}</Typography>
-            {responsibilities.map((resp, i) => (
-              <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <TextField value={resp} onChange={updateListItem(setResponsibilities)(i)}
-                  fullWidth size="small" placeholder={`${t('jobs.responsibilitiesPlaceholder')} #${i + 1}`} sx={fieldSx} />
-                <IconButton size="small" onClick={removeListItem(setResponsibilities)(i)} color="error"
-                  disabled={responsibilities.length <= 1}>
-                  <DeleteOutlineOutlined sx={{ fontSize: 18 }} />
-                </IconButton>
-              </Stack>
-            ))}
-            <Button variant="text" startIcon={<AddOutlined />} onClick={addListItem(setResponsibilities)}
-              size="small" sx={{ alignSelf: 'flex-start' }}>
-              {t('jobs.addResponsibility')}
-            </Button>
+            <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
+              <RichTextEditor
+                content={responsibilities}
+                onChange={setResponsibilities}
+                placeholder={t('jobs.responsibilitiesPlaceholder', 'Add job responsibilities...')}
+              />
+            </Box>
+
+            <SkillsModal
+              open={skillsModalOpen}
+              onClose={() => setSkillsModalOpen(false)}
+              selected={skills}
+              onToggle={toggleSkill}
+            />
           </Stack>
         )
       default:
@@ -244,13 +331,13 @@ export default function CreateJob() {
 
           {error && (
             <Fade in>
-              <Box sx={{ p: 1.5, borderRadius: RADIUS, bgcolor: alpha(DANGER, 0.06), border: '1px solid', borderColor: alpha(DANGER, 0.2) }}>
+              <Box sx={{ p: 1.5, borderRadius: 1, bgcolor: alpha(DANGER, 0.06), border: '1px solid', borderColor: alpha(DANGER, 0.2) }}>
                 <Typography variant="body2" color="error" fontWeight={500}>{error}</Typography>
               </Box>
             </Fade>
           )}
 
-          <Paper sx={{ borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+          <Paper sx={{ borderRadius: 1, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
             <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
               <Fade in timeout={300} key={activeStep}>
                 {renderStepContent()}

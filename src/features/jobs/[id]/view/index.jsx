@@ -1,4 +1,4 @@
-﻿﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -211,16 +211,48 @@ export default function JobDetailView() {
                       <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.25 }}>
                         {t('jobs.requirements')}
                       </Typography>
-                      <Stack spacing={0.75}>
-                        {job.requirements.map((req, i) => (
-                          <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-                            <CheckCircleOutlineOutlined sx={{ fontSize: 15, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
-                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.85rem' }}>
-                              {req}
-                            </Typography>
-                          </Stack>
+                      {Array.isArray(job.requirements) ? (
+                        <Stack spacing={0.75}>
+                          {job.requirements.map((req, i) => (
+                            <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+                              <CheckCircleOutlineOutlined sx={{ fontSize: 15, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
+                              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.85rem' }}>
+                                {req}
+                              </Typography>
+                            </Stack>
+                          ))}
+                        </Stack>
+                      ) : (
+                        <Box
+                          sx={{
+                            '& ul': { pl: 2, my: 0 },
+                            '& li': { mb: 0.5, fontSize: '0.85rem', color: 'text.secondary', lineHeight: 1.6 },
+                            '& p': { mb: 0.5, fontSize: '0.85rem', color: 'text.secondary', lineHeight: 1.6 },
+                          }}
+                          dangerouslySetInnerHTML={{ __html: job.requirements }}
+                        />
+                      )}
+                    </Box>
+                  )}
+
+                  {/* Skills */}
+                  {job.skills?.length > 0 && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.25 }}>
+                        {t('jobs.skills')}
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
+                        {job.skills.map((skill) => (
+                          <Chip
+                            key={skill}
+                            label={skill}
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            sx={{ height: 26, fontSize: '0.75rem', fontWeight: 600 }}
+                          />
                         ))}
-                      </Stack>
+                      </Box>
                     </Box>
                   )}
 
@@ -230,16 +262,27 @@ export default function JobDetailView() {
                       <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.25 }}>
                         {t('jobs.responsibilities')}
                       </Typography>
-                      <Stack spacing={0.75}>
-                        {job.responsibilities.map((resp, i) => (
-                          <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-                            <CheckCircleOutlineOutlined sx={{ fontSize: 15, color: 'success.main', mt: 0.25, flexShrink: 0 }} />
-                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.85rem' }}>
-                              {resp}
-                            </Typography>
-                          </Stack>
-                        ))}
-                      </Stack>
+                      {Array.isArray(job.responsibilities) ? (
+                        <Stack spacing={0.75}>
+                          {job.responsibilities.map((resp, i) => (
+                            <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+                              <CheckCircleOutlineOutlined sx={{ fontSize: 15, color: 'success.main', mt: 0.25, flexShrink: 0 }} />
+                              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, fontSize: '0.85rem' }}>
+                                {resp}
+                              </Typography>
+                            </Stack>
+                          ))}
+                        </Stack>
+                      ) : (
+                        <Box
+                          sx={{
+                            '& ul': { pl: 2, my: 0 },
+                            '& li': { mb: 0.5, fontSize: '0.85rem', color: 'text.secondary', lineHeight: 1.6 },
+                            '& p': { mb: 0.5, fontSize: '0.85rem', color: 'text.secondary', lineHeight: 1.6 },
+                          }}
+                          dangerouslySetInnerHTML={{ __html: job.responsibilities }}
+                        />
+                      )}
                     </Box>
                   )}
                 </Box>

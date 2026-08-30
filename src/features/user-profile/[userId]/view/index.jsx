@@ -1,10 +1,9 @@
-﻿﻿import { RADIUS } from '@/theme/tokens'
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback } from 'react'
-import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid, CircularProgress, IconButton } from '@mui/material'
+import { Box, Container, Paper, Avatar, Typography, Chip, Stack, alpha, Grid, CircularProgress } from '@mui/material'
 import Button from '@/ui/Button'
 import UserAvatar from '@/components/common/UserAvatar'
 import {
-  ArrowBackOutlined,
   LocationOnOutlined,
   WorkspacePremiumRounded,
   LinkedIn,
@@ -193,10 +192,6 @@ export default function UserProfileUserIdView() {
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
-        <IconButton onClick={() => navigate(-1)} size="small"><ArrowBackOutlined /></IconButton>
-        <Typography variant="h5" fontWeight="bold" noWrap>{fullName}</Typography>
-      </Stack>
 
       <Paper sx={{ borderRadius: RADIUS, p: { xs: 2, md: 3 } }}>
         <Grid container spacing={3}>
@@ -374,7 +369,7 @@ export default function UserProfileUserIdView() {
             <Stack spacing={2.5}>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1 }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1, border: 'none' }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
                     <StarRounded sx={{ color: 'warning.main', fontSize: 20 }} />
                     <Typography variant="subtitle2" fontWeight="bold">{t('profile.reputation')}</Typography>
@@ -392,7 +387,7 @@ export default function UserProfileUserIdView() {
                 </Paper>
 
                 {(user?.email || profile?.phoneNumber) && (
-                  <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1 }}>
+                  <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, flex: 1, border: 'none' }}>
                     <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('profile.contactInfo')}</Typography>
                     <Stack spacing={0.75}>
                       {user?.email && (
@@ -413,7 +408,7 @@ export default function UserProfileUserIdView() {
               </Stack>
 
               {isCompanyEmployee && user.companyEmployeeProfile && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, border: 'none' }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
                     <BadgeOutlined sx={{ fontSize: 20, color: 'text.secondary' }} />
                     <Typography variant="subtitle2" fontWeight="bold">{isRtl ? 'البيانات الوظيفية' : 'Work Info'}</Typography>
@@ -442,7 +437,7 @@ export default function UserProfileUserIdView() {
               )}
 
               {(professional?.industry || professional?.yearsOfExperience > 0 || skills.length > 0) && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, border: 'none' }}>
                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
                     <BusinessCenterOutlined sx={{ fontSize: 20, color: 'text.secondary' }} />
                     <Typography variant="subtitle2" fontWeight="bold">{t('profile.professionalInfo')}</Typography>
@@ -475,7 +470,7 @@ export default function UserProfileUserIdView() {
               )}
 
               {(socialLinks?.linkedin || socialLinks?.github || socialLinks?.website) && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, border: 'none' }}>
                   <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>{t('profile.socialLinks')}</Typography>
                   <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
                     {socialLinks?.linkedin && (
@@ -492,7 +487,7 @@ export default function UserProfileUserIdView() {
               )}
 
               {profile?.bio && (
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS }}>
+                <Paper variant="outlined" sx={{ p: 2, borderRadius: RADIUS, border: 'none' }}>
                   <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 0.75 }}>{t('profile.bio')}</Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.875rem' }}>
                     {profile.bio}
