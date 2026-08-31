@@ -1,4 +1,4 @@
-﻿﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 import React, { useEffect, useCallback } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import { StarterKit } from '@tiptap/starter-kit'
@@ -15,6 +15,7 @@ import {
   UndoOutlined,
   RedoOutlined,
 } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 
 const COLOR_PALETTE = [
   '#1F0A3B', BRAND, '#5C3594', '#7D5DAB',
@@ -27,6 +28,7 @@ const MAX_CHARS = 5000
 
 export default function RichTextEditor({ content, onChange, placeholder }) {
   const [colorAnchor, setColorAnchor] = React.useState(null)
+  const { i18n } = useTranslation()
 
   const editor = useEditor({
     extensions: [
@@ -62,6 +64,14 @@ export default function RichTextEditor({ content, onChange, placeholder }) {
       editor.commands.setContent(content || '')
     }
   }, [content, editor])
+
+  useEffect(() => {
+    if (editor) {
+      const newPlaceholder = placeholder || (i18n.language === 'ar' ? 'عن ماذا تريد أن تتحدث؟' : 'What do you want to talk about?')
+      editor.storage.placeholder = newPlaceholder
+      editor.view.updateState(editor.state)
+    }
+  }, [i18n.language, editor, placeholder])
 
   const handleFormat = useCallback((command) => {
     if (!editor) return

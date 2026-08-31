@@ -1,8 +1,7 @@
 ﻿import { BRAND, RADIUS } from '@/theme/tokens';
-import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
-import { Box, Button, Typography, useTheme, Autocomplete, TextField } from '@mui/material';
+import { useRef, useEffect, useState, useCallback } from 'react';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import AddLocationAltOutlined from '@mui/icons-material/AddLocationAltOutlined';
-import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 import { useTranslation } from 'react-i18next';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -16,11 +15,10 @@ import { fromLonLat, toLonLat } from 'ol/proj';
 import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 import 'ol/ol.css';
 import { extractCoordinates } from '@/utils/coordinates';
-import countriesData from '../data/countries.json';
 
 // ------------------------- الثوابت -------------------------
-const SYRIA_CENTER = [38.5, 34.5]; // خط الطول، خط العرض
-const SYRIA_ZOOM = 6;
+const RIYADH_CENTER = [46.6753, 24.7136]; // خط الطول، خط العرض
+const RIYADH_ZOOM = 12;
 
 // خيارات خرائط الأساس
 const BASEMAPS = {
@@ -55,9 +53,6 @@ const createTileSource = (type) =>
     attributions: '© Esri, USGS, NGA, NASA',
   });
 
-const zoomForType = (type) =>
-  type === 'country' ? 5 : type === 'state' || type === 'region' || type === 'county' ? 7 : 11;
-
 // ---------- Hook مخصص للخريطة ----------
 const useMap = ({
   containerRef,
@@ -67,10 +62,11 @@ const useMap = ({
   basemap,
   controls,
   onCoordinatesChange,
-  setPicking,
+  pickingRef,
 }) => {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
+  const vectorLayerRef = useRef(null);
   const baseLayerRef = useRef(null);
   const viewRef = useRef(null);
 
@@ -84,18 +80,28 @@ const useMap = ({
     let center, zoom;
     if (hasInitial) {
       const coords = readonly ? extractCoordinates(location) : extractCoordinates({ coordinates });
-      center = fromLonLat(coords || SYRIA_CENTER);
+      center = fromLonLat(coords || RIYADH_CENTER);
       zoom = 12;
     } else {
-      center = fromLonLat(SYRIA_CENTER);
-      zoom = SYRIA_ZOOM;
+      center = fromLonLat(RIYADH_CENTER);
+      zoom = RIYADH_ZOOM;
     }
 
-    // إنشاء طبقة العلامة
-    const markerFeature = new Feature({ geometry: new Point(center) });
-    markerFeature.setStyle(makeMarkerStyles());
-    const vectorSource = new VectorSource({ features: [markerFeature] });
+    // طبقة العلامة (فارغة في البداية)
+    const vectorSource = new VectorSource({ features: [] });
     const vectorLayer = new VectorLayer({ source: vectorSource });
+    vectorLayerRef.current = vectorLayer;
+
+    // إذا كانت هناك إحداثيات محددة مسبقاً، أضف العلامة
+    if (hasInitial) {
+      const coords = readonly ? extractCoordinates(location) : extractCoordinates({ coordinates });
+      if (coords) {
+        const markerFeature = new Feature({ geometry: new Point(fromLonLat(coords)) });
+        markerFeature.setStyle(makeMarkerStyles());
+        vectorSource.addFeature(markerFeature);
+        markerRef.current = markerFeature;
+      }
+    }
 
     // طبقة الأساس
     const baseLayer = new TileLayer({ source: createTileSource(basemap) });
@@ -118,23 +124,32 @@ const useMap = ({
     });
 
     mapRef.current = map;
-    markerRef.current = markerFeature;
 
-    // تفاعل النقر لاختيار موقع
+    // تفاعل النقر لاختيار موقع (فقط عند وضع الدبوس)
     if (!readonly) {
       map.on('click', (evt) => {
-        markerFeature.getGeometry().setCoordinates(evt.coordinate);
+        if (!pickingRef.current) return;
+
+        // إزالة العلامة القديمة
+        vectorSource.clear();
+
+        // إضافة علامة جديدة
+        const markerFeature = new Feature({ geometry: new Point(evt.coordinate) });
+        markerFeature.setStyle(makeMarkerStyles());
+        vectorSource.addFeature(markerFeature);
+        markerRef.current = markerFeature;
+
         const [lng, lat] = toLonLat(evt.coordinate);
         onCoordinatesChange?.({
           x: Math.round(lng * 1e6) / 1e6,
           y: Math.round(lat * 1e6) / 1e6,
         });
-        setPicking(false);
       });
     }
 
     return map;
-  }, [containerRef, readonly, coordinates, location, basemap, controls, onCoordinatesChange, setPicking]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [containerRef, readonly, basemap, controls]);
 
   // دالة لتحديث طبقة الأساس
   const updateBasemap = useCallback((newBasemap) => {
@@ -143,23 +158,22 @@ const useMap = ({
     }
   }, []);
 
-  // دالة لتحديث موقع العلامة
-  const updateMarker = useCallback((coords) => {
-    if (!mapRef.current || !markerRef.current) return;
-    const pos = fromLonLat(coords);
-    markerRef.current.getGeometry().setCoordinates(pos);
-    mapRef.current.getView().setCenter(pos);
-    mapRef.current.getView().setZoom(12);
-  }, []);
-
-  // دالة للطيران إلى موقع
-  const flyTo = useCallback((lng, lat, zoom = 6) => {
-    if (!mapRef.current) return;
-    mapRef.current.getView().animate({
-      center: fromLonLat([lng, lat]),
-      zoom,
-      duration: 800,
-    });
+  // دالة لإظهار/إخفاء العلامة بناءً على وجود إحداثيات
+  const showMarker = useCallback((coords) => {
+    if (!mapRef.current || !vectorLayerRef.current) return;
+    const source = vectorLayerRef.current.getSource();
+    source.clear();
+    if (coords) {
+      const pos = fromLonLat(coords);
+      const markerFeature = new Feature({ geometry: new Point(pos) });
+      markerFeature.setStyle(makeMarkerStyles());
+      source.addFeature(markerFeature);
+      markerRef.current = markerFeature;
+      mapRef.current.getView().setCenter(pos);
+      mapRef.current.getView().setZoom(12);
+    } else {
+      markerRef.current = null;
+    }
   }, []);
 
   // تنظيف الخريطة
@@ -168,6 +182,7 @@ const useMap = ({
       mapRef.current.setTarget(null);
       mapRef.current = null;
       markerRef.current = null;
+      vectorLayerRef.current = null;
       baseLayerRef.current = null;
       viewRef.current = null;
     }
@@ -180,8 +195,7 @@ const useMap = ({
     viewRef,
     initializeMap,
     updateBasemap,
-    updateMarker,
-    flyTo,
+    showMarker,
     cleanup,
   };
 };
@@ -195,20 +209,24 @@ export default function LocationMap({
   height = 320,
   controls = false,
 }) {
-  const { t, i18n } = useTranslation();
-  const lang = i18n.language === 'ar' ? 'ar' : 'en';
+  const { t } = useTranslation();
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
 
   const containerRef = useRef(null);
   const [picking, setPicking] = useState(false);
+  const pickingRef = useRef(false);
   const [basemap, setBasemap] = useState('topo');
-  const [query, setQuery] = useState('');
-  const [geoResults, setGeoResults] = useState([]);
-  const [searching, setSearching] = useState(false);
+
+  // مزامنة pickingRef مع picking state
+  const handleSetPicking = useCallback((value) => {
+    const next = typeof value === 'function' ? value(pickingRef.current) : value;
+    pickingRef.current = next;
+    setPicking(next);
+  }, []);
 
   // استدعاء Hook الخريطة
-  const { initializeMap, updateBasemap, updateMarker, flyTo, cleanup } = useMap({
+  const { initializeMap, updateBasemap, showMarker, cleanup } = useMap({
     containerRef,
     readonly,
     coordinates,
@@ -216,76 +234,8 @@ export default function LocationMap({
     basemap,
     controls,
     onCoordinatesChange,
-    setPicking,
+    pickingRef,
   });
-
-  // ---------- البحث الجغرافي (Nominatim) ----------
-  useEffect(() => {
-    const q = query.trim();
-    if (q.length < 3) {
-      setGeoResults([]);
-      setSearching(false);
-      return;
-    }
-    setSearching(true);
-    const controller = new AbortController();
-    const timer = setTimeout(async () => {
-      try {
-        const url =
-          `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(
-            q
-          )}&limit=8&accept-language=${lang}`;
-        const res = await fetch(url, { signal: controller.signal });
-        if (!res.ok) throw new Error('Geocode failed');
-        const data = await res.json();
-        setGeoResults(
-          data.map((r) => ({
-            name: r.display_name,
-            lat: parseFloat(r.lat),
-            lng: parseFloat(r.lon),
-            type: r.type,
-          }))
-        );
-      } catch (err) {
-        if (err.name !== 'AbortError') setGeoResults([]);
-      } finally {
-        if (!controller.signal.aborted) setSearching(false);
-      }
-    }, 350);
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
-  }, [query, lang]);
-
-  // ---------- دمج بيانات الدول المحلية مع نتائج البحث ----------
-  const filteredCountries = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return countriesData
-      .filter((c) => c.name.toLowerCase().includes(q) || (c.ar && c.ar.includes(query.trim())))
-      .slice(0, 12);
-  }, [query]);
-
-  const options = useMemo(() => {
-    const seen = new Set();
-    const merged = [];
-    filteredCountries.forEach((c) => {
-      const key = c.name.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        merged.push(c);
-      }
-    });
-    geoResults.forEach((r) => {
-      const key = r.name.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        merged.push(r);
-      }
-    });
-    return merged;
-  }, [filteredCountries, geoResults]);
 
   // ---------- تهيئة الخريطة عند تحميل المكوّن ----------
   useEffect(() => {
@@ -312,23 +262,11 @@ export default function LocationMap({
 
   // ---------- تحديث موقع العلامة عند تغير الإحداثيات من الخارج ----------
   useEffect(() => {
-    if (!readonly && coordinates) {
-      const parsed = extractCoordinates({ coordinates });
-      if (parsed) updateMarker(parsed);
+    if (!readonly) {
+      const parsed = coordinates ? extractCoordinates({ coordinates }) : null;
+      showMarker(parsed);
     }
-  }, [coordinates, readonly, updateMarker]);
-
-  // ---------- معالج الطيران عند اختيار نتيجة بحث ----------
-  const handleSelect = useCallback(
-    (value) => {
-      if (value && value.lat != null) {
-        const displayName = lang === 'ar' && value.ar ? value.ar : value.name;
-        setQuery(displayName);
-        flyTo(value.lng, value.lat, zoomForType(value.type));
-      }
-    },
-    [flyTo, lang]
-  );
+  }, [coordinates, readonly, showMarker]);
 
   // ---------- عرض المكوّن ----------
   return (
@@ -356,65 +294,6 @@ export default function LocationMap({
 
       {!readonly && (
         <>
-          {/* شريط البحث */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 8,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 10,
-              width: 'min(340px, calc(100% - 16px))',
-              pointerEvents: 'auto',
-            }}
-          >
-            <Autocomplete
-              autoHighlight
-              options={options}
-              loading={searching}
-              loadingText={t('employer.setup.searching')}
-              noOptionsText=""
-              isOptionEqualToValue={(o, v) => o === v}
-              openOnFocus={false}
-              inputValue={query}
-              onInputChange={(_, value) => setQuery(value)}
-              onChange={(_, value) => handleSelect(value)}
-              getOptionLabel={(o) =>
-                o && typeof o === 'object' ? (lang === 'ar' && o.ar ? o.ar : o.name) : ''
-              }
-              filterOptions={(opts) => opts}
-              clearOnBlur={false}
-              renderOption={(props, o) => (
-                <Box component="li" {...props} sx={{ gap: 0.5 }}>
-                  <LocationOnOutlined sx={{ fontSize: 18, color: 'primary.main', flexShrink: 0 }} />
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="body2" noWrap>
-                      {lang === 'ar' && o.ar ? o.ar : o.name}
-                    </Typography>
-                    {o.type && (
-                      <Typography variant="caption" color="text.secondary" noWrap display="block">
-                        {t(`employer.setup.placeType.${o.type}`, o.type)}
-                      </Typography>
-                    )}
-                  </Box>
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  placeholder={t('employer.setup.searchPlace')}
-                  sx={{
-                    bgcolor: 'background.paper',
-                    borderRadius: RADIUS,
-                    boxShadow: 3,
-                    '& .MuiOutlinedInput-root': { borderRadius: RADIUS },
-                  }}
-                />
-              )}
-            />
-          </Box>
-
           {/* مبدل طبقات الأساس */}
           <Box
             sx={{
@@ -473,7 +352,7 @@ export default function LocationMap({
               variant="contained"
               color={picking ? 'secondary' : 'primary'}
               startIcon={<AddLocationAltOutlined />}
-              onClick={() => setPicking((p) => !p)}
+              onClick={() => handleSetPicking((p) => !p)}
               sx={{ boxShadow: 3, whiteSpace: 'nowrap', fontWeight: 600 }}
             >
               {picking ? t('employer.setup.cancelPick') : t('employer.setup.placePin')}

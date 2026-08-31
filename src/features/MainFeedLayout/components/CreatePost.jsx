@@ -43,7 +43,7 @@ const DRAFT_KEY = 'profit_connect_post_draft'
 const EMOJI_LIST = ['😀', '😂', '😍', '🥳', '🤔', '👍', '❤️', '🔥', '✨', '💡', '🚀', '💻', '📱', '🎯', '⭐', '💪']
 
 export default function CreatePost({ onPostCreated, open: openProp, onOpenChange }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const profile = useSelector((state) => state.user.profile)
   const user = useSelector((state) => state.user.user)
@@ -399,6 +399,7 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
             bgcolor: 'background.paper',
           }}>
             <RichTextEditor
+              key={i18n.language}
               content={content}
               onChange={setContent}
               placeholder={t('dashboard.post.whatToTalk', 'What do you want to talk about?')}

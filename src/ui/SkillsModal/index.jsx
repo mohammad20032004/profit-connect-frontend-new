@@ -1,8 +1,9 @@
-﻿﻿import { RADIUS } from '@/theme/tokens'
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useMemo } from 'react'
 import { Dialog, DialogTitle, DialogContent, TextField, Box, Chip, Typography, Stack, InputAdornment, IconButton } from '@mui/material'
 import { SearchOutlined, CloseOutlined } from '@mui/icons-material'
 import SkillIcon from '../SkillIcon'
+import { useTranslation } from 'react-i18next'
 
 const CATEGORIES = ['All', 'Frontend', 'JavaScript', 'Backend', 'Python', 'Java', '.NET', 'Go', 'Rust', 'PHP', 'Ruby', 'Mobile', 'Database', 'DevOps', 'Design', 'Tools', 'Testing', 'Data & AI', 'Architecture', 'Blockchain', 'Security', 'Management', 'Languages', 'Other']
 
@@ -44,6 +45,8 @@ function shuffle(arr) {
 export default function SkillsModal({ open, onClose, selected, onToggle }) {
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
+  const { i18n } = useTranslation()
+  const isRtl = i18n.language === 'ar'
 
   const allSkills = useMemo(() => {
     const flat = SKILL_DB.flatMap((g) => g.skills)
@@ -76,7 +79,7 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
       <DialogTitle sx={{ pb: 0, pt: 2.5, px: 3 }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6" fontWeight="bold" sx={{ color: '#1F0A3B', fontSize: '1.1rem' }}>
-            Select Skills ({selected.length} selected)
+            {isRtl ? `اختر المهارات (${selected.length} محددة)` : `Select Skills (${selected.length} selected)`}
           </Typography>
           <IconButton onClick={onClose} size="medium" sx={{ color: '#5C5580', '&:hover': { bgcolor: 'rgba(61,28,110,0.06)' }, minWidth: 44, minHeight: 44 }}>
             <CloseOutlined fontSize="small" />
@@ -85,7 +88,7 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
         <TextField
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search skills..."
+          placeholder={isRtl ? 'ابحث عن مهارة...' : 'Search skills...'}
           fullWidth
           size="small"
           autoFocus
@@ -116,7 +119,9 @@ export default function SkillsModal({ open, onClose, selected, onToggle }) {
       </DialogTitle>
       <DialogContent sx={{ px: 3, py: 2.5, overflowY: 'auto' }}>
         {filtered.length === 0 ? (
-          <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>No skills found</Typography>
+          <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+            {isRtl ? 'لا توجد نتائج' : 'No skills found'}
+          </Typography>
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6 }}>
             {filtered.map((skill) => (

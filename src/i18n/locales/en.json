@@ -438,7 +438,16 @@
       "addToPost": "Add to your post",
       "addImage": "Add image",
       "invalidImage": "Invalid image type. Use JPG, PNG, WebP or GIF.",
-      "imageTooLarge": "Image too large. Maximum 20MB."
+      "imageTooLarge": "Image too large. Maximum 20MB.",
+      "addHashtag": "Add hashtag...",
+      "addVideo": "Add video",
+      "invalidVideo": "Invalid video type. Use MP4, WebM, MOV or AVI.",
+      "videoTooLarge": "Video too large. Maximum 200MB.",
+      "removeImage": "Remove image",
+      "removeVideo": "Remove video",
+      "emojis": "Emojis",
+      "addEmoji": "Add emoji",
+      "discardDraft": "Discard draft"
     },
     "action": {
       "like": "Like",

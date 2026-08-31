@@ -185,6 +185,8 @@ export default function UserProfileUserIdView() {
   const roleLabel = user.role === 'Employer' ? (isRtl ? 'صاحب عمل' : 'Employer')
     : user.role === 'Employee' ? (isRtl ? 'موظف' : 'Employee')
     : user.role === 'CompanyEmployee' ? (isRtl ? 'موظف شركة' : 'Company Employee')
+    : user.role === 'FreelanceClient' ? (isRtl ? 'عميل حر' : 'Freelance Client')
+    : user.role === 'JobSeeker' ? (isRtl ? 'باحث عن عمل' : 'Job Seeker')
     : user.role || (isRtl ? 'باحث عن عمل' : 'Job Seeker')
 
   const isEmployer = user.role === 'Employer'

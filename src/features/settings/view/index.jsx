@@ -38,7 +38,7 @@ import { SkillsModal } from '@/ui'
 import UserAvatar from '@/components/common/UserAvatar'
 import CountrySelect from '@/ui/CountrySelect'
 import { LanguageOutlined, PaletteOutlined, NotificationsOutlined, LockOutlined, PersonOutlined, AddOutlined, HomeOutlined, PhotoCameraOutlined, SecurityOutlined, KeyOutlined, DeleteOutlineOutlined, WarningAmberOutlined } from '@mui/icons-material'
-import { updateSettings, clearUserProfile } from '@/redux/slices/userSlice'
+import { updateSettings, clearUserProfile, setAuthData } from '@/redux/slices/userSlice'
 import { updateSettings as updateSettingsApi, updateProfile as updateProfileApi, updateAvatar as updateAvatarApi, changePassword as changePasswordApi, deleteAccount as deleteAccountApi } from '@/services/settingsService'
 import { refreshReputation } from '@/services/reputation'
 import { refreshProfile } from '@/services/profile'
@@ -121,7 +121,19 @@ export default function SettingsView() {
     if (!file) return
     setAvatarLoading(true)
     try {
-      await updateAvatarApi(file)
+      const res = await updateAvatarApi(file)
+      if (res?.data?.avatar) {
+        const cacheBust = `?t=${Date.now()}`
+        const newAvatar = res.data.avatar + cacheBust
+        dispatch(updateSettings({}))
+        dispatch(setAuthData({
+          token: localStorage.getItem('profit_connect_token'),
+          user: {
+            ...user,
+            profile: { ...profile, avatar: newAvatar }
+          }
+        }))
+      }
       await refreshProfile(dispatch)
     } catch (err) {
       setProfileError(err?.response?.data?.message || err.message || t('settings.avatarError', 'Failed to upload photo'))

@@ -17,6 +17,7 @@ import {
   VerifiedOutlined, CalendarMonthOutlined,
   StarBorderOutlined, AdminPanelSettingsOutlined, EditOutlined, DeleteOutlineOutlined,
   StarRounded, PeopleAltOutlined, PaymentsOutlined, ContactSupportOutlined,
+  DescriptionOutlined, DownloadOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { getCompanyById, toggleFollow, addAdmin, upsertRating, deleteMyRating, updateCompany, deleteCompany } from '@/services/companyService'
@@ -521,6 +522,53 @@ export default function CompanyDetail() {
                   {company.owner.profile?.headline && <Typography variant="body2" color="text.secondary" noWrap display="block">{company.owner.profile.headline}</Typography>}
                 </Box>
                 </Stack>
+            </Box>
+          )}
+
+          {/* Verification Documents */}
+          {company.verificationDocs?.length > 0 && (
+            <Box sx={{ p: { xs: 2, md: 3 }, order: 4 }}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
+                <DescriptionOutlined sx={{ color: 'primary.main' }} />
+                <Typography variant="h6" fontWeight={800}>
+                  {lang === 'ar' ? 'وثائق التوثيق' : 'Verification Documents'}
+                </Typography>
+              </Stack>
+              <Stack spacing={1.5}>
+                {company.verificationDocs.map((docUrl, idx) => (
+                  <Paper
+                    key={idx}
+                    variant="outlined"
+                    sx={{
+                      p: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}>
+                      <DescriptionOutlined sx={{ color: 'text.secondary', fontSize: 22, flexShrink: 0 }} />
+                      <Typography variant="body2" fontWeight={600} noWrap>
+                        {lang === 'ar' ? `ملف ${idx + 1}` : `File ${idx + 1}`}
+                      </Typography>
+                    </Stack>
+                    <IconButton
+                      size="small"
+                      href={docUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      sx={{
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: (t) => alpha(t.palette.primary.main, 0.1) },
+                      }}
+                    >
+                      <DownloadOutlined fontSize="small" />
+                    </IconButton>
+                  </Paper>
+                ))}
+              </Stack>
             </Box>
           )}
         </Stack>

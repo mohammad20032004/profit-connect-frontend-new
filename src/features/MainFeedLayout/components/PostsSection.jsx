@@ -602,6 +602,7 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
             bgcolor: 'background.paper',
           }}>
             <RichTextEditor
+              key={i18n.language}
               content={editForm.content}
               onChange={(html) => setEditForm((prev) => ({ ...prev, content: html }))}
               placeholder={t('dashboard.post.whatToTalk', 'What do you want to talk about?')}

@@ -24,6 +24,7 @@ import {
   CalendarTodayOutlined,
   ScheduleOutlined,
   WorkOutlineOutlined,
+  ArrowBackOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -337,6 +338,12 @@ export default function PortfolioItemView() {
       <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
         <motion.div variants={staggerContainer} initial="hidden" animate="visible">
 
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
+            <IconButton onClick={() => navigate('/gallery')} sx={{ color: 'text.secondary' }}>
+              <ArrowBackOutlined />
+            </IconButton>
+            <Typography variant="h6" fontWeight="bold">{t('portfolio.title', 'المعرض')}</Typography>
+          </Stack>
 
           <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
 

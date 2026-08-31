@@ -1,4 +1,4 @@
-﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -17,7 +17,7 @@ import { createCompanyWithDocs } from '@/services/companyService'
 import { getMyCompany } from '@/services/employerService'
 import LocationMap from '@/components/LocationMap'
 import { extractCoordinates } from '@/utils/coordinates'
-import { COUNTRIES, getStates, getCities } from '@/data/locations'
+import { COUNTRIES, getStates } from '@/data/locations'
 
 const INDUSTRIES = [
   { value: 'web-development', en: 'Web Development', ar: 'تطوير المواقع' },
@@ -117,8 +117,6 @@ export default function EmployerSetup() {
 
   const selectedCountry = COUNTRIES.find((c) => c.en === form.location.country || c.ar === form.location.country)
   const states = getStates(selectedCountry?.value)
-  const selectedState = states.find((s) => s.en === form.location.state || s.ar === form.location.state)
-  const cities = getCities(selectedCountry?.value, selectedState?.value)
 
   const handleDocAdd = (e) => {
     const files = Array.from(e.target.files || [])
@@ -458,18 +456,12 @@ export default function EmployerSetup() {
                              <MenuItem key={s.value} value={s.en}>{lang === 'ar' ? s.ar : s.en}</MenuItem>
                            ))}
                          </TextField>
-                         <TextField
-                           select
-                           label={t('employer.setup.city')}
-                           value={form.location.city}
-                           onChange={(e) => setForm((p) => ({ ...p, location: { ...p.location, city: e.target.value } }))}
-                           disabled={!selectedState || cities.length === 0}
-                           fullWidth size="small" sx={fieldSx}
-                         >
-                           {cities.map((c) => (
-                             <MenuItem key={c.value} value={c.en}>{lang === 'ar' ? c.ar : c.en}</MenuItem>
-                           ))}
-                         </TextField>
+                        <TextField
+                          label={t('employer.setup.city')}
+                          value={form.location.city}
+                          onChange={setLocationField('city')}
+                          fullWidth size="small" sx={fieldSx}
+                        />
                         <TextField
                           label={t('employer.setup.street')}
                           value={form.location.street}

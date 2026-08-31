@@ -439,7 +439,16 @@
       "addToPost": "أضف إلى منشورك",
       "addImage": "إضافة صورة",
       "invalidImage": "نوع الصورة غير صالح. استخدم JPG, PNG, WebP أو GIF.",
-      "imageTooLarge": "الصورة كبيرة جداً. الحد الأقصى 20 ميجابايت."
+      "imageTooLarge": "الصورة كبيرة جداً. الحد الأقصى 20 ميجابايت.",
+      "addHashtag": "أضف هاشتاغ...",
+      "addVideo": "إضافة فيديو",
+      "invalidVideo": "نوع الفيديو غير صالح. استخدم MP4, WebM, MOV أو AVI.",
+      "videoTooLarge": "الفيديو كبير جداً. الحد الأقصى 200 ميجابايت.",
+      "removeImage": "إزالة الصورة",
+      "removeVideo": "إزالة الفيديو",
+      "emojis": "الإيموجي",
+      "addEmoji": "إضافة إيموجي",
+      "discardDraft": "حذف المسودة"
     },
     "action": {
       "like": "إعجاب",
