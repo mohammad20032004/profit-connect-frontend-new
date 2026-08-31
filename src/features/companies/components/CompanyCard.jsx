@@ -237,7 +237,7 @@ export function CompanyCard({ company, t, navigate, index }) {
         </Box>
       )}
       <Box sx={{ p: 2.5, pt: company.coverPhoto ? 0 : 2.5 }}>
-        <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mt: company.coverPhoto ? -5 : 0 }}>
+        <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mt: company.coverPhoto ? 2: 0 }}>
           <Badge
             overlap="circular"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -329,24 +329,6 @@ export function CompanyCard({ company, t, navigate, index }) {
               </Stack>
             )}
           </Stack>
-          <Typography
-            className="card-arrow"
-            variant="body2"
-            sx={{
-              color: 'primary.main',
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              transition: 'all 0.25s ease',
-              opacity: 0.7,
-              transform: 'translateX(0)',
-              '&:hover': { textDecoration: 'underline' },
-            }}
-          >
-            {t('companies.viewProfile')}
-            <ArrowForward sx={{ fontSize: 14, transform: isRtl ? 'scaleX(-1)' : 'none' }} />
-          </Typography>
         </Stack>
       </Box>
     </MotionCard>
