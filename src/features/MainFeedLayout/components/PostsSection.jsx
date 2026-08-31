@@ -1,5 +1,6 @@
-﻿﻿import { RADIUS } from '@/theme/tokens'
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 import {
   Box,
@@ -64,6 +65,8 @@ import CreatePost from './CreatePost'
 import AnimatedBox from '@/components/AnimatedBox'
 import { refreshReputation } from '@/services/reputation'
 import { adjustPostsCount } from '@/redux/slices/userSlice'
+import Lightbox from '@/ui/Lightbox'
+import HlsVideoPlayer from '@/ui/HlsVideoPlayer'
 
 const btnAnim = { whileTap: { scale: 0.9 }, whileHover: { scale: 1.03 }, transition: { duration: 0.15 } }
 
@@ -84,6 +87,7 @@ function formatTime(dateStr, t) {
 
 export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const currentUserId = useSelector((state) => state.user.user?._id || state.user.user?.id)
   const [liked, setLiked] = useState(false)
@@ -106,6 +110,8 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
   const [saved, setSaved] = useState(post?.saved || false)
   const [saveLoading, setSaveLoading] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
   const MAX_CHARS = 300
 
   useEffect(() => {
@@ -280,11 +286,22 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
     <Paper sx={{ p: 0, overflow: 'hidden' }}>
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
-          <UserAvatar src={avatarSrc} name={fullName} role={post?.user?.role} gender={profile?.gender} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }} />
+          <Box
+            onClick={() => navigate(`/user-profile/${post?.user?._id || post?.user?.id}`)}
+            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 }, transition: 'opacity 0.2s' }}
+          >
+            <UserAvatar src={avatarSrc} name={fullName} role={post?.user?.role} gender={profile?.gender} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }} />
+          </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
               <Box sx={{ minWidth: 0 }}>
-                <Typography variant="subtitle2" fontWeight={700} noWrap sx={{ color: 'text.primary', fontSize: '0.9rem' }}>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight={700}
+                  noWrap
+                  onClick={() => navigate(`/user-profile/${post?.user?._id || post?.user?.id}`)}
+                  sx={{ color: 'text.primary', fontSize: '0.9rem', cursor: 'pointer', '&:hover': { color: 'primary.main', textDecoration: 'underline' } }}
+                >
                   {fullName}
                 </Typography>
                 {headline && (
@@ -393,10 +410,31 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
         )}
 
         {post?.image && (
-          <Box component="img" src={post.image} alt={t('dashboard.post.image')} sx={{ mt: 2, width: '100%', maxHeight: 400, objectFit: 'cover', borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }} />
+          <Box
+            component="img"
+            src={post.image}
+            alt={t('dashboard.post.image')}
+            onClick={() => { setLightboxOpen(true); setLightboxIndex(0) }}
+            sx={{
+              mt: 2,
+              width: '100%',
+              maxHeight: 400,
+              objectFit: 'cover',
+              borderRadius: RADIUS,
+              border: '1px solid',
+              borderColor: 'divider',
+              cursor: 'pointer',
+              transition: 'opacity 0.2s ease',
+              '&:hover': { opacity: 0.92 },
+            }}
+          />
         )}
         {post?.video && (
-          <Box component="video" src={post.video} controls sx={{ mt: 2, width: '100%', maxHeight: 400, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider' }} />
+          <HlsVideoPlayer
+            src={post.video}
+            poster={post.videoPoster}
+            sx={{ mt: 2, border: '1px solid', borderColor: 'divider' }}
+          />
         )}
       </Box>
 
@@ -602,6 +640,15 @@ export function PostCard({ post, onPostUpdated, onPostDeleted }) {
       <Snackbar open={!!toastMsg} autoHideDuration={4000} onClose={() => setToastMsg('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
         <Alert severity="success" onClose={() => setToastMsg('')} sx={{ borderRadius: RADIUS }}>{toastMsg}</Alert>
       </Snackbar>
+
+      {post?.image && (
+        <Lightbox
+          images={[post.image]}
+          initialIndex={lightboxIndex}
+          open={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </Paper>
   )
 }

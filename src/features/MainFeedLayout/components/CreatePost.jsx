@@ -1,5 +1,6 @@
-﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Box,
   Paper,
@@ -43,6 +44,7 @@ const EMOJI_LIST = ['😀', '😂', '😍', '🥳', '🤔', '👍', '❤️', '�
 
 export default function CreatePost({ onPostCreated, open: openProp, onOpenChange }) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const profile = useSelector((state) => state.user.profile)
   const user = useSelector((state) => state.user.user)
   const imageInputRef = useRef(null)
@@ -217,7 +219,12 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
     <>
       <Paper sx={{ p: { xs: 1.5, sm: 2 } }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-          <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 40, height: 40 }} />
+          <Box
+            onClick={() => navigate('/profile')}
+            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 }, transition: 'opacity 0.2s' }}
+          >
+            <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 40, height: 40 }} />
+          </Box>
           <Box
             onClick={() => setOpen(true)}
             role="button"
@@ -340,9 +347,19 @@ export default function CreatePost({ onPostCreated, open: openProp, onOpenChange
         <DialogContent sx={{ pt: 2, pb: 1, px: 2 }}>
           {/* User Info + Visibility */}
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2 }}>
-            <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }} />
+            <Box
+              onClick={() => navigate('/profile')}
+              sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 }, transition: 'opacity 0.2s' }}
+            >
+              <UserAvatar src={avatarSrc} name={fullName} role={user?.role} gender={profile?.gender} sx={{ width: 44, height: 44, border: '2px solid', borderColor: 'divider' }} />
+            </Box>
             <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle2" fontWeight={700} sx={{ lineHeight: 1.2, fontSize: '0.9rem' }}>
+              <Typography
+                variant="subtitle2"
+                fontWeight={700}
+                onClick={() => navigate('/profile')}
+                sx={{ lineHeight: 1.2, fontSize: '0.9rem', cursor: 'pointer', '&:hover': { color: 'primary.main', textDecoration: 'underline' } }}
+              >
                 {fullName}
               </Typography>
               <FormControl size="small" sx={{ mt: 0.5 }}>

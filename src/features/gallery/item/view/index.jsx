@@ -32,6 +32,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { getPortfolioItemById, likePortfolioItem, deletePortfolioItem, getMyCollections } from '@/services/portfolioService'
 import { resolveMediaPath } from '@/services/profile'
 import { getItemMedia, getItemOwnerInfo, getItemUserId } from '../../media'
+import HlsVideoPlayer from '@/ui/HlsVideoPlayer'
 import ItemFormDialog from '../../components/ItemFormDialog'
 import { AddToCollectionDialog } from '../../components/CollectionDialogs'
 
@@ -366,8 +367,12 @@ export default function PortfolioItemView() {
                       >
                         {active ? (
                           active.type === 'video' ? (
-                            <Box component="video" src={resolveMediaPath(active.url)} controls autoPlay
-                              sx={{ width: '100%', height: '100%', minHeight: 420, objectFit: 'cover', display: 'block', bgcolor: '#000' }} />
+                            <HlsVideoPlayer
+                              src={resolveMediaPath(active.url)}
+                              poster={active.poster}
+                              autoPlay
+                              sx={{ width: '100%', height: '100%', minHeight: 420, objectFit: 'cover', borderRadius: 0 }}
+                            />
                           ) : (
                             <motion.div {...kenBurns} style={{ width: '100%', height: '100%' }}>
                               <Box component="img" src={resolveMediaPath(active.url)} alt={item.title}

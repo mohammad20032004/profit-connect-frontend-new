@@ -1,4 +1,4 @@
-﻿﻿import { RADIUS } from '@/theme/tokens'
+﻿import { RADIUS } from '@/theme/tokens'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -36,6 +36,7 @@ import {
 import { useSelector } from 'react-redux'
 import { getPostById, updatePost, deletePost } from '@/services/postService'
 import { useTranslation } from 'react-i18next'
+import HlsVideoPlayer from '@/ui/HlsVideoPlayer'
 
 export default function PostPage() {
   const { postId } = useParams()
@@ -197,16 +198,40 @@ export default function PostPage() {
         </Box>
 
         {post?.content && (
-          <Typography variant="body1" sx={{ whiteSpace: 'pre-line', lineHeight: 1.7 }}>
-            {post.content}
-          </Typography>
+          <Box
+            className="post-content"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+            sx={{
+              lineHeight: 1.7,
+              color: 'text.primary',
+              fontSize: '1rem',
+              '& p': { m: '0 0 0.5em 0', '&:last-child': { mb: 0 } },
+              '& strong': { fontWeight: 700 },
+              '& em': { fontStyle: 'italic' },
+              '& blockquote': {
+                borderLeft: '3px solid',
+                borderColor: 'primary.main',
+                pl: 2, ml: 0,
+                color: 'text.secondary',
+                fontStyle: 'italic',
+                my: 1,
+              },
+              '& ul, & ol': { pl: 3, my: 1 },
+              '& li': { mb: 0.25 },
+              '& mark': { borderRadius: '2px', px: 0.5 },
+            }}
+          />
         )}
 
         {post?.image && (
           <Box component="img" src={post.image} alt="" sx={{ mt: 2, width: '100%', maxHeight: 500, objectFit: 'cover', borderRadius: RADIUS }} />
         )}
         {post?.video && (
-          <Box component="video" src={post.video} controls sx={{ mt: 2, width: '100%', maxHeight: 500, borderRadius: RADIUS }} />
+          <HlsVideoPlayer
+            src={post.video}
+            poster={post.videoPoster}
+            sx={{ mt: 2, border: '1px solid', borderColor: 'divider' }}
+          />
         )}
       </Paper>
 
