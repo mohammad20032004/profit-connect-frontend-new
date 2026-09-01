@@ -1,4 +1,4 @@
-﻿﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, DANGER, RADIUS } from '@/theme/tokens'
 import { useState, useEffect, useRef } from 'react'
 import { Box, Paper, Typography, Stack, Grid, CircularProgress, Tabs, Tab, alpha } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -209,8 +209,7 @@ function doughnutOptions() {
 }
 
 export default function EmployerStats({ companyId }) {
-  const { i18n, t } = useTranslation()
-  const lang = i18n.language === 'ar' ? 'ar' : 'en'
+  const { t } = useTranslation()
   const [state, setState] = useState({ stats: null, fetched: false })
   const [chartTab, setChartTab] = useState(0)
   const mountedRef = useRef(true)
@@ -253,7 +252,7 @@ export default function EmployerStats({ companyId }) {
     labels: (stats.monthlyFollowers || []).map((m) => m.month),
     datasets: [
       {
-        label: lang === 'ar' ? 'إجمالي المتابعين' : 'Total Followers',
+        label: t('employer.stats.totalFollowers', 'Total Followers'),
         data: (stats.monthlyFollowers || []).map((m) => m.totalFollowers),
         borderColor: COLORS.primary,
         backgroundColor: alpha(COLORS.primary, 0.08),
@@ -263,7 +262,7 @@ export default function EmployerStats({ companyId }) {
         pointBackgroundColor: COLORS.primary,
       },
       {
-        label: lang === 'ar' ? 'متابعين جدد' : 'New Followers',
+        label: t('employer.stats.newFollowers', 'New Followers'),
         data: (stats.monthlyFollowers || []).map((m) => m.newFollowers),
         borderColor: COLORS.success,
         backgroundColor: alpha(COLORS.success, 0.08),
@@ -295,7 +294,7 @@ export default function EmployerStats({ companyId }) {
   const jobsByLevelData = {
     labels: (stats.jobs?.byWorkLevel || []).map((j) => j._id),
     datasets: [{
-      label: lang === 'ar' ? 'الوظائف' : 'Jobs',
+      label: t('employer.stats.jobs', 'Jobs'),
       data: (stats.jobs?.byWorkLevel || []).map((j) => j.count),
       backgroundColor: [COLORS.primary, COLORS.warning, COLORS.success],
       borderRadius: RADIUS,
@@ -316,7 +315,7 @@ export default function EmployerStats({ companyId }) {
   const dailyFollowersData = {
     labels: dailyData.map((d) => d.date?.slice(5) || d.dayName),
     datasets: [{
-      label: lang === 'ar' ? 'متابعين جدد' : 'New Followers',
+      label: t('employer.stats.newFollowers', 'New Followers'),
       data: dailyData.map((d) => d.newFollowers),
       backgroundColor: alpha(COLORS.primary, 0.6),
       hoverBackgroundColor: COLORS.primary,
@@ -328,7 +327,7 @@ export default function EmployerStats({ companyId }) {
   const monthlyJobsData = {
     labels: (stats.monthlyJobs || []).map((m) => m.month),
     datasets: [{
-      label: lang === 'ar' ? 'وظائف منشورة' : 'Jobs Posted',
+      label: t('employer.stats.jobsPosted', 'Jobs Posted'),
       data: (stats.monthlyJobs || []).map((m) => m.jobsPosted),
       backgroundColor: alpha(COLORS.secondary, 0.7),
       hoverBackgroundColor: COLORS.secondary,
@@ -343,7 +342,7 @@ export default function EmployerStats({ companyId }) {
   const ratingsData = {
     labels: ratingsLabels.map((v) => `${v} ★`),
     datasets: [{
-      label: lang === 'ar' ? 'التقييمات' : 'Ratings',
+      label: t('employer.stats.ratingsLabel', 'Ratings'),
       data: ratingsValues,
       backgroundColor: [COLORS.success, '#4ADE80', COLORS.warning, '#FBBF24', COLORS.error],
       borderRadius: RADIUS,
@@ -361,10 +360,10 @@ export default function EmployerStats({ companyId }) {
       <Stack spacing={1.5}>
         {/* Summary Stats */}
         <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', gap: 1.5 }}>
-          <StatMini label={lang === 'ar' ? 'إجمالي المتابعين' : 'Total Followers'} value={stats.followers?.total ?? 0} color={COLORS.primary} index={0} />
-          <StatMini label={lang === 'ar' ? 'الوظائف المفتوحة' : 'Open Jobs'} value={stats.jobs?.open ?? 0} color={COLORS.success} index={1} />
-          <StatMini label={lang === 'ar' ? 'إجمالي المتقدمين' : 'Total Applicants'} value={stats.applicants?.total ?? 0} color={COLORS.warning} index={2} />
-          <StatMini label={lang === 'ar' ? 'متوسط التقييم' : 'Avg Rating'} value={stats.ratings?.averageRating ?? '—'} color={COLORS.purple} index={3} />
+          <StatMini label={t('employer.stats.totalFollowers', 'Total Followers')} value={stats.followers?.total ?? 0} color={COLORS.primary} index={0} />
+          <StatMini label={t('employer.stats.openJobs', 'Open Jobs')} value={stats.jobs?.open ?? 0} color={COLORS.success} index={1} />
+          <StatMini label={t('employer.stats.totalApplicants', 'Total Applicants')} value={stats.applicants?.total ?? 0} color={COLORS.warning} index={2} />
+          <StatMini label={t('employer.stats.avgRating', 'Avg Rating')} value={stats.ratings?.averageRating ?? '—'} color={COLORS.purple} index={3} />
         </Stack>
 
         <Tabs
@@ -375,7 +374,7 @@ export default function EmployerStats({ companyId }) {
             '& .MuiTab-root': { minHeight: 40, textTransform: 'none', fontSize: '0.85rem' },
           }}
         >
-          <Tab label={t('common.overview', 'Overview')} />
+          <Tab label={t('employer.stats.overview', 'Overview')} />
           <Tab label={t('employer.stats.followers', 'Followers')} />
           <Tab label={t('employer.stats.jobs', 'Jobs')} />
           <Tab label={t('employer.stats.ratings', 'Ratings')} />
@@ -384,7 +383,7 @@ export default function EmployerStats({ companyId }) {
         <Grid container spacing={1.5}>
           {chartTab === 0 && (
             <ChartCard
-              title={lang === 'ar' ? 'مؤشرات الأداء' : 'Performance'}
+              title={t('employer.stats.performance', 'Performance')}
               icon={<TrendingUpOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
               span={12}
               index={0}
@@ -392,11 +391,11 @@ export default function EmployerStats({ companyId }) {
               <motion.div variants={staggerFast} initial="hidden" whileInView="visible" viewport={{ once: true }}>
                 <Stack spacing={1.25}>
                   {[
-                    { label: lang === 'ar' ? 'عمر الشركة (أيام)' : 'Company Age (days)', value: stats.performance?.companyAgeDays ?? '—' },
-                    { label: lang === 'ar' ? 'وظائف / شهر' : 'Jobs / Month', value: stats.performance?.jobsPerMonth ?? '—' },
-                    { label: lang === 'ar' ? 'متقدمين / وظيفة' : 'Applicants / Job', value: stats.performance?.applicantsPerJob ?? '—' },
-                    { label: lang === 'ar' ? 'متابعين / يوم' : 'Followers / Day', value: stats.performance?.followersPerDay ?? '—' },
-                    { label: lang === 'ar' ? 'نمو المتابعين' : 'Follower Growth', value: `${stats.followers?.monthlyGrowthRate ?? 0}%` },
+                    { label: t('employer.stats.companyAgeDays', 'Company Age (days)'), value: stats.performance?.companyAgeDays ?? '—' },
+                    { label: t('employer.stats.jobsPerMonth', 'Jobs / Month'), value: stats.performance?.jobsPerMonth ?? '—' },
+                    { label: t('employer.stats.applicantsPerJob', 'Applicants / Job'), value: stats.performance?.applicantsPerJob ?? '—' },
+                    { label: t('employer.stats.followersPerDay', 'Followers / Day'), value: stats.performance?.followersPerDay ?? '—' },
+                    { label: t('employer.stats.followerGrowth', 'Follower Growth'), value: `${stats.followers?.monthlyGrowthRate ?? 0}%` },
                   ].map((item, i) => (
                     <motion.div
                       key={i}
@@ -420,7 +419,7 @@ export default function EmployerStats({ companyId }) {
           {chartTab === 1 && (
             <>
               <ChartCard
-                title={lang === 'ar' ? 'نمو المتابعين' : 'Followers Growth'}
+                title={t('employer.stats.followersGrowth', 'Followers Growth')}
                 icon={<PeopleOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
                 span={8}
                 index={0}
@@ -431,7 +430,7 @@ export default function EmployerStats({ companyId }) {
               </ChartCard>
 
               <ChartCard
-                title={lang === 'ar' ? 'المتابعين اليوميين (آخر 14 يوم)' : 'Daily Followers (Last 14 days)'}
+                title={t('employer.stats.dailyFollowers', 'Daily Followers (Last 14 days)')}
                 icon={<PeopleOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
                 span={4}
                 index={1}
@@ -446,7 +445,7 @@ export default function EmployerStats({ companyId }) {
           {chartTab === 2 && (
             <>
               <ChartCard
-                title={lang === 'ar' ? 'الوظائف حسب النوع' : 'Jobs by Type'}
+                title={t('employer.stats.jobsByType', 'Jobs by Type')}
                 icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
                 index={0}
               >
@@ -456,7 +455,7 @@ export default function EmployerStats({ companyId }) {
               </ChartCard>
 
               <ChartCard
-                title={lang === 'ar' ? 'الوظائف حسب مكان العمل' : 'Jobs by Workplace'}
+                title={t('employer.stats.jobsByWorkplace', 'Jobs by Workplace')}
                 icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
                 index={1}
               >
@@ -466,7 +465,7 @@ export default function EmployerStats({ companyId }) {
               </ChartCard>
 
               <ChartCard
-                title={lang === 'ar' ? 'الوظائف حسب المستوى' : 'Jobs by Level'}
+                title={t('employer.stats.jobsByLevel', 'Jobs by Level')}
                 icon={<TrendingUpOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
                 index={2}
               >
@@ -476,7 +475,7 @@ export default function EmployerStats({ companyId }) {
               </ChartCard>
 
               <ChartCard
-                title={lang === 'ar' ? 'الوظائف الشهرية' : 'Monthly Jobs Posted'}
+                title={t('employer.stats.monthlyJobs', 'Monthly Jobs Posted')}
                 icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
                 index={3}
               >
@@ -489,7 +488,7 @@ export default function EmployerStats({ companyId }) {
 
           {chartTab === 3 && (
             <ChartCard
-              title={lang === 'ar' ? 'توزيع التقييمات' : 'Ratings Distribution'}
+              title={t('employer.stats.ratingsDistribution', 'Ratings Distribution')}
               icon={<StarOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />}
               span={12}
               index={0}

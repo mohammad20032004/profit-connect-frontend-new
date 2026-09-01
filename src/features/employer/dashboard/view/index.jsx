@@ -369,7 +369,7 @@ export default function EmployerDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 }}
               >
-                <Box container spacing={0.5} sx={{ mt: 1.5, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                <Box sx={{ mt: 1.5, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
                   <Box sx={{textAlign: 'center'}}>
                     <Typography variant="body2" fontWeight={700} fontSize="0.8125rem" color="text.primary">
                       {company.followersCount ?? 0}
@@ -394,54 +394,6 @@ export default function EmployerDashboard() {
                       {t('employer.dashboard.level')}
                     </Typography>
                   </Box>
-                                      <Stack spacing={1} direction="row" sx={{ flex: 1, minWidth: 200, mt: 1 }}>
-                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button
-                          variant="primary"
-                          fullWidth
-                          startIcon={<GroupAddOutlined />}
-                          onClick={() => navigate('/employer/employees')}
-                          sx={{
-                            justifyContent: 'flex-start',
-                            bgcolor: BRAND,
-                            '&:hover': { bgcolor: '#2E1555' },
-                          }}
-                        >
-                          {lang === 'ar' ? 'إدارة الفريق' : 'Manage Team'}
-                        </Button>
-                      </motion.div>
-                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button
-                          variant="primary"
-                          fullWidth
-                          startIcon={<WorkOutlineOutlined />}
-                           onClick={() => navigate('/employee/jobs')}
-                          sx={{
-                            justifyContent: 'flex-start',
-                            bgcolor: BRAND,
-                            '&:hover': { bgcolor: '#2E1555' },
-                          }}
-                        >
-                          {lang === 'ar' ? 'إدارة الوظائف' : 'Manage Jobs'}
-                        </Button>
-                      </motion.div>
-                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button
-                          variant="primary"
-                          fullWidth
-                          startIcon={<PeopleOutlined />}
-                          onClick={() => navigate('/employer/applications')}
-                          sx={{
-                            justifyContent: 'flex-start',
-                            bgcolor: BRAND,
-                            '&:hover': { bgcolor: '#2E1555' },
-                          }}
-                        >
-                          {lang === 'ar' ? 'طلبات التقديم' : 'Applications'}
-                        </Button>
-                      </motion.div>
-                    </Stack>
-
                 </Box>
               </motion.div>
 
@@ -513,6 +465,57 @@ export default function EmployerDashboard() {
           </Paper>
         </motion.div>
 
+        {/* Manage Company Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <Paper sx={{
+            borderRadius: RADIUS, p: { xs: 2, md: 2.5 }, my: 1.5,
+            border: '1px solid', borderColor: 'divider',
+          }}>
+            <SectionHeader icon={<WorkOutlineOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('employer.dashboard.manageCompany', 'Manage Company')} />
+            <Divider sx={{ mb: 1.5 }} />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ flex: 1 }}>
+                <Button
+                  variant="primary"
+                  fullWidth
+                  startIcon={<GroupAddOutlined />}
+                  onClick={() => navigate('/employer/employees')}
+                  sx={{ justifyContent: 'flex-start', py: 1.25, bgcolor: BRAND, '&:hover': { bgcolor: '#2E1555' } }}
+                >
+                  {t('employer.dashboard.manageTeam', 'Manage Team')}
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ flex: 1 }}>
+                <Button
+                  variant="primary"
+                  fullWidth
+                  startIcon={<WorkOutlineOutlined />}
+                  onClick={() => navigate('/employee/jobs')}
+                  sx={{ justifyContent: 'flex-start', py: 1.25, bgcolor: BRAND, '&:hover': { bgcolor: '#2E1555' } }}
+                >
+                  {t('employer.dashboard.manageJobs', 'Manage Jobs')}
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ flex: 1 }}>
+                <Button
+                  variant="primary"
+                  fullWidth
+                  startIcon={<PeopleOutlined />}
+                  onClick={() => navigate('/employer/applications')}
+                  sx={{ justifyContent: 'flex-start', py: 1.25, bgcolor: BRAND, '&:hover': { bgcolor: '#2E1555' } }}
+                >
+                  {t('employer.dashboard.applications', 'Applications')}
+                </Button>
+              </motion.div>
+            </Stack>
+          </Paper>
+        </motion.div>
+
         {/* Main Content Grid */}
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }}>
           <Grid container spacing={1.5}>
@@ -525,7 +528,7 @@ export default function EmployerDashboard() {
                 {(company.socialLinks?.linkedin || company.socialLinks?.twitter) && (
                   <motion.div variants={fadeUp} whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
                     <Paper sx={{ p: 2, borderRadius: RADIUS, border: '1px solid', borderColor: 'divider', transition: 'border-color 0.2s ease', '&:hover': { borderColor: 'primary.main' } }}>
-                      <SectionHeader icon={<LanguageOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={lang === 'ar' ? 'روابط التواصل' : 'Social Links'} />
+                      <SectionHeader icon={<LanguageOutlined sx={{ fontSize: 14, color: 'primary.main' }} />} title={t('profile.socialLinks', 'Social Links')} />
                       <Divider sx={{ mb: 1.25 }} />
                       <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', gap: 0.75 }}>
                         {company.socialLinks?.linkedin && (
@@ -584,7 +587,7 @@ export default function EmployerDashboard() {
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
                                       <Box>
                                         <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase' }}>
-                                          {lang === 'ar' ? 'الموقع' : 'Address'}
+                                          {t('employer.dashboard.address', 'Address')}
                                         </Typography>
                                         <Typography variant="body2" fontWeight={600} fontSize="0.8125rem">
                                           {[company.location?.city, company.location?.country].filter(Boolean).join(', ')}
@@ -601,7 +604,7 @@ export default function EmployerDashboard() {
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
                                       <Box>
                                         <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase' }}>
-                                          {lang === 'ar' ? 'الشارع' : 'Street'}
+                                          {t('employer.dashboard.street', 'Street')}
                                         </Typography>
                                         <Typography variant="body2" fontWeight={500} fontSize="0.8125rem">
                                           {[company.location.street, company.location.buildingNumber].filter(Boolean).join(', ')}
@@ -618,7 +621,7 @@ export default function EmployerDashboard() {
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'primary.main' }} />
                                       <Box>
                                         <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase' }}>
-                                          {lang === 'ar' ? 'الدولة' : 'Country'}
+                                          {t('employer.dashboard.country', 'Country')}
                                         </Typography>
                                         <Typography variant="body2" fontWeight={600} fontSize="0.8125rem">{company.location.country}</Typography>
                                       </Box>
@@ -633,7 +636,7 @@ export default function EmployerDashboard() {
                                       <LocationOnOutlined sx={{ fontSize: 16, color: 'secondary.main' }} />
                                       <Box>
                                         <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase' }}>
-                                          {lang === 'ar' ? 'المدينة' : 'City'}
+                                          {t('employer.dashboard.city', 'City')}
                                         </Typography>
                                         <Typography variant="body2" fontWeight={600} fontSize="0.8125rem">{company.location.city}</Typography>
                                       </Box>
@@ -694,7 +697,7 @@ export default function EmployerDashboard() {
           transition={{ duration: 0.4, delay: 0.3 }}
         >
           <Typography variant="caption" color="text.disabled" sx={{ textAlign: 'center', display: 'block', py: 1.5, mt: 0.5, fontSize: '0.625rem' }}>
-            {lang === 'ar' ? 'تم الإنشاء:' : 'Created:'} {new Date(company.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {t('employer.dashboard.created', 'Created:')} {new Date(company.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </Typography>
         </motion.div>
       </Container>

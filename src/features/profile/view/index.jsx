@@ -1,4 +1,4 @@
-﻿﻿import { BRAND, RADIUS } from '@/theme/tokens'
+﻿import { BRAND, RADIUS } from '@/theme/tokens'
 import { Box, Container, Paper, Typography, Chip, Stack, alpha, Grid, IconButton } from '@mui/material'
 import Button from '@/ui/Button'
 import UserAvatar from '@/components/common/UserAvatar'
@@ -22,6 +22,7 @@ import { useEffect } from 'react'
 import { refreshProfile } from '@/services/profile'
 import WalletCard from '../components/WalletCard'
 import MyProposalsCard from '../components/MyProposalsCard'
+import MyPostsCard from '../components/MyPostsCard'
 
 export default function ProfileView() {
   const { t } = useTranslation()
@@ -172,6 +173,7 @@ export default function ProfileView() {
               </Stack>
 
               <MyProposalsCard />
+              <MyPostsCard />
             </Stack>
           </Grid>
 
